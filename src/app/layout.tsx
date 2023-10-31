@@ -1,11 +1,18 @@
 import type {Metadata} from 'next';
-import {Inter} from 'next/font/google';
+import {Vazirmatn} from 'next/font/google';
+import {cookies} from 'next/headers';
 
-import MainProviders from '@/providers/main.providers';
+import {CookieName, ThemeType} from '@/constants';
+import {MainProviders} from '@/providers';
 
 import '@/styles/globals.css';
 
-const inter = Inter({subsets: ['latin']});
+const vazirmatn = Vazirmatn({
+  weight: ['300', '400', '600'],
+  style: ['normal'],
+  subsets: ['latin'],
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -16,10 +23,17 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({children}: {children: React.ReactNode}) {
+  const cookieStore = cookies();
+  const theme = cookieStore.get(CookieName.THEME);
+
   return (
-    <html lang='en'>
-      <body className={inter.className}>
-        <MainProviders>{children}</MainProviders>
+    <html lang='fa' dir='rtl' data-color-mode={theme?.value}>
+      <body className={vazirmatn.className}>
+        <MainProviders theme={theme?.value as ThemeType}>
+          <main>
+            <div className='root'>{children}</div>
+          </main>
+        </MainProviders>
       </body>
     </html>
   );

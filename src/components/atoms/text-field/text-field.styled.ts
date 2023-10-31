@@ -34,10 +34,13 @@ export const Input = styled('input', {
     w: '100%',
     textStyle: 'body2',
     color: 'text.secondary',
-    rounded: 'md',
-    border: '1px solid token(colors.stroke)',
-    minH: '8',
+    rounded: 'xl',
+    border: '2px solid token(colors.strokeVariant)',
+    minH: '40px',
     px: 3,
+    _placeholder: {
+      color: 'text.variant',
+    },
     _focus: {
       outline: 'none',
     },

@@ -25,32 +25,31 @@ export const Container = styled('span', {
 });
 export const Checkmark = styled('span', {
   base: {
-    border: '2px solid',
-    borderColor: 'stroke',
     rounded: 'xl',
     position: 'absolute',
     zIndex: '-1',
     cursor: 'pointer',
     h: '100%',
     w: '100%',
+    bg: 'strokeSecondary',
     transition: 'all 0.3s',
     _before: {
       content: "''",
       position: 'absolute',
-      left: '2px',
+      left: '4px',
       top: '50%',
       transform: 'translateY(-50%)',
       width: '16px',
       height: '16px',
       rounded: '50%',
-      background: 'stroke',
+      background: 'background',
       transition: 'all 0.3s',
       right: 'auto',
     },
     _peerChecked: {
-      bg: 'secondary',
-      borderColor: 'secondary',
-      _before: {background: 'white', left: '26px'},
+      bg: 'primary',
+      borderColor: 'primary',
+      _before: {background: 'white', left: 'calc(100% - 16px - 4px)'},
     },
   },
 });

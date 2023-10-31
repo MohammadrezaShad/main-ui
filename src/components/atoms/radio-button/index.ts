@@ -1,2 +1,2 @@
-export {default} from './radio-button';
+export {default as Radio} from './radio-button';
 export * from './radio-button';

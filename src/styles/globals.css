@@ -1,1 +1,122 @@
 @layer reset, base, tokens, recipes, utilities;
+
+.mask-motion-enter-active,
+.mask-motion-appear-active,
+.mask-motion-leave-active {
+  transition: all 0.3s;
+}
+.mask-motion-enter,
+.mask-motion-appear {
+  opacity: 0;
+}
+.mask-motion-enter-active,
+.mask-motion-appear-active {
+  opacity: 1;
+}
+.mask-motion-leave {
+  opacity: 1;
+}
+.mask-motion-leave-active {
+  opacity: 0;
+}
+.panel-motion-enter-start,
+.panel-motion-appear-start,
+.panel-motion-leave-start {
+  transition: none !important;
+}
+.panel-motion-enter-active,
+.panel-motion-appear-active,
+.panel-motion-leave-active {
+  transition: all 0.3s;
+}
+.panel-motion-left-enter,
+.panel-motion-left-appear {
+  transform: translateX(-100%);
+}
+.panel-motion-left-enter-active,
+.panel-motion-left-appear-active {
+  transform: translateX(0);
+}
+.panel-motion-left-leave {
+  transform: translateX(0);
+}
+.panel-motion-left-leave-active {
+  transform: translateX(-100%) !important;
+}
+.panel-motion-right-enter,
+.panel-motion-right-appear {
+  transform: translateX(100%);
+}
+.panel-motion-right-enter-active,
+.panel-motion-right-appear-active {
+  transform: translateX(0);
+}
+.panel-motion-right-leave {
+  transform: translateX(0);
+}
+.panel-motion-right-leave-active {
+  transform: translateX(100%) !important;
+}
+
+.panel-motion-top-enter,
+.panel-motion-top-appear {
+  transform: translateY(-100%);
+}
+.panel-motion-top-enter-active,
+.panel-motion-top-appear-active {
+  transform: translateY(0);
+}
+.panel-motion-top-leave {
+  transform: translateY(0);
+}
+.panel-motion-top-leave-active {
+  transform: translateY(-100%) !important;
+}
+
+.panel-motion-bottom-enter,
+.panel-motion-bottom-appear {
+  transform: translateY(100%);
+}
+.panel-motion-bottom-enter-active,
+.panel-motion-bottom-appear-active {
+  transform: translateY(0);
+}
+.panel-motion-bottom-leave {
+  transform: translateY(0);
+}
+.panel-motion-bottom-leave-active {
+  transform: translateY(100%) !important;
+}
+
+.rc-drawer-bottom .rc-drawer-content-wrapper {
+  bottom: 0;
+}
+
+.popper {
+  /* ... other styles */
+  opacity: 0;
+  transition-property: opacity, transform;
+}
+
+.popper[data-popper-placement^='top'] {
+  transform: translateY(10px);
+}
+
+.popper[data-popper-placement^='bottom'] {
+  transform: translateY(-10px);
+}
+
+.popper[data-popper-placement^='left'] {
+  transform: translateX(10px);
+}
+
+.popper[data-popper-placement^='right'] {
+  transform: translateX(-10px);
+}
+
+.popper[data-show] {
+  opacity: 1;
+  transform: none;
+}
+
+

@@ -1,3 +1,6 @@
+/* eslint-disable react/jsx-fragments */
+/* eslint-disable react/jsx-no-useless-fragment */
+
 'use client';
 
 import React from 'react';
@@ -10,5 +13,5 @@ type LegendProviderProps = {
 };
 
 export default function LegendProvider({children}: LegendProviderProps) {
-  return <main>{children}</main>;
+  return <React.Fragment>{children}</React.Fragment>;
 }

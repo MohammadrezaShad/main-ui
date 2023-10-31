@@ -10,9 +10,24 @@ export default definePreset({
   },
   globalCss,
   theme: {
+    semanticTokens: {
+      colors,
+    },
     extend: {
+      breakpoints: {
+        xs: '320px',
+      },
       tokens: {
-        colors,
+        sizes: {
+          layout: {
+            value: '1366px',
+          },
+        },
+        shadows: {
+          b3: {
+            value: '0px 2px 4px 0px rgba(0, 0, 0, 0.08)',
+          },
+        },
       },
       textStyles,
       recipes: {

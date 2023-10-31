@@ -38,28 +38,28 @@ export const textStyles = defineTextStyles({
     description: '',
     value: getText({
       fontWeight: fontWeight.bold,
-      fontSize: '32px',
+      fontSize: '24px',
     }),
   },
   h2: {
     description: '',
     value: getText({
       fontWeight: fontWeight.bold,
-      fontSize: '28px',
+      fontSize: '22px',
     }),
   },
   h3: {
     description: '',
     value: getText({
       fontWeight: fontWeight.bold,
-      fontSize: '24px',
+      fontSize: '18px',
     }),
   },
   h4: {
     description: '',
     value: getText({
       fontWeight: fontWeight.bold,
-      fontSize: '18px',
+      fontSize: '16px',
     }),
   },
   subtitle1: {

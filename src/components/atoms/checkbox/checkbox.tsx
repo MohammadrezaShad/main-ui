@@ -21,7 +21,7 @@ const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>((props: Check
   return (
     <Container className={containerClassName} disabled={disabled}>
       <Input
-        type='radio'
+        type='checkbox'
         {...otherProps}
         className={inputClassName}
         ref={ref}

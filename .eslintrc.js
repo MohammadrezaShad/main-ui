@@ -76,6 +76,7 @@ module.exports = {
     'unused-imports/no-unused-imports': 'error',
     'react/function-component-definition': 'off',
     '@typescript-eslint/no-explicit-any': 'warn',
+    'prefer-arrow-callback': 'off',
     'simple-import-sort/imports': [
       'error',
       {

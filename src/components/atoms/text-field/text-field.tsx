@@ -24,10 +24,10 @@ const TextField = React.forwardRef<HTMLInputElement, TextFieldProps>(
         {title ? <Label>{title}</Label> : null}
         <Input
           type='text'
-          {...otherProps}
           className={inputClassName}
           ref={ref}
           disabled={disabled}
+          {...otherProps}
         />
       </Container>
     );

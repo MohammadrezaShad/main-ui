@@ -25,8 +25,7 @@ export const Container = styled('span', {
 });
 export const Checkmark = styled('span', {
   base: {
-    border: '2px solid',
-    borderColor: 'stroke',
+    border: '2px solid token(colors.strokeSecondary)',
     rounded: 'md',
     position: 'absolute',
     zIndex: '-1',
@@ -46,8 +45,8 @@ export const Checkmark = styled('span', {
       transform: 'rotate(45deg)',
     },
     _peerChecked: {
-      bg: 'secondary',
-      borderColor: 'secondary',
+      bg: 'primary',
+      borderColor: 'primary',
       _after: {display: 'block'},
     },
   },

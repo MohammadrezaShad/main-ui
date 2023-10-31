@@ -49,11 +49,14 @@ export const buttonRecipe = defineRecipe({
       warning: {},
       background: {},
       backgroundVariant: {},
+      backgroundSecondary: {},
       stroke: {},
       strokeVariant: {},
+      strokeSecondary: {},
       textPrimary: {},
       textSecondary: {},
       textInverted: {},
+      textVariant: {},
     },
     disabled: {
       true: {
@@ -270,6 +273,38 @@ export const buttonRecipe = defineRecipe({
       },
     },
     {
+      visual: 'contained',
+      color: 'backgroundSecondary',
+      css: {
+        bg: 'backgroundSecondary',
+        _hover: {bg: 'backgroundSecondary.light'},
+      },
+    },
+    {
+      visual: 'outlined',
+      color: 'backgroundSecondary',
+      css: {
+        border: '1px solid',
+        borderColor: 'backgroundSecondary',
+        _hover: {bg: 'backgroundSecondary'},
+      },
+    },
+    {
+      visual: 'text',
+      color: 'backgroundSecondary',
+      css: {
+        color: 'backgroundSecondary',
+      },
+    },
+    {
+      visual: 'contained',
+      color: 'backgroundVariant',
+      css: {
+        bg: 'backgroundVariant',
+        _hover: {bg: 'backgroundVariant.light'},
+      },
+    },
+    {
       visual: 'outlined',
       color: 'backgroundVariant',
       css: {
@@ -331,6 +366,30 @@ export const buttonRecipe = defineRecipe({
       color: 'strokeVariant',
       css: {
         color: 'strokeVariant',
+      },
+    },
+    {
+      visual: 'contained',
+      color: 'strokeSecondary',
+      css: {
+        bg: 'strokeSecondary',
+        _hover: {bg: 'strokeSecondary.light'},
+      },
+    },
+    {
+      visual: 'outlined',
+      color: 'strokeSecondary',
+      css: {
+        border: '1px solid',
+        borderColor: 'strokeSecondary',
+        _hover: {bg: 'strokeSecondary'},
+      },
+    },
+    {
+      visual: 'text',
+      color: 'strokeSecondary',
+      css: {
+        color: 'strokeSecondary',
       },
     },
     {
@@ -403,6 +462,30 @@ export const buttonRecipe = defineRecipe({
       color: 'textInverted',
       css: {
         color: 'text.inverted',
+      },
+    },
+    {
+      visual: 'contained',
+      color: 'textVariant',
+      css: {
+        bg: 'primary',
+        _hover: {bg: 'text.variant.light'},
+      },
+    },
+    {
+      visual: 'outlined',
+      color: 'textVariant',
+      css: {
+        border: '1px solid',
+        borderColor: 'text.variant',
+        _hover: {bg: 'text.variant'},
+      },
+    },
+    {
+      visual: 'text',
+      color: 'textVariant',
+      css: {
+        color: 'text.variant',
       },
     },
   ],

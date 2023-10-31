@@ -1,32 +1,23 @@
 'use client';
 
 import React from 'react';
-import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 
-import LegendProvider from '@/providers/legend.provider';
+import {DEFAULT_THEME, ThemeType} from '@/constants';
+import {LegendProvider, MenuProvider, QueryClientProvider, ThemeProvider} from '@/providers';
 
 type MainProvidersProps = {
   children: React.ReactNode;
+  theme?: ThemeType;
 };
 
-export default function MainProviders({children}: MainProvidersProps) {
-  const [queryClient] = React.useState(
-    () =>
-      new QueryClient({
-        defaultOptions: {
-          queries: {
-            staleTime: Infinity,
-            refetchOnReconnect: false,
-            refetchOnMount: false,
-            retry: 3,
-          },
-        },
-      }),
-  );
-
+export default function MainProviders({children, theme}: MainProvidersProps) {
   return (
     <LegendProvider>
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+      <QueryClientProvider>
+        <ThemeProvider theme={theme || DEFAULT_THEME}>
+          <MenuProvider>{children}</MenuProvider>
+        </ThemeProvider>
+      </QueryClientProvider>
     </LegendProvider>
   );
 }
