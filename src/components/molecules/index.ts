@@ -8,3 +8,4 @@ export * from './comment';
 export * from './viko';
 export * from './select';
 export * from './dropdown-drawer';
+export * from './navbar';

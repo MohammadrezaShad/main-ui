@@ -2,7 +2,7 @@
 
 import {css, cx} from '@styled/css';
 
-import {IconParaj, IconParajMobile} from '@/assets';
+import {IconWaterWorld} from '@/assets';
 import Paths from '@/utils/paths';
 
 import {Container} from './logo.styled';
@@ -16,8 +16,7 @@ export default function Logo({className}: LogoProps) {
   const containerClass = cx(defaultClassName, className);
   return (
     <Container className={containerClass} href={Paths.Home.getPath()}>
-      <IconParaj className={css({hideBelow: 'md'})} />
-      <IconParajMobile className={css({hideFrom: 'md'})} />
+      <IconWaterWorld className={css({hideBelow: 'md'})} />
     </Container>
   );
 }

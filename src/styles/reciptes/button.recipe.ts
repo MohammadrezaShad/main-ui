@@ -245,15 +245,15 @@ export const buttonRecipe = defineRecipe({
       color: 'background',
       css: {
         bg: 'background',
-        _hover: {bg: 'background.light'},
+        _hover: {bg: 'primary.light'},
       },
     },
     {
       visual: 'outlined',
       color: 'background',
       css: {
-        border: '1px solid',
-        borderColor: 'background',
+        border: '1px solid gray3',
+        borderColor: 'gray3',
         _hover: {bg: 'background'},
       },
     },

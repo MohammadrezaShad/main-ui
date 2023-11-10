@@ -17,7 +17,7 @@ export const globalCss = defineGlobalStyles({
   '.root': {
     display: 'flex',
     flexDirection: 'column',
-    direction: 'rtl',
+    direction: 'ltr',
     minH: '100%',
   },
 });

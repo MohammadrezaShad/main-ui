@@ -73,3 +73,4 @@ export {default as IconVolumeLow} from './icon-volume-low.svg';
 export {default as IconSpeed} from './icon-speed.svg';
 export {default as IconFullscreen} from './icon-fullscreen.svg';
 export {default as IconFullscreenExit} from './icon-fullscreen-exit.svg';
+export {default as IconWaterWorld} from './icon-waterworld.svg';

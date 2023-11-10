@@ -4,7 +4,7 @@ import {TextStyle} from '@styled/types/composition';
 const fontWeight = {
   light: '300',
   regular: '400',
-  bold: '600',
+  bold: '700',
 };
 
 const getText = (textProperties: TextStyle) => ({

@@ -3,15 +3,17 @@ import {styled} from '@styled/jsx';
 export const Container = styled('header', {
   base: {
     display: 'flex',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     bg: 'background',
-    pt: 4,
-    pb: 4,
-    pr: 8,
-    pl: 8,
+    pt: 5,
+    pb: 5,
+    pr: 11,
+    pl: 11,
+    h: 20,
   },
 });
 
 export const Wrap = styled('header', {
-  base: {display: 'flex', flex: 1, alignItems: 'center'},
+  base: {display: 'flex', alignItems: 'center'},
 });

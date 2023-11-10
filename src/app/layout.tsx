@@ -1,5 +1,5 @@
 import type {Metadata} from 'next';
-import {Vazirmatn} from 'next/font/google';
+import {Ubuntu} from 'next/font/google';
 import {cookies} from 'next/headers';
 
 import {CookieName, ThemeType} from '@/constants';
@@ -7,8 +7,8 @@ import {MainProviders} from '@/providers';
 
 import '@/styles/globals.css';
 
-const vazirmatn = Vazirmatn({
-  weight: ['300', '400', '600'],
+const ubuntu = Ubuntu({
+  weight: ['300', '400', '500', '700'],
   style: ['normal'],
   subsets: ['latin'],
   display: 'swap',
@@ -27,8 +27,8 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
   const theme = cookieStore.get(CookieName.THEME);
 
   return (
-    <html lang='fa' dir='rtl' data-color-mode={theme?.value}>
-      <body className={vazirmatn.className}>
+    <html lang='en' dir='ltr' data-color-mode={theme?.value}>
+      <body className={ubuntu.className}>
         <MainProviders theme={theme?.value as ThemeType}>
           <main>
             <div className='root'>{children}</div>
