@@ -4,7 +4,7 @@ import {useObservable} from '@legendapp/state/react';
 import {css} from '@styled/css';
 
 import {IconSearch} from '@/assets';
-import {AuthButton, Logo, Navbar, SearchDrawer} from '@/components';
+import {AuthButton, HeaderNavbar, Logo, SearchDrawer} from '@/components';
 
 import {Container, Wrap} from './header.styled';
 
@@ -19,7 +19,7 @@ export default function Header(props: HeaderProps) {
         <Logo />
       </Wrap>
       <Wrap>
-        <Navbar />
+        <HeaderNavbar />
         <IconSearch
           className={css({cursor: 'pointer', mx: 12})}
           onClick={() => isOpen$.set(true)}
