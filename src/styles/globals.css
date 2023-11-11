@@ -119,4 +119,8 @@
   transform: none;
 }
 
-
+.swiper-pagination-horizontal.swiper-pagination-bullets .swiper-pagination-bullet {
+  width: 16px;
+  height: 4px;
+  border-radius: 0;
+}

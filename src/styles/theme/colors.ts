@@ -2,7 +2,7 @@ import Color from 'color';
 
 const LIGHT_COLORS = {
   primary: '#44BAEB',
-  secondary: '#2ECB95',
+  secondary: '#D9C2AE',
   surface: '#F5F5F5',
   success: '#4CAF50',
   danger: '#DC3545',
@@ -15,8 +15,11 @@ const LIGHT_COLORS = {
   strokeVariant: '#DDDDDF',
   strokeSecondary: '#C7C7C8',
   hover: '#EFF0F2',
+  gray1: '#F6F6F6',
+  gray2: '#EBEBEB',
   gray3: '#E3E3E3',
   gray4: '#6E7072',
+  gray6: '#959595',
   text: {
     primary: '#333333',
     secondary: '#5E5A6D',
@@ -40,8 +43,11 @@ const DARK_COLORS = {
   strokeVariant: '#E7E7E7',
   strokeSecondary: '#C7C7C8',
   hover: '#EFF0F2',
+  gray1: '#F6F6F6',
+  gray2: '#EBEBEB',
   gray3: '#E3E3E3',
   gray4: '#6E7072',
+  gray6: '#959595',
   text: {
     primary: '#2B2B2B',
     secondary: '#555555',
@@ -305,6 +311,40 @@ export const colors = {
       },
     },
   },
+  gray1: {
+    DEFAULT: {
+      value: {base: LIGHT_COLORS.gray1, _dark: DARK_COLORS.gray1},
+    },
+    light: {
+      value: {
+        base: createLightVariant(LIGHT_COLORS.gray1),
+        _dark: createLightVariant(DARK_COLORS.gray1),
+      },
+    },
+    dark: {
+      value: {
+        base: createDarkVariant(LIGHT_COLORS.gray1),
+        _dark: createDarkVariant(DARK_COLORS.gray1),
+      },
+    },
+  },
+  gray2: {
+    DEFAULT: {
+      value: {base: LIGHT_COLORS.gray2, _dark: DARK_COLORS.gray2},
+    },
+    light: {
+      value: {
+        base: createLightVariant(LIGHT_COLORS.gray2),
+        _dark: createLightVariant(DARK_COLORS.gray2),
+      },
+    },
+    dark: {
+      value: {
+        base: createDarkVariant(LIGHT_COLORS.gray2),
+        _dark: createDarkVariant(DARK_COLORS.gray2),
+      },
+    },
+  },
   gray3: {
     DEFAULT: {
       value: {base: LIGHT_COLORS.gray3, _dark: DARK_COLORS.gray3},
@@ -336,6 +376,23 @@ export const colors = {
       value: {
         base: createDarkVariant(LIGHT_COLORS.gray4),
         _dark: createDarkVariant(DARK_COLORS.gray4),
+      },
+    },
+  },
+  gray6: {
+    DEFAULT: {
+      value: {base: LIGHT_COLORS.gray6, _dark: DARK_COLORS.gray6},
+    },
+    light: {
+      value: {
+        base: createLightVariant(LIGHT_COLORS.gray6),
+        _dark: createLightVariant(DARK_COLORS.gray6),
+      },
+    },
+    dark: {
+      value: {
+        base: createDarkVariant(LIGHT_COLORS.gray6),
+        _dark: createDarkVariant(DARK_COLORS.gray6),
       },
     },
   },

@@ -4,7 +4,8 @@ import {TextStyle} from '@styled/types/composition';
 const fontWeight = {
   light: '300',
   regular: '400',
-  bold: '700',
+  bold: '500',
+  bolder: '700',
 };
 
 const getText = (textProperties: TextStyle) => ({
@@ -38,7 +39,7 @@ export const textStyles = defineTextStyles({
     description: '',
     value: getText({
       fontWeight: fontWeight.bold,
-      fontSize: '24px',
+      fontSize: '32px',
     }),
   },
   h2: {
@@ -60,6 +61,20 @@ export const textStyles = defineTextStyles({
     value: getText({
       fontWeight: fontWeight.bold,
       fontSize: '16px',
+    }),
+  },
+  headline3: {
+    description: '',
+    value: getText({
+      fontWeight: fontWeight.bold,
+      fontSize: '24px',
+    }),
+  },
+  headline4: {
+    description: '',
+    value: getText({
+      fontWeight: fontWeight.bold,
+      fontSize: '20px',
     }),
   },
   subtitle1: {
@@ -114,7 +129,7 @@ export const textStyles = defineTextStyles({
   caption: {
     description: '',
     value: getText({
-      fontWeight: fontWeight.regular,
+      fontWeight: fontWeight.light,
       fontSize: '12px',
     }),
   },

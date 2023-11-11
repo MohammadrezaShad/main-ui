@@ -1,0 +1,23 @@
+import {css} from '@styled/css';
+import Image from 'next/image';
+
+interface Props {
+  src: string;
+  alt: string;
+}
+
+const CardImage = ({src, alt}: Props) => {
+  console.log("🚀 ~ file: card-image.tsx:10 ~ CardImage ~ src:", src)
+  return (
+    <Image
+    loading='lazy'
+      className={css({w: 'full', h: '228px', mb: 6, objectFit: 'cover'})}
+      width={304}
+      height={228}
+      alt={alt}
+      src={src}
+    />
+  );
+};
+
+export default CardImage;
