@@ -2,9 +2,9 @@ import {css} from '@styled/css';
 import {flex} from '@styled/patterns';
 import {headers} from 'next/headers';
 
-import {Header, Sidebar} from '@/components';
+import {Footer, Header} from '@/components';
 import {HeaderName} from '@/constants';
-import {isMatch, Paths} from '@/utils';
+import {Paths, isMatch} from '@/utils';
 
 import '@/styles/globals.css';
 
@@ -18,6 +18,7 @@ export default function MainLayout({children}: {children: React.ReactNode}) {
       <div
         className={css({
           p: {base: 8, lgDown: 6},
+          bg: 'background',
         })}
       >
         <div
@@ -31,7 +32,7 @@ export default function MainLayout({children}: {children: React.ReactNode}) {
             alignItems: 'flex-start',
           })}
         >
-          <Sidebar />
+          {/* <Sidebar /> */}
           <div
             className={css({
               flex: '1',
@@ -42,6 +43,7 @@ export default function MainLayout({children}: {children: React.ReactNode}) {
           </div>
         </div>
       </div>
+      <Footer />
     </>
   );
 }

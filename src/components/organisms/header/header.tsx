@@ -4,7 +4,7 @@ import {useObservable} from '@legendapp/state/react';
 import {css} from '@styled/css';
 
 import {IconSearch} from '@/assets';
-import {AuthButton, Logo, MenuButton, SearchBar, SearchDrawer} from '@/components';
+import {AuthButton, HeaderNavbar, Logo, SearchDrawer} from '@/components';
 
 import {Container, Wrap} from './header.styled';
 
@@ -16,13 +16,36 @@ export default function Header(props: HeaderProps) {
   return (
     <Container>
       <Wrap>
-        <MenuButton className={css({ml: 5})} />
         <Logo />
-        <SearchBar className={css({mr: {base: 36, lgDown: 20}, ml: 5, hideBelow: 'md'})} />
-        <AuthButton className={css({mr: 'auto', w: '128px', hideBelow: 'md'})} />{' '}
+      </Wrap>
+      <Wrap>
+        <HeaderNavbar />
         <IconSearch
-          className={css({hideFrom: 'md', mr: 'auto', cursor: 'pointer'})}
+          className={css({cursor: 'pointer', mx: 12})}
           onClick={() => isOpen$.set(true)}
+        />
+        <AuthButton
+          variant='outlined'
+          className={css({
+            '& span': {color: 'gray4'},
+            w: 'max-content',
+            px: 4,
+            py: 3,
+            hideBelow: 'md',
+            mr: 4,
+            border: '1px solid token(colors.gray3)',
+          })}
+        />
+        <AuthButton
+          text='Sign Up'
+          className={css({
+            '& span': {color: 'text.invert'},
+            w: 'max-content',
+            px: 4,
+            py: 3,
+            hideBelow: 'md',
+            bg: 'primary',
+          })}
         />
         <AuthButton
           className={css({

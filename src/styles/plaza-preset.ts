@@ -20,7 +20,7 @@ export default definePreset({
       tokens: {
         sizes: {
           layout: {
-            value: '1366px',
+            value: '960px',
           },
         },
         shadows: {

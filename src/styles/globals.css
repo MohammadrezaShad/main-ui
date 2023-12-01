@@ -119,4 +119,13 @@
   transform: none;
 }
 
+.swiper-pagination-horizontal.swiper-pagination-bullets .swiper-pagination-bullet {
+  width: 16px;
+  height: 4px;
+  border-radius: 0;
+  background: #E3E3E3;
+}
 
+.swiper-pagination-bullet-active {
+  background: #44BAEB !important;
+}
