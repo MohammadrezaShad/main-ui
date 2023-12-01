@@ -1,10 +1,9 @@
 'use client';
 import {IconFacebook, IconInstagram, IconTwitter} from '@/assets';
-import {Logo} from '@/components';
+import {Logo, SocialMediaLinks} from '@/components';
 import {FooterNavbar} from '@/components/molecules/navbar/footer';
 import {SmallSelect} from '@/components/molecules/small-select';
 import {css} from '@styled/css';
-import Link from 'next/link';
 import {Container, Wrap} from './footer.styled';
 
 const navbarItems = [
@@ -19,6 +18,12 @@ const navbarItems = [
 const languages = [
   {id: 1, value: 'en', label: 'English'},
   {id: 2, value: 'fa', label: 'Persian'},
+];
+
+const socialMediaLinks = [
+  {icon: IconTwitter, href: ''},
+  {icon: IconInstagram, href: ''},
+  {icon: IconFacebook, href: ''},
 ];
 
 const Footer = () => {
@@ -36,47 +41,7 @@ const Footer = () => {
         @ 2023 Waterworld Inc. All rights reserved.
       </span>
       <Wrap className={css({justifyContent: 'space-between', w: 'full'})}>
-        <ul
-          className={css({
-            display: 'flex',
-            alignItems: 'center',
-            gap: 4,
-          })}
-        >
-          <li>
-            <Link
-              className={css({
-                display: 'grid',
-                placeItems: 'center',
-              })}
-              href=''
-            >
-              <IconTwitter className={css({fill: '#272727', w: 6, h: 6})} />
-            </Link>
-          </li>
-          <li>
-            <Link
-              className={css({
-                display: 'grid',
-                placeItems: 'center',
-              })}
-              href=''
-            >
-              <IconInstagram className={css({fill: '#272727', w: 6, h: 6})} />
-            </Link>
-          </li>
-          <li>
-            <Link
-              className={css({
-                display: 'grid',
-                placeItems: 'center',
-              })}
-              href=''
-            >
-              <IconFacebook className={css({fill: '#272727', w: 6, h: 6})} />
-            </Link>
-          </li>
-        </ul>
+        <SocialMediaLinks links={socialMediaLinks} />
         <FooterNavbar items={navbarItems} />
         <SmallSelect options={languages} />
       </Wrap>

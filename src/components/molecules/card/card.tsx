@@ -5,10 +5,11 @@ import {CardTitle} from '@/components/atoms/card-title';
 import {formatDate} from '@/utils/format-date';
 import {css} from '@styled/css';
 import {Container, Wrap} from './card.styled';
+import { grid } from '@styled/patterns';
 
 interface Props {
-    imageUrl: string;
-    date: string;
+    imageUrl?: string;
+    date?: string;
     title: string;
     articleLink: string;
 }
@@ -16,13 +17,20 @@ interface Props {
 export default function Card({imageUrl, date, title, articleLink}: Props) {
   return (
     <Container>
-      <CardImage src={imageUrl} alt={title} />
+      {imageUrl ? <CardImage src={imageUrl} alt={title} /> : <div className={grid({
+        placeContent: 'center',
+        w: 'full',
+        h: 228,
+        bgColor: 'gray3',
+        mb: "6"
+
+      })}></div>}
       <Wrap
         className={css({
           mb: 4,
         })}
       >
-        <CardDate dateTime={formatDate(date)}>{date}</CardDate>
+        {date && <CardDate dateTime={formatDate(date)}>{date}</CardDate>}
         <CardTitle>{title}</CardTitle>
       </Wrap>
       <Wrap

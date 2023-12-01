@@ -7,7 +7,6 @@ interface Props {
 }
 
 const CardImage = ({src, alt}: Props) => {
-  console.log("🚀 ~ file: card-image.tsx:10 ~ CardImage ~ src:", src)
   return (
     <Image
     loading='lazy'

@@ -4,3 +4,4 @@ export * from './video';
 export * from './viko';
 export * from './articles';
 export * from './categories';
+export * from './author';

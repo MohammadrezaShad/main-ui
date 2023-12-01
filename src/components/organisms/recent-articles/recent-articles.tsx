@@ -1,13 +1,12 @@
 import {Card} from '@/components/molecules/card';
-import {css} from '@styled/css';
+import {grid} from '@styled/patterns';
 
 const RecentArticles = ({posts}: {posts: Array<any>}) => {
   return (
     <div
-      className={css({
-        display: 'flex',
-        alignItems: 'center',
-        columnGap: 6,
+      className={grid({
+        gridTemplateColumns: '3',
+        gap: 6,
       })}
     >
       {posts.map(post => (
