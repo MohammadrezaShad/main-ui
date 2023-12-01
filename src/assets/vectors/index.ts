@@ -85,3 +85,4 @@ export {default as IconReport} from './icon-report.svg';
 export {default as IconCalendar} from './icon-calendar.svg';
 export {default as IconLocation} from './icon-location.svg';
 export {default as IconStar} from './icon-star.svg';
+export {default as IconWater} from './icon-water.svg';
