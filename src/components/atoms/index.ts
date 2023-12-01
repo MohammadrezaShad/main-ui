@@ -10,3 +10,5 @@ export * from './section';
 export * from './spinner';
 export * from './skeleton';
 export * from './video';
+export * from './tag';
+export * from './avatar';

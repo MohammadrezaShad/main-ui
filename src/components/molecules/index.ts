@@ -13,3 +13,11 @@ export * from './sticky';
 export * from './video';
 export * from './viko';
 export * from './post-date';
+export * from './primary-title'
+export * from './primary-subtitle'
+export * from './article-info'
+export * from './tags'
+export * from './questions'
+export * from './user-info'
+export * from './review'
+export * from './article-body'
