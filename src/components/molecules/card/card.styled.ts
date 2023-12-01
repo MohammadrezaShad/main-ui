@@ -5,7 +5,7 @@ export const Container = styled('div', {
     display: 'flex',
     flexDir: 'column',
     border: '1px solid token(colors.gray3)',
-    maxW: '1/3',
+    maxW: 'full',
   },
 });
 

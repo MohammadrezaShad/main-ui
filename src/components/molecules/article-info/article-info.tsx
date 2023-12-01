@@ -6,9 +6,16 @@ import {
   IconLink,
   IconTwitter,
 } from '@/assets';
-import {Avatar} from '@/components';
+import {Avatar, SocialMediaLinks} from '@/components';
 import {css} from '@styled/css';
-import Link from 'next/link';
+
+const socialMediaLinks = [
+  {icon: IconTwitter, href: ''},
+  {icon: IconInstagram, href: ''},
+  {icon: IconFacebook, href: ''},
+  {icon: IconEmail, href: ''},
+  {icon: IconLink, href: ''},
+];
 
 const ArticleInfo = () => {
   return (
@@ -65,69 +72,7 @@ const ArticleInfo = () => {
       </div>
 
       {/** SOCIAL ICONS */}
-      <ul
-        className={css({
-          display: 'flex',
-          alignItems: 'center',
-          gap: 4,
-        })}
-      >
-        <li>
-          <Link
-            className={css({
-              display: 'grid',
-              placeItems: 'center',
-            })}
-            href=''
-          >
-            <IconTwitter className={css({fill: '#272727', w: 6, h: 6})} />
-          </Link>
-        </li>
-        <li>
-          <Link
-            className={css({
-              display: 'grid',
-              placeItems: 'center',
-            })}
-            href=''
-          >
-            <IconInstagram className={css({fill: '#272727', w: 6, h: 6})} />
-          </Link>
-        </li>
-        <li>
-          <Link
-            className={css({
-              display: 'grid',
-              placeItems: 'center',
-            })}
-            href=''
-          >
-            <IconFacebook className={css({fill: '#272727', w: 6, h: 6})} />
-          </Link>
-        </li>
-        <li>
-          <Link
-            className={css({
-              display: 'grid',
-              placeItems: 'center',
-            })}
-            href=''
-          >
-            <IconEmail className={css({fill: '#272727', w: 6, h: 6})} />
-          </Link>
-        </li>
-        <li>
-          <Link
-            className={css({
-              display: 'grid',
-              placeItems: 'center',
-            })}
-            href=''
-          >
-            <IconLink className={css({fill: '#272727', w: 6, h: 6})} />
-          </Link>
-        </li>
-      </ul>
+      <SocialMediaLinks links={socialMediaLinks} />
     </div>
   );
 };
