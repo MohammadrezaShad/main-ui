@@ -1,4 +1,3 @@
-import {css} from '@styled/css';
 import {dehydrate} from '@tanstack/react-query';
 
 import {Home as HomeView} from '@/components';
@@ -40,15 +39,7 @@ export default async function Home() {
 
   return (
     <Hydrate state={dehydratedState}>
-      <div
-        className={css({
-          bg: 'background',
-          p: {base: 8, lgDown: 6},
-          rounded: '2xl',
-        })}
-      >
-        <HomeView />
-      </div>
+      <HomeView />
     </Hydrate>
   );
 }
