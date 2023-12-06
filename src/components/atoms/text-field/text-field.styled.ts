@@ -2,11 +2,8 @@ import {styled} from '@styled/jsx';
 
 export const Container = styled('span', {
   base: {
-    display: 'block',
-    position: 'relative',
-    zIndex: 1,
-    cursor: 'pointer',
-    userSelect: 'none',
+    pos: 'relative',
+    w: 'full',
   },
   variants: {
     disabled: {
@@ -21,28 +18,35 @@ export const Container = styled('span', {
 
 export const Label = styled('label', {
   base: {
+    pos: 'absolute',
+    top: '50%',
+    transform: 'translateY(-50%)',
+    _peerFocus: {
+      top: '-8px',
+      textStyle: 'caption',
+      transform: 'none',
+    },
+    transition: 'all',
+    left: '3',
     display: 'block',
-    textStyle: 'body',
-    color: 'text.primary',
-    mb: 1,
+    bgColor: 'white',
+    px: '1',
+    textStyle: 'body2',
+    color: 'gray4',
+    pointerEvents: 'none',
   },
 });
 
 export const Input = styled('input', {
   base: {
-    h: '100%',
-    w: '100%',
+    display: 'block',
+    w: 'full',
+    p: '4',
+    color: 'text.primary',
+    border: '1px solid token(colors.gray3)',
     textStyle: 'body2',
-    color: 'text.secondary',
-    rounded: 'xl',
-    border: '2px solid token(colors.strokeVariant)',
-    minH: '40px',
-    px: 3,
-    _placeholder: {
-      color: 'text.variant',
-    },
-    _focus: {
-      outline: 'none',
-    },
+    rounded: 'xs',
+    _placeholder: {color: 'gray.400'},
+    _focus: {shadow: 'xs'},
   },
 });

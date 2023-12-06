@@ -89,3 +89,5 @@ export {default as IconWater} from './icon-water.svg';
 export {default as IconLinkedIn} from './icon-linkedin.svg';
 export {default as IconRG} from './icon-researchgate.svg';
 export {default as IconNotify} from './icon-notify.svg';
+export {default as IconDashboard} from './icon-dashboard.svg';
+export {default as IconInfo} from './icon-info.svg';

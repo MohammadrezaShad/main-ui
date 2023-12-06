@@ -8,6 +8,8 @@ export const Wrapper = styled('div', {
     p: '1',
     fontSize: 'xs',
     textTransform: 'uppercase',
+    alignItems: 'center',
+    whiteSpace: 'nowrap'
   },
   variants: {
     type: {

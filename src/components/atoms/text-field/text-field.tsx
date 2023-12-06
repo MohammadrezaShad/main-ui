@@ -1,5 +1,5 @@
-import React from 'react';
 import {cx} from '@styled/css';
+import React from 'react';
 
 import {Container, Input, Label} from './text-field.styled';
 
@@ -21,7 +21,6 @@ const TextField = React.forwardRef<HTMLInputElement, TextFieldProps>(
 
     return (
       <Container className={containerClassName} disabled={disabled}>
-        {title ? <Label>{title}</Label> : null}
         <Input
           type='text'
           className={inputClassName}
@@ -29,6 +28,7 @@ const TextField = React.forwardRef<HTMLInputElement, TextFieldProps>(
           disabled={disabled}
           {...otherProps}
         />
+        <Label>{title}</Label>
       </Container>
     );
   },

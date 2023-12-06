@@ -23,7 +23,7 @@ export default function MainLayout({children}: {children: React.ReactNode}) {
       >
         <div
           className={flex({
-            maxW: 'layout',
+            maxW: '10/12',
             width: '100%',
             mr: 'auto',
             ml: 'auto',
