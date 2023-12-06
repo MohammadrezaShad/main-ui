@@ -5,3 +5,7 @@ export * from './viko';
 export * from './articles';
 export * from './categories';
 export * from './author';
+export * from './profile';
+export * from './settings';
+export * from './collections';
+export * from './notifications';

@@ -5,3 +5,6 @@ export * from './comment';
 export * from './footer';
 export * from './articles';
 export * from './recent-articles';
+export * from './profile-navigation';
+export * from './profile-sidebar';
+export * from './profile-details';

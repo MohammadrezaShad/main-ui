@@ -67,7 +67,11 @@ const ArticleInfo = () => {
          * !TODO: CHANGE SVG FILL BASED ON CLICK
          */}
         <button>
-          <IconCollection />
+          <IconCollection
+            className={css({
+              fill: 'gray4',
+            })}
+          />
         </button>
       </div>
 
