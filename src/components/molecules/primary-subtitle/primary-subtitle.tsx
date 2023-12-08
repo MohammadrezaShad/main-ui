@@ -7,7 +7,10 @@ interface Props {
 
 const PrimarySubtitle = ({text, className}: Props) => {
   const defualtClassName = css({
-    textStyle: 'subtitle1',
+    textStyle: {
+      base: 'subtitle1',
+      lgDown: 'body',
+    },
     color: 'text.primary',
     lineHeight: '1.148',
   });

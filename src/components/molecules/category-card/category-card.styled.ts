@@ -1,4 +1,5 @@
 import {styled} from '@styled/jsx';
+import Link from 'next/link';
 
 export const Container = styled('div', {
   base: {
@@ -6,10 +7,11 @@ export const Container = styled('div', {
     flexDir: 'column',
     alignItems: 'stretch',
     w: 'full',
+    height: 'max-content'
   },
 });
 
-export const Card = styled('div', {
+export const Card = styled(Link, {
   base: {
     display: 'flex',
     flexDirection: 'column',
@@ -19,12 +21,21 @@ export const Card = styled('div', {
     alignItems: 'stretch',
     w: 'full',
     px: {
-      base: '20',
-      lgDown: '5',
+      base: '0.5',
+      mdDown: '6',
     },
-    py: '11',
-    mt: {
-      lgDown: '6',
+    py: {
+      base: '14',
+      mdDown: '6',
+    }
+  },
+  variants: {
+    _small: {
+      true: {
+        py: '4',
+        display: 'block',
+        bgColor: 'gray1',
+      },
     },
   },
 });
@@ -38,10 +49,22 @@ export const CategoryImage = styled('div', {
     p: '11',
     rounded: 'full',
     px: {
-      lgDown: '5',
+      mdDown: '5',
     },
     backgroundColor: 'gray1',
     position: 'relative',
     aspectRatio: 1,
+    w: {
+      base: '160px',
+      mdDown: '200px',
+    },
+    mx: 'auto',
+  },
+  variants: {
+    _hidden: {
+      true: {
+        display: 'none',
+      },
+    },
   },
 });

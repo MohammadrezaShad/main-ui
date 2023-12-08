@@ -17,13 +17,16 @@ export default function MainLayout({children}: {children: React.ReactNode}) {
       <Header />
       <div
         className={css({
-          p: {base: 8, lgDown: 6},
+          p: {base: 8, lgDown: 2},
           bg: 'background',
         })}
       >
         <div
           className={flex({
-            maxW: '10/12',
+            maxW: {
+              base: '10/12',
+              lgDown: '100%'
+            },
             width: '100%',
             mr: 'auto',
             ml: 'auto',

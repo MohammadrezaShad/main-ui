@@ -22,7 +22,14 @@ const Divider = ({label}: {label: string}) => {
       <h1
         className={css({
           px: 8,
-          textStyle: 'h1',
+          textStyle: {
+            base: 'h1',
+            mdDown: 'h3'
+          },
+          whiteSpace: {
+            base: 'pre-wrap',
+            mdDown: 'nowrap'
+          },
           position: 'absolute',
           left: '50%',
           top: '50%',
