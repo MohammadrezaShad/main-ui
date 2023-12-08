@@ -1,31 +1,27 @@
-import {
-  IconCollection,
-  IconEmail,
-  IconFacebook,
-  IconInstagram,
-  IconLink,
-  IconTwitter,
-} from '@/assets';
-import {Avatar, SocialMediaLinks} from '@/components';
-import {css} from '@styled/css';
+import {IconCollection} from '@/assets';
+import {Avatar} from '@/components';
+import {Maybe, UserOutputType} from '@/graphql/generated/types';
+import {css, cx} from '@styled/css';
 
-const socialMediaLinks = [
-  {icon: IconTwitter, href: ''},
-  {icon: IconInstagram, href: ''},
-  {icon: IconFacebook, href: ''},
-  {icon: IconEmail, href: ''},
-  {icon: IconLink, href: ''},
-];
-
-const ArticleInfo = () => {
+const ArticleInfo = ({
+  author,
+  readingDuration,
+  className,
+}: {
+  author: UserOutputType;
+  readingDuration?: Maybe<number>;
+  className?: string;
+}) => {
   return (
     <div
-      className={css({
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        mb: '8',
-      })}
+      className={cx(
+        className,
+        css({
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }),
+      )}
     >
       <div
         className={css({
@@ -35,7 +31,7 @@ const ArticleInfo = () => {
         })}
       >
         {/** AVATAR */}
-        <Avatar src='https://i.pravatar.cc/40?u=JohnDoe' size={40} />
+        <Avatar src={author.avatar?.filename} size={40} />
 
         {/** NAME */}
         <span
@@ -44,20 +40,24 @@ const ArticleInfo = () => {
             color: 'text.primary',
           })}
         >
-          By John Doe
+          By {author.displayName}
         </span>
 
         {/** DIVIDER */}
-        <div className={css({h: 4, w: 0.25, bg: 'gray3'})} />
+        {readingDuration ? (
+          <>
+            <div className={css({h: 4, w: 0.25, bg: 'gray3'})} />
 
-        <span
-          className={css({
-            textStyle: 'body2',
-            color: 'text.primary',
-          })}
-        >
-          4 minutes read
-        </span>
+            <span
+              className={css({
+                textStyle: 'body2',
+                color: 'text.primary',
+              })}
+            >
+              {readingDuration}&nbsp;minutes read
+            </span>
+          </>
+        ) : null}
 
         {/** DIVIDER */}
         <div className={css({h: 4, w: 0.25, bg: 'gray3'})} />
@@ -74,9 +74,6 @@ const ArticleInfo = () => {
           />
         </button>
       </div>
-
-      {/** SOCIAL ICONS */}
-      <SocialMediaLinks links={socialMediaLinks} />
     </div>
   );
 };

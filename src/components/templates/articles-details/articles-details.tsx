@@ -1,30 +1,65 @@
-import {IconChevronDown} from '@/assets';
+'use client';
+import {IconEmail, IconFacebook, IconInstagram, IconLink, IconTwitter} from '@/assets';
 import {
   ArticleBody,
   ArticleInfo,
-  AuthButton,
   PostDate,
   PrimarySubtitle,
   PrimaryTitle,
   Questions,
   RecentArticles,
-  Review,
+  SocialMediaLinks,
   Tags,
   UserInfo,
 } from '@/components';
+import {ArticleType} from '@/graphql/generated/types';
+import {findArticleById} from '@/graphql/query/find-article-by-id';
+import {findRelatedArticles} from '@/graphql/query/find-related-articles';
+import {getArticlePdfById} from '@/graphql/query/get-article-pdf-by-id';
 import {css} from '@styled/css';
 import {Box} from '@styled/jsx';
 import {flex} from '@styled/patterns';
+import {useQuery} from '@tanstack/react-query';
 import Image from 'next/image';
+import Link from 'next/link';
+import {useParams} from 'next/navigation';
 
-interface Props {
-  posts: Array<any>;
-}
+const socialMediaLinks = [
+  {icon: IconTwitter, href: ''},
+  {icon: IconInstagram, href: ''},
+  {icon: IconFacebook, href: ''},
+  {icon: IconEmail, href: ''},
+  {icon: IconLink, href: ''},
+];
 
-const Page = ({posts}: Props) => {
+const Page = () => {
+  const params = useParams();
+  const {data} = useQuery({
+    queryKey: ['get-articles'],
+    queryFn: () => findArticleById({id: params.articleId as string}),
+  }) as any;
+  const res = useQuery({
+    queryKey: ['get-related-articles'],
+    queryFn: () => findRelatedArticles({articleId: params.articleId as string, count: 3}),
+  }) as any;
+  const pdf = useQuery({
+    queryKey: ['get-pdf'],
+    queryFn: () => getArticlePdfById(params.articleId as string),
+  }) as any;
+
+  const article: ArticleType = data.article!.findArticleById.result;
+  const relatedArticles: ArticleType[] = res.data.article!.findRelatedArticles.results;
+  const articlePdf = pdf.data.article.getArticlePdfById;
+
+  const formattedDate = new Date(article.publishDate).toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  });
+
   return (
     <div>
-      <PostDate date='24 January 2022' />
+      <PostDate date={formattedDate} />
 
       <div
         className={css({
@@ -35,37 +70,66 @@ const Page = ({posts}: Props) => {
           mt: '3',
         })}
       >
-        <PrimaryTitle title='The water crisis is worsening. Researchers must tackle it together' />
-        <PrimarySubtitle
-          text='It’s unacceptable that millions living in poverty still lack access to safe water and basic
-        sanitation. Nature Water will help researchers to find a way forward.'
-        />
+        <PrimaryTitle title={article.title} />
+        {article.excerpt ? <PrimarySubtitle text={article.excerpt} /> : null}
       </div>
-      <ArticleInfo />
       <article
-        className={css({
+        className={flex({
+          flexDir: 'column',
           textStyle: 'body',
           color: 'text.primary',
         })}
       >
-        <Image
-          alt=''
-          src='https://cloudfront-us-east-2.images.arcpublishing.com/reuters/63ZWKIKM4JIVLI3KHQRNTG5KH4.jpg'
-          width={960}
-          height={540}
-          className={css({
-            objectFit: 'cover',
+        <Box
+          className={flex({
+            justifyContent: 'space-between',
+            alignItems: {
+              base: 'center',
+              mdDown: 'start',
+            },
+            order: {
+              mdDown: 2,
+            },
             mb: '8',
           })}
-        />
+        >
+          <ArticleInfo author={article.author} readingDuration={article.readingDuration} />
+
+          <Box className={css({hideBelow: 'md'})}>
+            <SocialMediaLinks links={socialMediaLinks} />
+          </Box>
+        </Box>
+        {article.thumbnail ? (
+          <Image
+            alt={article.thumbnail.alt ?? ''}
+            src={article.thumbnail.filename}
+            width={960}
+            height={540}
+            className={css({
+              objectFit: 'cover',
+              mb: '8',
+              order: {
+                mdDown: 1,
+              },
+            })}
+          />
+        ) : null}
 
         <Box
           className={flex({
-            alignItems: 'center',
+            alignItems: {
+              base: 'center',
+              mdDown: 'start',
+            },
             justifyContent: 'space-between',
             p: '6',
             backgroundColor: 'gray1',
-            mb: '6'
+            mb: '6',
+            order: {
+              mdDown: 3,
+            },
+            flexDirection: {mdDown: 'column'},
+            gap: {mdDown: '4'},
           })}
         >
           <h6
@@ -82,9 +146,9 @@ const Page = ({posts}: Props) => {
               gap: '4',
             })}
           >
-            <AuthButton
-              text='Read File'
-              variant='outlined'
+            <Link
+              target='_blank'
+              href={articlePdf}
               className={css({
                 '& span': {color: 'gray4'},
                 w: 'max-content',
@@ -92,46 +156,65 @@ const Page = ({posts}: Props) => {
                 py: 3,
                 border: '1px solid token(colors.gray3)',
               })}
-            />
-            <AuthButton
-              text='Download'
-              variant='contained'
+            >
+              <span>Read File</span>
+            </Link>
+
+            <Link
+              download
+              target='_blank'
+              href={articlePdf}
               className={css({
-                '& span': {color: 'text.invert'},
+                '& span': {color: 'white'},
                 w: 'max-content',
                 px: 4,
                 py: 3,
-                bg: 'primary',
+                border: '1px solid token(colors.gray3)',
+                bgColor: 'primary',
               })}
-            />
+            >
+              <span>Download PDF</span>
+            </Link>
           </Box>
         </Box>
 
-        <ArticleBody />
-      </article>
-      <Tags />
-      <Questions />
-      <UserInfo />
-
-      <div
-        className={css({
-          pb: '8',
-          borderBottom: '1px solid token(colors.gray3)',
-          mb: '10',
-        })}
-      >
-        <h3
+        <ArticleBody
           className={css({
-            textStyle: 'headline3',
-            color: 'text.primary',
-            mb: '6',
+            order: {
+              mdDown: 4,
+            },
+          })}
+          content={article.content}
+        />
+      </article>
+      {article.tags ? <Tags tags={article.tags} /> : null}
+      <Box className={css({hideFrom: 'md', mb: '8'})}>
+        <SocialMediaLinks links={socialMediaLinks} />
+      </Box>
+      {article.faqs ? <Questions faqs={article.faqs} /> : null}
+      <UserInfo author={article.author} />
+
+      {relatedArticles.length > 0 ? (
+        <div
+          className={css({
+            pb: '8',
+            borderBottom: '1px solid token(colors.gray3)',
+            mb: '10',
           })}
         >
-          Related Articles
-        </h3>
+          <h3
+            className={css({
+              textStyle: 'headline3',
+              color: 'text.primary',
+              mb: '6',
+            })}
+          >
+            Related Articles
+          </h3>
 
-        <RecentArticles posts={posts} />
-      </div>
+          <RecentArticles posts={relatedArticles} />
+        </div>
+      ) : null}
 
       <h3
         className={css({
@@ -142,7 +225,7 @@ const Page = ({posts}: Props) => {
         Reviews
       </h3>
 
-      <Review />
+      {/* <Review />
       <Review>
         <Review>
           <button
@@ -158,7 +241,7 @@ const Page = ({posts}: Props) => {
             <IconChevronDown fill='#44BAEB' />
           </button>
         </Review>
-      </Review>
+      </Review> */}
     </div>
   );
 };

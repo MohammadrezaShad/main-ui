@@ -17,7 +17,7 @@ export default function MainLayout({children}: {children: React.ReactNode}) {
       <Header />
       <div
         className={css({
-          p: {base: 8, lgDown: 2},
+          p: {base: 8, lgDown: 4},
           bg: 'background',
         })}
       >
@@ -38,7 +38,7 @@ export default function MainLayout({children}: {children: React.ReactNode}) {
           {/* <Sidebar /> */}
           <div
             className={css({
-              flex: '1',
+              w: 'full',
               rounded: '2xl',
             })}
           >

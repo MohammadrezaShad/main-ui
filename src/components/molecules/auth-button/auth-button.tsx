@@ -28,7 +28,7 @@ export default function AuthButton({
   });
   const buttonClass = cx(defaultClassName, className);
   return (
-    <Button visual={variant} className={buttonClass} color='background'>
+    <Button visual={variant} className={buttonClass} color='primary'>
       <ButtonText textStyle='body1'>{text}</ButtonText>
     </Button>
   );

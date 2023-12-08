@@ -1,18 +1,23 @@
 import {Tag} from '@/components';
+import {TagType} from '@/graphql/generated/types';
 import {css} from '@styled/css';
 
-const Tags = () => {
+const Tags = ({tags}: {tags: TagType[]}) => {
   return (
     <ul
       className={css({
         display: 'flex',
         alignItems: 'center',
         gap: 4,
-        my: '12',
+        my: {
+          base: '12',
+          mdDown: '6',
+        },
       })}
     >
-      <Tag text='Water' href='' />
-      <Tag text='Water crisis' href='' />
+      {tags.map(tag => (
+        <Tag key={tag._id} text={tag.title} href={`/tags.${tag.slug}`} />
+      ))}
     </ul>
   );
 };

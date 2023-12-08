@@ -1,7 +1,8 @@
 import {Avatar} from '@/components';
+import {UserOutputType} from '@/graphql/generated/types';
 import {css} from '@styled/css';
 
-const UserInfo = () => {
+const UserInfo = ({author}: {author: UserOutputType}) => {
   return (
     <div
       className={css({
@@ -13,7 +14,7 @@ const UserInfo = () => {
       })}
     >
       {/** AVATAR */}
-      <Avatar src='https://i.pravatar.cc/64?u=JohnDoe' />
+      <Avatar src={author.avatar?.filename} />
 
       <div
         className={css({
@@ -28,7 +29,7 @@ const UserInfo = () => {
             color: 'text.primary',
           })}
         >
-          John Doe
+          {author.displayName}
         </h6>
         <p
           className={css({
