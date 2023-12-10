@@ -9,9 +9,15 @@ export const Container = styled('div', {
     bgPosition: 'center',
     bgRepeat: 'no-repeat',
     display: 'flex',
-    flexDirection: 'column',
+    flexDirection: {
+      base: 'column',
+      mdDown: 'row',
+    },
     justifyContent: 'end',
-    breakInside: 'avoid'
+    breakInside: 'avoid',
+    alignItems: {
+      mdDown: 'start',
+    },
   },
   variants: {
     _aspectRatio: {
@@ -24,15 +30,27 @@ export const Container = styled('div', {
 });
 
 export const Footer = styled('div', {
-    base: {
-        h: '5/6',
-        bgGradient: 'to-b',
-        gradientFrom: '#00000000',
-        gradientVia: '#00000000',
-        gradientTo: '#000000',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'end',
-        p: 6
-    }
-})
+  base: {
+    h: {
+      base: '5/6',
+      mdDown: 'full',
+    },
+    bgGradient: 'to-b',
+    gradientFrom: '#00000000',
+    gradientVia: '#00000000',
+    gradientTo: {
+      base: '#000000',
+      mdDown: '#00000000',
+    },
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'end',
+    backgroundColor: {
+      mdDown: 'white',
+    },
+    p: {
+      base: 6,
+      mdDown: '0 16px',
+    },
+  },
+});

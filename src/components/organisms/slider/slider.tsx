@@ -1,25 +1,18 @@
 import {PostDate} from '@/components';
+import {ArticleType} from '@/graphql/generated/types';
 import {css} from '@styled/css';
 import {Box} from '@styled/jsx';
 import {flex} from '@styled/patterns';
-import Image, {StaticImageData} from 'next/image';
+import Image from 'next/image';
+import Link from 'next/link';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import {Navigation, Pagination as SWPagination} from 'swiper/modules';
 import {Swiper, SwiperSlide} from 'swiper/react';
 
-interface Slide {
-  src: StaticImageData;
-  alt: string;
-  title: string;
-  subtitle: string;
-  date: string;
-  href: string;
-}
-
 interface Props {
-  slides: Array<Slide>;
+  slides: Array<ArticleType>;
 }
 
 const Slider = ({slides}: Props) => {
@@ -44,18 +37,20 @@ const Slider = ({slides}: Props) => {
               w: 'full',
             })}
           >
-            <Image
-              src={slide.src}
-              alt={slide.alt}
-              className={css({
-                display: 'block',
-                w: 'full',
-                h: 'full',
-                objectFit: 'cover',
-                position: 'absolute',
-                inset: 0,
-              })}
-            />
+            {slide.thumbnail ? (
+              <Image
+                src={slide.thumbnail?.filename}
+                alt={slide.title}
+                className={css({
+                  display: 'block',
+                  w: 'full',
+                  h: 'full',
+                  objectFit: 'cover',
+                  position: 'absolute',
+                  inset: 0,
+                })}
+              />
+            ) : null}
             <Box
               className={flex({
                 justifyContent: 'end',
@@ -63,8 +58,14 @@ const Slider = ({slides}: Props) => {
                 w: 'full',
                 position: 'absolute',
                 inset: 0,
-                py: '8',
-                px: '16',
+                py: {
+                  base: '8',
+                  mdDown: '6',
+                },
+                px: {
+                  base: '16',
+                  mdDown: '6',
+                },
                 flexDir: 'column',
                 zIndex: '50',
                 bgGradient: 'to-b',
@@ -74,7 +75,7 @@ const Slider = ({slides}: Props) => {
               })}
             >
               <Box zIndex='50' mb='1'>
-                <PostDate date={slide.date} />
+                <PostDate date={slide.publishDate} />
               </Box>
               <h1
                 className={css({
@@ -92,10 +93,11 @@ const Slider = ({slides}: Props) => {
                   color: 'text.invert',
                 })}
               >
-                {slide.subtitle}
+                {slide.excerpt}
               </p>
               <Box zIndex='50' mt='4'>
-                <button
+                <Link
+                  href={`/articles/${slide._id}`}
                   className={css({
                     border: '1px solid token(colors.gray3)',
                     color: 'gray3',
@@ -105,7 +107,7 @@ const Slider = ({slides}: Props) => {
                   })}
                 >
                   Read more ...
-                </button>
+                </Link>
               </Box>
             </Box>
           </div>
