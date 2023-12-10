@@ -4,7 +4,7 @@ import {useObservable} from '@legendapp/state/react';
 import {css} from '@styled/css';
 
 import {IconSearch} from '@/assets';
-import {AuthButton, HeaderNavbar, Logo, SearchDrawer} from '@/components';
+import {AuthButton, HeaderNavbar, Login, Logo, SearchDrawer, SignUp} from '@/components';
 
 import {Container, Wrap} from './header.styled';
 
@@ -12,6 +12,8 @@ interface HeaderProps {}
 
 export default function Header(props: HeaderProps) {
   const isOpen$ = useObservable(false);
+  const isLoginOpen$ = useObservable(false);
+  const isSignUpOpen$ = useObservable(false);
 
   return (
     <Container>
@@ -25,6 +27,7 @@ export default function Header(props: HeaderProps) {
           onClick={() => isOpen$.set(true)}
         />
         <AuthButton
+          onClick={() => isLoginOpen$.set(true)}
           variant='outlined'
           className={css({
             '& span': {color: 'gray4'},
@@ -37,6 +40,7 @@ export default function Header(props: HeaderProps) {
           })}
         />
         <AuthButton
+          onClick={() => isSignUpOpen$.set(true)}
           text='Sign Up'
           className={css({
             '& span': {color: 'text.invert'},
@@ -61,6 +65,8 @@ export default function Header(props: HeaderProps) {
           text=' '
         />
         <SearchDrawer isOpen$={isOpen$} />
+        <Login isOpen$={isLoginOpen$} />
+        <SignUp isOpen$={isSignUpOpen$} />
       </Wrap>
     </Container>
   );
