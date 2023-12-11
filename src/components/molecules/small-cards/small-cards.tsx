@@ -1,11 +1,11 @@
 import {CardDate} from '@/components/atoms/card-date';
-import {CardImage} from '@/components/atoms/card-image';
 import {CardLink} from '@/components/atoms/card-link';
 import {CardTitle} from '@/components/atoms/card-title';
 import {formatDate} from '@/utils/format-date';
 import {css} from '@styled/css';
-import {grid} from '@styled/patterns';
-import {Container, Wrap} from './card.styled';
+import {flex, grid} from '@styled/patterns';
+import Image from 'next/image';
+import {Container, Wrap} from './small-card.styled';
 
 interface Props {
   imageUrl?: string;
@@ -26,33 +26,32 @@ export default function Card({imageUrl, date, title, articleLink}: Props) {
   return (
     <Container>
       {imageUrl ? (
-        <CardImage src={imageUrl} alt={title} />
+        <Image width={112} height={112} src={imageUrl} alt={title} />
       ) : (
         <div
           className={grid({
             placeContent: 'center',
-            w: 'full',
-            h: 228,
+            w: '112px',
+            h: '112px',
             bgColor: 'gray3',
-            mb: '6',
+            flexShrink: '0',
+            aspectRatio: 'square',
           })}
         ></div>
       )}
-      <Wrap
-        className={css({
-          mb: 4,
+      <div
+        className={flex({
+          flexDirection: 'column',
         })}
       >
-        {date && <CardDate dateTime={formatDate(date)}>{formattedDate}</CardDate>}
-        <CardTitle>{title}</CardTitle>
-      </Wrap>
-      <Wrap
-        className={css({
-          mb: 6,
-        })}
-      >
-        <CardLink href={articleLink}>READ MORE</CardLink>
-      </Wrap>
+        <Wrap className={css({})}>
+          {date && <CardDate dateTime={formatDate(date)}>{formattedDate}</CardDate>}
+          <CardTitle>{title}</CardTitle>
+        </Wrap>
+        <Wrap className={css({})}>
+          <CardLink href={articleLink}>READ MORE</CardLink>
+        </Wrap>
+      </div>
     </Container>
   );
 }

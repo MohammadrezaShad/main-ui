@@ -115,68 +115,70 @@ const Page = () => {
           />
         ) : null}
 
-        <Box
-          className={flex({
-            alignItems: {
-              base: 'center',
-              mdDown: 'start',
-            },
-            justifyContent: 'space-between',
-            p: '6',
-            backgroundColor: 'gray1',
-            mb: '6',
-            order: {
-              mdDown: 3,
-            },
-            flexDirection: {mdDown: 'column'},
-            gap: {mdDown: '4'},
-          })}
-        >
-          <h6
-            className={css({
-              textStyle: 'h4',
-              color: 'text.primary',
-            })}
-          >
-            Download or read the full article as a PDF
-          </h6>
+        {articlePdf ? (
           <Box
             className={flex({
-              alignItems: 'center',
-              gap: '4',
+              alignItems: {
+                base: 'center',
+                mdDown: 'start',
+              },
+              justifyContent: 'space-between',
+              p: '6',
+              backgroundColor: 'gray1',
+              mb: '6',
+              order: {
+                mdDown: 3,
+              },
+              flexDirection: {mdDown: 'column'},
+              gap: {mdDown: '4'},
             })}
           >
-            <Link
-              target='_blank'
-              href={articlePdf}
+            <h6
               className={css({
-                '& span': {color: 'gray4'},
-                w: 'max-content',
-                px: 4,
-                py: 3,
-                border: '1px solid token(colors.gray3)',
+                textStyle: 'h4',
+                color: 'text.primary',
               })}
             >
-              <span>Read File</span>
-            </Link>
+              Download or read the full article as a PDF
+            </h6>
+            <Box
+              className={flex({
+                alignItems: 'center',
+                gap: '4',
+              })}
+            >
+              <Link
+                target='_blank'
+                href={articlePdf}
+                className={css({
+                  '& span': {color: 'gray4'},
+                  w: 'max-content',
+                  px: 4,
+                  py: 3,
+                  border: '1px solid token(colors.gray3)',
+                })}
+              >
+                <span>Read File</span>
+              </Link>
 
-            <Link
-              download
-              target='_blank'
-              href={articlePdf}
-              className={css({
-                '& span': {color: 'white'},
-                w: 'max-content',
-                px: 4,
-                py: 3,
-                border: '1px solid token(colors.gray3)',
-                bgColor: 'primary',
-              })}
-            >
-              <span>Download PDF</span>
-            </Link>
+              <Link
+                download
+                target='_blank'
+                href={articlePdf}
+                className={css({
+                  '& span': {color: 'white'},
+                  w: 'max-content',
+                  px: 4,
+                  py: 3,
+                  border: '1px solid token(colors.gray3)',
+                  bgColor: 'primary',
+                })}
+              >
+                <span>Download PDF</span>
+              </Link>
+            </Box>
           </Box>
-        </Box>
+        ) : null}
 
         <ArticleBody
           className={css({

@@ -27,7 +27,10 @@ export const Wrapper = styled('div', {
 export const Cards = styled('div', {
   base: {
     display: 'grid',
-    gridTemplateColumns: '3',
+    gridTemplateColumns: {
+      base: '3',
+      mdDown: '1',
+    },
     gap: '6',
     mt: '6',
   },
@@ -82,6 +85,10 @@ export const Actions = styled('div', {
     display: 'flex',
     alignItems: 'center',
     gap: '4',
+    mdDown: {
+      w: 'full',
+      justifyContent: 'center',
+    },
   },
 });
 
