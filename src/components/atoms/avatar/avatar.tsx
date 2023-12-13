@@ -1,7 +1,8 @@
-import {IconUser} from '@/assets';
 import {css} from '@styled/css';
 import {grid} from '@styled/patterns';
 import Image from 'next/image';
+
+import {IconUser} from '@/assets';
 
 interface Props {
   src?: string;

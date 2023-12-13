@@ -1,8 +1,19 @@
-import {IconFacebook, IconInstagram, IconLinkedIn, IconNotify, IconRG, IconTwitter} from '@/assets';
-import {AuthButton, Avatar, Card, Chip, SocialMediaLinks} from '@/components';
+'use client';
+
+import {useState} from 'react';
 import {css} from '@styled/css';
 import {Box} from '@styled/jsx';
-import {flex} from '@styled/patterns';
+import {flex, grid} from '@styled/patterns';
+import {useQuery} from '@tanstack/react-query';
+import {getCookie} from 'cookies-next';
+import {useParams} from 'next/navigation';
+
+import {IconFacebook, IconInstagram, IconLinkedIn, IconNotify, IconRG, IconTwitter} from '@/assets';
+import {AuthButton, Avatar, Card, Chip, SmallCard, SocialMediaLinks} from '@/components';
+import {findUserById} from '@/graphql';
+import {ArticleType, User} from '@/graphql/generated/types';
+import {searchArticlesByAUthorId} from '@/graphql/query/articles/search-articles-by-author-id';
+
 import {Actions, Cards, Chips, Container, Tab, Tabs, Wrapper} from './author.styled';
 
 const socialMediaLinks = [
@@ -13,43 +24,79 @@ const socialMediaLinks = [
   {icon: IconInstagram, href: ''},
 ];
 
+enum ETabs {
+  ARTICLES = 'articles',
+  JOURNALS = 'journals',
+  CV = 'CV',
+}
+
 export default function Author() {
+  const token = getCookie('authToken')!;
+  const [selectedTab, setSelectedTab] = useState<string>(ETabs.ARTICLES);
+  const params = useParams();
+  const {data} = useQuery({
+    queryKey: ['get-user', 1],
+    queryFn: () => findUserById({id: params.authorId as string}, token),
+  }) as any;
+  const response = useQuery({
+    queryKey: ['search-articles', 2],
+    queryFn: () =>
+      searchArticlesByAUthorId({authors: [params.authorId as string], count: 9, page: 1}),
+  }) as any;
+  const user: User = data.users!.findUserById;
+  const articles: ArticleType[] = response.data.article.searchArticles.results;
+  const {totalCount} = response.data.article.searchArticles;
   return (
     <Container>
       <Wrapper>
         <div
-          className={flex({
-            alignItems: 'center',
+          className={grid({
+            alignItems: 'stretch',
             justifyContent: 'space-between',
             gap: '5',
             w: 'full',
+            gridTemplateColumns: {
+              base: 2,
+              mdDown: 1,
+            },
+            position: 'relative',
           })}
         >
-          <Avatar size={128} src='https://i.pravatar.cc/150?u=alan' />
           <div
             className={flex({
-              grow: 1,
-              basis: '0%',
-              flexDir: 'column',
               alignItems: 'stretch',
-              w: 'full',
+              gap: '6',
+              justifyContent: 'space-between',
+              flexDirection: {
+                base: 'row',
+                mdDown: 'column',
+              },
             })}
           >
+            <Box alignSelf='center'>
+              <Avatar size={128} src={user.avatar?.filename ?? undefined} />
+            </Box>
+
             <div
               className={flex({
-                w: 'full',
+                grow: 1,
+                basis: '0%',
+                flexDir: 'column',
                 justifyContent: 'space-between',
-                gap: '5',
-                alignItems: 'start',
+                alignItems: {
+                  base: 'stretch',
+                  mdDown: 'center',
+                },
+                mt: '1',
               })}
             >
               <div
                 className={flex({
-                  grow: 1,
-                  basis: '0%',
-                  flexDir: 'column',
-                  alignItems: 'stretch',
-                  mt: '1',
+                  flexDirection: 'column',
+                  alignItems: {
+                    base: 'start',
+                    mdDown: 'center',
+                  },
                 })}
               >
                 <h3
@@ -58,7 +105,7 @@ export default function Author() {
                     color: 'text.primary',
                   })}
                 >
-                  John Doe
+                  {user.displayName}
                 </h3>
                 <p
                   className={css({
@@ -66,61 +113,115 @@ export default function Author() {
                     color: 'gray4',
                   })}
                 >
-                  john.doe@email.com
+                  {user.email}
                 </p>
               </div>
-              <Actions>
-                <IconNotify />
-                <AuthButton
-                  text='Write New Article'
-                  variant='contained'
+
+              <div>
+                <p
                   className={css({
-                    '& span': {color: 'white'},
-                    w: 'max-content',
-                    px: 4,
-                    py: 3,
-                    hideBelow: 'md',
-                    bgColor: 'primary',
+                    mt: '9',
+                    textStyle: 'body2',
                   })}
-                />
-                <AuthButton
-                  text='Follow'
-                  variant='outlined'
-                  className={css({
-                    '& span': {color: 'gray4'},
-                    w: 'max-content',
-                    px: 4,
-                    py: 3,
-                    hideBelow: 'md',
-                    border: '1px solid token(colors.gray3)',
-                  })}
-                />
-                <AuthButton
-                  text='Report'
-                  variant='outlined'
-                  className={css({
-                    '& span': {color: 'gray4'},
-                    w: 'max-content',
-                    px: 4,
-                    py: 3,
-                    hideBelow: 'md',
-                    border: '1px solid token(colors.gray3)',
-                  })}
-                />
-              </Actions>
+                >
+                  {/** TODO: INSERT BIO */}
+                </p>
+                <Chips>
+                  <Chip text={user.role} type='success' />
+                  {/* <Chip text='Since: October 2018' type='simple' /> */}
+                </Chips>
+              </div>
             </div>
-            <p
+          </div>
+          <div
+            className={flex({
+              grow: 1,
+              basis: '0%',
+              flexDir: 'column',
+              alignItems: 'end',
+              justifyContent: 'space-between',
+              w: 'full',
+              position: {
+                base: 'relative',
+                mdDown: 'static',
+              },
+            })}
+          >
+            <Actions>
+              <IconNotify
+                className={css({
+                  fill: 'gray4',
+                  position: {
+                    mdDown: 'absolute',
+                  },
+                  top: {
+                    mdDown: '0',
+                  },
+                  right: {
+                    mdDown: '0',
+                  },
+                })}
+              />
+              <AuthButton
+                text='Write New Article'
+                variant='contained'
+                className={css({
+                  '& span': {color: 'white'},
+                  w: 'max-content',
+                  px: 4,
+                  py: 3,
+                  bgColor: 'primary',
+                })}
+              />
+              <AuthButton
+                text='Follow'
+                variant='outlined'
+                className={css({
+                  '& span': {color: 'gray4'},
+                  w: 'max-content',
+                  px: 4,
+                  py: 3,
+                  border: '1px solid token(colors.gray3)',
+                })}
+              />
+              <AuthButton
+                text='Report'
+                variant='outlined'
+                className={css({
+                  '& span': {color: 'gray4'},
+                  w: 'max-content',
+                  px: 4,
+                  py: 3,
+                  border: '1px solid token(colors.gray3)',
+                })}
+              />
+            </Actions>
+
+            <Box
               className={css({
-                mt: '9',
-                textStyle: 'body2',
+                position: 'absolute',
+                bottom: {
+                  base: '-50%',
+                  mdDown: 'unset',
+                },
+                top: {
+                  mdDown: '0',
+                },
+                left: {
+                  mdDown: '0',
+                },
               })}
             >
-              Bachelor of Computer Engineering (Sapienza University of Rome)
-            </p>
-            <Chips>
-              <Chip text='author' type='success' />
-              <Chip text='Since: October 2018' type='simple' />
-            </Chips>
+              <SocialMediaLinks
+                classNames={css({
+                  flexDirection: {
+                    base: 'row',
+                    mdDown: 'column',
+                  },
+                })}
+                links={socialMediaLinks}
+              />
+            </Box>
           </div>
         </div>
         <Box
@@ -133,97 +234,76 @@ export default function Author() {
           })}
         >
           <Tabs>
-            <Tab _isActive>
+            <Tab
+              onClick={() => setSelectedTab(ETabs.ARTICLES)}
+              _isActive={selectedTab === ETabs.ARTICLES}
+            >
               <span>Articles</span>
             </Tab>
-            <Tab>
+            <Tab
+              onClick={() => setSelectedTab(ETabs.JOURNALS)}
+              _isActive={selectedTab === ETabs.JOURNALS}
+            >
               <span>ISI Articles & Journals</span>
             </Tab>
-            <Tab>
-              <span>Curriculum vitae</span>
+            <Tab onClick={() => setSelectedTab(ETabs.CV)} _isActive={selectedTab === ETabs.CV}>
+              <span className={css({hideBelow: 'md'})}>Curriculum vitae</span>
+              <span className={css({hideFrom: 'md'})}>CV</span>
             </Tab>
           </Tabs>
-          <SocialMediaLinks links={socialMediaLinks} />
         </Box>
       </Wrapper>
-      <Cards>
-        <Card
-          articleLink=''
-          date='20 June 2023'
-          imageUrl='https://images.unsplash.com/photo-1619365566184-272a34acfeb9?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-          title='Water: a commons beyond economic value'
-        />
-        <Card
-          articleLink=''
-          date='20 June 2023'
-          imageUrl='https://images.unsplash.com/photo-1619365566184-272a34acfeb9?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-          title='Water: a commons beyond economic value'
-        />
-        <Card
-          articleLink=''
-          date='20 June 2023'
-          imageUrl='https://images.unsplash.com/photo-1619365566184-272a34acfeb9?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-          title='Water: a commons beyond economic value'
-        />
-        <Card
-          articleLink=''
-          date='20 June 2023'
-          imageUrl='https://images.unsplash.com/photo-1619365566184-272a34acfeb9?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-          title='Water: a commons beyond economic value'
-        />
-        <Card
-          articleLink=''
-          date='20 June 2023'
-          imageUrl='https://images.unsplash.com/photo-1619365566184-272a34acfeb9?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-          title='Water: a commons beyond economic value'
-        />
-        <Card
-          articleLink=''
-          date='20 June 2023'
-          imageUrl='https://images.unsplash.com/photo-1619365566184-272a34acfeb9?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-          title='Water: a commons beyond economic value'
-        />
-        <Card
-          articleLink=''
-          date='20 June 2023'
-          imageUrl='https://images.unsplash.com/photo-1619365566184-272a34acfeb9?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-          title='Water: a commons beyond economic value'
-        />
-        <Card
-          articleLink=''
-          date='20 June 2023'
-          imageUrl='https://images.unsplash.com/photo-1619365566184-272a34acfeb9?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-          title='Water: a commons beyond economic value'
-        />
-        <Card
-          articleLink=''
-          date='20 June 2023'
-          imageUrl='https://images.unsplash.com/photo-1619365566184-272a34acfeb9?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-          title='Water: a commons beyond economic value'
-        />
-      </Cards>
+      {selectedTab === ETabs.ARTICLES ? (
+        <>
+          <Cards hideBelow='md'>
+            {articles.map(article => (
+              <Card
+                key={article._id}
+                articleLink={`/articles/${article.slug}`}
+                date={article.publishDate}
+                imageUrl={article.thumbnail?.preview}
+                title={article.title}
+              />
+            ))}
+          </Cards>
+          <Cards hideFrom='md'>
+            {articles.map(article => (
+              <SmallCard
+                key={article._id}
+                articleLink={`/articles/${article.slug}`}
+                date={article.publishDate}
+                imageUrl={article.thumbnail?.preview}
+                title={article.title}
+              />
+            ))}
+          </Cards>
+        </>
+      ) : null}
 
-      <Cards>
+      {/** RELATED TO ISI ARTICLES AND JOURNALS */}
+      {/* {selectedTab === ETabs.JOURNALS ? <Cards>
         <Card articleLink='' title='Lorem ipsum dolor sit amet consectetur' />
         <Card articleLink='' title='Lorem ipsum dolor sit amet consectetur' />
         <Card articleLink='' title='Lorem ipsum dolor sit amet consectetur' />
         <Card articleLink='' title='Lorem ipsum dolor sit amet consectetur' />
         <Card articleLink='' title='Lorem ipsum dolor sit amet consectetur' />
-      </Cards>
+      </Cards> : null */}
 
-      <Box mt='12' display='flex' justifyContent='center'>
-        <AuthButton
-          text='Load More'
-          className={css({
-            '& span': {color: 'text.invert'},
-            w: 'max-content',
-            px: 4,
-            py: 3,
-            hideBelow: 'md',
-            bg: 'primary',
-          })}
-        />
-      </Box>
+      {totalCount > 9 ? (
+        <Box mt='12' display='flex' justifyContent='center'>
+          <AuthButton
+            text='Load More'
+            className={css({
+              '& span': {color: 'text.invert'},
+              w: 'max-content',
+              px: 4,
+              py: 3,
+              hideBelow: 'md',
+              bg: 'primary',
+            })}
+          />
+        </Box>
+      ) : null}
     </Container>
   );
 }

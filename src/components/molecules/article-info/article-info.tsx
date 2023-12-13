@@ -1,31 +1,43 @@
-import {
-  IconCollection,
-  IconEmail,
-  IconFacebook,
-  IconInstagram,
-  IconLink,
-  IconTwitter,
-} from '@/assets';
-import {Avatar, SocialMediaLinks} from '@/components';
-import {css} from '@styled/css';
+import {css, cx} from '@styled/css';
 
-const socialMediaLinks = [
-  {icon: IconTwitter, href: ''},
-  {icon: IconInstagram, href: ''},
-  {icon: IconFacebook, href: ''},
-  {icon: IconEmail, href: ''},
-  {icon: IconLink, href: ''},
-];
+import {IconCollection} from '@/assets';
+import {Avatar} from '@/components';
+import {CreateBookmarkInput, Maybe, UserOutputType} from '@/graphql/generated/types';
+import {addBookmark} from '@/graphql/mutation/bookmark/add-bokmark';
+import {useMutation} from '@tanstack/react-query';
+import {getCookie} from 'cookies-next';
 
-const ArticleInfo = () => {
+const ArticleInfo = ({
+  author,
+  readingDuration,
+  className,
+  articleId,
+}: {
+  author: UserOutputType;
+  readingDuration?: Maybe<number>;
+  className?: string;
+  articleId: string;
+}) => {
+  const token = getCookie('authToken');
+  const {mutate, data, error, isLoading} = useMutation({
+    mutationFn: (input: CreateBookmarkInput) => addBookmark(input, token!),
+  }) as any;
+
+  const handleToggleBookmark = async () => {
+    if (!token) return;
+    await mutate({multimedia: articleId});
+  };
+
   return (
     <div
-      className={css({
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        mb: '8',
-      })}
+      className={cx(
+        className,
+        css({
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }),
+      )}
     >
       <div
         className={css({
@@ -35,7 +47,7 @@ const ArticleInfo = () => {
         })}
       >
         {/** AVATAR */}
-        <Avatar src='https://i.pravatar.cc/40?u=JohnDoe' size={40} />
+        <Avatar src={author.avatar?.filename} size={40} />
 
         {/** NAME */}
         <span
@@ -44,29 +56,29 @@ const ArticleInfo = () => {
             color: 'text.primary',
           })}
         >
-          By John Doe
+          By {author.displayName}
         </span>
+
+        {/** DIVIDER */}
+        {readingDuration ? (
+          <>
+            <div className={css({h: 4, w: 0.25, bg: 'gray3'})} />
+
+            <span
+              className={css({
+                textStyle: 'body2',
+                color: 'text.primary',
+              })}
+            >
+              {readingDuration}&nbsp;minutes read
+            </span>
+          </>
+        ) : null}
 
         {/** DIVIDER */}
         <div className={css({h: 4, w: 0.25, bg: 'gray3'})} />
 
-        <span
-          className={css({
-            textStyle: 'body2',
-            color: 'text.primary',
-          })}
-        >
-          4 minutes read
-        </span>
-
-        {/** DIVIDER */}
-        <div className={css({h: 4, w: 0.25, bg: 'gray3'})} />
-
-        {/** BOOKMARK ICON
-         * !TODO: ADD ONCLICK EVENT HANDLER
-         * !TODO: CHANGE SVG FILL BASED ON CLICK
-         */}
-        <button>
+        <button className={css({cursor: 'pointer'})} type='button' onClick={handleToggleBookmark}>
           <IconCollection
             className={css({
               fill: 'gray4',
@@ -74,9 +86,6 @@ const ArticleInfo = () => {
           />
         </button>
       </div>
-
-      {/** SOCIAL ICONS */}
-      <SocialMediaLinks links={socialMediaLinks} />
     </div>
   );
 };

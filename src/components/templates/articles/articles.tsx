@@ -1,58 +1,57 @@
 'use client';
-import {first, second, third} from '@/assets';
-import {Articles, Divider, RecentArticles} from '@/components';
-import {Slider} from '@/components/organisms/slider';
+
+import {useCallback} from 'react';
 import {css} from '@styled/css';
 import {Box} from '@styled/jsx';
+import {useQuery} from '@tanstack/react-query';
+import {usePathname, useRouter, useSearchParams} from 'next/navigation';
+
+import {Articles, Divider, RecentArticles} from '@/components';
+import {Slider} from '@/components/organisms/slider';
+import {ArticleType} from '@/graphql/generated/types';
+import {searchArticles} from '@/graphql/query/search-articles';
+
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
+
 import {Pagination} from './articles.styled';
 
-interface Props {
-  posts: Array<any>;
-  articles: Array<any>;
-}
+const Page = () => {
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const router = useRouter();
+  const page = searchParams.get('page') ?? '1';
+  const READMORE_PAGE_COUNT = 12;
+  const {data} = useQuery({
+    queryKey: ['search-articles', 18],
+    queryFn: () => searchArticles({count: 18, page: +page}),
+  }) as any;
 
-const images = [
-  {
-    src: first,
-    alt: 'First',
-    title: 'Deoxygenation of temperate rivers',
-    subtitle:
-      'Oxygen concentrations are a key aspect of water quality, with low levels linked to ecosystem stress. Research indicates that oxygen levels will decrease in hundreds of rivers across the USA and Central Europe under climate change.',
-    date: '14 September 2023',
-    href: '',
-  },
-  {
-    src: second,
-    alt: 'Second',
-    title: 'Deoxygenation of temperate rivers',
-    subtitle:
-      'Oxygen concentrations are a key aspect of water quality, with low levels linked to ecosystem stress. Research indicates that oxygen levels will decrease in hundreds of rivers across the USA and Central Europe under climate change.',
-    date: '14 September 2023',
-    href: '',
-  },
-  {
-    src: third,
-    alt: 'Third',
-    title: 'Deoxygenation of temperate rivers',
-    subtitle:
-      'Oxygen concentrations are a key aspect of water quality, with low levels linked to ecosystem stress. Research indicates that oxygen levels will decrease in hundreds of rivers across the USA and Central Europe under climate change.',
-    date: '14 September 2023',
-    href: '',
-  },
-];
+  const updateSearchParam = useCallback(
+    (name: string, value: string) => {
+      const params = new URLSearchParams(searchParams);
+      params.set(name, value);
+      router.push(`${pathname}?${params.toString()}`);
+    },
+    [router, pathname, searchParams],
+  );
 
-const Page = ({posts, articles}: Props) => {
+  const articles: Array<ArticleType> = data.article!.searchArticles.results;
+  const {totalPages} = data.article!.searchArticles;
+  const totalCount: number = data.article!.searchArticles.totalCount - 6;
+
+  const startResult = (+page - 1) * READMORE_PAGE_COUNT + 1;
+  const endResult = Math.min(+page * READMORE_PAGE_COUNT, totalCount || 0);
+
   return (
     <>
-      <Box>
-        <Slider slides={images} />
+      <Box className={css({mx: {mdDown: '-4'}})}>
+        <Slider slides={articles.slice(0, 3)} />
       </Box>
-      <RecentArticles posts={posts} />
+      <RecentArticles posts={articles.slice(3, 6)} />
       <Divider label='Keep Reading' />
-      <Articles articles={articles} />
+      <Articles articles={articles.slice(6)} />
       <div
         className={css({
           mt: 6,
@@ -61,10 +60,10 @@ const Page = ({posts, articles}: Props) => {
       >
         <Pagination
           nextLabel='>'
-          onPageChange={() => {}}
+          onPageChange={current => updateSearchParam('page', (current.selected + 1).toString())}
           pageRangeDisplayed={3}
           marginPagesDisplayed={2}
-          pageCount={12}
+          pageCount={totalPages}
           previousLabel='<'
           pageClassName='page-item'
           pageLinkClassName='page-link'
@@ -88,7 +87,7 @@ const Page = ({posts, articles}: Props) => {
           textAlign: 'center',
         })}
       >
-        Showing Result 11-20 of 114
+        Showing {startResult}-{endResult} of {totalCount || 0}
       </span>
     </>
   );

@@ -1,7 +1,5 @@
 import {ProfileView} from '@/components';
 
-const Page = () => {
-  return <ProfileView />;
-};
+const Page = async () => <ProfileView />;
 
 export default Page;

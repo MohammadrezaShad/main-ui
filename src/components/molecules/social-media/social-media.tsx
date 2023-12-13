@@ -1,5 +1,4 @@
-// SocialMediaLinks.tsx
-import {css} from '@styled/css';
+import {css, cx} from '@styled/css';
 import Link from 'next/link';
 import React from 'react';
 
@@ -24,18 +23,22 @@ const SocialMediaLink: React.FC<SocialMediaLinkProps> = ({icon: Icon, href}) => 
 
 interface SocialMediaLinksProps {
   links: {icon: React.ComponentType<{className: string}>; href: string}[];
+  classNames?: string;
 }
 
-const SocialMediaLinks: React.FC<SocialMediaLinksProps> = ({links}) => (
+const SocialMediaLinks: React.FC<SocialMediaLinksProps> = ({links, classNames}) => (
   <ul
-    className={css({
-      display: 'flex',
-      alignItems: 'center',
-      gap: 4,
-    })}
+    className={cx(
+      css({
+        display: 'flex',
+        alignItems: 'center',
+        gap: 4,
+      }),
+      classNames,
+    )}
   >
-    {links.map((link, index) => (
-      <SocialMediaLink key={index} {...link} />
+    {links.map(link => (
+      <SocialMediaLink key={link.href} {...link} />
     ))}
   </ul>
 );

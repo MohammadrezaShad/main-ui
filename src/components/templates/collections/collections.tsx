@@ -1,8 +1,14 @@
+'use client';
+
+import {IconArrowRight} from '@/assets';
 import {css} from '@styled/css';
 import {flex} from '@styled/patterns';
 import Image from 'next/image';
+import {useRouter} from 'next/navigation';
 
 export default function CollectionsView() {
+  const router = useRouter();
+
   return (
     <div
       className={css({
@@ -26,14 +32,23 @@ export default function CollectionsView() {
             mt: '7',
           })}
         >
-          <h3
-            className={css({
-              textStyle: 'h3',
-              color: 'text.primary',
-            })}
-          >
-            Collections
-          </h3>
+          <div className={flex({alignItems: 'center', gap: '3'})}>
+            <button
+              type='button'
+              aria-label='back to dashboard'
+              onClick={() => router.push('/profile')}
+            >
+              <IconArrowRight className={css({rotate: '180deg', hideFrom: 'md'})} />
+            </button>
+            <h3
+              className={css({
+                textStyle: 'h3',
+                color: 'text.primary',
+              })}
+            >
+              Collections
+            </h3>
+          </div>
           <div
             className={css({
               display: 'flex',
@@ -44,6 +59,7 @@ export default function CollectionsView() {
             })}
           >
             <button
+              type='button'
               className={css({
                 pb: '4',
                 borderBottom: '2px solid',
@@ -56,6 +72,7 @@ export default function CollectionsView() {
               Articles
             </button>
             <button
+              type='button'
               className={css({
                 pb: '4',
                 textStyle: 'h4',
@@ -130,6 +147,7 @@ export default function CollectionsView() {
                     Water: a commons beyond economic value
                   </h6>
                   <button
+                    type='button'
                     className={css({
                       color: 'primary',
                       mt: 'auto',
@@ -203,6 +221,7 @@ export default function CollectionsView() {
                     Water: a commons beyond economic value
                   </h6>
                   <button
+                    type='button'
                     className={css({
                       color: 'primary',
                       mt: 'auto',

@@ -1,10 +1,14 @@
 'use client';
 
-import {IconSearch} from '@/assets';
-import {CorporateCard, Divider} from '@/components';
+import Select from 'react-select';
 import {Box} from '@styled/jsx';
 import {flex} from '@styled/patterns';
-import Select from 'react-select';
+import {useQuery} from '@tanstack/react-query';
+
+import {IconSearch} from '@/assets';
+import {CorporateCard, Divider} from '@/components';
+import {searchCategories} from '@/graphql/query/categories';
+
 import {
   Cards,
   Container,
@@ -112,6 +116,11 @@ const corporates = [
 ];
 
 export default function Home() {
+  const {data} = useQuery({
+    queryKey: ['test-categories'],
+    queryFn: () => searchCategories({count: 24}),
+  });
+
   return (
     <Container>
       <Hero>
@@ -131,7 +140,7 @@ export default function Home() {
                 })}
                 flex={1}
               >
-                <Box p={6} w={'1/3'}>
+                <Box p={6} w='1/3'>
                   <Select
                     components={{
                       IndicatorSeparator: () => null,
@@ -148,7 +157,7 @@ export default function Home() {
                   />
                 </Box>
 
-                <Box p={6} w={'1/3'}>
+                <Box p={6} w='1/3'>
                   <Select
                     components={{
                       IndicatorSeparator: () => null,
@@ -164,7 +173,7 @@ export default function Home() {
                     options={options}
                   />
                 </Box>
-                <Box p={6} w={'1/3'}>
+                <Box p={6} w='1/3'>
                   <Select
                     components={{
                       IndicatorSeparator: () => null,

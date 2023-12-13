@@ -1,11 +1,35 @@
-import {IconLogout, coin} from '@/assets';
-import {Avatar} from '@/components';
+'use client';
+
 import {css} from '@styled/css';
 import {flex} from '@styled/patterns';
+import {useQuery} from '@tanstack/react-query';
+import {deleteCookie, getCookie} from 'cookies-next';
 import Image from 'next/image';
+
+import {coin, IconLogout} from '@/assets';
+import {Avatar} from '@/components';
+import {User} from '@/graphql/generated/types';
+import {getUser} from '@/graphql/query/users/get-user';
+
+import {useRouter} from 'next/navigation';
 import ProfileNavigation from '../profile-navigation/profile-navigation';
 
 const ProfileSidebar = () => {
+  const router = useRouter();
+  const authToken = getCookie('authToken')!;
+  const {data} = useQuery({
+    queryKey: ['get-profile', 2],
+    queryFn: () => getUser(authToken),
+  }) as any;
+  const user: User = data.auth!.getUser;
+
+  const handleLogout = () => {
+    deleteCookie('authToken');
+    setTimeout(() => {
+      router.push('/');
+    }, 1000);
+  };
+
   return (
     <div
       className={flex({
@@ -19,7 +43,7 @@ const ProfileSidebar = () => {
         pb: '8',
       })}
     >
-      <Avatar src='https://i.pravatar.cc/134?u=guy' size={134} />
+      <Avatar size={134} src={user.avatar?.filename ?? undefined} />
       <h3
         className={css({
           textStyle: 'headline3',
@@ -28,7 +52,7 @@ const ProfileSidebar = () => {
           textAlign: 'center',
         })}
       >
-        John Doe
+        {user.displayName}
       </h3>
       <p
         className={css({
@@ -38,7 +62,7 @@ const ProfileSidebar = () => {
           textAlign: 'center',
         })}
       >
-        john.doe@email.com
+        {user.email}
       </p>
       <div
         className={flex({
@@ -96,6 +120,8 @@ const ProfileSidebar = () => {
       </div>
       <ProfileNavigation />
       <button
+        onClick={handleLogout}
+        type='button'
         className={flex({
           alignItems: 'center',
           gap: '3',

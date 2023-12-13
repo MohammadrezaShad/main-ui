@@ -1,7 +1,5 @@
 import {CollectionsView} from '@/components';
 
-const Page = () => {
-  return <CollectionsView />;
-};
+const Page = () => <CollectionsView />;
 
 export default Page;

@@ -5,6 +5,7 @@ export const Container = styled('ul', {
     display: 'flex',
     alignItems: 'center',
     gap: 8,
+    hideBelow: 'md',
   },
 });
 

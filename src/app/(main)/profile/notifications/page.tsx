@@ -1,7 +1,5 @@
 import {NotificationsView} from '@/components';
 
-const Page = () => {
-  return <NotificationsView />;
-};
+const Page = () => <NotificationsView />;
 
 export default Page;

@@ -26,6 +26,11 @@ export const Label = styled('label', {
       textStyle: 'caption',
       transform: 'none',
     },
+    '.peer:is(:valid) ~ &': {
+      top: '-8px',
+      textStyle: 'caption',
+      transform: 'none',
+    },
     transition: 'all',
     left: '3',
     display: 'block',

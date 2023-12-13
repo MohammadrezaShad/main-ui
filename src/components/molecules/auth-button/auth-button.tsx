@@ -6,7 +6,7 @@ import {Button} from '@/components';
 
 import {ButtonText} from './auth-button.styled';
 
-interface AuthButtonProps {
+interface AuthButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   text?: string;
   className?: string;
   variant?: 'contained' | 'outlined';
@@ -16,6 +16,7 @@ export default function AuthButton({
   text = 'Login',
   className,
   variant = 'contained',
+  onClick,
 }: AuthButtonProps) {
   const defaultClassName = css({
     rounded: 0,
@@ -28,7 +29,7 @@ export default function AuthButton({
   });
   const buttonClass = cx(defaultClassName, className);
   return (
-    <Button visual={variant} className={buttonClass} color='background'>
+    <Button onClick={onClick} visual={variant} className={buttonClass} color='primary'>
       <ButtonText textStyle='body1'>{text}</ButtonText>
     </Button>
   );

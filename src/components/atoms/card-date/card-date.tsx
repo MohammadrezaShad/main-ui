@@ -1,6 +1,7 @@
 import React from 'react';
-import {DateContainer} from './card-date.styles';
 import {css, cx} from '@styled/css';
+
+import {DateContainer} from './card-date.styles';
 
 interface Props {
   dateTime: string;

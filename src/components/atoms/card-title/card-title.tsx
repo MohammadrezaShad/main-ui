@@ -1,6 +1,5 @@
-import React from 'react';
-import {Title} from './card-title.styled';
 import {css, cx} from '@styled/css';
+import React from 'react';
 
 interface Props {
   children: React.ReactNode;
@@ -12,6 +11,9 @@ const CardTitle = ({children, className}: Props) => {
     color: 'text.primary',
     fontWeight: 500,
     w: 'full',
+    mdDown: {
+      textStyle: 'h4',
+    },
   });
   const titleClass = cx(defaultClassName, className);
   return <h6 className={titleClass}>{children}</h6>;

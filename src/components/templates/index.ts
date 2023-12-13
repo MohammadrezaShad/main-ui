@@ -9,3 +9,4 @@ export * from './profile';
 export * from './settings';
 export * from './collections';
 export * from './notifications';
+export * from './category-articles';

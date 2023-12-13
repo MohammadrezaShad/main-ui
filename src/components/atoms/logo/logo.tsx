@@ -16,7 +16,7 @@ export default function Logo({className}: LogoProps) {
   const containerClass = cx(defaultClassName, className);
   return (
     <Container className={containerClass} href={Paths.Home.getPath()}>
-      <IconWaterWorld className={css({hideBelow: 'md'})} />
+      <IconWaterWorld />
     </Container>
   );
 }

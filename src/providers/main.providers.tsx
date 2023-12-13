@@ -3,7 +3,7 @@
 import React from 'react';
 
 import {DEFAULT_THEME, ThemeType} from '@/constants';
-import {LegendProvider, MenuProvider, QueryClientProvider, ThemeProvider} from '@/providers';
+import {LegendProvider, QueryClientProvider, ThemeProvider} from '@/providers';
 
 type MainProvidersProps = {
   children: React.ReactNode;
@@ -15,7 +15,9 @@ export default function MainProviders({children, theme}: MainProvidersProps) {
     <LegendProvider>
       <QueryClientProvider>
         <ThemeProvider theme={theme || DEFAULT_THEME}>
-          <MenuProvider>{children}</MenuProvider>
+          {/* <MenuProvider> */}
+          {children}
+          {/* </MenuProvider> */}
         </ThemeProvider>
       </QueryClientProvider>
     </LegendProvider>

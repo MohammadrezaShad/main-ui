@@ -72,13 +72,14 @@ module.exports = {
     'import/no-cycle': 'off',
     'import/order': 'off',
     'import/named': 'off',
+    'import/export': 'warn',
     'import\no-extraneous-dependencies': 'off',
     'unused-imports/no-unused-imports': 'error',
     'react/function-component-definition': 'off',
     '@typescript-eslint/no-explicit-any': 'warn',
     'prefer-arrow-callback': 'off',
     'simple-import-sort/imports': [
-      'error',
+      'warn',
       {
         groups: [['^react', '^@?\\w'], ['^(@|components)(/.*|$)'], ['^\\u0000']],
       },

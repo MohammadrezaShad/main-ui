@@ -9,7 +9,7 @@ export const Wrapper = styled('div', {
     fontSize: 'xs',
     textTransform: 'uppercase',
     alignItems: 'center',
-    whiteSpace: 'nowrap'
+    whiteSpace: 'nowrap',
   },
   variants: {
     type: {

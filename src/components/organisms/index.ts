@@ -8,3 +8,5 @@ export * from './recent-articles';
 export * from './profile-navigation';
 export * from './profile-sidebar';
 export * from './profile-details';
+export * from './mobile-navbar';
+export * from './user-info';

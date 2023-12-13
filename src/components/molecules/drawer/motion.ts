@@ -3,7 +3,7 @@ import type {DrawerProps} from 'rc-drawer';
 export const maskMotion: DrawerProps['maskMotion'] = {
   motionAppear: true,
   motionName: 'mask-motion',
-  onAppearEnd: console.warn,
+  onAppearEnd: () => {},
 };
 
 export const motion: DrawerProps['motion'] = placement => ({
