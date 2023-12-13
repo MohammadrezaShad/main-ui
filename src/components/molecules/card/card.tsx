@@ -1,10 +1,12 @@
+import {css} from '@styled/css';
+import {grid} from '@styled/patterns';
+
 import {CardDate} from '@/components/atoms/card-date';
 import {CardImage} from '@/components/atoms/card-image';
 import {CardLink} from '@/components/atoms/card-link';
 import {CardTitle} from '@/components/atoms/card-title';
 import {formatDate} from '@/utils/format-date';
-import {css} from '@styled/css';
-import {grid} from '@styled/patterns';
+
 import {Container, Wrap} from './card.styled';
 
 interface Props {
@@ -36,7 +38,7 @@ export default function Card({imageUrl, date, title, articleLink}: Props) {
             bgColor: 'gray3',
             mb: '6',
           })}
-        ></div>
+        />
       )}
       <Wrap
         className={css({

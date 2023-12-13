@@ -12,7 +12,7 @@ export default function Modal({
 }: {
   children: React.ReactNode;
   isOpen$: Observable<boolean>;
-  onClose: () => void;
+  onClose?: () => void;
 }) {
   const isOpen = isOpen$.use();
 
@@ -20,13 +20,19 @@ export default function Modal({
   return isOpen
     ? createPortal(
         <div
-          onClick={onClose}
+          role='dialog'
           className={css({
             position: 'fixed',
             inset: '0',
             zIndex: 9999,
-            display: 'grid',
-            placeContent: 'center',
+            display: {
+              base: 'grid',
+              mdDown: 'block',
+            },
+            placeContent: {
+              base: 'center',
+              mdDown: 'stretch',
+            },
             backgroundColor: '#00000050',
           })}
         >

@@ -1,4 +1,6 @@
-import {IconInfo} from '@/assets';
+'use client';
+
+import {IconArrowRight, IconInfo} from '@/assets';
 import {css} from '@styled/css';
 import {flex} from '@styled/patterns';
 import Image from 'next/image';
@@ -20,15 +22,25 @@ export default function Profile() {
           mt: '7',
           alignItems: 'flex-start',
         })}
+        id='#activities'
       >
-        <h3
-          className={css({
-            textStyle: 'h3',
-            color: 'text.primary',
-          })}
-        >
-          Recent Activity
-        </h3>
+        <div className={flex({alignItems: 'center', gap: '3'})}>
+          <button
+            type='button'
+            aria-label='back to dashboard'
+            onClick={() => window.scrollTo({top: 0})}
+          >
+            <IconArrowRight className={css({rotate: '180deg', hideFrom: 'md'})} />
+          </button>
+          <h3
+            className={css({
+              textStyle: 'h3',
+              color: 'text.primary',
+            })}
+          >
+            Recent Activity
+          </h3>
+        </div>
         {/** Empty state */}
         <div
           className={flex({
@@ -54,7 +66,7 @@ export default function Profile() {
               color: 'gray4',
             })}
           >
-            We don't have any recent activity for you right now.
+            We don&apos;t have any recent activity for you right now.
           </p>
         </div>
         {/** Content */}

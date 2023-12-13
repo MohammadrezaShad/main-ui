@@ -1,10 +1,12 @@
+import {css} from '@styled/css';
+import {flex, grid} from '@styled/patterns';
+import Image from 'next/image';
+
 import {CardDate} from '@/components/atoms/card-date';
 import {CardLink} from '@/components/atoms/card-link';
 import {CardTitle} from '@/components/atoms/card-title';
 import {formatDate} from '@/utils/format-date';
-import {css} from '@styled/css';
-import {flex, grid} from '@styled/patterns';
-import Image from 'next/image';
+
 import {Container, Wrap} from './small-card.styled';
 
 interface Props {
@@ -37,7 +39,7 @@ export default function Card({imageUrl, date, title, articleLink}: Props) {
             flexShrink: '0',
             aspectRatio: 'square',
           })}
-        ></div>
+        />
       )}
       <div
         className={flex({

@@ -1,32 +1,68 @@
 'use client';
-import {IconClose} from '@/assets';
-import {Modal} from '@/components/atoms/modal';
+
 import {Observable} from '@legendapp/state';
+import {useObservable} from '@legendapp/state/react';
 import {css} from '@styled/css';
 import {Container} from '@styled/jsx';
 import {flex} from '@styled/patterns';
+import {useQuery} from '@tanstack/react-query';
+import {setCookie} from 'cookies-next';
 import {useFormik} from 'formik';
 import Link from 'next/link';
 import * as Yup from 'yup';
+
+import {IconClose} from '@/assets';
+import {Modal} from '@/components/atoms/modal';
+import {signin} from '@/graphql/query/sign-in';
+import {useRouter} from 'next/navigation';
 
 const schema = Yup.object().shape({
   email: Yup.string().required().email(),
   password: Yup.string().required().min(8),
 });
 
-export default function Login({isOpen$}: {isOpen$: Observable<boolean>}) {
+export default function Login({
+  isOpen$,
+  isSignUpOpen$,
+}: {
+  isOpen$: Observable<boolean>;
+  isSignUpOpen$: Observable<boolean>;
+}) {
+  const router = useRouter();
+  const enabled$ = useObservable<boolean>(false);
   const formik = useFormik({
     initialValues: {
       email: '',
       password: '',
     },
     validationSchema: schema,
-    onSubmit: async ({email, password}) => {},
+    onSubmit: async ({email, password}) => {
+      enabled$.set(true);
+    },
   });
   const {errors, touched, values, handleChange, handleSubmit} = formik;
 
+  const {data, error, isLoading} = useQuery({
+    queryKey: ['header-login'],
+    queryFn: () => signin({email: values.email, password: values.password}),
+    enabled: enabled$.use(),
+  }) as any;
+
   const onClose = () => {
     isOpen$.set(false);
+  };
+
+  if (data) {
+    setCookie('authToken', data.auth.signin.token);
+    setTimeout(() => {
+      onClose();
+      router.refresh();
+    }, 1000);
+  }
+
+  const handleSignUpClick = () => {
+    isOpen$.set(false);
+    isSignUpOpen$.set(true);
   };
 
   return (
@@ -49,6 +85,7 @@ export default function Login({isOpen$}: {isOpen$: Observable<boolean>}) {
         })}
       >
         <button
+          type='button'
           onClick={onClose}
           className={css({
             position: 'absolute',
@@ -60,6 +97,7 @@ export default function Login({isOpen$}: {isOpen$: Observable<boolean>}) {
           <IconClose />
         </button>
         <img
+          alt=''
           loading='lazy'
           src='https://cdn.builder.io/api/v1/image/assets/TEMP/a45419311858d85bf4d76527dd38c99cbe9789a7637a2a0f1df4cc44065002a5?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&'
           className={css({
@@ -109,7 +147,7 @@ export default function Login({isOpen$}: {isOpen$: Observable<boolean>}) {
           <span className={css({textStyle: 'caption', color: 'text.primary'})}>
             By proceeding, you agree to Waterworld’s&nbsp;
           </span>
-          <Link href='' className={css({fontWeight: 'medium', color: 'primary'})}>
+          <Link href='/' className={css({fontWeight: 'medium', color: 'primary'})}>
             Terms of Use
           </Link>
           <span className={css({textStyle: 'caption', color: 'text.primary'})}>
@@ -117,7 +155,7 @@ export default function Login({isOpen$}: {isOpen$: Observable<boolean>}) {
             <br />
             acknowledge Waterworld’s&nbsp;
           </span>
-          <Link href='' className={css({fontWeight: 'medium', color: 'primary'})}>
+          <Link href='/' className={css({fontWeight: 'medium', color: 'primary'})}>
             Privacy Policy
           </Link>
         </div>
@@ -170,6 +208,7 @@ export default function Login({isOpen$}: {isOpen$: Observable<boolean>}) {
             id='password'
           />
           <button
+            type='button'
             className={css({
               textStyle: 'caption',
               color: 'primary',
@@ -191,10 +230,14 @@ export default function Login({isOpen$}: {isOpen$: Observable<boolean>}) {
               py: '3',
               alignSelf: 'stretch',
               cursor: 'pointer',
+              _disabled: {
+                brightness: '75%',
+              },
             })}
             type='submit'
+            disabled={isLoading}
           >
-            Log in
+            {isLoading ? 'Please wait ...' : 'Log in'}
           </button>
         </form>
         <div
@@ -216,6 +259,8 @@ export default function Login({isOpen$}: {isOpen$: Observable<boolean>}) {
             New to Waterworld?
           </div>
           <button
+            type='button'
+            onClick={handleSignUpClick}
             className={css({
               color: 'primary',
               textAlign: 'center',

@@ -1,9 +1,12 @@
 'use client';
+
+import {css} from '@styled/css';
+
 import {IconFacebook, IconInstagram, IconTwitter} from '@/assets';
 import {Logo, SocialMediaLinks} from '@/components';
 import {FooterNavbar} from '@/components/molecules/navbar/footer';
 import {SmallSelect} from '@/components/molecules/small-select';
-import {css} from '@styled/css';
+
 import {Container, Wrap} from './footer.styled';
 
 const navbarItems = [
@@ -26,27 +29,25 @@ const socialMediaLinks = [
   {icon: IconFacebook, href: ''},
 ];
 
-const Footer = () => {
-  return (
-    <Container>
-      <Logo />
-      <span
-        className={css({
-          textStyle: 'caption',
-          color: 'gray4',
-          mt: 2,
-          mb: 10,
-        })}
-      >
-        @ 2023 Waterworld Inc. All rights reserved.
-      </span>
-      <Wrap className={css({justifyContent: 'space-between', w: 'full'})}>
-        <SocialMediaLinks links={socialMediaLinks} />
-        <FooterNavbar items={navbarItems} />
-        <SmallSelect options={languages} />
-      </Wrap>
-    </Container>
-  );
-};
+const Footer = () => (
+  <Container>
+    <Logo />
+    <span
+      className={css({
+        textStyle: 'caption',
+        color: 'gray4',
+        mt: 2,
+        mb: 10,
+      })}
+    >
+      @ 2023 Waterworld Inc. All rights reserved.
+    </span>
+    <Wrap className={css({justifyContent: 'space-between', w: 'full'})}>
+      <SocialMediaLinks links={socialMediaLinks} />
+      <FooterNavbar items={navbarItems} />
+      <SmallSelect options={languages} />
+    </Wrap>
+  </Container>
+);
 
 export default Footer;

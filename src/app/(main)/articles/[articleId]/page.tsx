@@ -1,25 +1,16 @@
-import {ArticlesDetails} from '@/components/templates/articles-details';
-import {findArticleById} from '@/graphql/query/find-article-by-id';
-import {findRelatedArticles} from '@/graphql/query/find-related-articles';
-import {getArticlePdfById} from '@/graphql/query/get-article-pdf-by-id';
-import {getQueryClient} from '@/helpers';
-import {Hydrate} from '@/providers';
 import {css} from '@styled/css';
 import {dehydrate} from '@tanstack/react-query';
+
+import {ArticlesDetails} from '@/components/templates/articles-details';
+import {findArticleByName} from '@/graphql/query/find-article-by-name';
+import {getQueryClient} from '@/helpers';
+import {Hydrate} from '@/providers';
 
 const Page = async ({params}: {params: {articleId: string}}) => {
   const queryClient = getQueryClient();
   await queryClient.prefetchQuery({
-    queryKey: ['get-articles'],
-    queryFn: () => findArticleById({id: params.articleId}),
-  });
-  await queryClient.prefetchQuery({
-    queryKey: ['get-related-articles'],
-    queryFn: () => findRelatedArticles({articleId: params.articleId, count: 3}),
-  });
-  await queryClient.prefetchQuery({
-    queryKey: ['get-pdf'],
-    queryFn: () => getArticlePdfById(params.articleId),
+    queryKey: ['get-article', params.articleId],
+    queryFn: () => findArticleByName({slug: params.articleId}),
   });
   const dehydratedState = dehydrate(queryClient);
 

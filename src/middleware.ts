@@ -1,12 +1,26 @@
+import {getCookie} from 'cookies-next';
 import type {NextRequest} from 'next/server';
 import {NextResponse} from 'next/server';
 
-import {HeaderName} from '@/constants';
+import {CookieName} from '@/constants/coooki-name.enum';
 
-export function middleware(request: NextRequest) {
-  const response = NextResponse.next();
-  response.headers.set(HeaderName.PATHNAME, request.nextUrl.pathname);
-  return response;
+export async function middleware(req: NextRequest) {
+  const res = NextResponse.next();
+  const accessToken = getCookie(CookieName.AUTH_TOKEN, {res, req});
+  const originalPath = req.headers.get('x-original-url') || new URL(req.url).pathname;
+  const profilePath = '/profile';
+  const authorPath = '/author';
+  const homePath = '/';
+
+  if (!accessToken && originalPath === profilePath) {
+    return NextResponse.redirect(new URL(homePath, req.url));
+  }
+
+  if (!accessToken && originalPath.includes(authorPath)) {
+    return NextResponse.redirect(new URL(homePath, req.url));
+  }
+
+  return res;
 }
 
 export const config = {

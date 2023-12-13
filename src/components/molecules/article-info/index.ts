@@ -1,1 +1,1 @@
-export { default as ArticleInfo } from './article-info'
+export {default as ArticleInfo} from './article-info';

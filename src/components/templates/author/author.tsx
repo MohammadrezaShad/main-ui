@@ -1,15 +1,19 @@
 'use client';
+
+import {useState} from 'react';
+import {css} from '@styled/css';
+import {Box} from '@styled/jsx';
+import {flex, grid} from '@styled/patterns';
+import {useQuery} from '@tanstack/react-query';
+import {getCookie} from 'cookies-next';
+import {useParams} from 'next/navigation';
+
 import {IconFacebook, IconInstagram, IconLinkedIn, IconNotify, IconRG, IconTwitter} from '@/assets';
 import {AuthButton, Avatar, Card, Chip, SmallCard, SocialMediaLinks} from '@/components';
 import {findUserById} from '@/graphql';
 import {ArticleType, User} from '@/graphql/generated/types';
 import {searchArticlesByAUthorId} from '@/graphql/query/articles/search-articles-by-author-id';
-import {css} from '@styled/css';
-import {Box} from '@styled/jsx';
-import {flex, grid} from '@styled/patterns';
-import {useQuery} from '@tanstack/react-query';
-import {useParams} from 'next/navigation';
-import {useState} from 'react';
+
 import {Actions, Cards, Chips, Container, Tab, Tabs, Wrapper} from './author.styled';
 
 const socialMediaLinks = [
@@ -27,11 +31,12 @@ enum ETabs {
 }
 
 export default function Author() {
+  const token = getCookie('authToken')!;
   const [selectedTab, setSelectedTab] = useState<string>(ETabs.ARTICLES);
   const params = useParams();
   const {data} = useQuery({
     queryKey: ['get-user', 1],
-    queryFn: () => findUserById({id: params.authorId as string}),
+    queryFn: () => findUserById({id: params.authorId as string}, token),
   }) as any;
   const response = useQuery({
     queryKey: ['search-articles', 2],
@@ -40,7 +45,7 @@ export default function Author() {
   }) as any;
   const user: User = data.users!.findUserById;
   const articles: ArticleType[] = response.data.article.searchArticles.results;
-  const totalCount: number = response.data.article.searchArticles.totalCount;
+  const {totalCount} = response.data.article.searchArticles;
   return (
     <Container>
       <Wrapper>
@@ -231,17 +236,17 @@ export default function Author() {
           <Tabs>
             <Tab
               onClick={() => setSelectedTab(ETabs.ARTICLES)}
-              _isActive={selectedTab == ETabs.ARTICLES}
+              _isActive={selectedTab === ETabs.ARTICLES}
             >
               <span>Articles</span>
             </Tab>
             <Tab
               onClick={() => setSelectedTab(ETabs.JOURNALS)}
-              _isActive={selectedTab == ETabs.JOURNALS}
+              _isActive={selectedTab === ETabs.JOURNALS}
             >
               <span>ISI Articles & Journals</span>
             </Tab>
-            <Tab onClick={() => setSelectedTab(ETabs.CV)} _isActive={selectedTab == ETabs.CV}>
+            <Tab onClick={() => setSelectedTab(ETabs.CV)} _isActive={selectedTab === ETabs.CV}>
               <span className={css({hideBelow: 'md'})}>Curriculum vitae</span>
               <span className={css({hideFrom: 'md'})}>CV</span>
             </Tab>
@@ -254,7 +259,7 @@ export default function Author() {
             {articles.map(article => (
               <Card
                 key={article._id}
-                articleLink={`/articles/${article._id}`}
+                articleLink={`/articles/${article.slug}`}
                 date={article.publishDate}
                 imageUrl={article.thumbnail?.preview}
                 title={article.title}
@@ -265,7 +270,7 @@ export default function Author() {
             {articles.map(article => (
               <SmallCard
                 key={article._id}
-                articleLink={`/articles/${article._id}`}
+                articleLink={`/articles/${article.slug}`}
                 date={article.publishDate}
                 imageUrl={article.thumbnail?.preview}
                 title={article.title}

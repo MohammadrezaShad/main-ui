@@ -1,17 +1,33 @@
+import {css, cx} from '@styled/css';
+
 import {IconCollection} from '@/assets';
 import {Avatar} from '@/components';
-import {Maybe, UserOutputType} from '@/graphql/generated/types';
-import {css, cx} from '@styled/css';
+import {CreateBookmarkInput, Maybe, UserOutputType} from '@/graphql/generated/types';
+import {addBookmark} from '@/graphql/mutation/bookmark/add-bokmark';
+import {useMutation} from '@tanstack/react-query';
+import {getCookie} from 'cookies-next';
 
 const ArticleInfo = ({
   author,
   readingDuration,
   className,
+  articleId,
 }: {
   author: UserOutputType;
   readingDuration?: Maybe<number>;
   className?: string;
+  articleId: string;
 }) => {
+  const token = getCookie('authToken');
+  const {mutate, data, error, isLoading} = useMutation({
+    mutationFn: (input: CreateBookmarkInput) => addBookmark(input, token!),
+  }) as any;
+
+  const handleToggleBookmark = async () => {
+    if (!token) return;
+    await mutate({multimedia: articleId});
+  };
+
   return (
     <div
       className={cx(
@@ -62,11 +78,7 @@ const ArticleInfo = ({
         {/** DIVIDER */}
         <div className={css({h: 4, w: 0.25, bg: 'gray3'})} />
 
-        {/** BOOKMARK ICON
-         * !TODO: ADD ONCLICK EVENT HANDLER
-         * !TODO: CHANGE SVG FILL BASED ON CLICK
-         */}
-        <button>
+        <button className={css({cursor: 'pointer'})} type='button' onClick={handleToggleBookmark}>
           <IconCollection
             className={css({
               fill: 'gray4',

@@ -1,4 +1,5 @@
 'use client';
+
 import {IconAdd, IconMinus} from '@/assets';
 import {FaqType} from '@/graphql/generated/types';
 import {css} from '@styled/css';
@@ -13,7 +14,8 @@ const Expandable = ({faq}: {faq: FaqType}) => {
         borderBottom: '1px solid token(colors.gray3)',
       })}
     >
-      <div
+      <button
+        type='button'
         onClick={() => setIsExpanded(previous => !previous)}
         className={css({
           display: 'flex',
@@ -23,9 +25,7 @@ const Expandable = ({faq}: {faq: FaqType}) => {
           cursor: 'pointer',
         })}
       >
-        <button className={css({cursor: 'pointer'})}>
-          {isExpanded ? <IconMinus /> : <IconAdd />}
-        </button>
+        <span className={css({cursor: 'pointer'})}>{isExpanded ? <IconMinus /> : <IconAdd />}</span>
         <p
           className={css({
             textStyle: 'body',
@@ -34,7 +34,7 @@ const Expandable = ({faq}: {faq: FaqType}) => {
         >
           {faq.question}
         </p>
-      </div>
+      </button>
       {isExpanded ? (
         <p
           className={css({

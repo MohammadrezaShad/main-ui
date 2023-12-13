@@ -8,8 +8,10 @@ export const Container = styled('header', {
     bg: 'background',
     pt: 5,
     pb: 5,
-    pr: 11,
-    pl: 11,
+    px: {
+      base: 11,
+      mdDown: 4,
+    },
     h: 20,
   },
 });

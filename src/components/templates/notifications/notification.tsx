@@ -1,8 +1,13 @@
-import {IconInfo} from '@/assets';
+'use client';
+
+import {IconArrowRight, IconInfo} from '@/assets';
 import {css} from '@styled/css';
 import {flex} from '@styled/patterns';
+import {useRouter} from 'next/navigation';
 
 export default function Profile() {
+  const router = useRouter();
+
   return (
     <div
       className={flex({
@@ -20,14 +25,23 @@ export default function Profile() {
           alignItems: 'flex-start',
         })}
       >
-        <h3
-          className={css({
-            textStyle: 'h3',
-            color: 'text.primary',
-          })}
-        >
-          Notifications
-        </h3>
+        <div className={flex({alignItems: 'center', gap: '3'})}>
+          <button
+            type='button'
+            aria-label='back to dashboard'
+            onClick={() => router.push('/profile')}
+          >
+            <IconArrowRight className={css({rotate: '180deg', hideFrom: 'md'})} />
+          </button>
+          <h3
+            className={css({
+              textStyle: 'h3',
+              color: 'text.primary',
+            })}
+          >
+            Notifications
+          </h3>
+        </div>
         {/** Empty state */}
         <div
           className={flex({

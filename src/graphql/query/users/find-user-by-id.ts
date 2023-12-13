@@ -1,7 +1,10 @@
 import {FindUserInput, UserQuery} from '@/graphql/generated/types';
 import {gqlFetch} from '@/services/fetch';
 
-export async function findUserById(input: FindUserInput): Promise<UserQuery['findUserById']> {
+export async function findUserById(
+  input: FindUserInput,
+  token: string,
+): Promise<UserQuery['findUserById']> {
   const res = await gqlFetch({
     url: process.env.NEXT_PUBLIC_API as string,
     query: `query FindUserById($input: FindUserInput!) {
@@ -27,6 +30,7 @@ export async function findUserById(input: FindUserInput): Promise<UserQuery['fin
         }
       }`,
     variables: {input},
+    headers: {Authorization: `Bearer ${token}`},
   });
   if (!res.ok) {
     throw new Error('Failed to fetch data');

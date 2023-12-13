@@ -1,4 +1,13 @@
 'use client';
+
+import {css} from '@styled/css';
+import {Box} from '@styled/jsx';
+import {flex} from '@styled/patterns';
+import {useQuery} from '@tanstack/react-query';
+import Image from 'next/image';
+import Link from 'next/link';
+import {useParams} from 'next/navigation';
+
 import {IconEmail, IconFacebook, IconInstagram, IconLink, IconTwitter} from '@/assets';
 import {
   ArticleBody,
@@ -13,16 +22,9 @@ import {
   UserInfo,
 } from '@/components';
 import {ArticleType} from '@/graphql/generated/types';
-import {findArticleById} from '@/graphql/query/find-article-by-id';
+import {findArticleByName} from '@/graphql/query/find-article-by-name';
 import {findRelatedArticles} from '@/graphql/query/find-related-articles';
 import {getArticlePdfById} from '@/graphql/query/get-article-pdf-by-id';
-import {css} from '@styled/css';
-import {Box} from '@styled/jsx';
-import {flex} from '@styled/patterns';
-import {useQuery} from '@tanstack/react-query';
-import Image from 'next/image';
-import Link from 'next/link';
-import {useParams} from 'next/navigation';
 
 const socialMediaLinks = [
   {icon: IconTwitter, href: ''},
@@ -35,21 +37,24 @@ const socialMediaLinks = [
 const Page = () => {
   const params = useParams();
   const {data} = useQuery({
-    queryKey: ['get-articles'],
-    queryFn: () => findArticleById({id: params.articleId as string}),
+    queryKey: ['get-article', params.articleId],
+    queryFn: () => findArticleByName({slug: params.articleId as string}),
   }) as any;
+  const article: ArticleType = data.article!.findArticleByName.result;
+
   const res = useQuery({
     queryKey: ['get-related-articles'],
-    queryFn: () => findRelatedArticles({articleId: params.articleId as string, count: 3}),
+    queryFn: () => findRelatedArticles({articleId: article._id, count: 3}),
   }) as any;
   const pdf = useQuery({
     queryKey: ['get-pdf'],
-    queryFn: () => getArticlePdfById(params.articleId as string),
+    queryFn: () => getArticlePdfById(article._id),
   }) as any;
 
-  const article: ArticleType = data.article!.findArticleById.result;
-  const relatedArticles: ArticleType[] = res.data.article!.findRelatedArticles.results;
-  const articlePdf = pdf.data.article.getArticlePdfById;
+  const relatedArticles: ArticleType[] = res.isSuccess
+    ? res.data.article!.findRelatedArticles.results
+    : [];
+  const articlePdf = pdf.isSuccess ? pdf.data.article.getArticlePdfById : [];
 
   const formattedDate = new Date(article.publishDate).toLocaleDateString('en-GB', {
     day: 'numeric',
@@ -93,7 +98,11 @@ const Page = () => {
             mb: '8',
           })}
         >
-          <ArticleInfo author={article.author} readingDuration={article.readingDuration} />
+          <ArticleInfo
+            articleId={article._id}
+            author={article.author}
+            readingDuration={article.readingDuration}
+          />
 
           <Box className={css({hideBelow: 'md'})}>
             <SocialMediaLinks links={socialMediaLinks} />

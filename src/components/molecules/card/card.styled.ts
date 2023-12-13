@@ -10,7 +10,7 @@ export const Container = styled('div', {
 });
 
 export const Wrap = styled('div', {
-    base: {
-        px: 6,
-    }
-})
+  base: {
+    px: 6,
+  },
+});

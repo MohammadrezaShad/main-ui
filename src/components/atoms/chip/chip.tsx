@@ -5,8 +5,6 @@ interface Props {
   type: 'success' | 'simple';
 }
 
-const Chip = ({text, type}: Props) => {
-  return <Wrapper type={type}>{text}</Wrapper>;
-};
+const Chip = ({text, type}: Props) => <Wrapper type={type}>{text}</Wrapper>;
 
 export default Chip;

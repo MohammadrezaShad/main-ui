@@ -1,19 +1,21 @@
 'use client';
-import {IconCollection, IconDashboard, IconNotify, IconSetting} from '@/assets';
+
 import {css} from '@styled/css';
-import {flex} from '@styled/patterns';
 import Link from 'next/link';
-import {useParams, usePathname} from 'next/navigation';
+import {usePathname} from 'next/navigation';
+
+import {IconCollection, IconDashboard, IconNotify, IconProfile, IconSetting} from '@/assets';
+import {flex} from '@styled/patterns';
 
 const menuItems = [
-  {id: 1, title: 'Dashboard', icon: IconDashboard, href: '#'},
-  {id: 2, title: 'My collections', icon: IconCollection, href: 'collections'},
-  {id: 3, title: 'Notifications', icon: IconNotify, href: 'notifications'},
-  {id: 4, title: 'Settings', icon: IconSetting, href: 'settings'},
+  {id: 1, title: 'Dashboard', icon: IconDashboard, href: '/#activities'},
+  {id: 2, title: 'My collections', icon: IconCollection, href: '/collections'},
+  {id: 3, title: 'Notifications', icon: IconNotify, href: '/notifications'},
+  {id: 4, title: 'About you', icon: IconProfile, href: '/about'},
+  {id: 5, title: 'Settings', icon: IconSetting, href: '/settings'},
 ];
 
 const ProfileNavigation = () => {
-  const params = useParams();
   const pathname = usePathname();
   const isActive = (link: string) => pathname.includes(link);
   return (
@@ -26,9 +28,17 @@ const ProfileNavigation = () => {
       })}
     >
       {menuItems.map(item => (
-        <li key={item.id}>
+        <li
+          className={css({
+            display: {
+              base: item.href === '/about' ? 'none' : 'flex',
+              mdDown: 'block',
+            },
+          })}
+          key={item.id}
+        >
           <Link
-            href={`/profile/${params.profileId}/${item.href}`}
+            href={`/profile${item.href}`}
             className={flex({
               alignItems: 'center',
               gap: '3',

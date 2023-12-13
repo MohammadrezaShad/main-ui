@@ -1,7 +1,8 @@
 import {gqlFetch} from '@/services/fetch';
-import {SearchArticleInput} from '../generated/types';
 
-export async function searchArticles(input: SearchArticleInput): Promise<any> {
+import {ArticleType, SearchArticleInput} from '../generated/types';
+
+export async function searchArticles(input: SearchArticleInput): Promise<ArticleType> {
   const res = await gqlFetch({
     url: process.env.NEXT_PUBLIC_API as string,
     query: `query SearchArticles($input: SearchArticleInput!) {

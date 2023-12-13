@@ -1,4 +1,4 @@
-import { styled } from '@styled/jsx';
+import {styled} from '@styled/jsx';
 
 export const Container = styled('div', {
   base: {
@@ -15,15 +15,17 @@ export const Wrapper = styled('div', {
       base: 3,
       mdDown: 1,
     },
-    gap:{
-      base:  '6',
-      mdDown: '4'
+    gap: {
+      base: '6',
+      mdDown: '4',
     },
   },
 });
 
 export const SliderWrapper = styled('div', {
   base: {
-    maxW: '320px', mx: 'auto', hideFrom: 'md'
+    maxW: '320px',
+    mx: 'auto',
+    hideFrom: 'md',
   },
 });

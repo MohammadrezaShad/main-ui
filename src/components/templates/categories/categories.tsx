@@ -1,12 +1,15 @@
 'use client';
-import {CategoryCard, Divider, PrimarySubtitle, PrimaryTitle} from '@/components';
-import {CategoryType} from '@/graphql/generated/types';
-import {searchCategories} from '@/graphql/query/categories';
+
 import {css} from '@styled/css';
 import {Box} from '@styled/jsx';
 import {flex} from '@styled/patterns';
 import {useQuery} from '@tanstack/react-query';
 import {Swiper, SwiperSlide} from 'swiper/react';
+
+import {CategoryCard, Divider, PrimarySubtitle, PrimaryTitle} from '@/components';
+import {CategoryType} from '@/graphql/generated/types';
+import {searchCategories} from '@/graphql/query/categories';
+
 import {Container, SliderWrapper, Wrapper} from './categories.styled';
 
 export default function Categories() {
@@ -72,12 +75,12 @@ export default function Categories() {
           <Divider label='Other Categories' />
           <Wrapper hideBelow='md'>
             {categories.slice(3).map(category => (
-              <CategoryCard category={category} />
+              <CategoryCard key={category._id} category={category} />
             ))}
           </Wrapper>
           <Wrapper hideFrom='md'>
             {categories.slice(3).map(category => (
-              <CategoryCard collapsed category={category} />
+              <CategoryCard key={category._id} collapsed category={category} />
             ))}
           </Wrapper>
         </>

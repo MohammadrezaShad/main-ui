@@ -1,16 +1,20 @@
 'use client';
-import {Articles, Divider, RecentArticles} from '@/components';
-import {Slider} from '@/components/organisms/slider';
-import {ArticleType} from '@/graphql/generated/types';
-import {searchArticles} from '@/graphql/query/search-articles';
+
+import {useCallback} from 'react';
 import {css} from '@styled/css';
 import {Box} from '@styled/jsx';
 import {useQuery} from '@tanstack/react-query';
 import {usePathname, useRouter, useSearchParams} from 'next/navigation';
-import {useCallback} from 'react';
+
+import {Articles, Divider, RecentArticles} from '@/components';
+import {Slider} from '@/components/organisms/slider';
+import {ArticleType} from '@/graphql/generated/types';
+import {searchArticles} from '@/graphql/query/search-articles';
+
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
+
 import {Pagination} from './articles.styled';
 
 const Page = () => {
@@ -19,8 +23,8 @@ const Page = () => {
   const router = useRouter();
   const page = searchParams.get('page') ?? '1';
   const READMORE_PAGE_COUNT = 12;
-  const {data, error, isLoading} = useQuery({
-    queryKey: ['search-articles'],
+  const {data} = useQuery({
+    queryKey: ['search-articles', 18],
     queryFn: () => searchArticles({count: 18, page: +page}),
   }) as any;
 
@@ -28,21 +32,13 @@ const Page = () => {
     (name: string, value: string) => {
       const params = new URLSearchParams(searchParams);
       params.set(name, value);
-      router.push(pathname + '?' + params.toString());
+      router.push(`${pathname}?${params.toString()}`);
     },
     [router, pathname, searchParams],
   );
 
-  if (isLoading) {
-    return <p>Loading...</p>;
-  }
-  if (error) {
-    console.error('Error fetching data:', error);
-    return <p>Error fetching data</p>;
-  }
-
   const articles: Array<ArticleType> = data.article!.searchArticles.results;
-  const totalPages: number = data.article!.searchArticles.totalPages;
+  const {totalPages} = data.article!.searchArticles;
   const totalCount: number = data.article!.searchArticles.totalCount - 6;
 
   const startResult = (+page - 1) * READMORE_PAGE_COUNT + 1;

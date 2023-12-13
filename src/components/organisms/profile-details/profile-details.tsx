@@ -1,32 +1,49 @@
+'use client';
+
+import {IconArrowRight} from '@/assets';
 import {Chip} from '@/components';
 import {css} from '@styled/css';
 import {flex} from '@styled/patterns';
+import {useRouter} from 'next/navigation';
 
 const tags = ['water crisis', 'TagName', 'TagName254', 'Another tag'];
 
 const ProfileDetails = () => {
+  const router = useRouter();
+
   return (
     <div
       className={flex({
         bgColor: 'gray1',
-        alignSelf: 'stretch',
-        flex: 0,
         flexDir: 'column',
         alignItems: 'stretch',
         px: '6',
         pt: '7',
         pb: '12',
-        minW: '302px',
+        mdDown: {
+          bgColor: 'white',
+          px: 0,
+          w: 'full',
+        },
       })}
     >
-      <h3
-        className={css({
-          textStyle: 'h3',
-          color: 'text.primary',
-        })}
-      >
-        About you
-      </h3>
+      <div className={flex({alignItems: 'center', gap: '3'})}>
+        <button
+          type='button'
+          aria-label='back to dashboard'
+          onClick={() => router.push('/profile')}
+        >
+          <IconArrowRight className={css({rotate: '180deg', hideFrom: 'md'})} />
+        </button>
+        <h3
+          className={css({
+            textStyle: 'h3',
+            color: 'text.primary',
+          })}
+        >
+          About you
+        </h3>
+      </div>
       <div
         className={css({
           textStyle: 'h4',
@@ -43,7 +60,7 @@ const ProfileDetails = () => {
           mt: '3.5',
         })}
       >
-        You haven't told us yet
+        You haven&apos;t told us yet
       </p>
       <div
         className={css({
@@ -117,7 +134,7 @@ const ProfileDetails = () => {
         })}
       >
         {tags.map(item => (
-          <Chip type='success' text={item} />
+          <Chip key={item} type='success' text={item} />
         ))}
       </div>
     </div>

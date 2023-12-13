@@ -26,8 +26,6 @@ export const HeroWrapper = styled('div', {
     position: 'relative',
     height: '688px',
     w: 'full',
-    backgroundImage:
-      'url(https://images.unsplash.com/photo-1617291976942-157907753e2e?q=80&w=1474&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)',
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'cover',
     backgroundPosition: 'center',
@@ -42,7 +40,7 @@ export const HeroShade = styled('div', {
     inset: 0,
     backgroundColor: '#00000032',
     zIndex: 10,
-    backdropFilter: 'blur(2px)'
+    backdropFilter: 'blur(2px)',
   },
 });
 
@@ -64,13 +62,22 @@ export const TitleWrapper = styled('div', {
     alignSelf: 'stretch',
     marginTop: '7px',
     textStyle: 'title2',
+    mdDown: {
+      textStyle: 'h1',
+      textAlign: 'center',
+      mt: '16',
+      lineHeight: 1.14,
+    },
   },
 });
 
 export const Underline = styled('div', {
   base: {
     backgroundColor: 'primary',
-    alignSelf: 'start',
+    alignSelf: {
+      base: 'start',
+      mdDown: 'center',
+    },
     display: 'flex',
     mt: '3',
     h: '1',
@@ -84,6 +91,12 @@ export const SearchContainer = styled('div', {
     bg: 'white',
     display: 'flex',
     mt: 12,
+    mdDown: {
+      flexDirection: 'column',
+      mx: '8',
+      gap: '2',
+      bg: 'transparent',
+    },
   },
 });
 
@@ -96,6 +109,11 @@ export const SearchButton = styled('button', {
     h: 'full',
     aspectRatio: 'square',
     cursor: 'pointer',
+    gap: '2',
+    mdDown: {
+      aspectRatio: 'auto',
+      py: '5',
+    },
   },
 });
 

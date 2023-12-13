@@ -1,4 +1,5 @@
 import {gqlFetch} from '@/services/fetch';
+
 import {ArticleQuery, FindArticleBySlugInput} from '../generated/types';
 
 export async function findArticleByName(

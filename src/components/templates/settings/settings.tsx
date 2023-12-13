@@ -1,10 +1,26 @@
+'use client';
+
+import {IconArrowRight} from '@/assets';
 import {AuthButton, TextField} from '@/components';
 import RadioButton from '@/components/atoms/radio-button/radio-button';
+import {User} from '@/graphql/generated/types';
+import {getUser} from '@/graphql/query/users/get-user';
 import {css} from '@styled/css';
 import {Box} from '@styled/jsx';
-import { flex } from '@styled/patterns';
+import {flex} from '@styled/patterns';
+import {useQuery} from '@tanstack/react-query';
+import {getCookie} from 'cookies-next';
+import {useRouter} from 'next/navigation';
 
 export default function Settings() {
+  const authToken = getCookie('authToken')!;
+  const {data} = useQuery({
+    queryKey: ['get-profile', 2],
+    queryFn: () => getUser(authToken),
+  }) as any;
+  const user: User = data!.auth.getUser;
+  const router = useRouter();
+
   return (
     <div
       className={css({bgColor: 'white', display: 'flex', flexDir: 'column', alignItems: 'center'})}
@@ -33,20 +49,31 @@ export default function Settings() {
               alignItems: 'flex-start',
             })}
           >
-            <h3
-              className={css({
-                textStyle: 'h3',
-                color: 'text.primary',
-              })}
-            >
-              Settings
-            </h3>
-            <Box className={flex({
+            <div className={flex({alignItems: 'center', gap: '3'})}>
+              <button
+                type='button'
+                aria-label='back to dashboard'
+                onClick={() => router.push('/profile')}
+              >
+                <IconArrowRight className={css({rotate: '180deg', hideFrom: 'md'})} />
+              </button>
+              <h3
+                className={css({
+                  textStyle: 'h3',
+                  color: 'text.primary',
+                })}
+              >
+                Settings
+              </h3>
+            </div>
+            <Box
+              className={flex({
                 flexDir: 'column',
                 gap: '6',
                 w: 'full',
-                mt: "8"
-            })}>
+                mt: '8',
+              })}
+            >
               <TextField title='First Name' />
               <TextField title='Last Name' />
               <TextField title='Nickname' />
@@ -124,12 +151,14 @@ export default function Settings() {
                 Other
               </div>
             </div>
-            <Box className={flex({
+            <Box
+              className={flex({
                 flexDir: 'column',
                 gap: '6',
                 w: 'full',
-                mt: "8"
-            })}>
+                mt: '8',
+              })}
+            >
               <TextField title='My Hometown' />
               <TextField title='My Blog or Website' />
             </Box>
@@ -149,7 +178,6 @@ export default function Settings() {
                   w: 'max-content',
                   px: 4,
                   py: 3,
-                  hideBelow: 'md',
                   bg: 'primary',
                 })}
               />
@@ -161,7 +189,6 @@ export default function Settings() {
                   w: 'max-content',
                   px: 4,
                   py: 3,
-                  hideBelow: 'md',
                   border: '1px solid token(colors.gray3)',
                 })}
               />

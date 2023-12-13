@@ -1,45 +1,25 @@
-import {dehydrate} from '@tanstack/react-query';
-
-import {Home as HomeView} from '@/components';
+import {MainHome} from '@/components';
+import {searchCategories} from '@/graphql/query/categories';
+import {searchArticles} from '@/graphql/query/search-articles';
 import {getQueryClient} from '@/helpers';
 import {Hydrate} from '@/providers';
-import {gqlFetch} from '@/services';
-
-async function getData() {
-  const res = await gqlFetch(
-    process.env.NEXT_PUBLIC_API as string,
-    `query SearchCachedTrendLinks {
-        trendLinks {
-          searchCachedTrendLinks {
-            error
-            results {
-              _id
-              link
-              title
-            }
-            status
-            success
-            totalCount
-            totalPages
-          }
-        }
-  }`,
-  );
-  if (!res.ok) {
-    throw new Error('Failed to fetch data');
-  }
-
-  return res.json();
-}
+import {dehydrate} from '@tanstack/react-query';
 
 export default async function Home() {
   const queryClient = getQueryClient();
-  await queryClient.prefetchQuery({queryKey: ['test-data'], queryFn: getData});
+  await queryClient.prefetchQuery({
+    queryKey: ['search-articles-home'],
+    queryFn: () => searchArticles({count: 15, page: 1}),
+  });
+  await queryClient.prefetchQuery({
+    queryKey: ['search-categories-home'],
+    queryFn: () => searchCategories({}),
+  });
   const dehydratedState = dehydrate(queryClient);
 
   return (
     <Hydrate state={dehydratedState}>
-      <HomeView />
+      <MainHome />
     </Hydrate>
   );
 }

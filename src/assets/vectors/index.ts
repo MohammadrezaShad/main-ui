@@ -91,3 +91,6 @@ export {default as IconRG} from './icon-researchgate.svg';
 export {default as IconNotify} from './icon-notify.svg';
 export {default as IconDashboard} from './icon-dashboard.svg';
 export {default as IconInfo} from './icon-info.svg';
+export {default as IconQuiz} from './icon-quiz.svg';
+export {default as IconDoc} from './icon-doc.svg';
+export {default as IconProfile} from './icon-profile.svg';

@@ -7,7 +7,7 @@ export const Container = styled('div', {
     flexDir: 'column',
     alignItems: 'stretch',
     w: 'full',
-    height: 'max-content'
+    height: 'max-content',
   },
 });
 
@@ -27,7 +27,7 @@ export const Card = styled(Link, {
     py: {
       base: '14',
       mdDown: '6',
-    }
+    },
   },
   variants: {
     _small: {

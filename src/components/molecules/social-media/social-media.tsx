@@ -1,4 +1,3 @@
-// SocialMediaLinks.tsx
 import {css, cx} from '@styled/css';
 import Link from 'next/link';
 import React from 'react';
@@ -38,8 +37,8 @@ const SocialMediaLinks: React.FC<SocialMediaLinksProps> = ({links, classNames}) 
       classNames,
     )}
   >
-    {links.map((link, index) => (
-      <SocialMediaLink key={index} {...link} />
+    {links.map(link => (
+      <SocialMediaLink key={link.href} {...link} />
     ))}
   </ul>
 );

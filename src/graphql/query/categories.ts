@@ -1,4 +1,5 @@
 import {gqlFetch} from '@/services/fetch';
+
 import {CategoryQuery, SearchCategoryInput} from '../generated/types';
 
 export async function searchCategories(
