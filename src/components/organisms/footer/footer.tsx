@@ -1,12 +1,12 @@
 'use client';
 
-import {css} from '@styled/css';
-
 import {IconFacebook, IconInstagram, IconTwitter} from '@/assets';
 import {Logo, SocialMediaLinks} from '@/components';
 import {FooterNavbar} from '@/components/molecules/navbar/footer';
 import {SmallSelect} from '@/components/molecules/small-select';
-
+import {useObservable} from '@legendapp/state/react';
+import {css} from '@styled/css';
+import {useEffect} from 'react';
 import {Container, Wrap} from './footer.styled';
 
 const navbarItems = [
@@ -24,30 +24,38 @@ const languages = [
 ];
 
 const socialMediaLinks = [
-  {icon: IconTwitter, href: ''},
-  {icon: IconInstagram, href: ''},
-  {icon: IconFacebook, href: ''},
+  {id: 1, icon: IconTwitter, href: ''},
+  {id: 2, icon: IconInstagram, href: ''},
+  {id: 3, icon: IconFacebook, href: ''},
 ];
 
-const Footer = () => (
-  <Container>
-    <Logo />
-    <span
-      className={css({
-        textStyle: 'caption',
-        color: 'gray4',
-        mt: 2,
-        mb: 10,
-      })}
-    >
-      @ 2023 Waterworld Inc. All rights reserved.
-    </span>
-    <Wrap className={css({justifyContent: 'space-between', w: 'full'})}>
-      <SocialMediaLinks links={socialMediaLinks} />
-      <FooterNavbar items={navbarItems} />
-      <SmallSelect options={languages} />
-    </Wrap>
-  </Container>
-);
+const Footer = () => {
+  const isClient$ = useObservable(false);
+
+  useEffect(() => {
+    isClient$.set(true);
+  }, []);
+
+  return (
+    <Container>
+      <Logo />
+      <span
+        className={css({
+          textStyle: 'caption',
+          color: 'gray4',
+          mt: 2,
+          mb: 10,
+        })}
+      >
+        @ 2023 Waterworld Inc. All rights reserved.
+      </span>
+      <Wrap className={css({justifyContent: 'space-between', w: 'full'})}>
+        <SocialMediaLinks links={socialMediaLinks} />
+        <FooterNavbar items={navbarItems} />
+        {isClient$.use() && <SmallSelect options={languages} />}
+      </Wrap>
+    </Container>
+  );
+};
 
 export default Footer;

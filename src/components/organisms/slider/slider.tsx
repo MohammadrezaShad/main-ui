@@ -17,6 +17,8 @@ interface Props {
   slides: Array<ArticleType>;
 }
 
+const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL!;
+
 const Slider = ({slides}: Props) => (
   <Swiper
     autoplay
@@ -40,7 +42,9 @@ const Slider = ({slides}: Props) => (
         >
           {slide.thumbnail ? (
             <Image
-              src={slide.thumbnail?.filename}
+              width={900}
+              height={500}
+              src={`${IMAGE_STORAGE_URL}/${slide.thumbnail?._id}`}
               alt={slide.title}
               className={css({
                 display: 'block',

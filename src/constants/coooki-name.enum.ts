@@ -1,4 +1,4 @@
 export enum CookieName {
   THEME = 't',
-  AUTH_TOKEN = 'authToken',
+  AUTH_TOKEN = '_at',
 }

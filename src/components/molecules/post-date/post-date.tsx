@@ -4,6 +4,21 @@ interface Props {
   date: string;
 }
 
+const convertDateFormat = (inputDate: string): string => {
+  const date = new Date(inputDate);
+
+  const options: Intl.DateTimeFormatOptions = {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  };
+
+  const formatter = new Intl.DateTimeFormat('en-US', options);
+  const formattedDate = formatter.format(date);
+
+  return formattedDate;
+};
+
 const PostDate = ({date}: Props) => (
   <div
     className={css({
@@ -20,7 +35,7 @@ const PostDate = ({date}: Props) => (
         color: 'text.invert',
       })}
     >
-      {date}
+      {convertDateFormat(date)}
     </span>
   </div>
 );

@@ -1,27 +1,30 @@
 'use client';
 
-import {useState} from 'react';
+import {IconFacebook, IconInstagram, IconLinkedIn, IconNotify, IconRG, IconTwitter} from '@/assets';
+import {AuthButton, Avatar, Card, Chip, SmallCard, SocialMediaLinks} from '@/components';
+import {CookieName} from '@/constants';
+import {findUserById} from '@/graphql';
+import {ArticleType, User} from '@/graphql/generated/types';
+import {searchArticlesByAUthorId} from '@/graphql/query/articles/search-articles-by-author-id';
+import {getUser} from '@/graphql/query/users/get-user';
 import {css} from '@styled/css';
 import {Box} from '@styled/jsx';
 import {flex, grid} from '@styled/patterns';
 import {useQuery} from '@tanstack/react-query';
 import {getCookie} from 'cookies-next';
-import {useParams} from 'next/navigation';
-
-import {IconFacebook, IconInstagram, IconLinkedIn, IconNotify, IconRG, IconTwitter} from '@/assets';
-import {AuthButton, Avatar, Card, Chip, SmallCard, SocialMediaLinks} from '@/components';
-import {findUserById} from '@/graphql';
-import {ArticleType, User} from '@/graphql/generated/types';
-import {searchArticlesByAUthorId} from '@/graphql/query/articles/search-articles-by-author-id';
-
+import {useParams, useRouter} from 'next/navigation';
+import {useState} from 'react';
 import {Actions, Cards, Chips, Container, Tab, Tabs, Wrapper} from './author.styled';
 
+const ADMIN_PANEL_URL = process.env.NEXT_PUBLIC_ADMIN_PANEL_URL;
+const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
+
 const socialMediaLinks = [
-  {icon: IconTwitter, href: ''},
-  {icon: IconLinkedIn, href: ''},
-  {icon: IconFacebook, href: ''},
-  {icon: IconRG, href: ''},
-  {icon: IconInstagram, href: ''},
+  {id: 1, icon: IconTwitter, href: ''},
+  {id: 2, icon: IconLinkedIn, href: ''},
+  {id: 3, icon: IconFacebook, href: ''},
+  {id: 4, icon: IconRG, href: ''},
+  {id: 5, icon: IconInstagram, href: ''},
 ];
 
 enum ETabs {
@@ -31,12 +34,16 @@ enum ETabs {
 }
 
 export default function Author() {
-  const token = getCookie('authToken')!;
+  const token = getCookie(CookieName.AUTH_TOKEN)!;
   const [selectedTab, setSelectedTab] = useState<string>(ETabs.ARTICLES);
   const params = useParams();
   const {data} = useQuery({
     queryKey: ['get-user', 1],
     queryFn: () => findUserById({id: params.authorId as string}, token),
+  }) as any;
+  const currentUser = useQuery({
+    queryKey: ['get-profile', 2],
+    queryFn: () => getUser(token),
   }) as any;
   const response = useQuery({
     queryKey: ['search-articles', 2],
@@ -46,6 +53,13 @@ export default function Author() {
   const user: User = data.users!.findUserById;
   const articles: ArticleType[] = response.data.article.searchArticles.results;
   const {totalCount} = response.data.article.searchArticles;
+  const currenUserId = currentUser.data?.auth.getUser._id;
+  const router = useRouter();
+
+  const handleClickNewArticle = () => {
+    router.push(`${ADMIN_PANEL_URL}/articles/new`);
+  };
+
   return (
     <Container>
       <Wrapper>
@@ -74,7 +88,7 @@ export default function Author() {
             })}
           >
             <Box alignSelf='center'>
-              <Avatar size={128} src={user.avatar?.filename ?? undefined} />
+              <Avatar size={128} src={`${IMAGE_STORAGE_URL}/${user.avatar?._id}` ?? undefined} />
             </Box>
 
             <div
@@ -148,53 +162,62 @@ export default function Author() {
             })}
           >
             <Actions>
-              <IconNotify
-                className={css({
-                  fill: 'gray4',
-                  position: {
-                    mdDown: 'absolute',
-                  },
-                  top: {
-                    mdDown: '0',
-                  },
-                  right: {
-                    mdDown: '0',
-                  },
-                })}
-              />
-              <AuthButton
-                text='Write New Article'
-                variant='contained'
-                className={css({
-                  '& span': {color: 'white'},
-                  w: 'max-content',
-                  px: 4,
-                  py: 3,
-                  bgColor: 'primary',
-                })}
-              />
-              <AuthButton
-                text='Follow'
-                variant='outlined'
-                className={css({
-                  '& span': {color: 'gray4'},
-                  w: 'max-content',
-                  px: 4,
-                  py: 3,
-                  border: '1px solid token(colors.gray3)',
-                })}
-              />
-              <AuthButton
-                text='Report'
-                variant='outlined'
-                className={css({
-                  '& span': {color: 'gray4'},
-                  w: 'max-content',
-                  px: 4,
-                  py: 3,
-                  border: '1px solid token(colors.gray3)',
-                })}
-              />
+              {params.authorId === currenUserId ? (
+                <>
+                  {' '}
+                  <IconNotify
+                    className={css({
+                      fill: 'gray4',
+                      position: {
+                        mdDown: 'absolute',
+                      },
+                      top: {
+                        mdDown: '0',
+                      },
+                      right: {
+                        mdDown: '0',
+                      },
+                    })}
+                  />
+                  <AuthButton
+                    onClick={handleClickNewArticle}
+                    text='Write New Article'
+                    variant='contained'
+                    className={css({
+                      '& span': {color: 'white'},
+                      w: 'max-content',
+                      px: 4,
+                      py: 3,
+                      bgColor: 'primary',
+                    })}
+                  />
+                </>
+              ) : (
+                <>
+                  <AuthButton
+                    text='Follow'
+                    variant='outlined'
+                    className={css({
+                      '& span': {color: 'gray4'},
+                      w: 'max-content',
+                      px: 4,
+                      py: 3,
+                      border: '1px solid token(colors.gray3)',
+                    })}
+                  />
+                  <AuthButton
+                    text='Report'
+                    variant='outlined'
+                    className={css({
+                      '& span': {color: 'gray4'},
+                      w: 'max-content',
+                      px: 4,
+                      py: 3,
+                      border: '1px solid token(colors.gray3)',
+                    })}
+                  />
+                </>
+              )}
             </Actions>
 
             <Box
@@ -261,7 +284,7 @@ export default function Author() {
                 key={article._id}
                 articleLink={`/articles/${article.slug}`}
                 date={article.publishDate}
-                imageUrl={article.thumbnail?.preview}
+                imageUrl={`${IMAGE_STORAGE_URL}/${article.thumbnail?._id}`}
                 title={article.title}
               />
             ))}
@@ -272,7 +295,7 @@ export default function Author() {
                 key={article._id}
                 articleLink={`/articles/${article.slug}`}
                 date={article.publishDate}
-                imageUrl={article.thumbnail?.preview}
+                imageUrl={`${IMAGE_STORAGE_URL}/${article.thumbnail?._id}`}
                 title={article.title}
               />
             ))}

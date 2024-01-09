@@ -13,8 +13,10 @@ import * as Yup from 'yup';
 
 import {IconClose} from '@/assets';
 import {Modal} from '@/components/atoms/modal';
+import {CookieName} from '@/constants';
 import {signin} from '@/graphql/query/sign-in';
 import {useRouter} from 'next/navigation';
+import {useEffect} from 'react';
 
 const schema = Yup.object().shape({
   email: Yup.string().required().email(),
@@ -52,18 +54,22 @@ export default function Login({
     isOpen$.set(false);
   };
 
-  if (data) {
-    setCookie('authToken', data.auth.signin.token);
-    setTimeout(() => {
-      onClose();
-      router.refresh();
-    }, 1000);
-  }
-
   const handleSignUpClick = () => {
     isOpen$.set(false);
     isSignUpOpen$.set(true);
   };
+
+  useEffect(() => {
+    if (data) {
+      setCookie(CookieName.AUTH_TOKEN, data.auth.signin.token, {
+        expires: new Date(new Date().setMonth(new Date().getMonth() + 2)),
+      });
+      setTimeout(() => {
+        onClose();
+        router.refresh();
+      }, 2000);
+    }
+  }, [data]);
 
   return (
     <Modal onClose={onClose} isOpen$={isOpen$}>

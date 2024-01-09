@@ -7,43 +7,113 @@ export async function searchArticleByCategory(
   const res = await gqlFetch({
     url: process.env.NEXT_PUBLIC_API as string,
     query: `query SearchArticles($input: SearchArticleInput!) {
-        article {
-          searchArticles(input: $input) {
-            results {
+      article {
+        searchArticles(input: $input) {
+          results {
+            _id
+            author {
               _id
-              excerpt
-              publishDate
-              slug
-              tags {
-                _id
-                image {
-                  _id
-                  alt
-                  filename
-                  height
-                  preview
-                  width
-                }
-                title
-                slug
-              }
-              thumbnail {
+              avatar {
                 _id
                 alt
+                createdAt
                 filename
                 height
                 preview
+                updatedAt
                 width
               }
-              title
-              status
+              avatarStatus
+              createdAt
+              displayName
+              email
+              isCreatedWithSocialMedia
+              isVerified
+              phone
+              role
+              updatedAt
+              username
             }
-            success
-            totalCount
-            totalPages
+            categories {
+              _id
+              description
+              hasSeoApproval
+              image {
+                _id
+                alt
+                createdAt
+                filename
+                height
+                preview
+                updatedAt
+                width
+              }
+              isDescriptionApproved
+              originalDescription
+              postCount
+              seoReviewDate
+              slug
+              title
+            }
+            commentsCount
+            content
+            excerpt
+            faqs {
+              answer
+              question
+            }
+            isBookmark
+            isUserFavorite
+            likeCount
+            publishDate
+            readingDuration
+            reports
+            slug
+            seoSetting {
+              _id
+              createdAt
+              general {
+                canonicalUrl
+                description
+                focusKeyword
+                nofollow
+                noindex
+                permalink
+                title
+              }
+              itemId
+              score
+              type
+              updatedAt
+            }
+            status
+            tags {
+              _id
+              description
+              originalDescription
+              postCount
+              slug
+              status
+              title
+            }
+            thumbnail {
+              _id
+              alt
+              createdAt
+              filename
+              height
+              preview
+              updatedAt
+              width
+            }
+            title
           }
+          success
+          totalCount
+          totalPages
         }
-      }`,
+      }
+    }`,
     variables: {input},
   });
   if (!res.ok) {

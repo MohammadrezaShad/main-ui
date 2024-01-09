@@ -5,6 +5,8 @@ export const Container = styled('div', {
     display: 'flex',
     flexDirection: 'column',
     gap: '8',
+    mx: 'auto',
+    maxWidth: '960px',
   },
 });
 
@@ -40,7 +42,6 @@ export const HeroShade = styled('div', {
     inset: 0,
     backgroundColor: '#00000032',
     zIndex: 10,
-    backdropFilter: 'blur(2px)',
   },
 });
 

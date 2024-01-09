@@ -7,7 +7,9 @@ import {hasCookie} from 'cookies-next';
 import {IconSearch} from '@/assets';
 import {AuthButton, Avatar, HeaderNavbar, Login, Logo, SearchDrawer, SignUp} from '@/components';
 
+import {CookieName} from '@/constants';
 import Link from 'next/link';
+import {useEffect} from 'react';
 import UserHeaderInfo from '../user-info/user-info';
 import {Container, Wrap} from './header.styled';
 
@@ -17,7 +19,12 @@ export default function Header(props: HeaderProps) {
   const isOpen$ = useObservable(false);
   const isLoginOpen$ = useObservable(false);
   const isSignUpOpen$ = useObservable(false);
-  const authToken = hasCookie('authToken');
+  const isClient$ = useObservable(false);
+  const authToken = hasCookie(CookieName.AUTH_TOKEN);
+
+  useEffect(() => {
+    isClient$.set(true);
+  }, []);
 
   return (
     <Container>
@@ -30,7 +37,7 @@ export default function Header(props: HeaderProps) {
           className={css({cursor: 'pointer', mx: {base: 12, mdDown: 4}})}
           onClick={() => isOpen$.set(true)}
         />
-        {authToken ? (
+        {isClient$.use() && authToken ? (
           <UserHeaderInfo />
         ) : (
           <>
@@ -61,7 +68,7 @@ export default function Header(props: HeaderProps) {
             />
           </>
         )}
-        {authToken ? (
+        {isClient$.use() && authToken ? (
           <Link className={css({hideFrom: 'md'})} href='/profile'>
             <Avatar size={32} />
           </Link>

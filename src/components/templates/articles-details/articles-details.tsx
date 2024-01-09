@@ -8,7 +8,14 @@ import Image from 'next/image';
 import Link from 'next/link';
 import {useParams} from 'next/navigation';
 
-import {IconEmail, IconFacebook, IconInstagram, IconLink, IconTwitter} from '@/assets';
+import {
+  IconChevronDown,
+  IconEmail,
+  IconFacebook,
+  IconInstagram,
+  IconLink,
+  IconTwitter,
+} from '@/assets';
 import {
   ArticleBody,
   ArticleInfo,
@@ -17,6 +24,7 @@ import {
   PrimaryTitle,
   Questions,
   RecentArticles,
+  Review,
   SocialMediaLinks,
   Tags,
   UserInfo,
@@ -26,12 +34,14 @@ import {findArticleByName} from '@/graphql/query/find-article-by-name';
 import {findRelatedArticles} from '@/graphql/query/find-related-articles';
 import {getArticlePdfById} from '@/graphql/query/get-article-pdf-by-id';
 
+const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
+
 const socialMediaLinks = [
-  {icon: IconTwitter, href: ''},
-  {icon: IconInstagram, href: ''},
-  {icon: IconFacebook, href: ''},
-  {icon: IconEmail, href: ''},
-  {icon: IconLink, href: ''},
+  {id: 1, icon: IconTwitter, href: ''},
+  {id: 2, icon: IconInstagram, href: ''},
+  {id: 3, icon: IconFacebook, href: ''},
+  {id: 4, icon: IconEmail, href: ''},
+  {id: 5, icon: IconLink, href: ''},
 ];
 
 const Page = () => {
@@ -110,8 +120,8 @@ const Page = () => {
         </Box>
         {article.thumbnail ? (
           <Image
-            alt={article.thumbnail.alt ?? ''}
-            src={article.thumbnail.filename}
+            alt={`${IMAGE_STORAGE_URL}/${article.thumbnail?._id}` ?? ''}
+            src={`${IMAGE_STORAGE_URL}/${article.thumbnail?._id}`}
             width={960}
             height={540}
             className={css({
@@ -236,10 +246,11 @@ const Page = () => {
         Reviews
       </h3>
 
-      {/* <Review />
+      <Review />
       <Review>
         <Review>
           <button
+            type='button'
             className={css({
               color: 'primary',
               display: 'flex',
@@ -252,7 +263,7 @@ const Page = () => {
             <IconChevronDown fill='#44BAEB' />
           </button>
         </Review>
-      </Review> */}
+      </Review>
     </div>
   );
 };

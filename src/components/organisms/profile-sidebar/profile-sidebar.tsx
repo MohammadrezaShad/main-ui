@@ -11,12 +11,15 @@ import {Avatar} from '@/components';
 import {User} from '@/graphql/generated/types';
 import {getUser} from '@/graphql/query/users/get-user';
 
+import {CookieName} from '@/constants';
 import {useRouter} from 'next/navigation';
 import ProfileNavigation from '../profile-navigation/profile-navigation';
 
+const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
+
 const ProfileSidebar = () => {
   const router = useRouter();
-  const authToken = getCookie('authToken')!;
+  const authToken = getCookie(CookieName.AUTH_TOKEN)!;
   const {data} = useQuery({
     queryKey: ['get-profile', 2],
     queryFn: () => getUser(authToken),
@@ -24,7 +27,7 @@ const ProfileSidebar = () => {
   const user: User = data.auth!.getUser;
 
   const handleLogout = () => {
-    deleteCookie('authToken');
+    deleteCookie(CookieName.AUTH_TOKEN);
     setTimeout(() => {
       router.push('/');
     }, 1000);
@@ -43,7 +46,7 @@ const ProfileSidebar = () => {
         pb: '8',
       })}
     >
-      <Avatar size={134} src={user.avatar?.filename ?? undefined} />
+      <Avatar size={134} src={`${IMAGE_STORAGE_URL}/${user.avatar?._id}` ?? undefined} />
       <h3
         className={css({
           textStyle: 'headline3',

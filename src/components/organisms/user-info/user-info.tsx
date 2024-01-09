@@ -2,6 +2,7 @@
 
 import {IconChevronDown} from '@/assets';
 import {Avatar} from '@/components';
+import {CookieName} from '@/constants';
 import {User} from '@/graphql/generated/types';
 import {getUser} from '@/graphql/query/users/get-user';
 import {css} from '@styled/css';
@@ -10,20 +11,21 @@ import {getCookie} from 'cookies-next';
 import Link from 'next/link';
 
 function UserInfo() {
-  const authToken = getCookie('authToken')!;
-  const {data} = useQuery({
+  const authToken = getCookie(CookieName.AUTH_TOKEN)!;
+  const {data, isLoading} = useQuery({
     queryKey: ['get-profile', 2],
     queryFn: () => getUser(authToken),
   }) as any;
-  const user: User = data!.auth.getUser;
+  const user: User = data?.auth.getUser;
+  if (isLoading) return null;
   return (
-    <header
+    <div
       className={css({
         alignItems: 'center',
         alignSelf: 'center',
         display: 'flex',
         justifyContent: 'space-between',
-        gap: '5',
+        gap: '3',
         mt: 'auto',
         mb: 'auto',
         hideBelow: 'md',
@@ -52,7 +54,7 @@ function UserInfo() {
             whiteSpace: 'nowrap',
           })}
         >
-          {user.displayName}
+          {user?.displayName}
         </div>
         <div
           className={css({
@@ -63,16 +65,15 @@ function UserInfo() {
             fontWeight: 'light',
             alignSelf: 'stretch',
             whiteSpace: 'nowrap',
-            mt: '2',
           })}
         >
-          {user.email}
+          {user?.email}
         </div>
       </div>
       <Link href='/profile'>
-        <Avatar size={40} src={user.avatar?.filename} />
+        <Avatar size={40} src={user?.avatar?.filename} />
       </Link>
-    </header>
+    </div>
   );
 }
 

@@ -3,7 +3,7 @@ import {flex} from '@styled/patterns';
 import {cookies, headers} from 'next/headers';
 
 import {Footer, Header} from '@/components';
-import {HeaderName} from '@/constants';
+import {CookieName, HeaderName} from '@/constants';
 import {Paths, isMatch} from '@/utils';
 
 import MobileNavbar from '@/components/organisms/mobile-navbar/mobile-navbar';
@@ -17,7 +17,7 @@ export default async function Template({children}: {children: React.ReactNode}) 
   const currentUrl = headers().get(HeaderName.PATHNAME) || '';
   const isVideoUrl = isMatch(Paths.Video.Detail('').getRoute() as string, currentUrl as string);
   const cookieStore = cookies();
-  const authToken = cookieStore.get('authToken')?.value || '';
+  const authToken = cookieStore.get(CookieName.AUTH_TOKEN)?.value || '';
   const queryClient = getQueryClient();
   await queryClient.prefetchQuery({
     queryKey: ['get-profile', 2],
@@ -32,14 +32,14 @@ export default async function Template({children}: {children: React.ReactNode}) 
       </Hydrate>
       <div
         className={css({
-          p: {base: 8, lgDown: 4},
+          pb: {base: '8', mdDown: '36'},
           bg: 'background',
         })}
       >
         <div
           className={flex({
             maxW: {
-              base: '10/12',
+              base: '1920px',
               lgDown: '100%',
             },
             width: '100%',
