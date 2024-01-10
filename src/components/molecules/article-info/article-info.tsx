@@ -2,6 +2,7 @@ import {css, cx} from '@styled/css';
 
 import {IconCollection} from '@/assets';
 import {Avatar} from '@/components';
+import {CookieName} from '@/constants';
 import {CreateBookmarkInput, Maybe, UserOutputType} from '@/graphql/generated/types';
 import {addBookmark} from '@/graphql/mutation/bookmark/add-bokmark';
 import {useMutation} from '@tanstack/react-query';
@@ -18,7 +19,7 @@ const ArticleInfo = ({
   className?: string;
   articleId: string;
 }) => {
-  const token = getCookie('authToken');
+  const token = getCookie(CookieName.AUTH_TOKEN);
   const {mutate, data, error, isLoading} = useMutation({
     mutationFn: (input: CreateBookmarkInput) => addBookmark(input, token!),
   }) as any;

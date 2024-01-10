@@ -15,7 +15,16 @@ const Page = async ({params}: {params: {articleId: string}}) => {
   const dehydratedState = dehydrate(queryClient);
 
   return (
-    <div className={css({display: 'flex', flexDir: 'column', rowGap: 8})}>
+    <div
+      className={css({
+        display: 'flex',
+        flexDir: 'column',
+        rowGap: 8,
+        mx: 'auto',
+        maxWidth: '960px',
+        p: {lgDown: 4},
+      })}
+    >
       <Hydrate state={dehydratedState}>
         <ArticlesDetails />
       </Hydrate>

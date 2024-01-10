@@ -3,6 +3,7 @@
 import {IconArrowRight} from '@/assets';
 import {AuthButton, TextField} from '@/components';
 import RadioButton from '@/components/atoms/radio-button/radio-button';
+import {CookieName} from '@/constants';
 import {User} from '@/graphql/generated/types';
 import {getUser} from '@/graphql/query/users/get-user';
 import {css} from '@styled/css';
@@ -13,7 +14,7 @@ import {getCookie} from 'cookies-next';
 import {useRouter} from 'next/navigation';
 
 export default function Settings() {
-  const authToken = getCookie('authToken')!;
+  const authToken = getCookie(CookieName.AUTH_TOKEN)!;
   const {data} = useQuery({
     queryKey: ['get-profile', 2],
     queryFn: () => getUser(authToken),

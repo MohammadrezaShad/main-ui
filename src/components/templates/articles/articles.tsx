@@ -1,16 +1,14 @@
 'use client';
 
-import {useCallback} from 'react';
+import {Articles, Divider, RecentArticles} from '@/components';
+import {Slider} from '@/components/organisms/slider';
+import {ArticleType, StatusType} from '@/graphql/generated/types';
+import {searchArticles} from '@/graphql/query/search-articles';
 import {css} from '@styled/css';
 import {Box} from '@styled/jsx';
 import {useQuery} from '@tanstack/react-query';
 import {usePathname, useRouter, useSearchParams} from 'next/navigation';
-
-import {Articles, Divider, RecentArticles} from '@/components';
-import {Slider} from '@/components/organisms/slider';
-import {ArticleType} from '@/graphql/generated/types';
-import {searchArticles} from '@/graphql/query/search-articles';
-
+import {useCallback, useEffect} from 'react';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
@@ -23,9 +21,9 @@ const Page = () => {
   const router = useRouter();
   const page = searchParams.get('page') ?? '1';
   const READMORE_PAGE_COUNT = 12;
-  const {data} = useQuery({
+  const {data, refetch} = useQuery({
     queryKey: ['search-articles', 18],
-    queryFn: () => searchArticles({count: 18, page: +page}),
+    queryFn: () => searchArticles({status: StatusType.Publish, count: 18, page: +page}),
   }) as any;
 
   const updateSearchParam = useCallback(
@@ -43,6 +41,10 @@ const Page = () => {
 
   const startResult = (+page - 1) * READMORE_PAGE_COUNT + 1;
   const endResult = Math.min(+page * READMORE_PAGE_COUNT, totalCount || 0);
+
+  useEffect(() => {
+    refetch();
+  }, [page]);
 
   return (
     <>

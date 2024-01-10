@@ -3,6 +3,8 @@ import {css} from '@styled/css';
 import {Avatar} from '@/components';
 import {UserOutputType} from '@/graphql/generated/types';
 
+const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
+
 const UserInfo = ({author}: {author: UserOutputType}) => (
   <div
     className={css({
@@ -14,7 +16,7 @@ const UserInfo = ({author}: {author: UserOutputType}) => (
     })}
   >
     {/** AVATAR */}
-    <Avatar src={author.avatar?.filename} />
+    <Avatar src={`${IMAGE_STORAGE_URL}/${author.avatar?._id}`} />
 
     <div
       className={css({

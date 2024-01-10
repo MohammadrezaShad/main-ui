@@ -22,7 +22,7 @@ const SocialMediaLink: React.FC<SocialMediaLinkProps> = ({icon: Icon, href}) => 
 );
 
 interface SocialMediaLinksProps {
-  links: {icon: React.ComponentType<{className: string}>; href: string}[];
+  links: {icon: React.ComponentType<{className: string}>; href: string; id: number}[];
   classNames?: string;
 }
 
@@ -38,7 +38,7 @@ const SocialMediaLinks: React.FC<SocialMediaLinksProps> = ({links, classNames}) 
     )}
   >
     {links.map(link => (
-      <SocialMediaLink key={link.href} {...link} />
+      <SocialMediaLink key={link.id} {...link} />
     ))}
   </ul>
 );

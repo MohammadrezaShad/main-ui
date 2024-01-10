@@ -1,19 +1,17 @@
 'use client';
 
-import {Box} from '@styled/jsx';
-import {flex} from '@styled/patterns';
-import {useQuery} from '@tanstack/react-query';
-import Select from 'react-select';
-
 import {IconSearch, hero} from '@/assets';
 import {Articles, Divider, RecentArticles} from '@/components';
-
-import {ArticleType, CategoryType} from '@/graphql/generated/types';
+import {ArticleType, CategoryType, StatusType} from '@/graphql/generated/types';
 import {searchCategories} from '@/graphql/query/categories';
 import {searchArticles} from '@/graphql/query/search-articles';
 import {css} from '@styled/css';
+import {Box} from '@styled/jsx';
+import {flex} from '@styled/patterns';
+import {useQuery} from '@tanstack/react-query';
 import {usePathname, useRouter, useSearchParams} from 'next/navigation';
 import {useCallback} from 'react';
+import Select from 'react-select';
 import {
   Container,
   Content,
@@ -36,7 +34,7 @@ export default function HomeMain() {
   const READMORE_PAGE_COUNT = 12;
   const {data} = useQuery({
     queryKey: ['search-articles-home'],
-    queryFn: () => searchArticles({count: 15, page: +page}),
+    queryFn: () => searchArticles({status: StatusType.Publish, count: 15, page: +page}),
   }) as any;
   const res = useQuery({
     queryKey: ['search-categories-home'],
@@ -66,7 +64,7 @@ export default function HomeMain() {
   const endResult = Math.min(+page * READMORE_PAGE_COUNT, totalCount || 0);
 
   return (
-    <Container>
+    <>
       <Hero>
         <HeroShade />
         <HeroWrapper style={{backgroundImage: `url(${hero.src})`}}>
@@ -187,37 +185,39 @@ export default function HomeMain() {
           </Content>
         </HeroWrapper>
       </Hero>
-      <Divider label='Top Rated Corporates' />
-      <RecentArticles posts={articles.slice(0, 3)} />
-      <Divider label='Keep Reading' />
-      <Articles articles={articles.slice(3)} />
-      <div
-        className={css({
-          mt: 6,
-          mb: -6,
-        })}
-      >
-        <button
-          type='button'
-          onClick={() => {}}
+      <Container className={css({mt: '8'})}>
+        <RecentArticles posts={articles.slice(0, 3)} />
+        <Divider label='Keep Reading' />
+        <Articles articles={articles.slice(3)} />
+        <div
           className={css({
-            backgroundColor: 'primary',
-            px: '4',
-            py: '3',
-            mx: 'auto',
-            display: 'block',
+            mt: 6,
+            mb: -6,
           })}
         >
-          <span
+          <button
+            type='button'
+            onClick={() => {}}
             className={css({
-              textStyle: 'body',
-              color: 'text.invert',
+              backgroundColor: 'primary',
+              px: '4',
+              py: '3',
+              mx: 'auto',
+              display: 'block',
+              cursor: 'pointer',
             })}
           >
-            Show more
-          </span>
-        </button>
-      </div>
-    </Container>
+            <span
+              className={css({
+                textStyle: 'body',
+                color: 'text.invert',
+              })}
+            >
+              Show more
+            </span>
+          </button>
+        </div>
+      </Container>
+    </>
   );
 }

@@ -1,4 +1,5 @@
 import {ProfileDetails, ProfileSidebar} from '@/components';
+import {CookieName} from '@/constants';
 import {getUser} from '@/graphql/query/users/get-user';
 import {getQueryClient} from '@/helpers';
 import {Hydrate} from '@/providers';
@@ -9,7 +10,7 @@ import {cookies} from 'next/headers';
 
 export default async function Template({children}: {children: React.ReactNode}) {
   const cookieStore = cookies();
-  const authToken = cookieStore.get('authToken')?.value || '';
+  const authToken = cookieStore.get(CookieName.AUTH_TOKEN)?.value || '';
   const queryClient = getQueryClient();
   await queryClient.prefetchQuery({
     queryKey: ['get-profile', 2],

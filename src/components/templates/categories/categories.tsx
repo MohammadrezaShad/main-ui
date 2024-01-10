@@ -43,7 +43,7 @@ export default function Categories() {
       </Box>
       <Wrapper hideBelow='md'>
         {categories.slice(0, 3).map(category => (
-          <CategoryCard key={category._id} category={category} />
+          <CategoryCard id={category._id} key={category._id} category={category} />
         ))}
       </Wrapper>
       <SliderWrapper>
@@ -64,7 +64,7 @@ export default function Categories() {
                   w: 'full',
                 })}
               >
-                <CategoryCard key={category._id} category={category} />
+                <CategoryCard id={category._id} key={category._id} category={category} />
               </div>
             </SwiperSlide>
           ))}
@@ -75,12 +75,12 @@ export default function Categories() {
           <Divider label='Other Categories' />
           <Wrapper hideBelow='md'>
             {categories.slice(3).map(category => (
-              <CategoryCard key={category._id} category={category} />
+              <CategoryCard id={category._id} key={category._id} category={category} />
             ))}
           </Wrapper>
           <Wrapper hideFrom='md'>
             {categories.slice(3).map(category => (
-              <CategoryCard key={category._id} collapsed category={category} />
+              <CategoryCard id={category._id} key={category._id} collapsed category={category} />
             ))}
           </Wrapper>
         </>
