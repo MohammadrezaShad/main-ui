@@ -87,7 +87,7 @@ const Page = () => {
     if (article.isBookmark) {
       await removeBookmark({articleId});
     } else {
-      await createBookmark({article});
+      await createBookmark({article: articleId});
     }
   };
 
