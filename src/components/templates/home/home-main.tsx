@@ -9,7 +9,6 @@ import {css} from '@styled/css';
 import {Box} from '@styled/jsx';
 import {flex} from '@styled/patterns';
 import {useInfiniteQuery, useQuery} from '@tanstack/react-query';
-import {useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
 import Select from 'react-select';
 import {
@@ -27,7 +26,6 @@ import {
 const cities = [{id: 1, value: 'amsterdam', label: 'Amsterdam'}];
 
 export default function HomeMain() {
-  const searchParams = useSearchParams();
   const [articles, setArticles] = useState<ArticleType[]>([]);
   const {data, fetchNextPage, hasNextPage, isError, isFetching, isLoading, isFetched, refetch} =
     useInfiniteQuery({
@@ -58,13 +56,13 @@ export default function HomeMain() {
 
   useEffect(() => {
     if (data) {
-      const articles =
+      const _articles =
         data?.pages.reduce(
           (acc: any, page: any, index: any) =>
-            index !== 0 ? [...acc, ...page?.article!.searchArticles.results] : [...acc],
-          data?.pages[0]?.article!.searchArticles.results,
+            index !== 0 ? [...acc, ...page?.article?.searchArticles.results] : [...acc],
+          data?.pages[0]?.article?.searchArticles.results,
         ) || [];
-      setArticles(articles);
+      setArticles(_articles);
     }
   }, [data]);
 

@@ -6,35 +6,24 @@ import {ArticleType} from '@/graphql/generated/types';
 import {searchArticleByCategory} from '@/graphql/query/search-articles-by-category';
 import {css} from '@styled/css';
 import {Box} from '@styled/jsx';
-import {useQuery} from '@tanstack/react-query';
-import {useParams, usePathname, useRouter, useSearchParams} from 'next/navigation';
-import {useCallback} from 'react';
+import {keepPreviousData, useQuery} from '@tanstack/react-query';
+import {useParams} from 'next/navigation';
+import {useState} from 'react';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import {Pagination} from './articles.styled';
 
 const Page = () => {
-  const searchParams = useSearchParams();
+  const [page, setPage] = useState(1);
   const params = useParams();
-  const pathname = usePathname();
-  const router = useRouter();
-  const page = searchParams.get('page') ?? '1';
-  const READMORE_PAGE_COUNT = 12;
-  const {data} = useQuery({
+  const READMORE_PAGE_COUNT = 1;
+  const {isPending, isError, error, data, isFetching, isPlaceholderData} = useQuery({
     queryKey: ['search-cs', params.categoryId],
     queryFn: () =>
-      searchArticleByCategory({categories: [params.categoryId as string], count: 18, page: 1}),
+      searchArticleByCategory({categories: [params.categoryId as string], count: 5, page}),
+    placeholderData: keepPreviousData,
   }) as any;
-
-  const updateSearchParam = useCallback(
-    (name: string, value: string) => {
-      const _params = new URLSearchParams(searchParams);
-      _params.set(name, value);
-      router.push(`${pathname}?${_params.toString()}`);
-    },
-    [router, pathname, searchParams],
-  );
 
   const articles: Array<ArticleType> = data.article!.searchArticles.results;
   const {totalPages} = data.article!.searchArticles;
@@ -63,7 +52,7 @@ const Page = () => {
       >
         <Pagination
           nextLabel='>'
-          onPageChange={current => updateSearchParam('page', (current.selected + 1).toString())}
+          onPageChange={current => setPage(current.selected + 1)}
           pageRangeDisplayed={3}
           marginPagesDisplayed={2}
           pageCount={totalPages}

@@ -9,7 +9,7 @@ const Page = async ({params}: {params: {categoryId: string}}) => {
   const queryClient = getQueryClient();
   await queryClient.prefetchQuery({
     queryKey: ['search-cs', params.categoryId],
-    queryFn: () => searchArticleByCategory({categories: [params.categoryId], count: 18, page: 1}),
+    queryFn: () => searchArticleByCategory({categories: [params.categoryId], count: 5, page: 1}),
   });
   const dehydratedState = dehydrate(queryClient);
 
