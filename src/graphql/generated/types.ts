@@ -18,6 +18,24 @@ export type Scalars = {
   Upload: {input: any; output: any};
 };
 
+export type ArticleInputType = {
+  author: UserOutputInputType;
+  categories?: InputMaybe<Array<CategoryInputType>>;
+  content: Scalars['String']['input'];
+  createUser?: InputMaybe<UserOutputInputType>;
+  excerpt?: InputMaybe<Scalars['String']['input']>;
+  faqs?: InputMaybe<Array<FaqInputType>>;
+  publishDate?: InputMaybe<Scalars['DateTime']['input']>;
+  readingDuration?: InputMaybe<Scalars['Int']['input']>;
+  reports?: InputMaybe<Array<Scalars['String']['input']>>;
+  slug: Scalars['String']['input'];
+  status?: InputMaybe<StatusType>;
+  tags?: InputMaybe<Array<TagInputType>>;
+  thumbnail?: InputMaybe<ImageInputType>;
+  title: Scalars['String']['input'];
+  updateUser?: InputMaybe<UserOutputInputType>;
+};
+
 export type ArticleMutation = {
   __typename?: 'ArticleMutation';
   createArticle: CreateArticleOutput;
@@ -81,11 +99,15 @@ export type ArticleType = {
   _id: Scalars['String']['output'];
   author: UserOutputType;
   categories?: Maybe<Array<CategoryType>>;
+  commentsCount: Scalars['Int']['output'];
   content: Scalars['String']['output'];
   createUser?: Maybe<UserOutputType>;
   createdAt?: Maybe<Scalars['DateTime']['output']>;
   excerpt?: Maybe<Scalars['String']['output']>;
   faqs?: Maybe<Array<FaqType>>;
+  isBookmark: Scalars['Boolean']['output'];
+  isUserFavorite: Scalars['Boolean']['output'];
+  likeCount: Scalars['Int']['output'];
   publishDate?: Maybe<Scalars['DateTime']['output']>;
   readingDuration?: Maybe<Scalars['Int']['output']>;
   reports?: Maybe<Array<Scalars['String']['output']>>;
@@ -166,6 +188,7 @@ export type BookmarkMutation = {
   createBookmark: CreateBookmarkOutput;
   deleteBookmark: DeleteBookmarkOutput;
   deleteBookmarks: DeleteBookmarkOutput;
+  deleteOneBookmark: DeleteBookmarkOutput;
   updateBookmark: UpdateBookmarkOutput;
 };
 
@@ -179,6 +202,10 @@ export type BookmarkMutationDeleteBookmarkArgs = {
 
 export type BookmarkMutationDeleteBookmarksArgs = {
   input: BulkFindBookmarkInput;
+};
+
+export type BookmarkMutationDeleteOneBookmarkArgs = {
+  input: DeleteOneArticleBookmarkInput;
 };
 
 export type BookmarkMutationUpdateBookmarkArgs = {
@@ -207,6 +234,7 @@ export type BookmarkQuerySearchBookmarksArgs = {
 export type BookmarkType = {
   __typename?: 'BookmarkType';
   _id: Scalars['String']['output'];
+  article: ArticleType;
   createdAt?: Maybe<Scalars['DateTime']['output']>;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
   user?: Maybe<UserOutputType>;
@@ -217,6 +245,10 @@ export type BulkDeleteArticleInput = {
 };
 
 export type BulkDeleteCategoryInput = {
+  ids: Array<Scalars['String']['input']>;
+};
+
+export type BulkDeleteCommentInput = {
   ids: Array<Scalars['String']['input']>;
 };
 
@@ -262,6 +294,10 @@ export type BulkFindSeoSettingInput = {
 
 export type BulkFindTagInput = {
   ids: Array<Scalars['String']['input']>;
+};
+
+export type CategoryInputType = {
+  parent?: InputMaybe<CategoryInputType>;
 };
 
 export type CategoryMutation = {
@@ -337,20 +373,97 @@ export type ChangePasswordOutput = {
   success: Scalars['Boolean']['output'];
 };
 
+export type CommentInputType = {
+  approved?: InputMaybe<Scalars['Boolean']['input']>;
+  author: Scalars['String']['input'];
+  authorEmail?: InputMaybe<Scalars['String']['input']>;
+  client: Scalars['String']['input'];
+  content: Scalars['String']['input'];
+  createUser?: InputMaybe<UserOutputInputType>;
+  parent?: InputMaybe<CommentInputType>;
+  post: CommentPostOutputInputType;
+  type: CommentTypeEnum;
+};
+
+export type CommentMutation = {
+  __typename?: 'CommentMutation';
+  createAdminComment: CreateCommentOutput;
+  createComment: CreateCommentOutput;
+  deleteComment: DeleteCommentOutput;
+  deleteComments: DeleteCommentOutput;
+  editComment: EditCommentOutput;
+  removeComment: DeleteCommentOutput;
+  updateComment: UpdateCommentOutput;
+};
+
+export type CommentMutationCreateAdminCommentArgs = {
+  input: CreateAdminCommentInput;
+};
+
+export type CommentMutationCreateCommentArgs = {
+  input: CreateCommentInput;
+};
+
+export type CommentMutationDeleteCommentArgs = {
+  input: DeleteCommentInput;
+};
+
+export type CommentMutationDeleteCommentsArgs = {
+  input: BulkDeleteCommentInput;
+};
+
+export type CommentMutationEditCommentArgs = {
+  input: EditCommentInput;
+};
+
+export type CommentMutationRemoveCommentArgs = {
+  input: RemoveCommentInput;
+};
+
+export type CommentMutationUpdateCommentArgs = {
+  input: UpdateCommentInput;
+};
+
+export type CommentPostOutputInputType = {
+  article?: InputMaybe<ArticleInputType>;
+};
+
+export type CommentPostOutputType = {
+  __typename?: 'CommentPostOutputType';
+  article?: Maybe<ArticleType>;
+};
+
+export type CommentQuery = {
+  __typename?: 'CommentQuery';
+  findCommentById: FindCommentOutput;
+  searchCommentss: SearchCommentOutput;
+};
+
+export type CommentQueryFindCommentByIdArgs = {
+  input: FindCommentInput;
+};
+
+export type CommentQuerySearchCommentssArgs = {
+  input: SearchCommentInput;
+};
+
 export type CommentType = {
   __typename?: 'CommentType';
   _id: Scalars['String']['output'];
   approved?: Maybe<Scalars['Boolean']['output']>;
   author: Scalars['String']['output'];
   authorEmail?: Maybe<Scalars['String']['output']>;
+  childs?: Maybe<Array<CommentType>>;
   client: Scalars['String']['output'];
   content: Scalars['String']['output'];
   createUser?: Maybe<UserOutputType>;
   createdAt?: Maybe<Scalars['DateTime']['output']>;
+  isUserLike: Scalars['Boolean']['output'];
+  likeCount?: Maybe<Scalars['Int']['output']>;
   parent?: Maybe<CommentType>;
+  post: CommentPostOutputType;
   type: CommentTypeEnum;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
-  user?: Maybe<UserOutputType>;
 };
 
 export enum CommentTypeEnum {
@@ -360,6 +473,16 @@ export enum CommentTypeEnum {
 export type CoreOutput = {
   __typename?: 'CoreOutput';
   success: Scalars['Boolean']['output'];
+};
+
+export type CreateAdminCommentInput = {
+  author: Scalars['String']['input'];
+  authorEmail?: InputMaybe<Scalars['String']['input']>;
+  client: Scalars['String']['input'];
+  content: Scalars['String']['input'];
+  parent: Scalars['String']['input'];
+  post: Scalars['String']['input'];
+  token: Scalars['String']['input'];
 };
 
 export type CreateArticleInput = {
@@ -384,7 +507,7 @@ export type CreateArticleOutput = {
 };
 
 export type CreateBookmarkInput = {
-  multimedia: Scalars['String']['input'];
+  article: Scalars['String']['input'];
 };
 
 export type CreateBookmarkOutput = {
@@ -408,8 +531,24 @@ export type CreateCategoryOutput = {
   success: Scalars['Boolean']['output'];
 };
 
+export type CreateCommentInput = {
+  author: Scalars['String']['input'];
+  authorEmail?: InputMaybe<Scalars['String']['input']>;
+  content: Scalars['String']['input'];
+  parent?: InputMaybe<Scalars['String']['input']>;
+  post: Scalars['String']['input'];
+  token: Scalars['String']['input'];
+  type: CommentTypeEnum;
+};
+
+export type CreateCommentOutput = {
+  __typename?: 'CreateCommentOutput';
+  success: Scalars['Boolean']['output'];
+};
+
 export type CreateLikeInput = {
-  comment: Scalars['String']['input'];
+  post: Scalars['String']['input'];
+  type: LikeTypeEnum;
 };
 
 export type CreateLikeOutput = {
@@ -512,6 +651,15 @@ export type DeleteCategoryOutput = {
   success: Scalars['Boolean']['output'];
 };
 
+export type DeleteCommentInput = {
+  id: Scalars['String']['input'];
+};
+
+export type DeleteCommentOutput = {
+  __typename?: 'DeleteCommentOutput';
+  success: Scalars['Boolean']['output'];
+};
+
 export type DeleteImageInput = {
   id: Scalars['String']['input'];
 };
@@ -526,7 +674,8 @@ export type DeleteImagesInput = {
 };
 
 export type DeleteLikeByUserInput = {
-  comment: Scalars['String']['input'];
+  post: Scalars['String']['input'];
+  type: LikeTypeEnum;
 };
 
 export type DeleteLikeInput = {
@@ -536,6 +685,10 @@ export type DeleteLikeInput = {
 export type DeleteLikeOutput = {
   __typename?: 'DeleteLikeOutput';
   success: Scalars['Boolean']['output'];
+};
+
+export type DeleteOneArticleBookmarkInput = {
+  articleId: Scalars['String']['input'];
 };
 
 export type DeleteQuestionInput = {
@@ -580,6 +733,16 @@ export type DeleteUserInput = {
 
 export type DeleteUserOutput = {
   __typename?: 'DeleteUserOutput';
+  success: Scalars['Boolean']['output'];
+};
+
+export type EditCommentInput = {
+  content?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['String']['input'];
+};
+
+export type EditCommentOutput = {
+  __typename?: 'EditCommentOutput';
   success: Scalars['Boolean']['output'];
 };
 
@@ -630,6 +793,16 @@ export type FindCategoryInput = {
 export type FindCategoryOutput = {
   __typename?: 'FindCategoryOutput';
   result?: Maybe<CategoryType>;
+  success: Scalars['Boolean']['output'];
+};
+
+export type FindCommentInput = {
+  id: Scalars['String']['input'];
+};
+
+export type FindCommentOutput = {
+  __typename?: 'FindCommentOutput';
+  result?: Maybe<CommentType>;
   success: Scalars['Boolean']['output'];
 };
 
@@ -768,7 +941,7 @@ export type ImageMutation = {
   deleteImage: DeleteImageOutput;
   deleteImages: DeleteImageOutput;
   updateImage: UpdateImageOutput;
-  uploadImage: CoreOutput;
+  uploadImage: UploadImageOutput;
   uploadImages: CoreOutput;
 };
 
@@ -855,10 +1028,22 @@ export type LikeMutationUpdateLikeArgs = {
   input: UpdateLikeInput;
 };
 
+export type LikePostOutputInputType = {
+  article?: InputMaybe<ArticleInputType>;
+  comment?: InputMaybe<CommentInputType>;
+};
+
+export type LikePostOutputType = {
+  __typename?: 'LikePostOutputType';
+  article?: Maybe<ArticleType>;
+  comment?: Maybe<CommentType>;
+};
+
 export type LikeQuery = {
   __typename?: 'LikeQuery';
   findLikeById: FindLikeOutput;
   findLikeByIds: Array<LikeType>;
+  searchPaperFavorite: SearchLikeOutput;
 };
 
 export type LikeQueryFindLikeByIdArgs = {
@@ -869,15 +1054,25 @@ export type LikeQueryFindLikeByIdsArgs = {
   input: BulkFindLikeInput;
 };
 
+export type LikeQuerySearchPaperFavoriteArgs = {
+  input: SearchLikeInput;
+};
+
 export type LikeType = {
   __typename?: 'LikeType';
   _id: Scalars['String']['output'];
   client: Scalars['String']['output'];
-  comment: CommentType;
   createdAt?: Maybe<Scalars['DateTime']['output']>;
+  post: LikePostOutputType;
+  type: LikeTypeEnum;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
   user?: Maybe<UserOutputType>;
 };
+
+export enum LikeTypeEnum {
+  Article = 'ARTICLE',
+  Comment = 'COMMENT',
+}
 
 export type Mutation = {
   __typename?: 'Mutation';
@@ -885,6 +1080,7 @@ export type Mutation = {
   auth: AuthMutation;
   bookmark: BookmarkMutation;
   category: CategoryMutation;
+  comment: CommentMutation;
   image: ImageMutation;
   like: LikeMutation;
   question: QuestionMutation;
@@ -911,6 +1107,7 @@ export type Query = {
   auth: AuthQuery;
   bookmark: BookmarkQuery;
   category: CategoryQuery;
+  comment: CommentQuery;
   image: ImageQuery;
   like: LikeQuery;
   question: QuestionQuery;
@@ -1019,6 +1216,10 @@ export type QuizType = {
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
 };
 
+export type RemoveCommentInput = {
+  id: Scalars['String']['input'];
+};
+
 export enum Role {
   Admin = 'Admin',
   Author = 'Author',
@@ -1093,6 +1294,25 @@ export type SearchCategoryOutput = {
   totalPages?: Maybe<Scalars['Int']['output']>;
 };
 
+export type SearchCommentInput = {
+  approved?: InputMaybe<Scalars['Boolean']['input']>;
+  author?: InputMaybe<Scalars['String']['input']>;
+  authorEmail?: InputMaybe<Scalars['String']['input']>;
+  count?: InputMaybe<Scalars['Int']['input']>;
+  page?: InputMaybe<Scalars['Int']['input']>;
+  parent?: InputMaybe<Scalars['String']['input']>;
+  post?: InputMaybe<Scalars['String']['input']>;
+  type?: InputMaybe<CommentTypeEnum>;
+};
+
+export type SearchCommentOutput = {
+  __typename?: 'SearchCommentOutput';
+  results?: Maybe<Array<CommentType>>;
+  success: Scalars['Boolean']['output'];
+  totalCount?: Maybe<Scalars['Int']['output']>;
+  totalPages?: Maybe<Scalars['Int']['output']>;
+};
+
 export type SearchImagesInput = {
   count?: InputMaybe<Scalars['Int']['input']>;
   filename?: InputMaybe<Scalars['String']['input']>;
@@ -1102,6 +1322,20 @@ export type SearchImagesInput = {
 export type SearchImagesOutput = {
   __typename?: 'SearchImagesOutput';
   results?: Maybe<Array<ImageType>>;
+  success: Scalars['Boolean']['output'];
+  totalCount?: Maybe<Scalars['Int']['output']>;
+  totalPages?: Maybe<Scalars['Int']['output']>;
+};
+
+export type SearchLikeInput = {
+  count?: InputMaybe<Scalars['Int']['input']>;
+  page?: InputMaybe<Scalars['Int']['input']>;
+  type?: InputMaybe<LikeTypeEnum>;
+};
+
+export type SearchLikeOutput = {
+  __typename?: 'SearchLikeOutput';
+  results?: Maybe<Array<LikeType>>;
   success: Scalars['Boolean']['output'];
   totalCount?: Maybe<Scalars['Int']['output']>;
   totalPages?: Maybe<Scalars['Int']['output']>;
@@ -1331,6 +1565,11 @@ export enum StatusType {
   Publish = 'PUBLISH',
 }
 
+export type TagInputType = {
+  parent?: InputMaybe<TagInputType>;
+  status?: InputMaybe<TagStatusEnum>;
+};
+
 export type TagMutation = {
   __typename?: 'TagMutation';
   createTag: CreateTagOutput;
@@ -1429,8 +1668,8 @@ export type UpdateArticleOutput = {
 };
 
 export type UpdateBookmarkInput = {
+  article?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['String']['input'];
-  multimedia?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UpdateBookmarkOutput = {
@@ -1455,6 +1694,22 @@ export type UpdateCategoryOutput = {
   success: Scalars['Boolean']['output'];
 };
 
+export type UpdateCommentInput = {
+  author?: InputMaybe<Scalars['String']['input']>;
+  authorEmail?: InputMaybe<Scalars['String']['input']>;
+  content?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['String']['input'];
+  parent?: InputMaybe<Scalars['String']['input']>;
+  post?: InputMaybe<Scalars['String']['input']>;
+  token?: InputMaybe<Scalars['String']['input']>;
+  type?: InputMaybe<CommentTypeEnum>;
+};
+
+export type UpdateCommentOutput = {
+  __typename?: 'UpdateCommentOutput';
+  success: Scalars['Boolean']['output'];
+};
+
 export type UpdateImageInput = {
   alt?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['String']['input'];
@@ -1466,8 +1721,9 @@ export type UpdateImageOutput = {
 };
 
 export type UpdateLikeInput = {
-  comment?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['String']['input'];
+  post?: InputMaybe<Scalars['String']['input']>;
+  type?: InputMaybe<LikeTypeEnum>;
 };
 
 export type UpdateLikeOutput = {
@@ -1559,6 +1815,12 @@ export type UpdateUserOutput = {
 
 export type UploadImageInputType = {
   alt?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type UploadImageOutput = {
+  __typename?: 'UploadImageOutput';
+  image?: Maybe<ImageType>;
+  success: Scalars['Boolean']['output'];
 };
 
 export type UploadUserAvatarOutput = {

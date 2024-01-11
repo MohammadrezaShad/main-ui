@@ -4,6 +4,7 @@ import {ArticleQuery, FindArticleBySlugInput} from '../generated/types';
 
 export async function findArticleByName(
   input: FindArticleBySlugInput,
+  token?: string,
 ): Promise<ArticleQuery['findArticleByName']> {
   const res = await gqlFetch({
     url: process.env.NEXT_PUBLIC_API as string,
@@ -12,6 +13,7 @@ export async function findArticleByName(
         findArticleByName(input: $input) {
           success
           result {
+            isBookmark
             _id
             author {
               _id
@@ -61,6 +63,7 @@ export async function findArticleByName(
       }
     }`,
     variables: {input},
+    headers: {Authorization: `Bearer ${token}`},
   });
   if (!res.ok) {
     throw new Error('Failed to fetch data');

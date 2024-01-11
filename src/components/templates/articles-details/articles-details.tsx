@@ -3,19 +3,12 @@
 import {css} from '@styled/css';
 import {Box} from '@styled/jsx';
 import {flex} from '@styled/patterns';
-import {useQuery} from '@tanstack/react-query';
+import {useMutation, useQuery} from '@tanstack/react-query';
 import Image from 'next/image';
 import Link from 'next/link';
 import {useParams} from 'next/navigation';
 
-import {
-  IconChevronDown,
-  IconEmail,
-  IconFacebook,
-  IconInstagram,
-  IconLink,
-  IconTwitter,
-} from '@/assets';
+import {IconEmail, IconFacebook, IconInstagram, IconLink, IconTwitter} from '@/assets';
 import {
   ArticleBody,
   ArticleInfo,
@@ -24,15 +17,18 @@ import {
   PrimaryTitle,
   Questions,
   RecentArticles,
-  Review,
   SocialMediaLinks,
   Tags,
   UserInfo,
 } from '@/components';
-import {ArticleType} from '@/graphql/generated/types';
+import {CookieName} from '@/constants';
+import {ArticleType, DeleteOneArticleBookmarkInput} from '@/graphql/generated/types';
+import {addBookmark} from '@/graphql/mutation/bookmark/add-bokmark';
+import {deleteBookmark} from '@/graphql/mutation/bookmark/remove-bokmark';
 import {findArticleByName} from '@/graphql/query/find-article-by-name';
 import {findRelatedArticles} from '@/graphql/query/find-related-articles';
 import {getArticlePdfById} from '@/graphql/query/get-article-pdf-by-id';
+import {getCookie} from 'cookies-next';
 
 const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
 
@@ -45,10 +41,11 @@ const socialMediaLinks = [
 ];
 
 const Page = () => {
+  const token = getCookie(CookieName.AUTH_TOKEN);
   const params = useParams();
-  const {data} = useQuery({
+  const {data, refetch} = useQuery({
     queryKey: ['get-article', params.articleId],
-    queryFn: () => findArticleByName({slug: params.articleId as string}),
+    queryFn: () => findArticleByName({slug: params.articleId as string}, token),
   }) as any;
   const article: ArticleType = data.article!.findArticleByName.result;
 
@@ -71,6 +68,28 @@ const Page = () => {
     month: 'long',
     year: 'numeric',
   });
+
+  const {
+    mutate: createBookmark,
+    error,
+    isLoading,
+  } = useMutation({
+    mutationFn: (input: {article: string}) => addBookmark(input, token!),
+    onSuccess: () => refetch(),
+  }) as any;
+  const {mutate: removeBookmark} = useMutation({
+    mutationFn: (input: DeleteOneArticleBookmarkInput) => deleteBookmark(input, token!),
+    onSuccess: () => refetch(),
+  }) as any;
+
+  const handleToggleBookmark = async (articleId: string) => {
+    if (!token) return;
+    if (article.isBookmark) {
+      await removeBookmark({articleId});
+    } else {
+      await createBookmark({article});
+    }
+  };
 
   return (
     <div>
@@ -112,6 +131,8 @@ const Page = () => {
             articleId={article._id}
             author={article.author}
             readingDuration={article.readingDuration}
+            handleToggleBookmark={handleToggleBookmark}
+            isBookmark={article.isBookmark}
           />
 
           <Box className={css({hideBelow: 'md'})}>
@@ -237,7 +258,7 @@ const Page = () => {
         </div>
       ) : null}
 
-      <h3
+      {/* <h3
         className={css({
           textStyle: 'headline3',
           color: 'text.primary',
@@ -263,7 +284,7 @@ const Page = () => {
             <IconChevronDown fill='#44BAEB' />
           </button>
         </Review>
-      </Review>
+      </Review> */}
     </div>
   );
 };
