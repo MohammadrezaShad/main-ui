@@ -4,8 +4,20 @@ import {css} from '@styled/css';
 
 const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
 
+function generateSeries(length: number): number[] {
+  const series: number[] = [1, 3, 4, 6, 9, 11];
+
+  for (let i = 0; i < length; i++) {
+    const current = series[series.length - 1];
+    const nextElement = current % 2 === 1 ? current + 2 : current + 1;
+    series.push(nextElement);
+  }
+
+  return series;
+}
+
 const Articles = ({articles}: {articles: Array<ArticleType>}) => {
-  const selectedIndexes = [1, 3, 4, 6, 9, 11];
+  const selectedIndexes = generateSeries(500);
 
   return (
     <div
