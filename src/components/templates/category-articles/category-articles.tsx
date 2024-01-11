@@ -1,5 +1,6 @@
 'use client';
 
+import {IconChevronLeft, IconChevronRight} from '@/assets';
 import {Articles, Divider, RecentArticles} from '@/components';
 import {Slider} from '@/components/organisms/slider';
 import {ArticleType} from '@/graphql/generated/types';
@@ -51,12 +52,12 @@ const Page = () => {
         })}
       >
         <Pagination
-          nextLabel='>'
+          nextLabel={<IconChevronRight />}
           onPageChange={current => setPage(current.selected + 1)}
           pageRangeDisplayed={3}
           marginPagesDisplayed={2}
           pageCount={totalPages}
-          previousLabel='<'
+          previousLabel={<IconChevronLeft />}
           pageClassName='page-item'
           pageLinkClassName='page-link'
           previousClassName='page-item'

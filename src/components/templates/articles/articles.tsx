@@ -12,6 +12,7 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 
+import {IconChevronLeft, IconChevronRight} from '@/assets';
 import {Pagination} from './articles.styled';
 
 const Page = () => {
@@ -49,12 +50,12 @@ const Page = () => {
         })}
       >
         <Pagination
-          nextLabel='>'
+          nextLabel={<IconChevronRight />}
           onPageChange={current => setPage(current.selected + 1)}
           pageRangeDisplayed={3}
           marginPagesDisplayed={2}
           pageCount={totalPages}
-          previousLabel='<'
+          previousLabel={<IconChevronLeft />}
           pageClassName='page-item'
           pageLinkClassName='page-link'
           previousClassName='page-item'
