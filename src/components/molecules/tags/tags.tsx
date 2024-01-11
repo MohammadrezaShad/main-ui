@@ -16,7 +16,7 @@ const Tags = ({tags}: {tags: TagType[]}) => (
     })}
   >
     {tags.map(tag => (
-      <Tag key={tag._id} text={tag.title} href={`/tags.${tag.slug}`} />
+      <Tag key={tag._id} text={tag.title} href={`/tags/${tag._id}`} />
     ))}
   </ul>
 );

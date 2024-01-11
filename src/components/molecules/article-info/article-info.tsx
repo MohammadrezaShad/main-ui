@@ -6,6 +6,8 @@ import {CookieName} from '@/constants';
 import {Maybe, UserOutputType} from '@/graphql/generated/types';
 import {getCookie} from 'cookies-next';
 
+const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
+
 const ArticleInfo = ({
   author,
   readingDuration,
@@ -42,7 +44,7 @@ const ArticleInfo = ({
         })}
       >
         {/** AVATAR */}
-        <Avatar src={author.avatar?.filename} size={40} />
+        <Avatar src={`${IMAGE_STORAGE_URL}/${author.avatar?.filename}`} size={40} />
 
         {/** NAME */}
         <span

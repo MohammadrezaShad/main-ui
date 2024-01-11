@@ -10,6 +10,8 @@ import {useQuery} from '@tanstack/react-query';
 import {getCookie} from 'cookies-next';
 import Link from 'next/link';
 
+const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
+
 function UserInfo() {
   const authToken = getCookie(CookieName.AUTH_TOKEN)!;
   const {data, isLoading} = useQuery({
@@ -71,7 +73,7 @@ function UserInfo() {
         </div>
       </div>
       <Link href='/profile'>
-        <Avatar size={40} src={user?.avatar?.filename} />
+        <Avatar size={40} src={`${IMAGE_STORAGE_URL}/${user?.avatar?._id}`} />
       </Link>
     </div>
   );
