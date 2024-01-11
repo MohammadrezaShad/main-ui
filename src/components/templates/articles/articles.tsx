@@ -6,9 +6,8 @@ import {ArticleType, StatusType} from '@/graphql/generated/types';
 import {searchArticles} from '@/graphql/query/search-articles';
 import {css} from '@styled/css';
 import {Box} from '@styled/jsx';
-import {useQuery} from '@tanstack/react-query';
-import {usePathname, useRouter, useSearchParams} from 'next/navigation';
-import {useCallback, useEffect} from 'react';
+import {keepPreviousData, useQuery} from '@tanstack/react-query';
+import {useEffect, useState} from 'react';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
@@ -16,24 +15,13 @@ import 'swiper/css/pagination';
 import {Pagination} from './articles.styled';
 
 const Page = () => {
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
-  const router = useRouter();
-  const page = searchParams.get('page') ?? '1';
+  const [page, setPage] = useState(1);
   const READMORE_PAGE_COUNT = 12;
-  const {data, refetch} = useQuery({
+  const {isPending, isError, error, data, isFetching, refetch, isPlaceholderData} = useQuery({
     queryKey: ['search-articles', 18],
-    queryFn: () => searchArticles({status: StatusType.Publish, count: 18, page: +page}),
+    queryFn: () => searchArticles({status: StatusType.Publish, count: 18, page}),
+    placeholderData: keepPreviousData,
   }) as any;
-
-  const updateSearchParam = useCallback(
-    (name: string, value: string) => {
-      const params = new URLSearchParams(searchParams);
-      params.set(name, value);
-      router.push(`${pathname}?${params.toString()}`);
-    },
-    [router, pathname, searchParams],
-  );
 
   const articles: Array<ArticleType> = data.article!.searchArticles.results;
   const {totalPages} = data.article!.searchArticles;
@@ -62,7 +50,7 @@ const Page = () => {
       >
         <Pagination
           nextLabel='>'
-          onPageChange={current => updateSearchParam('page', (current.selected + 1).toString())}
+          onPageChange={current => setPage(current.selected + 1)}
           pageRangeDisplayed={3}
           marginPagesDisplayed={2}
           pageCount={totalPages}

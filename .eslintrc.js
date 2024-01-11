@@ -73,6 +73,7 @@ module.exports = {
     'import/order': 'off',
     'import/named': 'off',
     'import/export': 'warn',
+    'no-unsafe-optional-chaining': 'warn',
     'import\no-extraneous-dependencies': 'off',
     'unused-imports/no-unused-imports': 'error',
     'react/function-component-definition': 'off',

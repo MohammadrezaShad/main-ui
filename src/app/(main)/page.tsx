@@ -1,17 +1,11 @@
 import {MainHome} from '@/components';
-import {StatusType} from '@/graphql/generated/types';
 import {searchCategories} from '@/graphql/query/categories';
-import {searchArticles} from '@/graphql/query/search-articles';
 import {getQueryClient} from '@/helpers';
 import {Hydrate} from '@/providers';
 import {dehydrate} from '@tanstack/react-query';
 
 export default async function Home() {
   const queryClient = getQueryClient();
-  await queryClient.prefetchQuery({
-    queryKey: ['search-articles-home'],
-    queryFn: () => searchArticles({status: StatusType.Publish, count: 15, page: 1}),
-  });
   await queryClient.prefetchQuery({
     queryKey: ['search-categories-home'],
     queryFn: () => searchCategories({}),
