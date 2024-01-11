@@ -1,15 +1,15 @@
-import {BookmarkMutation} from '@/graphql/generated/types';
+import {BookmarkMutation, DeleteOneArticleBookmarkInput} from '@/graphql/generated/types';
 import {gqlFetch} from '@/services/fetch';
 
-export async function addBookmark(
-  input: {article: string},
+export async function deleteBookmark(
+  input: DeleteOneArticleBookmarkInput,
   accessToken: string,
-): Promise<BookmarkMutation['createBookmark']> {
+): Promise<BookmarkMutation['deleteOneBookmark']> {
   const res = await gqlFetch({
     url: process.env.NEXT_PUBLIC_API as string,
-    query: `mutation CreateBookmark($input: CreateBookmarkInput!) {
+    query: `mutation DeleteOneBookmark($input: DeleteOneArticleBookmarkInput!) {
       bookmark {
-        createBookmark(input: $input) {
+        deleteOneBookmark(input: $input) {
           success
         }
       }
