@@ -7,3 +7,4 @@ export * from './home';
 export * from './notifications';
 export * from './profile';
 export * from './settings';
+export * from './tags';
