@@ -3,18 +3,19 @@ import {setCookie} from 'cookies-next';
 import {CookieName} from '@/constants';
 
 export const setTokens = ({
-  authToken,
+  accessToken,
   refreshToken,
   req,
   res,
 }: {
-  authToken: string;
-  refreshToken?: string;
+  accessToken: string;
+  refreshToken: string;
   req?: any;
   res?: any;
 }) => {
   const expirationTime = 14 * 24 * 60 * 60 * 1000;
   const expirationDate = new Date(Date.now() + expirationTime);
 
-  setCookie(CookieName.AUTH_TOKEN, authToken, {expires: expirationDate, res, req});
+  setCookie(CookieName.ACCESS_TOKEN, accessToken, {expires: expirationDate, res, req});
+  setCookie(CookieName.REFRESH_TOKEN, refreshToken, {expires: expirationDate, res, req});
 };

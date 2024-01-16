@@ -24,7 +24,7 @@ export default function Modal({
           className={css({
             position: 'fixed',
             inset: '0',
-            zIndex: 9999,
+            zIndex: 40,
             display: {
               base: 'grid',
               mdDown: 'block',

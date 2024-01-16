@@ -7,12 +7,15 @@ import {flex} from '@styled/patterns';
 import {useMutation} from '@tanstack/react-query';
 import {useFormik} from 'formik';
 import Link from 'next/link';
+import {toast} from 'react-toastify';
 import * as Yup from 'yup';
 
 import {IconClose} from '@/assets';
 import {Modal} from '@/components/atoms/modal';
 import {SignupInputType} from '@/graphql/generated/types';
 import {signUp} from '@/graphql/mutation/auth/sign-up';
+import {setTokens} from '@/helpers';
+import 'react-toastify/dist/ReactToastify.css';
 
 const schema = Yup.object().shape({
   firstname: Yup.string(),
@@ -28,7 +31,21 @@ export default function SignUp({
   isOpen$: Observable<boolean>;
   isLoginOpen$: Observable<boolean>;
 }) {
-  const {mutate, data, error, isLoading} = useMutation({
+  const notifyError = (text: string) =>
+    toast(text, {
+      type: 'error',
+      hideProgressBar: true,
+      theme: 'light',
+      position: 'top-center',
+    });
+  const notifySuccess = (text: string) =>
+    toast(text, {
+      type: 'success',
+      hideProgressBar: true,
+      theme: 'light',
+      position: 'top-center',
+    });
+  const {mutateAsync, data, isLoading} = useMutation({
     mutationFn: (input: SignupInputType) => signUp(input),
   }) as any;
   const onClose = () => {
@@ -44,7 +61,17 @@ export default function SignUp({
     validationSchema: schema,
     onSubmit: async ({firstname, lastname, email, password}) => {
       const input = {displayName: `${firstname} ${lastname}`, email, password};
-      mutate(input);
+      try {
+        const signinData = await mutateAsync(input);
+        notifySuccess('Signed up successfully');
+        const {accessToken, refreshToken} = signinData.auth.signin || {};
+        setTokens({accessToken: accessToken as string, refreshToken: refreshToken as string});
+        setTimeout(() => {
+          onClose();
+        }, 1000);
+      } catch (error: any) {
+        notifyError('message' in error ? (error.message as string) : 'Unknown error occured/');
+      }
     },
   });
   const {errors, touched, values, handleChange, handleSubmit} = formik;
