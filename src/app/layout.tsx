@@ -6,6 +6,7 @@ import {CookieName, ThemeType} from '@/constants';
 import {MainProviders} from '@/providers';
 
 import '@/styles/globals.css';
+import {ToastContainer} from 'react-toastify';
 
 const ubuntu = Ubuntu({
   weight: ['300', '400', '500', '700'],
@@ -33,6 +34,7 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
           <main>
             <div className='root'>{children}</div>
           </main>
+          <ToastContainer />
         </MainProviders>
       </body>
     </html>
