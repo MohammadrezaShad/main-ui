@@ -13,7 +13,7 @@ const navbarItems = [
   {id: 1, title: 'Terms of Use', href: '#'},
   {id: 2, title: 'Privacy Policy', href: '#'},
   {id: 3, title: 'FAQ', href: '#'},
-  {id: 4, title: 'Site Map', href: '#'},
+  {id: 4, title: 'Site Map', href: '/sitemap.xml'},
   {id: 5, title: 'Contact us', href: '#'},
   {id: 6, title: 'About us', href: '#'},
 ];
@@ -47,7 +47,7 @@ const Footer = () => {
           mb: 10,
         })}
       >
-        @ 2023 Waterworld Inc. All rights reserved.
+        @ {new Date().getFullYear()} Waterworld Inc. All rights reserved.
       </span>
       <Wrap className={css({justifyContent: 'space-between', w: 'full'})}>
         <SocialMediaLinks links={socialMediaLinks} />

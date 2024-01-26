@@ -21,7 +21,7 @@ const ProfileSidebar = () => {
   const router = useRouter();
   const authToken = getCookie(CookieName.AUTH_TOKEN)!;
   const {data} = useQuery({
-    queryKey: ['get-profile', 2],
+    queryKey: ['get-profile'],
     queryFn: () => getUser(authToken),
   }) as any;
   const user: User = data.auth!.getUser;
@@ -42,11 +42,13 @@ const ProfileSidebar = () => {
         flex: 0,
         flexDir: 'column',
         px: '8',
-        pt: '12',
-        pb: '8',
+        py: '8',
       })}
     >
-      <Avatar size={134} src={`${IMAGE_STORAGE_URL}/${user.avatar?._id}` ?? undefined} />
+      <Avatar
+        size={134}
+        src={user.avatar?._id ? `${IMAGE_STORAGE_URL}/${user.avatar?._id}` : undefined}
+      />
       <h3
         className={css({
           textStyle: 'headline3',

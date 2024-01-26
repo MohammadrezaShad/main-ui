@@ -24,12 +24,13 @@ const RecentArticles = ({posts}: {posts: ArticleType[]}) => (
           title={post.title}
           articleLink={`/articles/${post.slug}`}
           date={post.publishDate}
-          imageUrl={`${IMAGE_STORAGE_URL}/${post.thumbnail?._id}`}
+          imageUrl={post.thumbnail?._id && `${IMAGE_STORAGE_URL}/${post.thumbnail?._id}`}
         />
       ))}
     </div>
     <div className={css({hideFrom: 'md'})}>
       <Swiper
+        autoHeight
         autoplay
         slidesPerView={1.2}
         centeredSlides
@@ -55,7 +56,7 @@ const RecentArticles = ({posts}: {posts: ArticleType[]}) => (
                 title={post.title}
                 articleLink={`/articles/${post.slug}`}
                 date={post.publishDate}
-                imageUrl={`${IMAGE_STORAGE_URL}/${post.thumbnail?._id}`}
+                imageUrl={post.thumbnail?._id && `${IMAGE_STORAGE_URL}/${post.thumbnail?._id}`}
               />
             </div>
           </SwiperSlide>

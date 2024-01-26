@@ -141,7 +141,7 @@ const Page = () => {
         </Box>
         {article.thumbnail ? (
           <Image
-            alt={`${IMAGE_STORAGE_URL}/${article.thumbnail?._id}` ?? ''}
+            alt={article.title ?? ''}
             src={`${IMAGE_STORAGE_URL}/${article.thumbnail?._id}`}
             width={960}
             height={540}

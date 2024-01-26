@@ -15,7 +15,7 @@ const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
 function UserInfo() {
   const authToken = getCookie(CookieName.AUTH_TOKEN)!;
   const {data, isLoading} = useQuery({
-    queryKey: ['get-profile', 2],
+    queryKey: ['get-profile'],
     queryFn: () => getUser(authToken),
   }) as any;
   const user: User = data?.auth.getUser;
@@ -73,7 +73,7 @@ function UserInfo() {
         </div>
       </div>
       <Link href='/profile'>
-        <Avatar size={40} src={`${IMAGE_STORAGE_URL}/${user?.avatar?._id}`} />
+        <Avatar size={40} src={user?.avatar?._id && `${IMAGE_STORAGE_URL}/${user?.avatar?._id}`} />
       </Link>
     </div>
   );

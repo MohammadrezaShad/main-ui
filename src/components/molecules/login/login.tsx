@@ -17,6 +17,7 @@ import {CookieName} from '@/constants';
 import {signin} from '@/graphql/query/sign-in';
 import {useRouter} from 'next/navigation';
 import {useEffect} from 'react';
+import {toast} from 'react-toastify';
 
 const schema = Yup.object().shape({
   email: Yup.string().required().email(),
@@ -59,22 +60,41 @@ export default function Login({
     isSignUpOpen$.set(true);
   };
 
+  const notifyError = (text: string) =>
+    toast(text, {
+      type: 'error',
+      hideProgressBar: true,
+      theme: 'light',
+      position: 'top-center',
+    });
+  const notifySuccess = (text: string) =>
+    toast(text, {
+      type: 'success',
+      hideProgressBar: true,
+      theme: 'light',
+      position: 'top-center',
+    });
+
   useEffect(() => {
     if (data) {
-      setCookie(CookieName.AUTH_TOKEN, data.auth.signin.token, {
-        expires: new Date(new Date().setMonth(new Date().getMonth() + 2)),
-      });
-      setTimeout(() => {
-        onClose();
-        router.refresh();
-      }, 2000);
+      if (data.auth.signin.token) {
+        setCookie(CookieName.AUTH_TOKEN, data.auth.signin.token, {
+          expires: new Date(new Date().setMonth(new Date().getMonth() + 2)),
+        });
+        setTimeout(() => {
+          onClose();
+          router.refresh();
+        }, 2000);
+      } else {
+        notifyError('Your account is not verified yet.');
+      }
     }
   }, [data]);
 
   return (
     <Modal onClose={onClose} isOpen$={isOpen$}>
       <Container
-        style={{maxHeight: '99%'}}
+        style={{height: '100%'}}
         onClick={e => e.stopPropagation()}
         className={flex({
           backgroundColor: 'white',

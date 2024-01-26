@@ -16,7 +16,7 @@ import {useRouter} from 'next/navigation';
 export default function Settings() {
   const authToken = getCookie(CookieName.AUTH_TOKEN)!;
   const {data} = useQuery({
-    queryKey: ['get-profile', 2],
+    queryKey: ['get-profile'],
     queryFn: () => getUser(authToken),
   }) as any;
   const user: User = data!.auth.getUser;

@@ -16,7 +16,7 @@ const UserInfo = ({author}: {author: UserOutputType}) => (
     })}
   >
     {/** AVATAR */}
-    <Avatar src={`${IMAGE_STORAGE_URL}/${author.avatar?._id}`} />
+    <Avatar src={author.avatar?._id ? `${IMAGE_STORAGE_URL}/${author.avatar?._id}` : undefined} />
 
     <div
       className={css({

@@ -42,7 +42,7 @@ export default function Author() {
     queryFn: () => findUserById({id: params.authorId as string}, token),
   }) as any;
   const currentUser = useQuery({
-    queryKey: ['get-profile', 2],
+    queryKey: ['get-profile'],
     queryFn: () => getUser(token),
   }) as any;
   const response = useQuery({

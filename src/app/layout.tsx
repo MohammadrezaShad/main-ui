@@ -8,6 +8,8 @@ import {MainProviders} from '@/providers';
 import '@/styles/globals.css';
 import {ToastContainer} from 'react-toastify';
 
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+
 const ubuntu = Ubuntu({
   weight: ['300', '400', '500', '700'],
   style: ['normal'],
@@ -16,7 +18,11 @@ const ubuntu = Ubuntu({
 });
 
 export const metadata: Metadata = {
-  title: 'Waterworld',
+  metadataBase: new URL(BASE_URL || 'http://localhost:3000'),
+  title: {
+    default: 'Waterworld',
+    template: '%s | Waterworld',
+  },
   description: 'Save the world',
   icons: {
     icon: '/favicon.ico',

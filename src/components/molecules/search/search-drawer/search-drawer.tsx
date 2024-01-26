@@ -27,7 +27,7 @@ export default function SearchDrawer({isOpen$}: SearchDrawerProps) {
       open={isOpen}
       onClose={onClose}
       placement='top'
-      height='72px'
+      height='max-content'
       classNames={{
         mask: css({hideFrom: 'md'}),
         wrapper: css({hideFrom: 'md'}),
@@ -36,8 +36,8 @@ export default function SearchDrawer({isOpen$}: SearchDrawerProps) {
       <DrawerContainer>
         <Arrow className={css({cursor: 'pointer'})} onClick={onClose} />
         <TextField
-          placeholder='جستجو در سایت...'
-          className={css({pr: 4, mr: 4, w: '100%'})}
+          placeholder='Search'
+          className={css({pr: 4, mr: 4, w: '100%', textAlign: 'left !important'})}
           classes={{container: css({w: '100%'})}}
         />
       </DrawerContainer>

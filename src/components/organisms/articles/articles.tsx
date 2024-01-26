@@ -22,7 +22,9 @@ const Articles = ({articles}: {articles: Array<ArticleType>}) => {
           key={article._id}
           articleLink={`/articles/${article.slug}`}
           date={article.publishDate}
-          imageUrl={`${IMAGE_STORAGE_URL}/${article.thumbnail?._id}`}
+          imageUrl={
+            article.thumbnail?._id ? `${IMAGE_STORAGE_URL}/${article.thumbnail?._id}` : undefined
+          }
           title={article.title}
           aspectRatio={!selectedIndexes.includes(index) ? 'square' : 'portrait'}
         />

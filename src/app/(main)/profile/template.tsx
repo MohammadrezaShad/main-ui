@@ -13,7 +13,7 @@ export default async function Template({children}: {children: React.ReactNode}) 
   const authToken = cookieStore.get(CookieName.AUTH_TOKEN)?.value || '';
   const queryClient = getQueryClient();
   await queryClient.prefetchQuery({
-    queryKey: ['get-profile', 2],
+    queryKey: ['get-profile'],
     queryFn: () => getUser(authToken),
   });
   const dehydratedState = dehydrate(queryClient);
