@@ -79,6 +79,12 @@ module.exports = {
     'react/function-component-definition': 'off',
     '@typescript-eslint/no-explicit-any': 'warn',
     'prefer-arrow-callback': 'off',
+    'react/no-unknown-property': [
+      2,
+      {
+        ignore: ['tw'],
+      },
+    ],
     'simple-import-sort/imports': [
       'warn',
       {

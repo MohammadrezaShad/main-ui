@@ -14,7 +14,6 @@ import {IconClose} from '@/assets';
 import {Modal} from '@/components/atoms/modal';
 import {SignupInputType} from '@/graphql/generated/types';
 import {signUp} from '@/graphql/mutation/auth/sign-up';
-import {setTokens} from '@/helpers';
 import 'react-toastify/dist/ReactToastify.css';
 
 const schema = Yup.object().shape({
@@ -64,8 +63,6 @@ export default function SignUp({
       try {
         const signinData = await mutateAsync(input);
         notifySuccess('Signed up successfully');
-        const {accessToken, refreshToken} = signinData.auth.signin || {};
-        setTokens({accessToken: accessToken as string, refreshToken: refreshToken as string});
         setTimeout(() => {
           onClose();
         }, 1000);
@@ -84,7 +81,7 @@ export default function SignUp({
   return (
     <Modal onClose={onClose} isOpen$={isOpen$}>
       <Container
-        style={{maxHeight: '99%'}}
+        style={{height: '100%'}}
         onClick={e => e.stopPropagation()}
         className={flex({
           backgroundColor: 'white',

@@ -72,7 +72,15 @@ export default function Header(props: HeaderProps) {
           <Link className={css({hideFrom: 'md'})} href='/profile'>
             <Avatar size={32} />
           </Link>
-        ) : null}
+        ) : (
+          <button
+            type='button'
+            className={css({hideFrom: 'md'})}
+            onClick={() => isLoginOpen$.set(true)}
+          >
+            <Avatar size={32} />
+          </button>
+        )}
         <SearchDrawer isOpen$={isOpen$} />
         <Login isSignUpOpen$={isSignUpOpen$} isOpen$={isLoginOpen$} />
         <SignUp isOpen$={isSignUpOpen$} isLoginOpen$={isLoginOpen$} />

@@ -14,6 +14,7 @@ export async function searchArticles(input: SearchArticleInput): Promise<Article
           results {
             _id
             publishDate
+            updatedAt
             slug
             status
             title
