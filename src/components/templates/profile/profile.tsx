@@ -120,6 +120,7 @@ export default function Profile() {
               })}
             >
               <Image
+                unoptimized
                 width={64}
                 height={64}
                 alt=''
@@ -204,6 +205,7 @@ export default function Profile() {
               })}
             >
               <Image
+                unoptimized
                 width={64}
                 height={64}
                 alt=''

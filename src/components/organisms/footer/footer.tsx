@@ -1,12 +1,10 @@
 'use client';
 
-import {IconFacebook, IconInstagram, IconTwitter} from '@/assets';
+import {IconFacebook, IconGlobal, IconInstagram, IconX} from '@/assets';
 import {Logo, SocialMediaLinks} from '@/components';
 import {FooterNavbar} from '@/components/molecules/navbar/footer';
-import {SmallSelect} from '@/components/molecules/small-select';
-import {useObservable} from '@legendapp/state/react';
 import {css} from '@styled/css';
-import {useEffect} from 'react';
+import {flex} from '@styled/patterns';
 import {Container, Wrap} from './footer.styled';
 
 const navbarItems = [
@@ -24,18 +22,12 @@ const languages = [
 ];
 
 const socialMediaLinks = [
-  {id: 1, icon: IconTwitter, href: ''},
+  {id: 1, icon: IconX, href: ''},
   {id: 2, icon: IconInstagram, href: ''},
   {id: 3, icon: IconFacebook, href: ''},
 ];
 
 const Footer = () => {
-  const isClient$ = useObservable(false);
-
-  useEffect(() => {
-    isClient$.set(true);
-  }, []);
-
   return (
     <Container>
       <Logo />
@@ -47,12 +39,33 @@ const Footer = () => {
           mb: 10,
         })}
       >
-        @ {new Date().getFullYear()} Waterworld Inc. All rights reserved.
+        @ {new Date().getFullYear()} Waterlyst Inc. All rights reserved.
       </span>
       <Wrap className={css({justifyContent: 'space-between', w: 'full'})}>
         <SocialMediaLinks links={socialMediaLinks} />
         <FooterNavbar items={navbarItems} />
-        {isClient$.use() && <SmallSelect options={languages} />}
+        <div
+          className={flex({
+            alignItems: 'center',
+            gap: '3',
+          })}
+        >
+          <IconGlobal />
+          <select
+            style={{backgroundColor: 'transparent'}}
+            className={css({
+              color: 'text.primary',
+              w: '80px',
+              cursor: 'pointer',
+            })}
+          >
+            {languages.map(lang => (
+              <option key={lang.id} value={lang.value}>
+                {lang.label}
+              </option>
+            ))}
+          </select>
+        </div>
       </Wrap>
     </Container>
   );

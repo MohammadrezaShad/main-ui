@@ -140,7 +140,7 @@ export default function SignUp({
             mt: '7',
           })}
         >
-          Sign up for Waterworld
+          Sign up for Waterlyst
         </h3>
         <div
           className={css({
@@ -152,7 +152,7 @@ export default function SignUp({
           })}
         >
           <span className={css({textStyle: 'caption', color: 'text.primary'})}>
-            By proceeding, you agree to Waterworld’s&nbsp;
+            By proceeding, you agree to Waterlyst’s&nbsp;
           </span>
           <Link href='/' className={css({fontWeight: 'medium', color: 'primary'})}>
             Terms of Use
@@ -310,7 +310,7 @@ export default function SignUp({
               textAlign: 'center',
             })}
           >
-            Already on Waterworld?
+            Already on Waterlyst?
           </div>
           <button
             type='button'

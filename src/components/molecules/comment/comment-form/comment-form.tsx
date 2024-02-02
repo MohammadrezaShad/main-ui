@@ -19,6 +19,7 @@ export default function CommentForm({className}: CommentFormProps) {
     <Container className={commentFormClass}>
       <Box>
         <Image
+          unoptimized
           src={userTest}
           alt='user'
           height={32}

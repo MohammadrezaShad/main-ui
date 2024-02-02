@@ -2,7 +2,6 @@
 
 import {css, cx} from '@styled/css';
 
-import {IconWaterWorld} from '@/assets';
 import Paths from '@/utils/paths';
 
 import {Container} from './logo.styled';
@@ -16,7 +15,22 @@ export default function Logo({className}: LogoProps) {
   const containerClass = cx(defaultClassName, className);
   return (
     <Container className={containerClass} href={Paths.Home.getPath()}>
-      <IconWaterWorld />
+      <h1
+        className={css({
+          color: 'text.primary',
+          fontSize: '32px',
+          fontWeight: 500,
+        })}
+      >
+        Water
+        <span
+          className={css({
+            fontWeight: 300,
+          })}
+        >
+          lyst
+        </span>
+      </h1>
     </Container>
   );
 }

@@ -1,9 +1,9 @@
 'use client';
 
-import {PropsWithChildren} from 'react';
 import {useObservable, useSelector} from '@legendapp/state/react';
 import {css, cx} from '@styled/css';
 import Image from 'next/image';
+import {PropsWithChildren} from 'react';
 
 import {IconDislike, IconLike, IconReply, userTest} from '@/assets';
 import {Button, CommentForm} from '@/components';
@@ -32,7 +32,7 @@ export default function Comment({className, children}: CommentProps) {
   return (
     <Container className={commentClass}>
       <Head>
-        <Image src={userTest} alt='user' height={40} width={40} quality={100} />
+        <Image unoptimized src={userTest} alt='user' height={40} width={40} quality={100} />
         <Title>مهسا</Title>
         <SubTitle>25 فروردین 1402 - 11:00 </SubTitle>
       </Head>

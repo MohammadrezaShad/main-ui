@@ -8,6 +8,7 @@ interface Props {
 
 const CardImage = ({src, alt}: Props) => (
   <Image
+    unoptimized
     loading='lazy'
     className={css({w: 'full', h: '228px', mb: 6, objectFit: 'cover'})}
     width={304}

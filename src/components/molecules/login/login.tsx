@@ -148,7 +148,7 @@ export default function Login({
             mt: '7',
           })}
         >
-          Sign in to Waterworld
+          Sign in to Waterlyst
         </h3>
         <p
           className={css({
@@ -282,7 +282,7 @@ export default function Login({
               textAlign: 'center',
             })}
           >
-            New to Waterworld?
+            New to Waterlyst?
           </div>
           <button
             type='button'

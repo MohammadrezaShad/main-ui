@@ -2,6 +2,7 @@
 
 import {IconDoc, IconHome, IconMenu, IconProfile, IconQuiz} from '@/assets';
 import {css} from '@styled/css';
+import {flex} from '@styled/patterns';
 import Link from 'next/link';
 import {usePathname} from 'next/navigation';
 
@@ -31,7 +32,12 @@ export default function MobileNavbar() {
           alignItems: 'center',
         })}
       >
-        <li>
+        <li
+          className={flex({
+            justifyContent: 'center',
+            flex: 1,
+          })}
+        >
           <Link
             href='/profile'
             className={css({
@@ -54,7 +60,12 @@ export default function MobileNavbar() {
             Profile
           </Link>
         </li>
-        <li>
+        <li
+          className={flex({
+            justifyContent: 'center',
+            flex: 1,
+          })}
+        >
           <Link
             href='/articles'
             className={css({
@@ -77,7 +88,12 @@ export default function MobileNavbar() {
             Articles
           </Link>
         </li>
-        <li>
+        <li
+          className={flex({
+            justifyContent: 'center',
+            flex: 1,
+          })}
+        >
           <Link
             href='/'
             className={css({
@@ -100,7 +116,12 @@ export default function MobileNavbar() {
             Home
           </Link>
         </li>
-        <li>
+        <li
+          className={flex({
+            justifyContent: 'center',
+            flex: 1,
+          })}
+        >
           <Link
             href='/quizzes'
             className={css({
@@ -123,7 +144,12 @@ export default function MobileNavbar() {
             Quiz
           </Link>
         </li>
-        <li>
+        <li
+          className={flex({
+            justifyContent: 'center',
+            flex: 1,
+          })}
+        >
           <button
             type='button'
             className={css({

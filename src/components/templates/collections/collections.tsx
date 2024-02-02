@@ -107,6 +107,7 @@ export default function CollectionsView() {
                 })}
               >
                 <Image
+                  unoptimized
                   width={128}
                   height={128}
                   alt=''
@@ -181,6 +182,7 @@ export default function CollectionsView() {
                 })}
               >
                 <Image
+                  unoptimized
                   width={128}
                   height={128}
                   alt=''

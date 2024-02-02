@@ -14,6 +14,7 @@ const Avatar = ({src, size = 64, alt = ''}: Props) => {
   if (src) {
     return (
       <Image
+        unoptimized
         width={size}
         height={size}
         alt={alt}

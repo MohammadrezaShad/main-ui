@@ -20,6 +20,7 @@ const CategoryCard = ({
     <Card href={`/categories/${id ?? category.slug}/articles`} _small={collapsed}>
       {category.image ? (
         <Image
+          unoptimized
           alt={category.image.alt ?? ''}
           width={category.image.width}
           height={category.image.height}

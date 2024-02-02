@@ -91,6 +91,7 @@ const ProfileSidebar = () => {
           })}
         >
           <Image
+            unoptimized
             width={32}
             height={32}
             src={coin}

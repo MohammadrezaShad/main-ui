@@ -6,7 +6,7 @@ export default function VideoTile() {
   return (
     <Container>
       <ImageWrap>
-        <Image src='/test/thumbnail.png' fill alt='' />
+        <Image unoptimized src='/test/thumbnail.png' fill alt='' />
         <Duration>00:50:25</Duration>
       </ImageWrap>
       <Title>10 فیلم منتخب کمدی سال 2023</Title>
