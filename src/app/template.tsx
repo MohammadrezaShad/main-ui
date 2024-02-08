@@ -11,7 +11,7 @@ import {getUser} from '@/graphql/query/users/get-user';
 import {getQueryClient} from '@/helpers';
 import {Hydrate} from '@/providers';
 import {dehydrate} from '@tanstack/react-query';
-import '../globals.css';
+import './globals.css';
 
 export default async function Template({children}: {children: React.ReactNode}) {
   const currentUrl = headers().get(HeaderName.PATHNAME) || '';
@@ -32,8 +32,10 @@ export default async function Template({children}: {children: React.ReactNode}) 
       </Hydrate>
       <div
         className={css({
-          pb: {base: '8', mdDown: '36'},
+          pb: {base: '8', mdDown: '18'},
           bg: 'background',
+          flex: '1',
+          display: 'grid',
         })}
       >
         <div
@@ -42,23 +44,15 @@ export default async function Template({children}: {children: React.ReactNode}) 
               base: '1920px',
               lgDown: '100%',
             },
-            width: '100%',
+            w: 'full',
             mr: 'auto',
             ml: 'auto',
-            flex: 1,
+            h: 'full',
             gap: {base: '8', lgDown: 'normal'},
             alignItems: 'flex-start',
           })}
         >
-          {/* <Sidebar /> */}
-          <div
-            className={css({
-              w: 'full',
-              rounded: '2xl',
-            })}
-          >
-            {children}
-          </div>
+          {children}
         </div>
       </div>
       <Footer />

@@ -21,7 +21,7 @@ const Questions = ({faqs}: {faqs: FaqType[]}) => (
         color: 'gray4',
       })}
     >
-      Can&apos;t find an answer? Contact us at{' '}
+      Can&apos;t find an answer? Contact us at
       <Link href='/'>
         <span
           className={css({
@@ -30,7 +30,7 @@ const Questions = ({faqs}: {faqs: FaqType[]}) => (
         >
           Contact Page
         </span>
-      </Link>{' '}
+      </Link>
       or email contact@waterdrop.com
     </p>
     {faqs.map(faq => (

@@ -11,7 +11,9 @@ const Expandable = ({faq}: {faq: FaqType}) => {
     <div
       className={css({
         py: 4,
-        borderBottom: '1px solid token(colors.gray3)',
+        '&:not(:last-of-type)': {
+          borderBottom: '1px solid token(colors.gray3)',
+        },
       })}
     >
       <button
