@@ -54,7 +54,7 @@ export default function Profile() {
           })}
         >
           <IconInfo
-            clasName={css({
+            className={css({
               w: '16',
               h: '16',
             })}

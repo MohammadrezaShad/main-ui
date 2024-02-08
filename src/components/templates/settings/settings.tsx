@@ -75,9 +75,9 @@ export default function Settings() {
                 mt: '8',
               })}
             >
-              <TextField title='First Name' />
-              <TextField title='Last Name' />
-              <TextField title='Nickname' />
+              <TextField label='First Name' />
+              <TextField label='Last Name' />
+              <TextField label='Nickname' />
             </Box>
             <h5
               className={css({
@@ -160,8 +160,8 @@ export default function Settings() {
                 mt: '8',
               })}
             >
-              <TextField title='My Hometown' />
-              <TextField title='My Blog or Website' />
+              <TextField label='My Hometown' />
+              <TextField label='My Blog or Website' />
             </Box>
             <div
               className={css({
