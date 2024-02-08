@@ -11,10 +11,12 @@ import {toast} from 'react-toastify';
 import * as Yup from 'yup';
 
 import {IconClose} from '@/assets';
+import ProfileCircle from '@/assets/images/profile-circle.png';
 import {TextField} from '@/components';
 import {Modal} from '@/components/atoms/modal';
 import {SignupInputType} from '@/graphql/generated/types';
 import {signUp} from '@/graphql/mutation/auth/sign-up';
+import Image from 'next/image';
 import 'react-toastify/dist/ReactToastify.css';
 
 const schema = Yup.object().shape({
@@ -115,10 +117,12 @@ export default function SignUp({
         >
           <IconClose />
         </button>
-        <img
+        <Image
           alt=''
-          loading='lazy'
-          src='https://cdn.builder.io/api/v1/image/assets/TEMP/a45419311858d85bf4d76527dd38c99cbe9789a7637a2a0f1df4cc44065002a5?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&'
+          unoptimized
+          width={64}
+          height={64}
+          src={ProfileCircle}
           className={css({
             aspectRatio: 'square',
             objectFit: 'contain',
