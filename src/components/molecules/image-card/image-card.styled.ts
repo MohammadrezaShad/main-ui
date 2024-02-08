@@ -31,10 +31,7 @@ export const Container = styled('div', {
 
 export const Footer = styled('div', {
   base: {
-    h: {
-      base: '5/6',
-      mdDown: 'full',
-    },
+    h: 'full',
     bgGradient: 'to-b',
     gradientFrom: '#00000000',
     gradientVia: '#00000000',
