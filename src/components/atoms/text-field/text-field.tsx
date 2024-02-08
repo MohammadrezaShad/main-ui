@@ -1,38 +1,36 @@
-import React from 'react';
-import {cx} from '@styled/css';
-
+import {css, cx} from '@styled/css';
+import {InputHTMLAttributes} from 'react';
 import {Container, Input, Label} from './text-field.styled';
 
-type DefaultTextFieldProps = React.InputHTMLAttributes<HTMLInputElement>;
-export type TextFieldProps = DefaultTextFieldProps & {
+interface Props extends InputHTMLAttributes<HTMLInputElement> {
+  label: string;
   className?: string;
-  title?: string;
   classes?: {
     container?: string;
-    label?: string;
   };
+  hasError?: boolean;
+}
+
+const TextField = ({label, className, classes, hasError, ...otherProps}: Props) => {
+  const inputClassName = cx('peer', className);
+  const containerClassName = cx(classes?.container);
+
+  return (
+    <Container className={containerClassName}>
+      <Input hasError={hasError} className={inputClassName} {...otherProps} />
+      <Label
+        className={css({
+          top: otherProps.value ? '0' : '50%',
+          transform: otherProps.value
+            ? 'translateY(-50%) scale(0.9)'
+            : 'translate(0, -50%) scale(1)',
+        })}
+        htmlFor={otherProps.id}
+      >
+        {label}
+      </Label>
+    </Container>
+  );
 };
 
-const TextField = React.forwardRef<HTMLInputElement, TextFieldProps>(
-  (props: TextFieldProps, ref) => {
-    const {className, classes, disabled, title, ...otherProps} = props;
-    const inputClassName = cx('peer', className);
-    const containerClassName = cx(classes?.container);
-
-    return (
-      <Container className={containerClassName} disabled={disabled}>
-        <Input
-          type='text'
-          className={inputClassName}
-          ref={ref}
-          disabled={disabled}
-          {...otherProps}
-        />
-        <Label>{title}</Label>
-      </Container>
-    );
-  },
-);
-
 export default TextField;
-TextField.displayName = 'TextField';

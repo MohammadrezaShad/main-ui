@@ -11,6 +11,7 @@ import {toast} from 'react-toastify';
 import * as Yup from 'yup';
 
 import {IconClose} from '@/assets';
+import {TextField} from '@/components';
 import {Modal} from '@/components/atoms/modal';
 import {SignupInputType} from '@/graphql/generated/types';
 import {signUp} from '@/graphql/mutation/auth/sign-up';
@@ -186,44 +187,19 @@ export default function SignUp({
               mt: '6',
             })}
           >
-            <input
-              className={css({
-                color: 'text.primary',
-                textStyle: 'body2',
-                borderRadius: '4px',
-                bgColor: 'white',
-                w: 'full',
-                mt: '4',
-                px: '4',
-                py: '5',
-                border:
-                  errors.firstname && touched.firstname
-                    ? `1px solid token(colors.danger)`
-                    : `1px solid token(colors.gray3)`,
-              })}
-              placeholder='First Name'
+            <TextField
+              hasError={!!errors.firstname && touched.firstname}
+              label='First Name'
               autoComplete='given-name'
               name='firstname'
               value={values.firstname}
               onChange={handleChange}
               id='firstname'
             />
-            <input
-              className={css({
-                color: 'text.primary',
-                textStyle: 'body2',
-                borderRadius: '4px',
-                bgColor: 'white',
-                w: 'full',
-                mt: '4',
-                px: '4',
-                py: '5',
-                border:
-                  errors.lastname && touched.lastname
-                    ? `1px solid token(colors.danger)`
-                    : `1px solid token(colors.gray3)`,
-              })}
-              placeholder='Last Name'
+
+            <TextField
+              hasError={!!errors.lastname && touched.lastname}
+              label='Last Name'
               autoComplete='family-name'
               name='lastname'
               value={values.lastname}
@@ -231,22 +207,9 @@ export default function SignUp({
               id='lastname'
             />
           </div>
-          <input
-            className={css({
-              color: 'text.primary',
-              textStyle: 'body2',
-              borderRadius: '4px',
-              bgColor: 'white',
-              w: 'full',
-              mt: '4',
-              px: '4',
-              py: '5',
-              border:
-                errors.email && touched.email
-                  ? `1px solid token(colors.danger)`
-                  : `1px solid token(colors.gray3)`,
-            })}
-            placeholder='Email'
+          <TextField
+            hasError={!!errors.email && touched.email}
+            label='Email'
             type='email'
             autoComplete='email'
             name='email'
@@ -254,22 +217,9 @@ export default function SignUp({
             onChange={handleChange}
             id='email'
           />
-          <input
-            className={css({
-              color: 'text.primary',
-              textStyle: 'body2',
-              borderRadius: '4px',
-              bgColor: 'white',
-              w: 'full',
-              mt: '4',
-              px: '4',
-              py: '5',
-              border:
-                errors.password && touched.password
-                  ? `1px solid token(colors.danger)`
-                  : `1px solid token(colors.gray3)`,
-            })}
-            placeholder='Password'
+          <TextField
+            hasError={!!errors.password && touched.password}
+            label='Password'
             type='password'
             autoComplete='new-password'
             name='password'

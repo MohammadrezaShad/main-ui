@@ -5,8 +5,8 @@ import {cookies} from 'next/headers';
 import {CookieName, ThemeType} from '@/constants';
 import {MainProviders} from '@/providers';
 
-import '@/styles/globals.css';
 import {ToastContainer} from 'react-toastify';
+import './globals.css';
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 

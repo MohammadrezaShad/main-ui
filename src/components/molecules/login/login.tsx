@@ -3,7 +3,6 @@
 import {Observable} from '@legendapp/state';
 import {useObservable} from '@legendapp/state/react';
 import {css} from '@styled/css';
-import {Container} from '@styled/jsx';
 import {flex} from '@styled/patterns';
 import {useQuery} from '@tanstack/react-query';
 import {setCookie} from 'cookies-next';
@@ -12,6 +11,7 @@ import Link from 'next/link';
 import * as Yup from 'yup';
 
 import {IconClose} from '@/assets';
+import {TextField} from '@/components';
 import {Modal} from '@/components/atoms/modal';
 import {CookieName} from '@/constants';
 import {signin} from '@/graphql/query/sign-in';
@@ -93,18 +93,18 @@ export default function Login({
 
   return (
     <Modal onClose={onClose} isOpen$={isOpen$}>
-      <Container
+      <div
         style={{height: '100%'}}
         onClick={e => e.stopPropagation()}
-        className={flex({
-          backgroundColor: 'white',
+        className={css({
+          display: 'flex',
+          bgColor: 'white',
           flexDirection: 'column',
           alignItems: 'center',
-          px: 10,
-          py: 8,
+          padding: '40px',
           overflow: 'auto',
           alignSelf: 'center',
-          position: 'relative',
+          pos: 'relative',
           _scrollbar: {
             display: 'none',
           },
@@ -185,54 +185,29 @@ export default function Login({
             Privacy Policy
           </Link>
         </div>
-        <form className={flex({flexDirection: 'column'})} onSubmit={handleSubmit}>
-          <input
-            className={css({
-              color: 'text.primary',
-              textStyle: 'body2',
-              borderRadius: '4px',
-              bgColor: 'white',
-              w: 'full',
-              mt: '8',
-              pl: '4',
-              pr: '16',
-              py: '5',
-              border:
-                errors.email && touched.email
-                  ? `1px solid token(colors.danger)`
-                  : `1px solid token(colors.gray3)`,
-            })}
-            placeholder='Email'
-            autoComplete='email'
-            name='email'
-            value={values.email}
-            onChange={handleChange}
-            id='email'
-          />
-          <input
-            className={css({
-              color: 'text.primary',
-              textStyle: 'body2',
-              borderRadius: '4px',
-              bgColor: 'white',
-              w: 'full',
-              mt: '4',
-              pl: '4',
-              pr: '16',
-              py: '5',
-              border:
-                errors.password && touched.password
-                  ? `1px solid token(colors.danger)`
-                  : `1px solid token(colors.gray3)`,
-            })}
-            placeholder='Password'
-            type='password'
-            autoComplete='current-password'
-            name='password'
-            value={values.password}
-            onChange={handleChange}
-            id='password'
-          />
+        <form className={flex({flexDirection: 'column', w: 'full'})} onSubmit={handleSubmit}>
+          <div className={flex({flexDirection: 'column', w: 'full', mt: '8', gap: '4'})}>
+            <TextField
+              autoComplete='email'
+              type='email'
+              name='email'
+              value={values.email}
+              onChange={handleChange}
+              id='email'
+              hasError={!!errors.email && touched.email}
+              label='Email'
+            />
+            <TextField
+              autoComplete='password'
+              type='password'
+              name='password'
+              value={values.password}
+              onChange={handleChange}
+              id='password'
+              hasError={!!errors.password && touched.password}
+              label='Password'
+            />
+          </div>
           <button
             type='button'
             className={css({
@@ -296,7 +271,7 @@ export default function Login({
             Sign up
           </button>
         </div>
-      </Container>
+      </div>
     </Modal>
   );
 }

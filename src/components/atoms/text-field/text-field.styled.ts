@@ -1,16 +1,36 @@
 import {styled} from '@styled/jsx';
 
-export const Container = styled('span', {
+export const Container = styled('div', {
   base: {
-    pos: 'relative',
+    position: 'relative',
+    bgColor: 'white',
     w: 'full',
   },
+});
+
+export const Input = styled('input', {
+  base: {
+    color: 'text.primary',
+    textStyle: 'body2',
+    p: '4',
+    w: 'full',
+    outline: `1px solid token(colors.gray3)`,
+    borderRadius: '4px',
+    _focusVisible: {
+      outlineStyle: 'auto',
+      outlineColor: 'token(colors.primary)',
+      outlineWidth: '2px',
+    },
+    _hover: {
+      outlineStyle: 'auto',
+      outlineColor: 'token(colors.primary)',
+      outlineWidth: '1px',
+    },
+  },
   variants: {
-    disabled: {
+    hasError: {
       true: {
-        opacity: 0.5,
-        cursor: 'default',
-        pointerEvents: 'none',
+        outline: `1px solid token(colors.danger)`,
       },
     },
   },
@@ -18,40 +38,20 @@ export const Container = styled('span', {
 
 export const Label = styled('label', {
   base: {
+    color: 'token(colors.gray4)',
+    textStyle: 'body2',
     pos: 'absolute',
-    top: '50%',
-    transform: 'translateY(-50%)',
-    _peerFocus: {
-      top: '-8px',
-      textStyle: 'caption',
-      transform: 'none',
-    },
-    '.peer:is(:valid) ~ &': {
-      top: '-8px',
-      textStyle: 'caption',
-      transform: 'none',
-    },
-    transition: 'all',
-    left: '3',
-    display: 'block',
-    bgColor: 'white',
-    px: '1',
-    textStyle: 'body2',
-    color: 'gray4',
+    left: '4',
     pointerEvents: 'none',
-  },
-});
-
-export const Input = styled('input', {
-  base: {
-    display: 'block',
-    w: 'full',
-    p: '4',
-    color: 'text.primary',
-    border: '1px solid token(colors.gray3)',
-    textStyle: 'body2',
-    rounded: 'xs',
-    _placeholder: {color: 'gray.400'},
-    _focus: {shadow: 'xs'},
+    transformOrigin: 'top left',
+    display: 'inline-block',
+    bgColor: 'token(colors.white)',
+    px: '1',
+    transition: '200ms cubic-bezier(0, 0, 0.2, 1) 0ms',
+    _peerFocusWithin: {
+      top: '0',
+      transform: 'translateY(-50%) scale(0.9)',
+      color: 'token(colors.primary)',
+    },
   },
 });

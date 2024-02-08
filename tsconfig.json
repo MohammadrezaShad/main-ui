@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
     "target": "es6",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -20,10 +24,23 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"],
-      "@styled/*": ["./styled-system/*"]
+      "@/*": [
+        "./src/*"
+      ],
+      "@styled/*": [
+        "./styled-system/*"
+      ]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "src",
+    "styled-system"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

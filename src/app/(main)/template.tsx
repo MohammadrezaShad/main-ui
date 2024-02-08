@@ -10,8 +10,8 @@ import MobileNavbar from '@/components/organisms/mobile-navbar/mobile-navbar';
 import {getUser} from '@/graphql/query/users/get-user';
 import {getQueryClient} from '@/helpers';
 import {Hydrate} from '@/providers';
-import '@/styles/globals.css';
 import {dehydrate} from '@tanstack/react-query';
+import '../globals.css';
 
 export default async function Template({children}: {children: React.ReactNode}) {
   const currentUrl = headers().get(HeaderName.PATHNAME) || '';
