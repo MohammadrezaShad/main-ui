@@ -18,7 +18,7 @@ export default function SearchBar({text, className}: SearchBarProps) {
 
   return (
     <Container className={searchBarClass}>
-      <TextField placeholder='جستجو در سایت...' className={css({pl: 9})} />
+      <TextField label='جستجو در سایت...' className={css({pl: 9})} />
       <IconWrap>
         <IconSearch />
       </IconWrap>

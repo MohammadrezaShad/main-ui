@@ -6,7 +6,7 @@ import {CookieName, ThemeType} from '@/constants';
 import {MainProviders} from '@/providers';
 
 import {ToastContainer} from 'react-toastify';
-import './globals.css';
+import '@/styles/globals.css';
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 

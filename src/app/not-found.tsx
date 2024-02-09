@@ -1,30 +1,28 @@
 import NotFoundImage from '@/assets/images/404.svg';
 import {css} from '@styled/css';
-import {flex} from '@styled/patterns';
 
-const NotFound = () => {
-  return (
+const NotFound = () => (
+  <div
+    className={css({
+      display: 'flex',
+      flexDir: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: 'calc(100vh - 164px)',
+      mx: 'auto',
+    })}
+  >
+    <NotFoundImage />
     <div
-      className={flex({
-        flexDir: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        h: 'full',
-        mx: 'auto',
+      className={css({
+        textStyle: 'h4',
+        color: 'text.primary',
+        mt: '4',
       })}
     >
-      <NotFoundImage />
-      <div
-        className={css({
-          textStyle: 'h4',
-          color: 'text.primary',
-          mt: '4',
-        })}
-      >
-        PAGE NOT FOUND
-      </div>
+      PAGE NOT FOUND
     </div>
-  );
-};
+  </div>
+);
 
 export default NotFound;

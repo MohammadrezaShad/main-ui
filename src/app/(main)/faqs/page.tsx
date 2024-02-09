@@ -10,61 +10,59 @@ const QUESTIONS = [
   },
 ];
 
-const page = () => {
-  return (
-    <div
+const page = () => (
+  <div
+    className={css({
+      display: 'flex',
+      flexDir: 'column',
+      mx: 'auto',
+      w: 'full',
+      maxWidth: '960px',
+      p: {lgDown: 4},
+    })}
+  >
+    <h2
       className={css({
-        display: 'flex',
-        flexDir: 'column',
-        mx: 'auto',
+        textStyle: {
+          base: 'title2',
+          mdDown: 'h1',
+        },
+        color: 'text.primary',
+        mt: '14',
+        mb: {
+          base: '6',
+          mdDown: '4',
+        },
+        textAlign: 'center',
         w: 'full',
-        maxWidth: '960px',
-        p: {lgDown: 4},
       })}
     >
-      <h2
-        className={css({
-          textStyle: {
-            base: 'title2',
-            mdDown: 'h1',
-          },
-          color: 'text.primary',
-          mt: '14',
-          mb: {
-            base: '6',
-            mdDown: '4',
-          },
-          textAlign: 'center',
-          w: 'full',
-        })}
-      >
-        Questions? Look here.
-      </h2>
-      <p
-        className={css({
-          textStyle: 'body',
-          color: 'gray4',
-          textAlign: 'center',
-          mb: {
-            base: '8',
-            mdDown: '6',
-          },
-        })}
-      >
-        Can’t find an answer? Contact us at Contact Page or email contact@waterdrop.com{' '}
-      </p>
-      <TextField
-        label='Search'
-        type='search'
-        classes={{
-          container: css({mb: {base: '16', mdDown: '8'}, w: 'full', maxW: '328px', mx: 'auto'}),
-        }}
-      />
-      {QUESTIONS.map(faq => (
-        <Expandable key={faq.question} faq={faq} />
-      ))}
-    </div>
-  );
-};
+      Questions? Look here.
+    </h2>
+    <p
+      className={css({
+        textStyle: 'body',
+        color: 'gray4',
+        textAlign: 'center',
+        mb: {
+          base: '8',
+          mdDown: '6',
+        },
+      })}
+    >
+      Can’t find an answer? Contact us at Contact Page or email contact@waterdrop.com{' '}
+    </p>
+    <TextField
+      label='Search'
+      type='search'
+      classes={{
+        container: css({mb: {base: '16', mdDown: '8'}, w: 'full', maxW: '328px', mx: 'auto'}),
+      }}
+    />
+    {QUESTIONS.map(faq => (
+      <Expandable key={faq.question} faq={faq} />
+    ))}
+  </div>
+);
 
 export default page;

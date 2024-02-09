@@ -4,7 +4,7 @@ import {Observable} from '@legendapp/state';
 import {useObservable} from '@legendapp/state/react';
 import {css} from '@styled/css';
 import {flex} from '@styled/patterns';
-import {useQuery} from '@tanstack/react-query';
+import {useMutation} from '@tanstack/react-query';
 import {setCookie} from 'cookies-next';
 import {useFormik} from 'formik';
 import Link from 'next/link';
@@ -40,15 +40,13 @@ export default function Login({
     },
     validationSchema: schema,
     onSubmit: async ({email, password}) => {
-      enabled$.set(true);
+      mutateAsync();
     },
   });
   const {errors, touched, values, handleChange, handleSubmit} = formik;
 
-  const {data, error, isLoading} = useQuery({
-    queryKey: ['header-login'],
-    queryFn: () => signin({email: values.email, password: values.password}),
-    enabled: enabled$.use(),
+  const {data, error, mutateAsync, isPending} = useMutation({
+    mutationFn: () => signin({email: values.email, password: values.password}),
   }) as any;
 
   const onClose = () => {
@@ -78,13 +76,15 @@ export default function Login({
   useEffect(() => {
     if (data) {
       if (data.auth.signin.token) {
+        const expirationTime = 14 * 24 * 60 * 60 * 1000;
+        const expirationDate = new Date(Date.now() + expirationTime);
         setCookie(CookieName.AUTH_TOKEN, data.auth.signin.token, {
-          expires: new Date(new Date().setMonth(new Date().getMonth() + 2)),
+          expires: expirationDate,
         });
         setTimeout(() => {
           onClose();
           router.refresh();
-        }, 2000);
+        }, 1000);
       } else {
         notifyError('Your account is not verified yet.');
       }
@@ -95,7 +95,6 @@ export default function Login({
     <Modal onClose={onClose} isOpen$={isOpen$}>
       <div
         style={{height: '100%'}}
-        onClick={e => e.stopPropagation()}
         className={css({
           display: 'flex',
           bgColor: 'white',
@@ -236,9 +235,9 @@ export default function Login({
               },
             })}
             type='submit'
-            disabled={isLoading}
+            disabled={isPending}
           >
-            {isLoading ? 'Please wait ...' : 'Log in'}
+            {isPending ? 'Please wait ...' : 'Log in'}
           </button>
         </form>
         <div

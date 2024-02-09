@@ -36,7 +36,7 @@ export default function SearchDrawer({isOpen$}: SearchDrawerProps) {
       <DrawerContainer>
         <Arrow className={css({cursor: 'pointer'})} onClick={onClose} />
         <TextField
-          placeholder='Search'
+          label='Search'
           className={css({pr: 4, mr: 4, w: '100%', textAlign: 'left !important'})}
           classes={{container: css({w: '100%'})}}
         />

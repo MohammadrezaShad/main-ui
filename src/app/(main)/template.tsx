@@ -11,7 +11,6 @@ import {getUser} from '@/graphql/query/users/get-user';
 import {getQueryClient} from '@/helpers';
 import {Hydrate} from '@/providers';
 import {dehydrate} from '@tanstack/react-query';
-import './globals.css';
 
 export default async function Template({children}: {children: React.ReactNode}) {
   const currentUrl = headers().get(HeaderName.PATHNAME) || '';
@@ -22,20 +21,18 @@ export default async function Template({children}: {children: React.ReactNode}) 
   await queryClient.prefetchQuery({
     queryKey: ['get-profile'],
     queryFn: () => getUser(authToken),
+    staleTime: 1000,
   });
   const dehydratedState = dehydrate(queryClient);
 
   return (
-    <>
-      <Hydrate state={dehydratedState}>
-        <Header />
-      </Hydrate>
+    <Hydrate state={dehydratedState}>
+      <Header />
       <div
         className={css({
-          pb: {base: '8', mdDown: '18'},
+          pb: {base: '8', mdDown: '36'},
           bg: 'background',
           flex: '1',
-          display: 'grid',
         })}
       >
         <div
@@ -44,15 +41,23 @@ export default async function Template({children}: {children: React.ReactNode}) 
               base: '1920px',
               lgDown: '100%',
             },
-            w: 'full',
+            width: '100%',
             mr: 'auto',
             ml: 'auto',
-            h: 'full',
+            flex: 1,
             gap: {base: '8', lgDown: 'normal'},
             alignItems: 'flex-start',
           })}
         >
-          {children}
+          {/* <Sidebar /> */}
+          <div
+            className={css({
+              w: 'full',
+              rounded: '2xl',
+            })}
+          >
+            {children}
+          </div>
         </div>
       </div>
       <Footer />
@@ -68,6 +73,6 @@ export default async function Template({children}: {children: React.ReactNode}) 
       >
         <MobileNavbar />
       </div>
-    </>
+    </Hydrate>
   );
 }

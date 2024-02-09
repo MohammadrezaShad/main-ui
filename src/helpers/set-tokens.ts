@@ -1,4 +1,5 @@
 import {setCookie} from 'cookies-next';
+import {NextRequest, NextResponse} from 'next/server';
 
 import {CookieName} from '@/constants';
 
@@ -10,8 +11,8 @@ export const setTokens = ({
 }: {
   accessToken: string;
   refreshToken: string;
-  req?: any;
-  res?: any;
+  req?: NextRequest;
+  res?: NextResponse;
 }) => {
   const expirationTime = 14 * 24 * 60 * 60 * 1000;
   const expirationDate = new Date(Date.now() + expirationTime);

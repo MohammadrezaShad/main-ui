@@ -2,7 +2,7 @@
 
 import {css} from '@styled/css';
 import {flex} from '@styled/patterns';
-import {useQuery} from '@tanstack/react-query';
+import {useQuery, useQueryClient} from '@tanstack/react-query';
 import {deleteCookie, getCookie} from 'cookies-next';
 import Image from 'next/image';
 
@@ -12,12 +12,14 @@ import {User} from '@/graphql/generated/types';
 import {getUser} from '@/graphql/query/users/get-user';
 
 import {CookieName} from '@/constants';
+import {Paths} from '@/utils';
 import {useRouter} from 'next/navigation';
 import ProfileNavigation from '../profile-navigation/profile-navigation';
 
 const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
 
 const ProfileSidebar = () => {
+  const queryClient = useQueryClient();
   const router = useRouter();
   const authToken = getCookie(CookieName.AUTH_TOKEN)!;
   const {data} = useQuery({
@@ -27,9 +29,11 @@ const ProfileSidebar = () => {
   const user: User = data.auth!.getUser;
 
   const handleLogout = () => {
-    deleteCookie(CookieName.AUTH_TOKEN);
+    deleteCookie(CookieName.AUTH_TOKEN, {path: '/'});
+    queryClient.invalidateQueries({queryKey: ['get-profile']});
+    queryClient.clear();
     setTimeout(() => {
-      router.push('/');
+      router.push(Paths.Home.getPath());
     }, 1000);
   };
 

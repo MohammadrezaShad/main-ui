@@ -34,7 +34,7 @@ const Tags: FC<TagsProps> = () => {
   });
 
   const {data, isLoading}: {data: any; isLoading: boolean} = useSearchArticles({
-    tagId: findTagQuery.data?.result?._id!,
+    tagId: findTagQuery.data!.result!._id,
     page,
   });
 

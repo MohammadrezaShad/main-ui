@@ -36,7 +36,7 @@ const RecentArticles = ({posts}: {posts: ArticleType[]}) => (
         centeredSlides
         spaceBetween='10'
         pagination={{type: 'bullets', clickable: true}}
-        onSwiper={swiper => console.log(swiper)}
+        onSwiper={swiper => {}}
         className={css({
           w: 'full',
           maxW: '960px',
