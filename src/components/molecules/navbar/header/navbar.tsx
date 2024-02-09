@@ -17,7 +17,7 @@ const Navbar = () => {
         <Link href='/'>About</Link>
       </Item>
       <Item _isActive={isActive('/quizzes') || undefined}>
-        <Link href='/'>Quizzes</Link>
+        <Link href='/quizzes'>Quizzes</Link>
       </Item>
       <Item _isActive={isActive('/water-crisis') || undefined}>
         <Link href='/'>Water Crisis</Link>
