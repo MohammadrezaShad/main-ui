@@ -8,3 +8,6 @@ export * from './notifications';
 export * from './profile';
 export * from './settings';
 export * from './tags';
+export * from './quizzes'
+export * from './graphical-quizzes'
+export * from './normal-quizzes'

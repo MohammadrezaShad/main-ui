@@ -1,4 +1,4 @@
-import {QuizzesView} from '@/components';
+import {GraphicalQuizzesView} from '@/components';
 import {getQueryClient} from '@/helpers';
 import {Hydrate} from '@/providers';
 import {css} from '@styled/css';
@@ -22,7 +22,7 @@ const Page = async () => {
       })}
     >
       <Hydrate state={dehydratedState}>
-        <QuizzesView />
+        <GraphicalQuizzesView />
       </Hydrate>
     </div>
   );
