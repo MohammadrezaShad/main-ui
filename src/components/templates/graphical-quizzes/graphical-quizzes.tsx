@@ -1,11 +1,10 @@
 'use client';
 
-import {IconClose, coin} from '@/assets';
+import {IconClose, bgMaze, coin} from '@/assets';
 import {Modal} from '@/components/atoms/modal';
 import {useObservable} from '@legendapp/state/react';
 import {css} from '@styled/css';
 import Image from 'next/image';
-import {bgMaze} from '@/assets';
 
 export default function GraphicalQuizzes() {
   const targetQuiz$ = useObservable<boolean>(false);
@@ -52,14 +51,18 @@ export default function GraphicalQuizzes() {
               inset: '0',
             })}
           ></div>
-          <span className={css({
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            color: 'text.invert',
-            textStyle: 'h1'
-          })} >Graphical Quizzes</span>
+          <span
+            className={css({
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              color: 'text.invert',
+              textStyle: 'h1',
+            })}
+          >
+            Graphical Quizzes
+          </span>
         </div>
       </header>
       <div
@@ -319,35 +322,35 @@ export default function GraphicalQuizzes() {
         </div>
       </div>
       {true ? (
-              <div
-                className={css({
-                  mt: 6,
-                  mb: -6,
-                })}
-              >
-                <button
-                  type='button'
-                  onClick={() => {}} //fetchNextPage()
-                  className={css({
-                    backgroundColor: 'primary',
-                    px: '4',
-                    py: '3',
-                    mx: 'auto',
-                    display: 'block',
-                    cursor: 'pointer',
-                  })}
-                >
-                  <span
-                    className={css({
-                      textStyle: 'body',
-                      color: 'text.invert',
-                    })}
-                  >
-                    Show more
-                  </span>
-                </button>
-              </div>
-            ) : null}
+        <div
+          className={css({
+            mt: 6,
+            mb: -6,
+          })}
+        >
+          <button
+            type='button'
+            onClick={() => {}} //fetchNextPage()
+            className={css({
+              backgroundColor: 'primary',
+              px: '4',
+              py: '3',
+              mx: 'auto',
+              display: 'block',
+              cursor: 'pointer',
+            })}
+          >
+            <span
+              className={css({
+                textStyle: 'body',
+                color: 'text.invert',
+              })}
+            >
+              Show more
+            </span>
+          </button>
+        </div>
+      ) : null}
       <Modal isOpen$={targetQuiz$} onClose={() => targetQuiz$.set(false)}>
         <form
           className={css({
@@ -446,6 +449,7 @@ export default function GraphicalQuizzes() {
                 pl: '12',
                 pr: '12',
                 py: '3',
+                cursor: 'pointer',
                 w: {
                   base: '1/3',
                   mdDown: 'full',
@@ -464,6 +468,7 @@ export default function GraphicalQuizzes() {
                 pl: '10',
                 pr: '10',
                 py: '3',
+                cursor: 'pointer',
                 w: {
                   base: '1/3',
                   mdDown: 'full',

@@ -28,6 +28,7 @@ export const Container = styled('span', {
 
 export const Checkmark = styled('span', {
   base: {
+    display: 'inline-block',
     rounded: '50%',
     position: 'absolute',
     zIndex: '-1',

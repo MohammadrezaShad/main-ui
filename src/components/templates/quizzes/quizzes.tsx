@@ -3,9 +3,11 @@
 import {IconClose, coin} from '@/assets';
 import {Avatar} from '@/components';
 import {Modal} from '@/components/atoms/modal';
+import {Paths} from '@/utils';
 import {useObservable} from '@legendapp/state/react';
 import {css} from '@styled/css';
 import Image from 'next/image';
+import Link from 'next/link';
 
 export default function Quizzes() {
   const targetQuiz$ = useObservable<boolean>(false);
@@ -113,8 +115,8 @@ export default function Quizzes() {
                 >
                   26 Available Quizzes
                 </div>
-                <button
-                  type='button'
+                <Link
+                  href={`${Paths.Quiz.getPath()}/graphical`}
                   className={css({
                     cursor: 'pointer',
                     px: '16',
@@ -122,11 +124,12 @@ export default function Quizzes() {
                     mt: '5',
                     color: 'white',
                     bgColor: 'primary',
+                    textAlign: 'center',
                     mdDown: {px: '5', maxW: 'full'},
                   })}
                 >
                   Show more
-                </button>
+                </Link>
               </div>
             </div>
             <div
@@ -189,8 +192,8 @@ export default function Quizzes() {
                 >
                   234 Available Quizzes
                 </div>
-                <button
-                  type='button'
+                <Link
+                  href={`${Paths.Quiz.getPath()}/normal`}
                   className={css({
                     cursor: 'pointer',
                     px: '16',
@@ -198,11 +201,12 @@ export default function Quizzes() {
                     mt: '5',
                     color: 'white',
                     bgColor: 'primary',
+                    textAlign: 'center',
                     mdDown: {px: '5', maxW: 'full'},
                   })}
                 >
                   Show more
-                </button>
+                </Link>
               </div>
             </div>
           </div>
@@ -633,6 +637,7 @@ export default function Quizzes() {
                 pl: '12',
                 pr: '12',
                 py: '3',
+                cursor: 'pointer',
                 w: {
                   base: '1/3',
                   mdDown: 'full',
@@ -651,6 +656,7 @@ export default function Quizzes() {
                 pl: '10',
                 pr: '10',
                 py: '3',
+                cursor: 'pointer',
                 w: {
                   base: '1/3',
                   mdDown: 'full',
