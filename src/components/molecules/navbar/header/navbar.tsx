@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import {usePathname} from 'next/navigation';
+
 import {Container, Item} from './navbar.styled';
 
 const Navbar = () => {

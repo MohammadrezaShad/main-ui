@@ -1,5 +1,6 @@
-import {css, cx} from '@styled/css';
 import {InputHTMLAttributes} from 'react';
+import {css, cx} from '@styled/css';
+
 import {Container, Input, Label} from './text-field.styled';
 
 interface Props extends InputHTMLAttributes<HTMLInputElement> {

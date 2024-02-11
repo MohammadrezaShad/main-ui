@@ -1,11 +1,13 @@
 'use client';
 
-import {Card, SmallCard, Spinner} from '@/components';
-import {FindTagBySlug} from '@/graphql/query/tags';
+import {FC, useEffect, useState} from 'react';
 import {css} from '@styled/css';
 import {useQuery} from '@tanstack/react-query';
 import {useParams} from 'next/navigation';
-import {FC, useEffect, useState} from 'react';
+
+import {Card, SmallCard, Spinner} from '@/components';
+import {FindTagBySlug} from '@/graphql/query/tags';
+
 import PaginationSection from './pagination-section';
 import {Cards, Container, Wrapper} from './tags.styled';
 import {useSearchArticles} from './use-search-articles';

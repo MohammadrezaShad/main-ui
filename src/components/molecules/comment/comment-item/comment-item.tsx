@@ -1,9 +1,9 @@
 'use client';
 
+import {PropsWithChildren} from 'react';
 import {useObservable, useSelector} from '@legendapp/state/react';
 import {css, cx} from '@styled/css';
 import Image from 'next/image';
-import {PropsWithChildren} from 'react';
 
 import {IconDislike, IconLike, IconReply, userTest} from '@/assets';
 import {Button, CommentForm} from '@/components';

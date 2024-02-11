@@ -1,8 +1,9 @@
+import {css} from '@styled/css';
+import {dehydrate} from '@tanstack/react-query';
+
 import {NormalQuizView} from '@/components';
 import {getQueryClient} from '@/helpers';
 import {Hydrate} from '@/providers';
-import {css} from '@styled/css';
-import {dehydrate} from '@tanstack/react-query';
 
 const Page = ({params}: {params: {quizId: string}}) => {
   const queryClient = getQueryClient();

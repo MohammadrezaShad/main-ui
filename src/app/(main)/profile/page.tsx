@@ -1,5 +1,6 @@
-import {ProfileView} from '@/components';
 import {Metadata} from 'next';
+
+import {ProfileView} from '@/components';
 
 export const metadata: Metadata = {
   robots: {

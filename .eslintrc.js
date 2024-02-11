@@ -85,6 +85,13 @@ module.exports = {
         ignore: ['tw'],
       },
     ],
+    'jsx-a11y/label-has-associated-control': [
+      2,
+      {
+        controlComponents: ['RadioButton'],
+        depth: 3,
+      },
+    ],
     'simple-import-sort/imports': [
       'warn',
       {

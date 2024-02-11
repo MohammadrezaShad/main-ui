@@ -1,13 +1,15 @@
 'use client';
 
-import {IconClose, bgMaze, coin} from '@/assets';
-import {Modal} from '@/components/atoms/modal';
 import {useObservable} from '@legendapp/state/react';
 import {css} from '@styled/css';
 import Image from 'next/image';
 
+import {bgMaze, coin, IconClose} from '@/assets';
+import {Modal} from '@/components/atoms/modal';
+
 export default function GraphicalQuizzes() {
-  const targetQuiz$ = useObservable<boolean>(false);
+  const targetQuiz$ = useObservable<boolean>(true);
+  const hasMorePages = true;
 
   return (
     <div
@@ -50,7 +52,7 @@ export default function GraphicalQuizzes() {
               position: 'absolute',
               inset: '0',
             })}
-          ></div>
+          />
           <span
             className={css({
               position: 'absolute',
@@ -99,6 +101,7 @@ export default function GraphicalQuizzes() {
                 })}
               >
                 <img
+                  alt=''
                   loading='lazy'
                   srcSet='https://cdn.builder.io/api/v1/image/assets/TEMP/432ae614d587f42a5b08708c8e5c4e739cf4fef3111205962856702f53587694?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&width=100 100w, https://cdn.builder.io/api/v1/image/assets/TEMP/432ae614d587f42a5b08708c8e5c4e739cf4fef3111205962856702f53587694?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&width=200 200w, https://cdn.builder.io/api/v1/image/assets/TEMP/432ae614d587f42a5b08708c8e5c4e739cf4fef3111205962856702f53587694?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&width=400 400w, https://cdn.builder.io/api/v1/image/assets/TEMP/432ae614d587f42a5b08708c8e5c4e739cf4fef3111205962856702f53587694?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&width=800 800w, https://cdn.builder.io/api/v1/image/assets/TEMP/432ae614d587f42a5b08708c8e5c4e739cf4fef3111205962856702f53587694?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&width=1200 1200w, https://cdn.builder.io/api/v1/image/assets/TEMP/432ae614d587f42a5b08708c8e5c4e739cf4fef3111205962856702f53587694?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&width=1600 1600w, https://cdn.builder.io/api/v1/image/assets/TEMP/432ae614d587f42a5b08708c8e5c4e739cf4fef3111205962856702f53587694?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&width=2000 2000w, https://cdn.builder.io/api/v1/image/assets/TEMP/432ae614d587f42a5b08708c8e5c4e739cf4fef3111205962856702f53587694?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&'
                   className={css({
@@ -180,6 +183,7 @@ export default function GraphicalQuizzes() {
                 })}
               >
                 <img
+                  alt=''
                   loading='lazy'
                   srcSet='https://cdn.builder.io/api/v1/image/assets/TEMP/ae6c2284c437e7dad2e5eb0bcd2647c5a2e1cc2d156db2e0e47e61ddda4f8cca?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&width=100 100w, https://cdn.builder.io/api/v1/image/assets/TEMP/ae6c2284c437e7dad2e5eb0bcd2647c5a2e1cc2d156db2e0e47e61ddda4f8cca?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&width=200 200w, https://cdn.builder.io/api/v1/image/assets/TEMP/ae6c2284c437e7dad2e5eb0bcd2647c5a2e1cc2d156db2e0e47e61ddda4f8cca?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&width=400 400w, https://cdn.builder.io/api/v1/image/assets/TEMP/ae6c2284c437e7dad2e5eb0bcd2647c5a2e1cc2d156db2e0e47e61ddda4f8cca?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&width=800 800w, https://cdn.builder.io/api/v1/image/assets/TEMP/ae6c2284c437e7dad2e5eb0bcd2647c5a2e1cc2d156db2e0e47e61ddda4f8cca?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&width=1200 1200w, https://cdn.builder.io/api/v1/image/assets/TEMP/ae6c2284c437e7dad2e5eb0bcd2647c5a2e1cc2d156db2e0e47e61ddda4f8cca?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&width=1600 1600w, https://cdn.builder.io/api/v1/image/assets/TEMP/ae6c2284c437e7dad2e5eb0bcd2647c5a2e1cc2d156db2e0e47e61ddda4f8cca?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&width=2000 2000w, https://cdn.builder.io/api/v1/image/assets/TEMP/ae6c2284c437e7dad2e5eb0bcd2647c5a2e1cc2d156db2e0e47e61ddda4f8cca?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&'
                   className={css({
@@ -261,6 +265,7 @@ export default function GraphicalQuizzes() {
                 })}
               >
                 <img
+                  alt=''
                   loading='lazy'
                   srcSet='https://cdn.builder.io/api/v1/image/assets/TEMP/432ae614d587f42a5b08708c8e5c4e739cf4fef3111205962856702f53587694?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&width=100 100w, https://cdn.builder.io/api/v1/image/assets/TEMP/432ae614d587f42a5b08708c8e5c4e739cf4fef3111205962856702f53587694?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&width=200 200w, https://cdn.builder.io/api/v1/image/assets/TEMP/432ae614d587f42a5b08708c8e5c4e739cf4fef3111205962856702f53587694?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&width=400 400w, https://cdn.builder.io/api/v1/image/assets/TEMP/432ae614d587f42a5b08708c8e5c4e739cf4fef3111205962856702f53587694?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&width=800 800w, https://cdn.builder.io/api/v1/image/assets/TEMP/432ae614d587f42a5b08708c8e5c4e739cf4fef3111205962856702f53587694?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&width=1200 1200w, https://cdn.builder.io/api/v1/image/assets/TEMP/432ae614d587f42a5b08708c8e5c4e739cf4fef3111205962856702f53587694?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&width=1600 1600w, https://cdn.builder.io/api/v1/image/assets/TEMP/432ae614d587f42a5b08708c8e5c4e739cf4fef3111205962856702f53587694?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&width=2000 2000w, https://cdn.builder.io/api/v1/image/assets/TEMP/432ae614d587f42a5b08708c8e5c4e739cf4fef3111205962856702f53587694?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&'
                   className={css({
@@ -321,7 +326,7 @@ export default function GraphicalQuizzes() {
           </div>
         </div>
       </div>
-      {true ? (
+      {hasMorePages ? (
         <div
           className={css({
             mt: 6,
@@ -330,7 +335,7 @@ export default function GraphicalQuizzes() {
         >
           <button
             type='button'
-            onClick={() => {}} //fetchNextPage()
+            onClick={() => {}} // fetchNextPage()
             className={css({
               backgroundColor: 'primary',
               px: '4',

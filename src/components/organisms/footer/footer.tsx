@@ -1,10 +1,12 @@
 'use client';
 
+import {css} from '@styled/css';
+import {flex} from '@styled/patterns';
+
 import {IconFacebook, IconGlobal, IconInstagram, IconX} from '@/assets';
 import {Logo, SocialMediaLinks} from '@/components';
 import {FooterNavbar} from '@/components/molecules/navbar/footer';
-import {css} from '@styled/css';
-import {flex} from '@styled/patterns';
+
 import {Container, Wrap} from './footer.styled';
 
 const navbarItems = [

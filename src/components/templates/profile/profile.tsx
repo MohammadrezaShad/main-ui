@@ -1,9 +1,10 @@
 'use client';
 
-import {IconArrowRight, IconInfo} from '@/assets';
 import {css} from '@styled/css';
 import {flex} from '@styled/patterns';
 import Image from 'next/image';
+
+import {IconArrowRight, IconInfo} from '@/assets';
 
 export default function Profile() {
   return (

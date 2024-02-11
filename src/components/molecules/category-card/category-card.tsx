@@ -1,8 +1,10 @@
-import {IconWater} from '@/assets';
-import {CategoryType} from '@/graphql/generated/types';
 import {css} from '@styled/css';
 import {Box} from '@styled/jsx';
 import Image from 'next/image';
+
+import {IconWater} from '@/assets';
+import {CategoryType} from '@/graphql/generated/types';
+
 import {Card, CategoryImage, Container} from './category-card.styled';
 
 const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;

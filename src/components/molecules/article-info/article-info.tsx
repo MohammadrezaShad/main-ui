@@ -1,10 +1,10 @@
 import {css, cx} from '@styled/css';
+import {getCookie} from 'cookies-next';
 
 import {IconCollection} from '@/assets';
 import {Avatar} from '@/components';
 import {CookieName} from '@/constants';
 import {Maybe, UserOutputType} from '@/graphql/generated/types';
-import {getCookie} from 'cookies-next';
 
 const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
 

@@ -1,19 +1,19 @@
 'use client';
 
+import {useEffect} from 'react';
 import {useObservable} from '@legendapp/state/react';
 import {css} from '@styled/css';
+import {useQuery} from '@tanstack/react-query';
 import {getCookie} from 'cookies-next';
+import Link from 'next/link';
 
 import {IconSearch} from '@/assets';
 import {AuthButton, Avatar, HeaderNavbar, Login, Logo, SearchDrawer, SignUp} from '@/components';
-
 import {CookieName} from '@/constants';
 import {useAuthContext} from '@/contexts';
 import {User} from '@/graphql/generated/types';
 import {getUser} from '@/graphql/query/users/get-user';
-import {useQuery} from '@tanstack/react-query';
-import Link from 'next/link';
-import {useEffect} from 'react';
+
 import UserHeaderInfo from '../user-info/user-info';
 import {Container, Wrap} from './header.styled';
 

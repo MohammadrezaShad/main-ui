@@ -1,8 +1,10 @@
+import {css} from '@styled/css';
+import {dehydrate} from '@tanstack/react-query';
+
 import {GraphicalQuizzesView} from '@/components';
 import {getQueryClient} from '@/helpers';
 import {Hydrate} from '@/providers';
-import {css} from '@styled/css';
-import {dehydrate} from '@tanstack/react-query';
+
 const Page = async () => {
   const queryClient = getQueryClient();
   //   await queryClient.prefetchQuery({

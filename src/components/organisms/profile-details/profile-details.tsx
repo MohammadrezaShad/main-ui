@@ -1,10 +1,11 @@
 'use client';
 
-import {IconArrowRight} from '@/assets';
-import {Chip} from '@/components';
 import {css} from '@styled/css';
 import {flex} from '@styled/patterns';
 import {useRouter} from 'next/navigation';
+
+import {IconArrowRight} from '@/assets';
+import {Chip} from '@/components';
 
 const tags = ['water crisis', 'TagName', 'TagName254', 'Another tag'];
 

@@ -17,9 +17,8 @@ const useCountdownTimer = (initialTime: number): CountdownHookResult => {
           clearInterval(timer);
           setIsTimeout(true);
           return 0;
-        } else {
-          return prevTime - 1;
         }
+        return prevTime - 1;
       });
     }, 1000);
 

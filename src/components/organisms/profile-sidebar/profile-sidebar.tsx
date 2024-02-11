@@ -5,15 +5,15 @@ import {flex} from '@styled/patterns';
 import {useQuery, useQueryClient} from '@tanstack/react-query';
 import {deleteCookie, getCookie} from 'cookies-next';
 import Image from 'next/image';
+import {useRouter} from 'next/navigation';
 
 import {coin, IconLogout} from '@/assets';
 import {Avatar} from '@/components';
+import {CookieName} from '@/constants';
 import {User} from '@/graphql/generated/types';
 import {getUser} from '@/graphql/query/users/get-user';
-
-import {CookieName} from '@/constants';
 import {Paths} from '@/utils';
-import {useRouter} from 'next/navigation';
+
 import ProfileNavigation from '../profile-navigation/profile-navigation';
 
 const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;

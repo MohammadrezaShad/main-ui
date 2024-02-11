@@ -1,17 +1,18 @@
 'use client';
 
-import {IconArrowRight} from '@/assets';
-import {AuthButton, TextField} from '@/components';
-import RadioButton from '@/components/atoms/radio-button/radio-button';
-import {CookieName} from '@/constants';
-import {User} from '@/graphql/generated/types';
-import {getUser} from '@/graphql/query/users/get-user';
 import {css} from '@styled/css';
 import {Box} from '@styled/jsx';
 import {flex} from '@styled/patterns';
 import {useQuery} from '@tanstack/react-query';
 import {getCookie} from 'cookies-next';
 import {useRouter} from 'next/navigation';
+
+import {IconArrowRight} from '@/assets';
+import {AuthButton, TextField} from '@/components';
+import RadioButton from '@/components/atoms/radio-button/radio-button';
+import {CookieName} from '@/constants';
+import {User} from '@/graphql/generated/types';
+import {getUser} from '@/graphql/query/users/get-user';
 
 export default function Settings() {
   const authToken = getCookie(CookieName.AUTH_TOKEN)!;

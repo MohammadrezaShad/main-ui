@@ -1,6 +1,7 @@
+import {css} from '@styled/css';
+
 import {ImageCard} from '@/components/molecules/image-card';
 import {ArticleType} from '@/graphql/generated/types';
-import {css} from '@styled/css';
 
 const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
 

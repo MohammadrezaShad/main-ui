@@ -1,13 +1,14 @@
 'use client';
 
+import {toast} from 'react-toastify';
 import {Observable} from '@legendapp/state';
 import {css} from '@styled/css';
 import {Container} from '@styled/jsx';
 import {flex} from '@styled/patterns';
 import {useMutation} from '@tanstack/react-query';
 import {useFormik} from 'formik';
+import Image from 'next/image';
 import Link from 'next/link';
-import {toast} from 'react-toastify';
 import * as Yup from 'yup';
 
 import {IconClose} from '@/assets';
@@ -16,7 +17,7 @@ import {TextField} from '@/components';
 import {Modal} from '@/components/atoms/modal';
 import {SignupInputType} from '@/graphql/generated/types';
 import {signUp} from '@/graphql/mutation/auth/sign-up';
-import Image from 'next/image';
+
 import 'react-toastify/dist/ReactToastify.css';
 
 const schema = Yup.object().shape({

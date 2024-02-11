@@ -1,16 +1,18 @@
 'use client';
 
-import {IconSearch, hero} from '@/assets';
-import {Articles, Divider, RecentArticles, Spinner} from '@/components';
-import {ArticleType, CategoryType, StatusType} from '@/graphql/generated/types';
-import {searchCategories} from '@/graphql/query/categories';
-import {searchArticles} from '@/graphql/query/search-articles';
+import {useEffect, useState} from 'react';
+import Select from 'react-select';
 import {css} from '@styled/css';
 import {Box} from '@styled/jsx';
 import {flex} from '@styled/patterns';
 import {useInfiniteQuery, useQuery} from '@tanstack/react-query';
-import {useEffect, useState} from 'react';
-import Select from 'react-select';
+
+import {hero, IconSearch} from '@/assets';
+import {Articles, Divider, RecentArticles, Spinner} from '@/components';
+import {ArticleType, CategoryType, StatusType} from '@/graphql/generated/types';
+import {searchCategories} from '@/graphql/query/categories';
+import {searchArticles} from '@/graphql/query/search-articles';
+
 import {
   Container,
   Content,

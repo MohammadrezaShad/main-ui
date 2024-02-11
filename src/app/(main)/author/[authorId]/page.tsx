@@ -1,12 +1,13 @@
+import {css} from '@styled/css';
+import {dehydrate} from '@tanstack/react-query';
+import {cookies} from 'next/headers';
+
 import {AuthorView} from '@/components';
 import {CookieName} from '@/constants';
 import {findUserById} from '@/graphql';
 import {searchArticlesByAUthorId} from '@/graphql/query/articles/search-articles-by-author-id';
 import {getQueryClient} from '@/helpers';
 import {Hydrate} from '@/providers';
-import {css} from '@styled/css';
-import {dehydrate} from '@tanstack/react-query';
-import {cookies} from 'next/headers';
 
 const Page = async ({params}: {params: {authorId: string}}) => {
   const cookieStore = cookies();

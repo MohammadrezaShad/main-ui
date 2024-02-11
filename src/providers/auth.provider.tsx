@@ -1,7 +1,7 @@
 'use client';
 
-import {useObservable} from '@legendapp/state/react';
 import React from 'react';
+import {useObservable} from '@legendapp/state/react';
 
 import {AuthContext} from '@/contexts';
 

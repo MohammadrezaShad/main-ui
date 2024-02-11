@@ -1,11 +1,12 @@
 'use client';
 
-import {coin} from '@/assets';
-import RadioButton from '@/components/atoms/radio-button/radio-button';
-import useCountdownTimer from '@/hooks/use-countdown-timer';
 import {css} from '@styled/css';
 import Image from 'next/image';
 import {useEffect} from 'react';
+
+import {coin} from '@/assets';
+import RadioButton from '@/components/atoms/radio-button/radio-button';
+import useCountdownTimer from '@/hooks/use-countdown-timer';
 
 const WaterSavingQuiz = () => {
   const handleClick = () => {
@@ -154,156 +155,153 @@ const QuizHeader = () => {
   );
 };
 
-const QuizContent = ({handleClick}: {handleClick: any}) => {
-  return (
-    <div
-      className={css({
-        pt: '9',
-        pb: '9',
-        pr: '20',
-        pl: '8',
-        mt: '12',
-        bgColor: 'white',
-        borderWidth: '1px',
-        borderStyle: 'solid',
-        borderColor: 'color:var(.-Gray2,#EBEBEB)',
-        mdDown: {pl: '5', pr: '5', mt: '10', maxW: 'full'},
-      })}
-    >
-      <div className={css({display: 'flex', gap: '5', flexDir: 'column', mdDown: {gap: '0'}})}>
-        <QuizQuestion handleClick={handleClick} />
-        <QuizOptions handleClick={handleClick} />
-      </div>
+const QuizContent = ({handleClick}: {handleClick: any}) => (
+  <div
+    className={css({
+      pt: '9',
+      pb: '9',
+      pr: '20',
+      pl: '8',
+      mt: '12',
+      bgColor: 'white',
+      borderWidth: '1px',
+      borderStyle: 'solid',
+      borderColor: 'gray2',
+      mdDown: {pl: '5', pr: '5', mt: '10', maxW: 'full'},
+    })}
+  >
+    <div className={css({display: 'flex', gap: '5', flexDir: 'column', mdDown: {gap: '0'}})}>
+      <QuizQuestion handleClick={handleClick} />
+      <QuizOptions handleClick={handleClick} />
     </div>
-  );
-};
+  </div>
+);
 
-const QuizQuestion = ({handleClick}: {handleClick: any}) => {
-  return (
-    <div
-      className={css({display: 'flex', flexDir: 'column', w: '77%', mdDown: {ml: '0', w: 'full'}})}
-    >
-      <div
-        className={css({
-          display: 'flex',
-          flexDir: 'column',
-          flexGrow: '1',
-          fontSize: 'base',
-          lineHeight: 'base',
-          color: 'zinc.800',
-          mdDown: {mt: '10', maxW: 'full'},
-        })}
-      >
-        <h2 className={css({fontWeight: 'medium', mdDown: {maxW: 'full'}})}>
-          01. Which one is more efficient?
-        </h2>
-      </div>
-    </div>
-  );
-};
-
-const QuizOptions = ({handleClick}: {handleClick: any}) => {
-  return (
+const QuizQuestion = ({handleClick}: {handleClick: any}) => (
+  <div
+    className={css({display: 'flex', flexDir: 'column', w: '77%', mdDown: {ml: '0', w: 'full'}})}
+  >
     <div
       className={css({
         display: 'flex',
         flexDir: 'column',
-        ml: '5',
-        w: 'full',
-        mdDown: {ml: '0', w: 'full'},
+        flexGrow: '1',
+        fontSize: 'base',
+        lineHeight: 'base',
+        color: 'zinc.800',
+        mdDown: {maxW: 'full'},
       })}
     >
-      <div
-        className={css({
-          display: 'grid',
-          gridTemplateColumns: 'repeat(3, 1fr)',
-          gridTemplateRows: 'repeat(2, 1fr)',
-          flexGrow: '1',
-          mt: '4',
-          fontSize: 'base',
-          lineHeight: 'base',
-          textAlign: 'center',
-          whiteSpace: 'nowrap',
-          color: 'zinc.800',
-          mdDown: {mt: '1', gridTemplateRows: 'repeat(4, 1fr)'},
-        })}
-      >
-        <label
-          className={css({
-            gridArea: '1 / 1 / 2 / 2',
-            display: 'flex',
-            gap: '6',
-            mt: '4',
-          })}
-        >
-          <RadioButton name='options' onClick={handleClick} />
-          <div className={css({mt: 'auto', mb: 'auto'})}>Dishwasher</div>
-        </label>
-        <label
-          className={css({
-            gridArea: '2 / 1 / 3 / 2',
-            display: 'flex',
-            gap: '6',
-            mt: '4',
-          })}
-        >
-          <RadioButton name='options' onClick={handleClick} />
-          <div className={css({mt: 'auto', mb: 'auto'})}>Washing dishes under the tap</div>
-        </label>
-        <label
-          className={css({
-            gridArea: '1 / 2 / 2 / 3',
-            mdDown: {gridArea: '3 / 1 / 4 / 2'},
-            display: 'flex',
-            gap: '6',
-            mt: '4',
-          })}
-        >
-          <RadioButton name='options' onClick={handleClick} />
-          <div className={css({mt: 'auto', mb: 'auto'})}>Both</div>
-        </label>
-        <label
-          className={css({
-            gridArea: '2 / 2 / 3 / 3',
-            mdDown: {gridArea: '4 / 1 / 5 / 2'},
-            display: 'flex',
-            gap: '6',
-            mt: '4',
-          })}
-        >
-          <RadioButton name='options' onClick={handleClick} />
-          <div className={css({mt: 'auto', mb: 'auto'})}>None</div>
-        </label>
-      </div>
+      <h2 className={css({fontWeight: 'medium', mdDown: {maxW: 'full'}})}>
+        01. Which one is more efficient?
+      </h2>
     </div>
-  );
-};
+  </div>
+);
 
-const QuizEndButton = ({handleClick}: {handleClick: any}) => {
-  return (
-    <button
+const QuizOptions = ({handleClick}: {handleClick: any}) => (
+  <div
+    className={css({
+      display: 'flex',
+      flexDir: 'column',
+      ml: '5',
+      w: 'full',
+      mdDown: {ml: '0', w: 'full'},
+    })}
+  >
+    <div
       className={css({
-        justifyContent: 'center',
-        alignSelf: 'center',
-        pl: '12',
-        pr: '12',
-        pt: '3',
-        pb: '3',
-        mt: '8',
+        display: 'grid',
+        gridTemplateColumns: 'repeat(3, 1fr)',
+        gridTemplateRows: 'repeat(2, 1fr)',
+        flexGrow: '1',
+        mt: '4',
         fontSize: 'base',
         lineHeight: 'base',
         textAlign: 'center',
-        color: 'white',
         whiteSpace: 'nowrap',
-        bgColor: 'sky.400',
-        mdDown: {pl: '5', pr: '5'},
-        cursor: 'pointer',
+        color: 'zinc.800',
+        mdDown: {mt: '1', gridTemplateRows: 'repeat(4, 1fr)'},
       })}
-      onClick={handleClick}
     >
-      End
-    </button>
-  );
-};
+      <label
+        htmlFor='option1'
+        className={css({
+          gridArea: '1 / 1 / 2 / 2',
+          display: 'flex',
+          gap: '6',
+          mt: '4',
+        })}
+      >
+        <RadioButton id='option1' name='options' onClick={handleClick} />
+        <div className={css({mt: 'auto', mb: 'auto'})}>Dishwasher</div>
+      </label>
+      <label
+        htmlFor='option2'
+        className={css({
+          gridArea: '2 / 1 / 3 / 2',
+          display: 'flex',
+          gap: '6',
+          mt: '4',
+        })}
+      >
+        <RadioButton id='option2' name='options' onClick={handleClick} />
+        <div className={css({mt: 'auto', mb: 'auto'})}>Washing dishes under the tap</div>
+      </label>
+      <label
+        htmlFor='option3'
+        className={css({
+          gridArea: '1 / 2 / 2 / 3',
+          mdDown: {gridArea: '3 / 1 / 4 / 2'},
+          display: 'flex',
+          gap: '6',
+          mt: '4',
+        })}
+      >
+        <RadioButton id='option3' name='options' onClick={handleClick} />
+        <div className={css({mt: 'auto', mb: 'auto'})}>Both</div>
+      </label>
+      <label
+        htmlFor='option4'
+        className={css({
+          gridArea: '2 / 2 / 3 / 3',
+          mdDown: {gridArea: '4 / 1 / 5 / 2'},
+          display: 'flex',
+          gap: '6',
+          mt: '4',
+        })}
+      >
+        <RadioButton id='option4' name='options' onClick={handleClick} />
+        <div className={css({mt: 'auto', mb: 'auto'})}>None</div>
+      </label>
+    </div>
+  </div>
+);
+
+const QuizEndButton = ({handleClick}: {handleClick: any}) => (
+  <button
+    type='button'
+    className={css({
+      justifyContent: 'center',
+      alignSelf: 'center',
+      pl: '12',
+      pr: '12',
+      pt: '3',
+      pb: '3',
+      mt: '8',
+      fontSize: 'base',
+      lineHeight: 'base',
+      textAlign: 'center',
+      color: 'white',
+      whiteSpace: 'nowrap',
+      bgColor: 'sky.400',
+      mdDown: {pl: '5', pr: '5'},
+      cursor: 'pointer',
+    })}
+    onClick={handleClick}
+  >
+    End
+  </button>
+);
 
 export default WaterSavingQuiz;

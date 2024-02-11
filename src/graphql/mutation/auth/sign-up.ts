@@ -1,7 +1,8 @@
+import {getCookie} from 'cookies-next';
+
 import {CookieName} from '@/constants';
 import {AuthMutation, SignupInputType} from '@/graphql/generated/types';
 import {gqlFetch} from '@/services/fetch';
-import {getCookie} from 'cookies-next';
 
 export async function signUp(input: SignupInputType): Promise<AuthMutation['signup']> {
   const clientId = getCookie(CookieName.CLIENT_ID) as string;

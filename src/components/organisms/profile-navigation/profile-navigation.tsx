@@ -1,11 +1,11 @@
 'use client';
 
 import {css} from '@styled/css';
+import {flex} from '@styled/patterns';
 import Link from 'next/link';
 import {usePathname} from 'next/navigation';
 
 import {IconCollection, IconDashboard, IconNotify, IconProfile, IconSetting} from '@/assets';
-import {flex} from '@styled/patterns';
 
 const menuItems = [
   {id: 1, title: 'Dashboard', icon: IconDashboard, href: '/#activities'},

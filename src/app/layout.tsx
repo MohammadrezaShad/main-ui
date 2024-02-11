@@ -1,3 +1,4 @@
+import {ToastContainer} from 'react-toastify';
 import type {Metadata} from 'next';
 import {Ubuntu} from 'next/font/google';
 import {cookies} from 'next/headers';
@@ -5,7 +6,6 @@ import {cookies} from 'next/headers';
 import {CookieName, ThemeType} from '@/constants';
 import {MainProviders} from '@/providers';
 
-import {ToastContainer} from 'react-toastify';
 import '@/styles/globals.css';
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;

@@ -1,9 +1,9 @@
 'use client';
 
-import {Observable} from '@legendapp/state';
-import {css} from '@styled/css';
 import * as React from 'react';
 import {createPortal} from 'react-dom';
+import {Observable} from '@legendapp/state';
+import {css} from '@styled/css';
 
 export default function Modal({
   children,

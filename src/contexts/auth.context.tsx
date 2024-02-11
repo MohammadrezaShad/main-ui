@@ -1,5 +1,5 @@
-import {Observable} from '@legendapp/state';
 import {createContext, useContext} from 'react';
+import {Observable} from '@legendapp/state';
 
 export type AuthContextType = {
   isLoginOpen$: Observable<boolean>;

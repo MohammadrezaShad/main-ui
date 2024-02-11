@@ -1,6 +1,7 @@
 // utils/graphql.ts
+import {keepPreviousData, QueryKey, useQuery} from '@tanstack/react-query';
+
 import {searchArticles} from '@/graphql/query/search-articles';
-import {QueryKey, keepPreviousData, useQuery} from '@tanstack/react-query';
 
 interface UseSearchArticlesProps {
   tagId: string;

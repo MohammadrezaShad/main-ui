@@ -1,16 +1,15 @@
 import {css} from '@styled/css';
 import {flex} from '@styled/patterns';
+import {dehydrate} from '@tanstack/react-query';
 import {cookies, headers} from 'next/headers';
 
 import {Footer, Header} from '@/components';
-import {CookieName, HeaderName} from '@/constants';
-import {Paths, isMatch} from '@/utils';
-
 import MobileNavbar from '@/components/organisms/mobile-navbar/mobile-navbar';
+import {CookieName, HeaderName} from '@/constants';
 import {getUser} from '@/graphql/query/users/get-user';
 import {getQueryClient} from '@/helpers';
 import {Hydrate} from '@/providers';
-import {dehydrate} from '@tanstack/react-query';
+import {isMatch, Paths} from '@/utils';
 
 export default async function Template({children}: {children: React.ReactNode}) {
   const currentUrl = headers().get(HeaderName.PATHNAME) || '';

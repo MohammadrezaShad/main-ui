@@ -1,14 +1,15 @@
 'use client';
 
+import {css} from '@styled/css';
+import {useQuery} from '@tanstack/react-query';
+import {getCookie} from 'cookies-next';
+import Link from 'next/link';
+
 import {IconChevronDown} from '@/assets';
 import {Avatar} from '@/components';
 import {CookieName} from '@/constants';
 import {User} from '@/graphql/generated/types';
 import {getUser} from '@/graphql/query/users/get-user';
-import {css} from '@styled/css';
-import {useQuery} from '@tanstack/react-query';
-import {getCookie} from 'cookies-next';
-import Link from 'next/link';
 
 const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
 

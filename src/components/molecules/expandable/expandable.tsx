@@ -1,9 +1,10 @@
 'use client';
 
+import {useState} from 'react';
+import {css} from '@styled/css';
+
 import {IconAdd, IconMinus} from '@/assets';
 import {FaqType} from '@/graphql/generated/types';
-import {css} from '@styled/css';
-import {useState} from 'react';
 
 const Expandable = ({faq}: {faq: FaqType}) => {
   const [isExpanded, setIsExpanded] = useState(false);

@@ -1,17 +1,18 @@
 'use client';
 
-import {IconDoc, IconHome, IconMenu, IconProfile, IconQuiz} from '@/assets';
-import {Avatar} from '@/components';
-import {CookieName} from '@/constants';
-import {useAuthContext} from '@/contexts';
-import {User} from '@/graphql/generated/types';
-import {getUser} from '@/graphql/query/users/get-user';
 import {css} from '@styled/css';
 import {flex} from '@styled/patterns';
 import {useQuery} from '@tanstack/react-query';
 import {getCookie} from 'cookies-next';
 import Link from 'next/link';
 import {usePathname} from 'next/navigation';
+
+import {IconDoc, IconHome, IconMenu, IconProfile, IconQuiz} from '@/assets';
+import {Avatar} from '@/components';
+import {CookieName} from '@/constants';
+import {useAuthContext} from '@/contexts';
+import {User} from '@/graphql/generated/types';
+import {getUser} from '@/graphql/query/users/get-user';
 
 const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
 

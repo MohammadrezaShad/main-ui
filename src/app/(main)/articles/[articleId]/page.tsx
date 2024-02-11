@@ -1,15 +1,18 @@
 import {css} from '@styled/css';
 import {dehydrate} from '@tanstack/react-query';
-
-import {ArticlesDetails} from '@/components/templates/articles-details';
-import {CookieName} from '@/constants';
-import {ArticleType} from '@/graphql/generated/types';
-import {findArticleByName} from '@/graphql/query/find-article-by-name';
-import {getQueryClient} from '@/helpers';
-import {Hydrate} from '@/providers';
 import {getCookie} from 'cookies-next';
 import {Metadata} from 'next';
 import {cookies} from 'next/headers';
+
+import {ArticlesDetails} from '@/components/templates/articles-details';
+import {CookieName} from '@/constants';
+import {ArticleType, StatusType} from '@/graphql/generated/types';
+import {findArticleByName} from '@/graphql/query/find-article-by-name';
+import {searchArticles} from '@/graphql/query/search-articles';
+import {getQueryClient} from '@/helpers';
+import {Hydrate} from '@/providers';
+
+export const revalidate = 3600;
 
 export async function generateMetadata({params}: {params: {articleId: string}}): Promise<Metadata> {
   const token = getCookie(CookieName.AUTH_TOKEN, {cookies});
@@ -27,7 +30,16 @@ export async function generateMetadata({params}: {params: {articleId: string}}):
     alternates: {
       canonical: `/articles/${post.slug}`,
     },
+    keywords: post.tags?.map(tag => tag.title).join(', '),
   };
+}
+
+export async function generateStaticParams(): Promise<any> {
+  const data = (await searchArticles({status: StatusType.Publish, count: 100})) as any;
+  const articles: Array<ArticleType> = data.article!.searchArticles.results;
+  return articles.map(article => ({
+    articleId: article.slug,
+  }));
 }
 
 const Page = async ({params}: {params: {articleId: string}}) => {

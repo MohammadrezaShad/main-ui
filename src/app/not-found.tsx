@@ -1,5 +1,6 @@
-import NotFoundImage from '@/assets/images/404.svg';
 import {css} from '@styled/css';
+
+import NotFoundImage from '@/assets/images/404.svg';
 
 const NotFound = () => (
   <div

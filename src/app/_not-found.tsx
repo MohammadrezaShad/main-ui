@@ -1,6 +1,7 @@
-import NotFoundImage from '@/assets/images/404-2.svg';
 import {css} from '@styled/css';
 import {flex} from '@styled/patterns';
+
+import NotFoundImage from '@/assets/images/404-2.svg';
 
 const NotFound = () => (
   <div

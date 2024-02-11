@@ -1,10 +1,25 @@
-import {TagsView} from '@/components';
 import {css} from '@styled/css';
 import {dehydrate} from '@tanstack/react-query';
 
-import {FindTagBySlug} from '@/graphql/query/tags';
+import {TagsView} from '@/components';
+import {TagStatusEnum} from '@/graphql/generated/types';
+import {FindTagBySlug, SearchTags} from '@/graphql/query/tags';
 import {getQueryClient} from '@/helpers';
 import {Hydrate} from '@/providers';
+
+export const revalidate = 3600;
+
+export async function generateStaticParams(): Promise<any> {
+  const data = await SearchTags({status: TagStatusEnum.Publish, count: 100});
+  if (!data) {
+    return {
+      title: 'Not found',
+      description: 'The page not found',
+    };
+  }
+  const tags = data.results || [];
+  return tags.map(tag => ({tagId: tag.slug}));
+}
 
 const Page = async ({params}: {params: {tagId: string}}) => {
   const queryClient = getQueryClient();
