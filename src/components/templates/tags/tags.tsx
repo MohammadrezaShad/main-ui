@@ -1,9 +1,13 @@
 'use client';
 
-import {Card, SmallCard, Spinner} from '@/components';
-import {css} from '@styled/css';
-import {useParams} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
+import {css} from '@styled/css';
+import {useQuery} from '@tanstack/react-query';
+import {useParams} from 'next/navigation';
+
+import {Card, SmallCard, Spinner} from '@/components';
+import {FindTagBySlug} from '@/graphql/query/tags';
+
 import PaginationSection from './pagination-section';
 import {Cards, Container, Wrapper} from './tags.styled';
 import {useSearchArticles} from './use-search-articles';
@@ -22,11 +26,17 @@ interface ArticleType {
 interface TagsProps {}
 
 const Tags: FC<TagsProps> = () => {
+  const params = useParams();
   const [articles, setArticles] = useState<ArticleType[]>([]);
   const [page, setPage] = useState(1);
-  const params = useParams();
+
+  const findTagQuery = useQuery({
+    queryKey: ['find-tag', params.tagId],
+    queryFn: () => FindTagBySlug({slug: params.tagId as string}),
+  });
+
   const {data, isLoading}: {data: any; isLoading: boolean} = useSearchArticles({
-    tagId: params.tagId as string,
+    tagId: findTagQuery.data!.result!._id,
     page,
   });
 
@@ -46,20 +56,22 @@ const Tags: FC<TagsProps> = () => {
   return (
     <Container>
       <Wrapper>
-        <header className={css({textStyle: 'h1', color: 'text.invert', px: '-4'})}>Water</header>
+        <header className={css({textStyle: 'h1', color: 'text.invert', px: '-4'})}>
+          {findTagQuery.data?.result?.title}
+        </header>
         <div
           className={css({textStyle: 'body2', color: 'text.invert'})}
           role='status'
           aria-label={`Result: ${totalCount} Articles`}
         >
-          Result: {totalCount} Articles
+          Result: {findTagQuery.data?.result?.postCount} Articles
         </div>
       </Wrapper>
 
       <Cards hideBelow='md'>{articles.map(renderCard)}</Cards>
       <Cards hideFrom='md'>{articles.map(renderSmallCard)}</Cards>
 
-      {totalCount && totalCount > 12 && (
+      {!!totalCount && totalCount > 12 && (
         <PaginationSection
           totalCount={totalCount}
           totalPages={totalPages}
@@ -79,7 +91,7 @@ const renderCard = (article: ArticleType) => (
     key={article._id}
     articleLink={`/articles/${article.slug}`}
     date={article.publishDate}
-    imageUrl={`${IMAGE_STORAGE_URL}/${article.thumbnail?._id}`}
+    imageUrl={article.thumbnail?._id ? `${IMAGE_STORAGE_URL}/${article.thumbnail?._id}` : undefined}
     title={article.title}
   />
 );
@@ -89,7 +101,7 @@ const renderSmallCard = (article: ArticleType) => (
     key={article._id}
     articleLink={`/articles/${article.slug}`}
     date={article.publishDate}
-    imageUrl={`${IMAGE_STORAGE_URL}/${article.thumbnail?._id}`}
+    imageUrl={article.thumbnail?._id ? `${IMAGE_STORAGE_URL}/${article.thumbnail?._id}` : undefined}
     title={article.title}
   />
 );

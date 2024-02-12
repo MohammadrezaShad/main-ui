@@ -42,6 +42,7 @@ const Slider = ({slides}: Props) => (
         >
           {slide.thumbnail ? (
             <Image
+              unoptimized
               width={900}
               height={500}
               src={`${IMAGE_STORAGE_URL}/${slide.thumbnail?._id}`}

@@ -2,22 +2,24 @@
 
 import {css} from '@styled/css';
 import {flex} from '@styled/patterns';
-import {useQuery} from '@tanstack/react-query';
+import {useQuery, useQueryClient} from '@tanstack/react-query';
 import {deleteCookie, getCookie} from 'cookies-next';
 import Image from 'next/image';
+import {useRouter} from 'next/navigation';
 
 import {coin, IconLogout} from '@/assets';
 import {Avatar} from '@/components';
+import {CookieName} from '@/constants';
 import {User} from '@/graphql/generated/types';
 import {getUser} from '@/graphql/query/users/get-user';
+import {Paths} from '@/utils';
 
-import {CookieName} from '@/constants';
-import {useRouter} from 'next/navigation';
 import ProfileNavigation from '../profile-navigation/profile-navigation';
 
 const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
 
 const ProfileSidebar = () => {
+  const queryClient = useQueryClient();
   const router = useRouter();
   const authToken = getCookie(CookieName.AUTH_TOKEN)!;
   const {data} = useQuery({
@@ -27,9 +29,11 @@ const ProfileSidebar = () => {
   const user: User = data.auth!.getUser;
 
   const handleLogout = () => {
-    deleteCookie(CookieName.AUTH_TOKEN);
+    deleteCookie(CookieName.AUTH_TOKEN, {path: '/'});
+    queryClient.invalidateQueries({queryKey: ['get-profile']});
+    queryClient.clear();
     setTimeout(() => {
-      router.push('/');
+      router.push(Paths.Home.getPath());
     }, 1000);
   };
 
@@ -41,8 +45,12 @@ const ProfileSidebar = () => {
         alignItems: 'center',
         flex: 0,
         flexDir: 'column',
-        px: '8',
-        py: '8',
+        p: '8',
+        mdDown: {
+          borderWidth: '0',
+          px: '0',
+          pos: 'relative',
+        },
       })}
     >
       <Avatar
@@ -78,19 +86,19 @@ const ProfileSidebar = () => {
           justifyContent: 'space-between',
           gap: '5',
           mt: '6',
-          pl: '6',
-          pr: '7',
+          px: '6',
+          py: '4',
         })}
       >
         <div
           className={flex({
             alignItems: 'center',
             justify: 'center',
-            gap: '3.5',
-            p: '6',
+            gap: '3',
           })}
         >
           <Image
+            unoptimized
             width={32}
             height={32}
             src={coin}
@@ -127,12 +135,21 @@ const ProfileSidebar = () => {
       <button
         onClick={handleLogout}
         type='button'
-        className={flex({
+        className={css({
+          display: 'flex',
           alignItems: 'center',
           gap: '3',
           cursor: 'pointer',
+          mr: 'auto',
           mt: '12',
-          w: 'full',
+          mdDown: {
+            pos: 'absolute',
+            top: '-5',
+            right: '0',
+            w: 'max-content',
+            display: 'inline-block',
+            ml: 'auto',
+          },
         })}
       >
         <IconLogout />
@@ -140,6 +157,7 @@ const ProfileSidebar = () => {
           className={css({
             textStyle: 'body',
             color: 'gray4',
+            hideBelow: 'md',
           })}
         >
           Log out

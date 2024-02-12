@@ -1,7 +1,9 @@
 // PaginationSection.tsx
-import {IconChevronLeft, IconChevronRight} from '@/assets';
-import {css} from '@styled/css';
 import {FC} from 'react';
+import {css} from '@styled/css';
+
+import {IconChevronLeft, IconChevronRight} from '@/assets';
+
 import {Pagination} from '../articles/articles.styled';
 
 interface PaginationSectionProps {

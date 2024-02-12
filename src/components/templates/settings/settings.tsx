@@ -1,17 +1,18 @@
 'use client';
 
-import {IconArrowRight} from '@/assets';
-import {AuthButton, TextField} from '@/components';
-import RadioButton from '@/components/atoms/radio-button/radio-button';
-import {CookieName} from '@/constants';
-import {User} from '@/graphql/generated/types';
-import {getUser} from '@/graphql/query/users/get-user';
 import {css} from '@styled/css';
 import {Box} from '@styled/jsx';
 import {flex} from '@styled/patterns';
 import {useQuery} from '@tanstack/react-query';
 import {getCookie} from 'cookies-next';
 import {useRouter} from 'next/navigation';
+
+import {IconArrowRight} from '@/assets';
+import {AuthButton, TextField} from '@/components';
+import RadioButton from '@/components/atoms/radio-button/radio-button';
+import {CookieName} from '@/constants';
+import {User} from '@/graphql/generated/types';
+import {getUser} from '@/graphql/query/users/get-user';
 
 export default function Settings() {
   const authToken = getCookie(CookieName.AUTH_TOKEN)!;
@@ -75,9 +76,9 @@ export default function Settings() {
                 mt: '8',
               })}
             >
-              <TextField title='First Name' />
-              <TextField title='Last Name' />
-              <TextField title='Nickname' />
+              <TextField label='First Name' />
+              <TextField label='Last Name' />
+              <TextField label='Nickname' />
             </Box>
             <h5
               className={css({
@@ -90,7 +91,8 @@ export default function Settings() {
             >
               Gender
             </h5>
-            <div
+            <label
+              htmlFor='female'
               className={css({
                 alignItems: 'stretch',
                 display: 'flex',
@@ -100,7 +102,7 @@ export default function Settings() {
                 mt: '4',
               })}
             >
-              <RadioButton name='gender' />
+              <RadioButton id='female' name='gender' />
               <div
                 className={css({
                   color: 'text.primary',
@@ -109,9 +111,10 @@ export default function Settings() {
               >
                 Female
               </div>
-            </div>
+            </label>
 
-            <div
+            <label
+              htmlFor='male'
               className={css({
                 alignItems: 'stretch',
                 display: 'flex',
@@ -121,7 +124,7 @@ export default function Settings() {
                 mt: '4',
               })}
             >
-              <RadioButton name='gender' />
+              <RadioButton id='male' name='gender' />
               <div
                 className={css({
                   color: 'text.primary',
@@ -130,9 +133,10 @@ export default function Settings() {
               >
                 Male
               </div>
-            </div>
+            </label>
 
-            <div
+            <label
+              htmlFor='other'
               className={css({
                 alignItems: 'stretch',
                 display: 'flex',
@@ -142,7 +146,7 @@ export default function Settings() {
                 mt: '4',
               })}
             >
-              <RadioButton name='gender' />
+              <RadioButton id='other' name='gender' />
               <div
                 className={css({
                   color: 'text.primary',
@@ -151,7 +155,7 @@ export default function Settings() {
               >
                 Other
               </div>
-            </div>
+            </label>
             <Box
               className={flex({
                 flexDir: 'column',
@@ -160,8 +164,8 @@ export default function Settings() {
                 mt: '8',
               })}
             >
-              <TextField title='My Hometown' />
-              <TextField title='My Blog or Website' />
+              <TextField label='My Hometown' />
+              <TextField label='My Blog or Website' />
             </Box>
             <div
               className={css({

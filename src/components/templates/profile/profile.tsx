@@ -1,11 +1,15 @@
 'use client';
 
-import {IconArrowRight, IconInfo} from '@/assets';
 import {css} from '@styled/css';
 import {flex} from '@styled/patterns';
 import Image from 'next/image';
+import {useRouter} from 'next/navigation';
+
+import {IconArrowRight, IconInfo} from '@/assets';
 
 export default function Profile() {
+  const router = useRouter();
+
   return (
     <div
       className={flex({
@@ -22,13 +26,12 @@ export default function Profile() {
           mt: '7',
           alignItems: 'flex-start',
         })}
-        id='#activities'
       >
         <div className={flex({alignItems: 'center', gap: '3'})}>
           <button
             type='button'
             aria-label='back to dashboard'
-            onClick={() => window.scrollTo({top: 0})}
+            onClick={() => router.push('/profile')}
           >
             <IconArrowRight className={css({rotate: '180deg', hideFrom: 'md'})} />
           </button>
@@ -53,7 +56,7 @@ export default function Profile() {
           })}
         >
           <IconInfo
-            clasName={css({
+            className={css({
               w: '16',
               h: '16',
             })}
@@ -120,6 +123,7 @@ export default function Profile() {
               })}
             >
               <Image
+                unoptimized
                 width={64}
                 height={64}
                 alt=''
@@ -204,6 +208,7 @@ export default function Profile() {
               })}
             >
               <Image
+                unoptimized
                 width={64}
                 height={64}
                 alt=''

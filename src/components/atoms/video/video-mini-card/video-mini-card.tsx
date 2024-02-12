@@ -6,7 +6,7 @@ export default function VideoMiniCard() {
   return (
     <Container>
       <ImageWrap>
-        <Image src='/test/thumbnail.png' fill objectFit='cover' alt='' />
+        <Image unoptimized src='/test/thumbnail.png' fill objectFit='cover' alt='' />
         <Duration>00:50:25</Duration>
       </ImageWrap>
       <Block>

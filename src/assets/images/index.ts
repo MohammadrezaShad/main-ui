@@ -6,3 +6,5 @@ export {default as second} from './second.png';
 export {default as third} from './third.png';
 export {default as coin} from './coin.png';
 export {default as hero} from './hero-water-crisis.webp';
+export {default as bgMaze} from './bg-maze.png';
+export {default as bgMaze2} from './bg-maze-2.png';

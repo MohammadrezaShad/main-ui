@@ -1,6 +1,6 @@
+import React from 'react';
 import {css, cx} from '@styled/css';
 import Link from 'next/link';
-import React from 'react';
 
 interface SocialMediaLinkProps {
   icon: React.ComponentType<{className: string}>;

@@ -14,6 +14,7 @@ export default function VideoDescription() {
           <S.Title>فیلم Transformers: Rise of the Beasts 2023</S.Title>
           <S.Imdb className={css({hideBelow: 'md'})}>
             <Image
+              unoptimized
               src={ImdbLogo}
               alt='imdb icon'
               height={20}
@@ -38,6 +39,7 @@ export default function VideoDescription() {
         >
           <S.Imdb className={css({mr: 'unset'})}>
             <Image
+              unoptimized
               src={ImdbLogo}
               alt='imdb icon'
               height={20}

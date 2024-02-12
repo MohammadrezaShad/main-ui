@@ -4,6 +4,7 @@ import {css} from '@styled/css';
 import {Box} from '@styled/jsx';
 import {flex} from '@styled/patterns';
 import {useMutation, useQuery} from '@tanstack/react-query';
+import {getCookie} from 'cookies-next';
 import Image from 'next/image';
 import Link from 'next/link';
 import {useParams} from 'next/navigation';
@@ -28,7 +29,6 @@ import {deleteBookmark} from '@/graphql/mutation/bookmark/remove-bokmark';
 import {findArticleByName} from '@/graphql/query/find-article-by-name';
 import {findRelatedArticles} from '@/graphql/query/find-related-articles';
 import {getArticlePdfById} from '@/graphql/query/get-article-pdf-by-id';
-import {getCookie} from 'cookies-next';
 
 const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
 
@@ -141,6 +141,7 @@ const Page = () => {
         </Box>
         {article.thumbnail ? (
           <Image
+            unoptimized
             alt={article.title ?? ''}
             src={`${IMAGE_STORAGE_URL}/${article.thumbnail?._id}`}
             width={960}

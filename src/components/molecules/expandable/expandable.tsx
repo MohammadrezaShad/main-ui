@@ -1,9 +1,10 @@
 'use client';
 
+import {useState} from 'react';
+import {css} from '@styled/css';
+
 import {IconAdd, IconMinus} from '@/assets';
 import {FaqType} from '@/graphql/generated/types';
-import {css} from '@styled/css';
-import {useState} from 'react';
 
 const Expandable = ({faq}: {faq: FaqType}) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -11,7 +12,9 @@ const Expandable = ({faq}: {faq: FaqType}) => {
     <div
       className={css({
         py: 4,
-        borderBottom: '1px solid token(colors.gray3)',
+        '&:not(:last-of-type)': {
+          borderBottom: '1px solid token(colors.gray3)',
+        },
       })}
     >
       <button

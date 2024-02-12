@@ -1,14 +1,25 @@
+import {Metadata} from 'next';
+
 import {ProfileDetails, ProfileSidebar} from '@/components';
 import {CookieName} from '@/constants';
 import {getUser} from '@/graphql/query/users/get-user';
 import {getQueryClient} from '@/helpers';
 import {Hydrate} from '@/providers';
 import {css} from '@styled/css';
+import {Box} from '@styled/jsx';
 import {flex} from '@styled/patterns';
 import {dehydrate} from '@tanstack/react-query';
 import {cookies} from 'next/headers';
+import {PropsWithChildren} from 'react';
 
-export default async function Template({children}: {children: React.ReactNode}) {
+export const metadata: Metadata = {
+  robots: {
+    index: false,
+    nocache: true,
+  },
+};
+
+const Page = async ({children}: PropsWithChildren) => {
   const cookieStore = cookies();
   const authToken = cookieStore.get(CookieName.AUTH_TOKEN)?.value || '';
   const queryClient = getQueryClient();
@@ -34,12 +45,15 @@ export default async function Template({children}: {children: React.ReactNode}) 
           px: '5',
           mdDown: {
             flexDirection: 'column',
+            mt: '0',
           },
         })}
       >
-        <Hydrate state={dehydratedState}>
-          <ProfileSidebar />
-        </Hydrate>
+        <Box hideBelow='md'>
+          <Hydrate state={dehydratedState}>
+            <ProfileSidebar />
+          </Hydrate>
+        </Box>
         <div
           className={css({
             display: 'flex',
@@ -53,10 +67,10 @@ export default async function Template({children}: {children: React.ReactNode}) 
         </div>
         <div
           className={css({
-            hideBelow: 'md',
             alignSelf: 'stretch',
             flex: 0,
             minW: '302px',
+            hideBelow: 'md',
           })}
         >
           <ProfileDetails />
@@ -64,4 +78,6 @@ export default async function Template({children}: {children: React.ReactNode}) 
       </div>
     </div>
   );
-}
+};
+
+export default Page;

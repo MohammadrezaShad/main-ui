@@ -1,3 +1,4 @@
+import {ToastContainer} from 'react-toastify';
 import type {Metadata} from 'next';
 import {Ubuntu} from 'next/font/google';
 import {cookies} from 'next/headers';
@@ -6,7 +7,6 @@ import {CookieName, ThemeType} from '@/constants';
 import {MainProviders} from '@/providers';
 
 import '@/styles/globals.css';
-import {ToastContainer} from 'react-toastify';
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -20,8 +20,8 @@ const ubuntu = Ubuntu({
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL || 'http://localhost:3000'),
   title: {
-    default: 'Waterworld',
-    template: '%s | Waterworld',
+    default: 'Waterlyst',
+    template: '%s | Waterlyst',
   },
   description: 'Save the world',
   icons: {

@@ -1,9 +1,10 @@
 'use client';
 
-import {IconArrowRight, IconInfo} from '@/assets';
 import {css} from '@styled/css';
 import {flex} from '@styled/patterns';
 import {useRouter} from 'next/navigation';
+
+import {IconArrowRight, IconInfo} from '@/assets';
 
 export default function Profile() {
   const router = useRouter();
@@ -54,7 +55,7 @@ export default function Profile() {
           })}
         >
           <IconInfo
-            clasName={css({
+            className={css({
               w: '16',
               h: '16',
             })}

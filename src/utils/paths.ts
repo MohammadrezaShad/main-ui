@@ -19,6 +19,8 @@ class Route {
 
   Home = new Uri('/');
 
+  Quiz = new Uri('/quizzes');
+
   Viko = new Uri('/viko');
 
   News = new Uri('/news');

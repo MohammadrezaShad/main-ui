@@ -1,10 +1,11 @@
 'use client';
 
-import {IconArrowRight} from '@/assets';
 import {css} from '@styled/css';
 import {flex} from '@styled/patterns';
 import Image from 'next/image';
 import {useRouter} from 'next/navigation';
+
+import {IconArrowRight} from '@/assets';
 
 export default function CollectionsView() {
   const router = useRouter();
@@ -107,6 +108,7 @@ export default function CollectionsView() {
                 })}
               >
                 <Image
+                  unoptimized
                   width={128}
                   height={128}
                   alt=''
@@ -181,6 +183,7 @@ export default function CollectionsView() {
                 })}
               >
                 <Image
+                  unoptimized
                   width={128}
                   height={128}
                   alt=''

@@ -1,17 +1,15 @@
 import {css} from '@styled/css';
 import {flex} from '@styled/patterns';
+import {dehydrate} from '@tanstack/react-query';
 import {cookies, headers} from 'next/headers';
 
 import {Footer, Header} from '@/components';
-import {CookieName, HeaderName} from '@/constants';
-import {Paths, isMatch} from '@/utils';
-
 import MobileNavbar from '@/components/organisms/mobile-navbar/mobile-navbar';
+import {CookieName, HeaderName} from '@/constants';
 import {getUser} from '@/graphql/query/users/get-user';
 import {getQueryClient} from '@/helpers';
 import {Hydrate} from '@/providers';
-import '@/styles/globals.css';
-import {dehydrate} from '@tanstack/react-query';
+import {isMatch, Paths} from '@/utils';
 
 export default async function Template({children}: {children: React.ReactNode}) {
   const currentUrl = headers().get(HeaderName.PATHNAME) || '';
@@ -22,18 +20,18 @@ export default async function Template({children}: {children: React.ReactNode}) 
   await queryClient.prefetchQuery({
     queryKey: ['get-profile'],
     queryFn: () => getUser(authToken),
+    staleTime: 1000,
   });
   const dehydratedState = dehydrate(queryClient);
 
   return (
-    <>
-      <Hydrate state={dehydratedState}>
-        <Header />
-      </Hydrate>
+    <Hydrate state={dehydratedState}>
+      <Header />
       <div
         className={css({
           pb: {base: '8', mdDown: '36'},
           bg: 'background',
+          flex: '1',
         })}
       >
         <div
@@ -74,6 +72,6 @@ export default async function Template({children}: {children: React.ReactNode}) 
       >
         <MobileNavbar />
       </div>
-    </>
+    </Hydrate>
   );
 }

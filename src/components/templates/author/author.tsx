@@ -1,5 +1,13 @@
 'use client';
 
+import {useState} from 'react';
+import {css} from '@styled/css';
+import {Box} from '@styled/jsx';
+import {flex, grid} from '@styled/patterns';
+import {useQuery} from '@tanstack/react-query';
+import {getCookie} from 'cookies-next';
+import {useParams, useRouter} from 'next/navigation';
+
 import {IconFacebook, IconInstagram, IconLinkedIn, IconNotify, IconRG, IconTwitter} from '@/assets';
 import {AuthButton, Avatar, Card, Chip, SmallCard, SocialMediaLinks} from '@/components';
 import {CookieName} from '@/constants';
@@ -7,13 +15,7 @@ import {findUserById} from '@/graphql';
 import {ArticleType, User} from '@/graphql/generated/types';
 import {searchArticlesByAUthorId} from '@/graphql/query/articles/search-articles-by-author-id';
 import {getUser} from '@/graphql/query/users/get-user';
-import {css} from '@styled/css';
-import {Box} from '@styled/jsx';
-import {flex, grid} from '@styled/patterns';
-import {useQuery} from '@tanstack/react-query';
-import {getCookie} from 'cookies-next';
-import {useParams, useRouter} from 'next/navigation';
-import {useState} from 'react';
+
 import {Actions, Cards, Chips, Container, Tab, Tabs, Wrapper} from './author.styled';
 
 const ADMIN_PANEL_URL = process.env.NEXT_PUBLIC_ADMIN_PANEL_URL;

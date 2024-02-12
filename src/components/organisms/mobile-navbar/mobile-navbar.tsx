@@ -1,13 +1,34 @@
 'use client';
 
-import {IconDoc, IconHome, IconMenu, IconProfile, IconQuiz} from '@/assets';
 import {css} from '@styled/css';
+import {flex} from '@styled/patterns';
+import {useQuery} from '@tanstack/react-query';
+import {getCookie} from 'cookies-next';
 import Link from 'next/link';
 import {usePathname} from 'next/navigation';
 
-export default function MobileNavbar() {
+import {IconDoc, IconHome, IconMenu, IconProfile, IconQuiz} from '@/assets';
+import {Avatar} from '@/components';
+import {CookieName} from '@/constants';
+import {useAuthContext} from '@/contexts';
+import {User} from '@/graphql/generated/types';
+import {getUser} from '@/graphql/query/users/get-user';
+
+const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
+
+interface Props {}
+
+export default function MobileNavbar(props: Props) {
+  const {isLoginOpen$} = useAuthContext();
   const pathname = usePathname();
   const isActive = (link: string) => pathname.includes(link);
+  const authToken = getCookie(CookieName.AUTH_TOKEN)!;
+  const {data, isLoading} = useQuery({
+    queryKey: ['get-profile'],
+    queryFn: () => getUser(authToken),
+  }) as any;
+  const user: User = data?.auth.getUser;
+  if (isLoading) return null;
 
   return (
     <div
@@ -31,30 +52,69 @@ export default function MobileNavbar() {
           alignItems: 'center',
         })}
       >
-        <li>
-          <Link
-            href='/profile'
-            className={css({
-              color: isActive('/profile') ? 'primary' : 'gray4',
-              textAlign: 'center',
-              fontSize: 'xs',
-              lineHeight: 'xs',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              gap: '2.5',
-              flexDir: 'column',
-            })}
-          >
-            <IconProfile
+        <li
+          className={flex({
+            justifyContent: 'center',
+            flex: 1,
+          })}
+        >
+          {authToken ? (
+            <Link
+              href='/profile'
               className={css({
-                fill: isActive('/profile') ? 'primary' : 'gray4',
+                color: isActive('/profile') ? 'primary' : 'gray4',
+                textAlign: 'center',
+                fontSize: 'xs',
+                lineHeight: 'xs',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                gap: '2.5',
+                flexDir: 'column',
               })}
-            />
-            Profile
-          </Link>
+            >
+              {user?.avatar?._id ? (
+                <Avatar src={`${IMAGE_STORAGE_URL}/${user.avatar?._id}`} size={24} />
+              ) : (
+                <IconProfile
+                  className={css({
+                    fill: isActive('/profile') ? 'primary' : 'gray4',
+                  })}
+                />
+              )}
+              Profile
+            </Link>
+          ) : (
+            <button
+              type='button'
+              className={css({
+                color: isActive('/profile') ? 'primary' : 'gray4',
+                textAlign: 'center',
+                fontSize: 'xs',
+                lineHeight: 'xs',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                gap: '2.5',
+                flexDir: 'column',
+              })}
+              onClick={() => isLoginOpen$.set(true)}
+            >
+              <IconProfile
+                className={css({
+                  fill: isActive('/profile') ? 'primary' : 'gray4',
+                })}
+              />
+              Profile
+            </button>
+          )}
         </li>
-        <li>
+        <li
+          className={flex({
+            justifyContent: 'center',
+            flex: 1,
+          })}
+        >
           <Link
             href='/articles'
             className={css({
@@ -77,7 +137,12 @@ export default function MobileNavbar() {
             Articles
           </Link>
         </li>
-        <li>
+        <li
+          className={flex({
+            justifyContent: 'center',
+            flex: 1,
+          })}
+        >
           <Link
             href='/'
             className={css({
@@ -100,7 +165,12 @@ export default function MobileNavbar() {
             Home
           </Link>
         </li>
-        <li>
+        <li
+          className={flex({
+            justifyContent: 'center',
+            flex: 1,
+          })}
+        >
           <Link
             href='/quizzes'
             className={css({
@@ -123,7 +193,12 @@ export default function MobileNavbar() {
             Quiz
           </Link>
         </li>
-        <li>
+        <li
+          className={flex({
+            justifyContent: 'center',
+            flex: 1,
+          })}
+        >
           <button
             type='button'
             className={css({

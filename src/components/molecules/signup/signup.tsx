@@ -1,19 +1,23 @@
 'use client';
 
+import {toast} from 'react-toastify';
 import {Observable} from '@legendapp/state';
 import {css} from '@styled/css';
 import {Container} from '@styled/jsx';
 import {flex} from '@styled/patterns';
 import {useMutation} from '@tanstack/react-query';
 import {useFormik} from 'formik';
+import Image from 'next/image';
 import Link from 'next/link';
-import {toast} from 'react-toastify';
 import * as Yup from 'yup';
 
 import {IconClose} from '@/assets';
+import ProfileCircle from '@/assets/images/profile-circle.png';
+import {TextField} from '@/components';
 import {Modal} from '@/components/atoms/modal';
 import {SignupInputType} from '@/graphql/generated/types';
 import {signUp} from '@/graphql/mutation/auth/sign-up';
+
 import 'react-toastify/dist/ReactToastify.css';
 
 const schema = Yup.object().shape({
@@ -114,10 +118,12 @@ export default function SignUp({
         >
           <IconClose />
         </button>
-        <img
+        <Image
           alt=''
-          loading='lazy'
-          src='https://cdn.builder.io/api/v1/image/assets/TEMP/a45419311858d85bf4d76527dd38c99cbe9789a7637a2a0f1df4cc44065002a5?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&'
+          unoptimized
+          width={64}
+          height={64}
+          src={ProfileCircle}
           className={css({
             aspectRatio: 'square',
             objectFit: 'contain',
@@ -140,7 +146,7 @@ export default function SignUp({
             mt: '7',
           })}
         >
-          Sign up for Waterworld
+          Sign up for Waterlyst
         </h3>
         <div
           className={css({
@@ -152,7 +158,7 @@ export default function SignUp({
           })}
         >
           <span className={css({textStyle: 'caption', color: 'text.primary'})}>
-            By proceeding, you agree to Waterworld’s&nbsp;
+            By proceeding, you agree to Waterlyst’s&nbsp;
           </span>
           <Link href='/' className={css({fontWeight: 'medium', color: 'primary'})}>
             Terms of Use
@@ -186,44 +192,19 @@ export default function SignUp({
               mt: '6',
             })}
           >
-            <input
-              className={css({
-                color: 'text.primary',
-                textStyle: 'body2',
-                borderRadius: '4px',
-                bgColor: 'white',
-                w: 'full',
-                mt: '4',
-                px: '4',
-                py: '5',
-                border:
-                  errors.firstname && touched.firstname
-                    ? `1px solid token(colors.danger)`
-                    : `1px solid token(colors.gray3)`,
-              })}
-              placeholder='First Name'
+            <TextField
+              hasError={!!errors.firstname && touched.firstname}
+              label='First Name'
               autoComplete='given-name'
               name='firstname'
               value={values.firstname}
               onChange={handleChange}
               id='firstname'
             />
-            <input
-              className={css({
-                color: 'text.primary',
-                textStyle: 'body2',
-                borderRadius: '4px',
-                bgColor: 'white',
-                w: 'full',
-                mt: '4',
-                px: '4',
-                py: '5',
-                border:
-                  errors.lastname && touched.lastname
-                    ? `1px solid token(colors.danger)`
-                    : `1px solid token(colors.gray3)`,
-              })}
-              placeholder='Last Name'
+
+            <TextField
+              hasError={!!errors.lastname && touched.lastname}
+              label='Last Name'
               autoComplete='family-name'
               name='lastname'
               value={values.lastname}
@@ -231,22 +212,9 @@ export default function SignUp({
               id='lastname'
             />
           </div>
-          <input
-            className={css({
-              color: 'text.primary',
-              textStyle: 'body2',
-              borderRadius: '4px',
-              bgColor: 'white',
-              w: 'full',
-              mt: '4',
-              px: '4',
-              py: '5',
-              border:
-                errors.email && touched.email
-                  ? `1px solid token(colors.danger)`
-                  : `1px solid token(colors.gray3)`,
-            })}
-            placeholder='Email'
+          <TextField
+            hasError={!!errors.email && touched.email}
+            label='Email'
             type='email'
             autoComplete='email'
             name='email'
@@ -254,22 +222,9 @@ export default function SignUp({
             onChange={handleChange}
             id='email'
           />
-          <input
-            className={css({
-              color: 'text.primary',
-              textStyle: 'body2',
-              borderRadius: '4px',
-              bgColor: 'white',
-              w: 'full',
-              mt: '4',
-              px: '4',
-              py: '5',
-              border:
-                errors.password && touched.password
-                  ? `1px solid token(colors.danger)`
-                  : `1px solid token(colors.gray3)`,
-            })}
-            placeholder='Password'
+          <TextField
+            hasError={!!errors.password && touched.password}
+            label='Password'
             type='password'
             autoComplete='new-password'
             name='password'
@@ -310,7 +265,7 @@ export default function SignUp({
               textAlign: 'center',
             })}
           >
-            Already on Waterworld?
+            Already on Waterlyst?
           </div>
           <button
             type='button'

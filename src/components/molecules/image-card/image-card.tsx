@@ -42,6 +42,7 @@ const ImageCard = ({imageUrl, date, title, aspectRatio = 'square', articleLink}:
     <Container className={css({hideFrom: 'md'})}>
       {imageUrl ? (
         <Image
+          unoptimized
           width='112'
           height='112'
           alt={title}

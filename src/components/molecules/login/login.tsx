@@ -1,23 +1,23 @@
 'use client';
 
+import {useEffect} from 'react';
+import {toast} from 'react-toastify';
 import {Observable} from '@legendapp/state';
 import {useObservable} from '@legendapp/state/react';
 import {css} from '@styled/css';
-import {Container} from '@styled/jsx';
 import {flex} from '@styled/patterns';
-import {useQuery} from '@tanstack/react-query';
+import {useMutation} from '@tanstack/react-query';
 import {setCookie} from 'cookies-next';
 import {useFormik} from 'formik';
 import Link from 'next/link';
+import {useRouter} from 'next/navigation';
 import * as Yup from 'yup';
 
 import {IconClose} from '@/assets';
+import {TextField} from '@/components';
 import {Modal} from '@/components/atoms/modal';
 import {CookieName} from '@/constants';
 import {signin} from '@/graphql/query/sign-in';
-import {useRouter} from 'next/navigation';
-import {useEffect} from 'react';
-import {toast} from 'react-toastify';
 
 const schema = Yup.object().shape({
   email: Yup.string().required().email(),
@@ -40,15 +40,13 @@ export default function Login({
     },
     validationSchema: schema,
     onSubmit: async ({email, password}) => {
-      enabled$.set(true);
+      mutateAsync();
     },
   });
   const {errors, touched, values, handleChange, handleSubmit} = formik;
 
-  const {data, error, isLoading} = useQuery({
-    queryKey: ['header-login'],
-    queryFn: () => signin({email: values.email, password: values.password}),
-    enabled: enabled$.use(),
+  const {data, error, mutateAsync, isPending} = useMutation({
+    mutationFn: () => signin({email: values.email, password: values.password}),
   }) as any;
 
   const onClose = () => {
@@ -78,13 +76,15 @@ export default function Login({
   useEffect(() => {
     if (data) {
       if (data.auth.signin.token) {
+        const expirationTime = 14 * 24 * 60 * 60 * 1000;
+        const expirationDate = new Date(Date.now() + expirationTime);
         setCookie(CookieName.AUTH_TOKEN, data.auth.signin.token, {
-          expires: new Date(new Date().setMonth(new Date().getMonth() + 2)),
+          expires: expirationDate,
         });
         setTimeout(() => {
           onClose();
           router.refresh();
-        }, 2000);
+        }, 1000);
       } else {
         notifyError('Your account is not verified yet.');
       }
@@ -93,18 +93,17 @@ export default function Login({
 
   return (
     <Modal onClose={onClose} isOpen$={isOpen$}>
-      <Container
+      <div
         style={{height: '100%'}}
-        onClick={e => e.stopPropagation()}
-        className={flex({
-          backgroundColor: 'white',
+        className={css({
+          display: 'flex',
+          bgColor: 'white',
           flexDirection: 'column',
           alignItems: 'center',
-          px: 10,
-          py: 8,
+          padding: '40px',
           overflow: 'auto',
           alignSelf: 'center',
-          position: 'relative',
+          pos: 'relative',
           _scrollbar: {
             display: 'none',
           },
@@ -148,7 +147,7 @@ export default function Login({
             mt: '7',
           })}
         >
-          Sign in to Waterworld
+          Sign in to Waterlyst
         </h3>
         <p
           className={css({
@@ -185,54 +184,29 @@ export default function Login({
             Privacy Policy
           </Link>
         </div>
-        <form className={flex({flexDirection: 'column'})} onSubmit={handleSubmit}>
-          <input
-            className={css({
-              color: 'text.primary',
-              textStyle: 'body2',
-              borderRadius: '4px',
-              bgColor: 'white',
-              w: 'full',
-              mt: '8',
-              pl: '4',
-              pr: '16',
-              py: '5',
-              border:
-                errors.email && touched.email
-                  ? `1px solid token(colors.danger)`
-                  : `1px solid token(colors.gray3)`,
-            })}
-            placeholder='Email'
-            autoComplete='email'
-            name='email'
-            value={values.email}
-            onChange={handleChange}
-            id='email'
-          />
-          <input
-            className={css({
-              color: 'text.primary',
-              textStyle: 'body2',
-              borderRadius: '4px',
-              bgColor: 'white',
-              w: 'full',
-              mt: '4',
-              pl: '4',
-              pr: '16',
-              py: '5',
-              border:
-                errors.password && touched.password
-                  ? `1px solid token(colors.danger)`
-                  : `1px solid token(colors.gray3)`,
-            })}
-            placeholder='Password'
-            type='password'
-            autoComplete='current-password'
-            name='password'
-            value={values.password}
-            onChange={handleChange}
-            id='password'
-          />
+        <form className={flex({flexDirection: 'column', w: 'full'})} onSubmit={handleSubmit}>
+          <div className={flex({flexDirection: 'column', w: 'full', mt: '8', gap: '4'})}>
+            <TextField
+              autoComplete='email'
+              type='email'
+              name='email'
+              value={values.email}
+              onChange={handleChange}
+              id='email'
+              hasError={!!errors.email && touched.email}
+              label='Email'
+            />
+            <TextField
+              autoComplete='password'
+              type='password'
+              name='password'
+              value={values.password}
+              onChange={handleChange}
+              id='password'
+              hasError={!!errors.password && touched.password}
+              label='Password'
+            />
+          </div>
           <button
             type='button'
             className={css({
@@ -261,9 +235,9 @@ export default function Login({
               },
             })}
             type='submit'
-            disabled={isLoading}
+            disabled={isPending}
           >
-            {isLoading ? 'Please wait ...' : 'Log in'}
+            {isPending ? 'Please wait ...' : 'Log in'}
           </button>
         </form>
         <div
@@ -282,7 +256,7 @@ export default function Login({
               textAlign: 'center',
             })}
           >
-            New to Waterworld?
+            New to Waterlyst?
           </div>
           <button
             type='button'
@@ -296,7 +270,7 @@ export default function Login({
             Sign up
           </button>
         </div>
-      </Container>
+      </div>
     </Modal>
   );
 }

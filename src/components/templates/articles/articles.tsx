@@ -1,18 +1,20 @@
 'use client';
 
+import {useEffect, useState} from 'react';
+import {css} from '@styled/css';
+import {Box} from '@styled/jsx';
+import {keepPreviousData, useQuery} from '@tanstack/react-query';
+
+import {IconChevronLeft, IconChevronRight} from '@/assets';
 import {Articles, Divider, RecentArticles} from '@/components';
 import {Slider} from '@/components/organisms/slider';
 import {ArticleType, StatusType} from '@/graphql/generated/types';
 import {searchArticles} from '@/graphql/query/search-articles';
-import {css} from '@styled/css';
-import {Box} from '@styled/jsx';
-import {keepPreviousData, useQuery} from '@tanstack/react-query';
-import {useEffect, useState} from 'react';
+
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 
-import {IconChevronLeft, IconChevronRight} from '@/assets';
 import {Pagination} from './articles.styled';
 
 const Page = () => {
