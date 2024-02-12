@@ -18,9 +18,7 @@ const ProfileDetails = () => {
         bgColor: 'gray1',
         flexDir: 'column',
         alignItems: 'stretch',
-        px: '6',
-        pt: '7',
-        pb: '12',
+        p: '6',
         mdDown: {
           bgColor: 'white',
           px: 0,

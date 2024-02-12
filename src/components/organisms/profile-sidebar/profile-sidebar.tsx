@@ -45,8 +45,12 @@ const ProfileSidebar = () => {
         alignItems: 'center',
         flex: 0,
         flexDir: 'column',
-        px: '8',
-        py: '8',
+        p: '8',
+        mdDown: {
+          borderWidth: '0',
+          px: '0',
+          pos: 'relative',
+        },
       })}
     >
       <Avatar
@@ -82,16 +86,15 @@ const ProfileSidebar = () => {
           justifyContent: 'space-between',
           gap: '5',
           mt: '6',
-          pl: '6',
-          pr: '7',
+          px: '6',
+          py: '4',
         })}
       >
         <div
           className={flex({
             alignItems: 'center',
             justify: 'center',
-            gap: '3.5',
-            p: '6',
+            gap: '3',
           })}
         >
           <Image
@@ -132,12 +135,21 @@ const ProfileSidebar = () => {
       <button
         onClick={handleLogout}
         type='button'
-        className={flex({
+        className={css({
+          display: 'flex',
           alignItems: 'center',
           gap: '3',
           cursor: 'pointer',
+          mr: 'auto',
           mt: '12',
-          w: 'full',
+          mdDown: {
+            pos: 'absolute',
+            top: '-5',
+            right: '0',
+            w: 'max-content',
+            display: 'inline-block',
+            ml: 'auto',
+          },
         })}
       >
         <IconLogout />
@@ -145,6 +157,7 @@ const ProfileSidebar = () => {
           className={css({
             textStyle: 'body',
             color: 'gray4',
+            hideBelow: 'md',
           })}
         >
           Log out

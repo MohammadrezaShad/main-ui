@@ -91,7 +91,8 @@ export default function Settings() {
             >
               Gender
             </h5>
-            <div
+            <label
+              htmlFor='female'
               className={css({
                 alignItems: 'stretch',
                 display: 'flex',
@@ -101,7 +102,7 @@ export default function Settings() {
                 mt: '4',
               })}
             >
-              <RadioButton name='gender' />
+              <RadioButton id='female' name='gender' />
               <div
                 className={css({
                   color: 'text.primary',
@@ -110,9 +111,10 @@ export default function Settings() {
               >
                 Female
               </div>
-            </div>
+            </label>
 
-            <div
+            <label
+              htmlFor='male'
               className={css({
                 alignItems: 'stretch',
                 display: 'flex',
@@ -122,7 +124,7 @@ export default function Settings() {
                 mt: '4',
               })}
             >
-              <RadioButton name='gender' />
+              <RadioButton id='male' name='gender' />
               <div
                 className={css({
                   color: 'text.primary',
@@ -131,9 +133,10 @@ export default function Settings() {
               >
                 Male
               </div>
-            </div>
+            </label>
 
-            <div
+            <label
+              htmlFor='other'
               className={css({
                 alignItems: 'stretch',
                 display: 'flex',
@@ -143,7 +146,7 @@ export default function Settings() {
                 mt: '4',
               })}
             >
-              <RadioButton name='gender' />
+              <RadioButton id='other' name='gender' />
               <div
                 className={css({
                   color: 'text.primary',
@@ -152,7 +155,7 @@ export default function Settings() {
               >
                 Other
               </div>
-            </div>
+            </label>
             <Box
               className={flex({
                 flexDir: 'column',
