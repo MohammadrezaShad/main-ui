@@ -1,7 +1,7 @@
 import {CookieName} from '@/constants';
 import {gqlFetch} from '@/services/fetch';
 import {getCookie} from 'cookies-next';
-import {ArticleQuery, DownloadArticleInput} from '..';
+import {ArticleQuery, DownloadArticleInput} from '../..';
 
 export async function getArticlePdfById(
   input: DownloadArticleInput,

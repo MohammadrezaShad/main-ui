@@ -1,13 +1,13 @@
 'use client';
 
-import Select from 'react-select';
 import {Box} from '@styled/jsx';
 import {flex} from '@styled/patterns';
 import {useQuery} from '@tanstack/react-query';
+import Select from 'react-select';
 
 import {IconSearch} from '@/assets';
 import {CorporateCard, Divider} from '@/components';
-import {searchCategories} from '@/graphql/query/categories';
+import {searchCategories} from '@/graphql';
 
 import {
   Cards,

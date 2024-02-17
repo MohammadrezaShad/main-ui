@@ -28,11 +28,11 @@ import {
   DeleteOneArticleBookmarkInput,
   addBookmark,
   deleteBookmark,
+  findArticleByName,
+  findRelatedArticles,
+  getArticlePdfById,
   recordVisitStatistics,
 } from '@/graphql';
-import {findArticleByName} from '@/graphql/query/find-article-by-name';
-import {findRelatedArticles} from '@/graphql/query/find-related-articles';
-import {getArticlePdfById} from '@/graphql/query/get-article-pdf-by-id';
 import {useEffect} from 'react';
 
 const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;

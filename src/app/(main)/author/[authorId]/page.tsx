@@ -4,8 +4,7 @@ import {cookies} from 'next/headers';
 
 import {AuthorView} from '@/components';
 import {CookieName} from '@/constants';
-import {findUserById} from '@/graphql';
-import {searchArticlesByAUthorId} from '@/graphql/query/articles/search-articles-by-author-id';
+import {findUserById, searchArticlesByAuthorId} from '@/graphql';
 import {getQueryClient} from '@/helpers';
 import {Hydrate} from '@/providers';
 
@@ -19,7 +18,7 @@ const Page = async ({params}: {params: {authorId: string}}) => {
   });
   await queryClient.prefetchQuery({
     queryKey: ['search-articles', 2],
-    queryFn: () => searchArticlesByAUthorId({authors: [params.authorId], count: 9, page: 1}),
+    queryFn: () => searchArticlesByAuthorId({authors: [params.authorId], count: 9, page: 1}),
   });
   const dehydratedState = dehydrate(queryClient);
   return (

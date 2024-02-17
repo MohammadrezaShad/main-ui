@@ -2,8 +2,7 @@ import {css} from '@styled/css';
 import {dehydrate} from '@tanstack/react-query';
 
 import {ArticlesView} from '@/components';
-import {StatusType} from '@/graphql/generated/types';
-import {searchArticles} from '@/graphql/query/search-articles';
+import {StatusType, searchArticles} from '@/graphql';
 import {getQueryClient} from '@/helpers';
 import {Hydrate} from '@/providers';
 

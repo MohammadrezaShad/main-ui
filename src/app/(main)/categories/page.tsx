@@ -2,7 +2,7 @@ import {css} from '@styled/css';
 import {dehydrate} from '@tanstack/react-query';
 
 import {CategoriesView} from '@/components';
-import {searchCategories} from '@/graphql/query/categories';
+import {searchCategories} from '@/graphql';
 import {getQueryClient} from '@/helpers';
 import {Hydrate} from '@/providers';
 

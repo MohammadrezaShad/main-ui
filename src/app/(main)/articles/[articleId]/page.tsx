@@ -6,9 +6,7 @@ import {cookies} from 'next/headers';
 
 import {ArticlesDetails} from '@/components/templates/articles-details';
 import {CookieName} from '@/constants';
-import {ArticleType, StatusType} from '@/graphql/generated/types';
-import {findArticleByName} from '@/graphql/query/find-article-by-name';
-import {searchArticles} from '@/graphql/query/search-articles';
+import {ArticleType, StatusType, findArticleByName, searchArticles} from '@/graphql';
 import {getQueryClient} from '@/helpers';
 import {Hydrate} from '@/providers';
 

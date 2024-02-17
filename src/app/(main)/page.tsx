@@ -1,7 +1,7 @@
 import {dehydrate} from '@tanstack/react-query';
 
 import {MainHome} from '@/components';
-import {searchCategories} from '@/graphql/query/categories';
+import {searchCategories} from '@/graphql';
 import {getQueryClient} from '@/helpers';
 import {Hydrate} from '@/providers';
 
