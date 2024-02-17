@@ -1,21 +1,19 @@
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
-export type Exact<T extends {[key: string]: unknown}> = {[K in keyof T]: T[K]};
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {[SubKey in K]?: Maybe<T[SubKey]>};
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {[SubKey in K]: Maybe<T[SubKey]>};
-export type MakeEmpty<T extends {[key: string]: unknown}, K extends keyof T> = {[_ in K]?: never};
-export type Incremental<T> =
-  | T
-  | {[P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never};
+export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
+export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: {input: string; output: string};
-  String: {input: string; output: string};
-  Boolean: {input: boolean; output: boolean};
-  Int: {input: number; output: number};
-  Float: {input: number; output: number};
-  DateTime: {input: any; output: any};
-  Upload: {input: any; output: any};
+  ID: { input: string; output: string; }
+  String: { input: string; output: string; }
+  Boolean: { input: boolean; output: boolean; }
+  Int: { input: number; output: number; }
+  Float: { input: number; output: number; }
+  DateTime: { input: any; output: any; }
+  Upload: { input: any; output: any; }
 };
 
 export type ArticleInputType = {
@@ -44,17 +42,21 @@ export type ArticleMutation = {
   updateArticle: UpdateArticleOutput;
 };
 
+
 export type ArticleMutationCreateArticleArgs = {
   input: CreateArticleInput;
 };
+
 
 export type ArticleMutationDeleteArticleArgs = {
   input: DeleteArticleInput;
 };
 
+
 export type ArticleMutationDeleteArticlesArgs = {
   input: BulkDeleteArticleInput;
 };
+
 
 export type ArticleMutationUpdateArticleArgs = {
   input: UpdateArticleInput;
@@ -67,28 +69,40 @@ export type ArticleQuery = {
   findArticleByName: FindArticleOutput;
   findRelatedArticles: FindRelatedArticlesOutput;
   getArticlePdfById?: Maybe<Scalars['String']['output']>;
+  getUserArticles: GetUserArticlesOutput;
   searchArticles: SearchArticleOutput;
 };
+
 
 export type ArticleQueryFindArticleByIdArgs = {
   input: FindArticleInput;
 };
 
+
 export type ArticleQueryFindArticleByIdsArgs = {
   input: BulkFindArticleInput;
 };
+
 
 export type ArticleQueryFindArticleByNameArgs = {
   input: FindArticleBySlugInput;
 };
 
+
 export type ArticleQueryFindRelatedArticlesArgs = {
   input: FindRelatedArticlesInput;
 };
 
+
 export type ArticleQueryGetArticlePdfByIdArgs = {
-  input: Scalars['String']['input'];
+  input: DownloadArticleInput;
 };
+
+
+export type ArticleQueryGetUserArticlesArgs = {
+  input: GetUserArticlesInput;
+};
+
 
 export type ArticleQuerySearchArticlesArgs = {
   input: SearchArticleInput;
@@ -111,6 +125,7 @@ export type ArticleType = {
   publishDate?: Maybe<Scalars['DateTime']['output']>;
   readingDuration?: Maybe<Scalars['Int']['output']>;
   reports?: Maybe<Array<Scalars['String']['output']>>;
+  savedCount: Scalars['Int']['output'];
   seoSetting?: Maybe<SeoSettingType>;
   slug: Scalars['String']['output'];
   status?: Maybe<StatusType>;
@@ -119,6 +134,7 @@ export type ArticleType = {
   title: Scalars['String']['output'];
   updateUser?: Maybe<UserOutputType>;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
+  visitsCount: Scalars['Int']['output'];
 };
 
 export type AuthMutation = {
@@ -132,26 +148,32 @@ export type AuthMutation = {
   verifyAccount: VerifyAccountOutput;
 };
 
+
 export type AuthMutationForgetPasswordArgs = {
   input: ForgetPasswordInput;
 };
+
 
 export type AuthMutationResetPasswordArgs = {
   input: ChangePasswordInput;
 };
 
+
 export type AuthMutationSendVerificationCodeArgs = {
   input: SendVerificationCodeInput;
 };
+
 
 export type AuthMutationSignupArgs = {
   input: SignupInputType;
 };
 
+
 export type AuthMutationUpdateUserArgs = {
   avatar?: InputMaybe<Scalars['Upload']['input']>;
   input: UpdateUserInput;
 };
+
 
 export type AuthMutationVerifyAccountArgs = {
   input: VerifyAccountInput;
@@ -165,13 +187,16 @@ export type AuthQuery = {
   signinWithGoogle: SigninOutput;
 };
 
+
 export type AuthQueryIsValidAndVerifiedAccountArgs = {
   input: IsValidAndVerifiedAccountInput;
 };
 
+
 export type AuthQuerySigninArgs = {
   input: SigninInput;
 };
+
 
 export type AuthQuerySigninWithGoogleArgs = {
   input: GoogleTokenInput;
@@ -192,21 +217,26 @@ export type BookmarkMutation = {
   updateBookmark: UpdateBookmarkOutput;
 };
 
+
 export type BookmarkMutationCreateBookmarkArgs = {
   input: CreateBookmarkInput;
 };
+
 
 export type BookmarkMutationDeleteBookmarkArgs = {
   input: DeleteBookmarkInput;
 };
 
+
 export type BookmarkMutationDeleteBookmarksArgs = {
   input: BulkFindBookmarkInput;
 };
 
+
 export type BookmarkMutationDeleteOneBookmarkArgs = {
   input: DeleteOneArticleBookmarkInput;
 };
+
 
 export type BookmarkMutationUpdateBookmarkArgs = {
   input: UpdateBookmarkInput;
@@ -219,13 +249,16 @@ export type BookmarkQuery = {
   searchBookmarks: SearchBookmarkOutput;
 };
 
+
 export type BookmarkQueryFindBookmarkByIdArgs = {
   input: FindBookmarkInput;
 };
 
+
 export type BookmarkQueryFindBookmarkByIdsArgs = {
   input: BulkFindBookmarkInput;
 };
+
 
 export type BookmarkQuerySearchBookmarksArgs = {
   input: SearchBookmarkInput;
@@ -308,17 +341,21 @@ export type CategoryMutation = {
   updateCategory: UpdateCategoryOutput;
 };
 
+
 export type CategoryMutationCreateCategoryArgs = {
   input: CreateCategoryInput;
 };
+
 
 export type CategoryMutationDeleteCategoriesArgs = {
   input: BulkDeleteCategoryInput;
 };
 
+
 export type CategoryMutationDeleteCategoryArgs = {
   input: DeleteCategoryInput;
 };
+
 
 export type CategoryMutationUpdateCategoryArgs = {
   input: UpdateCategoryInput;
@@ -331,13 +368,16 @@ export type CategoryQuery = {
   searchCategories: SearchCategoryOutput;
 };
 
+
 export type CategoryQueryFindCategoryByIdArgs = {
   input: FindCategoryInput;
 };
 
+
 export type CategoryQueryFindCategoryBySlugArgs = {
   input: FindCategoryBySlugInput;
 };
+
 
 export type CategoryQuerySearchCategoriesArgs = {
   input: SearchCategoryInput;
@@ -396,29 +436,36 @@ export type CommentMutation = {
   updateComment: UpdateCommentOutput;
 };
 
+
 export type CommentMutationCreateAdminCommentArgs = {
   input: CreateAdminCommentInput;
 };
+
 
 export type CommentMutationCreateCommentArgs = {
   input: CreateCommentInput;
 };
 
+
 export type CommentMutationDeleteCommentArgs = {
   input: DeleteCommentInput;
 };
+
 
 export type CommentMutationDeleteCommentsArgs = {
   input: BulkDeleteCommentInput;
 };
 
+
 export type CommentMutationEditCommentArgs = {
   input: EditCommentInput;
 };
 
+
 export type CommentMutationRemoveCommentArgs = {
   input: RemoveCommentInput;
 };
+
 
 export type CommentMutationUpdateCommentArgs = {
   input: UpdateCommentInput;
@@ -439,9 +486,11 @@ export type CommentQuery = {
   searchCommentss: SearchCommentOutput;
 };
 
+
 export type CommentQueryFindCommentByIdArgs = {
   input: FindCommentInput;
 };
+
 
 export type CommentQuerySearchCommentssArgs = {
   input: SearchCommentInput;
@@ -467,7 +516,7 @@ export type CommentType = {
 };
 
 export enum CommentTypeEnum {
-  Article = 'ARTICLE',
+  Article = 'ARTICLE'
 }
 
 export type CoreOutput = {
@@ -611,16 +660,31 @@ export type CreateTagOutput = {
 export type CreateUserByCeo = {
   displayName?: InputMaybe<Scalars['String']['input']>;
   email?: InputMaybe<Scalars['String']['input']>;
+  firstName?: InputMaybe<Scalars['String']['input']>;
+  gender?: InputMaybe<GenderEnum>;
   googleId?: InputMaybe<Scalars['String']['input']>;
+  hometown?: InputMaybe<Scalars['String']['input']>;
   isVerified: Scalars['Boolean']['input'];
+  lastName?: InputMaybe<Scalars['String']['input']>;
+  nickname?: InputMaybe<Scalars['String']['input']>;
   password?: InputMaybe<Scalars['String']['input']>;
   phone?: InputMaybe<Scalars['String']['input']>;
   role: Role;
   username?: InputMaybe<Scalars['String']['input']>;
+  website?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type CreateUserOutput = {
   __typename?: 'CreateUserOutput';
+  success: Scalars['Boolean']['output'];
+};
+
+export type CreateVisitStatisticsInput = {
+  article: Scalars['String']['input'];
+};
+
+export type CreateVisitStatisticsOutput = {
+  __typename?: 'CreateVisitStatisticsOutput';
   success: Scalars['Boolean']['output'];
 };
 
@@ -734,6 +798,19 @@ export type DeleteUserInput = {
 export type DeleteUserOutput = {
   __typename?: 'DeleteUserOutput';
   success: Scalars['Boolean']['output'];
+};
+
+export type DeleteVisitStatisticsInput = {
+  id: Scalars['String']['input'];
+};
+
+export type DeleteVisitStatisticsOutput = {
+  __typename?: 'DeleteVisitStatisticsOutput';
+  success: Scalars['Boolean']['output'];
+};
+
+export type DownloadArticleInput = {
+  id: Scalars['String']['input'];
 };
 
 export type EditCommentInput = {
@@ -888,6 +965,16 @@ export type FindUsersInput = {
   ids: Array<Scalars['String']['input']>;
 };
 
+export type FindVisitStatisticsInput = {
+  id: Scalars['String']['input'];
+};
+
+export type FindVisitStatisticsOutput = {
+  __typename?: 'FindVisitStatisticsOutput';
+  result?: Maybe<VisitStatisticsType>;
+  success: Scalars['Boolean']['output'];
+};
+
 export type FocusKeyword = {
   __typename?: 'FocusKeyword';
   count: Scalars['Float']['output'];
@@ -924,6 +1011,38 @@ export type ForgetPasswordOutput = {
   success: Scalars['Boolean']['output'];
 };
 
+export enum GenderEnum {
+  Female = 'FEMALE',
+  Male = 'MALE',
+  Other = 'OTHER'
+}
+
+export type GetUserArticlesInput = {
+  count?: InputMaybe<Scalars['Int']['input']>;
+  page?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type GetUserArticlesOutput = {
+  __typename?: 'GetUserArticlesOutput';
+  results?: Maybe<Array<ArticleType>>;
+  success: Scalars['Boolean']['output'];
+  totalCount?: Maybe<Scalars['Int']['output']>;
+  totalPages?: Maybe<Scalars['Int']['output']>;
+};
+
+export type GetUserVisitsInput = {
+  count?: InputMaybe<Scalars['Int']['input']>;
+  page?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type GetUserVisitsOutput = {
+  __typename?: 'GetUserVisitsOutput';
+  results?: Maybe<Array<VisitStatisticsType>>;
+  success: Scalars['Boolean']['output'];
+  totalCount?: Maybe<Scalars['Int']['output']>;
+  totalPages?: Maybe<Scalars['Int']['output']>;
+};
+
 export type GoogleTokenInput = {
   token: Scalars['String']['input'];
 };
@@ -945,22 +1064,27 @@ export type ImageMutation = {
   uploadImages: CoreOutput;
 };
 
+
 export type ImageMutationDeleteImageArgs = {
   input: DeleteImageInput;
 };
+
 
 export type ImageMutationDeleteImagesArgs = {
   input: DeleteImagesInput;
 };
 
+
 export type ImageMutationUpdateImageArgs = {
   input: UpdateImageInput;
 };
+
 
 export type ImageMutationUploadImageArgs = {
   file: Scalars['Upload']['input'];
   input?: InputMaybe<UploadImageInputType>;
 };
+
 
 export type ImageMutationUploadImagesArgs = {
   files: Array<Scalars['Upload']['input']>;
@@ -970,6 +1094,7 @@ export type ImageQuery = {
   __typename?: 'ImageQuery';
   searchImage: SearchImagesOutput;
 };
+
 
 export type ImageQuerySearchImageArgs = {
   input: SearchImagesInput;
@@ -1008,21 +1133,26 @@ export type LikeMutation = {
   updateLike: UpdateLikeOutput;
 };
 
+
 export type LikeMutationBulkDeleteLikesArgs = {
   input: BulkDeleteLikeInput;
 };
+
 
 export type LikeMutationCreateLikeArgs = {
   input: CreateLikeInput;
 };
 
+
 export type LikeMutationDeleteLikeArgs = {
   input: DeleteLikeInput;
 };
 
+
 export type LikeMutationDeleteLikeByUserArgs = {
   input: DeleteLikeByUserInput;
 };
+
 
 export type LikeMutationUpdateLikeArgs = {
   input: UpdateLikeInput;
@@ -1046,13 +1176,16 @@ export type LikeQuery = {
   searchPaperFavorite: SearchLikeOutput;
 };
 
+
 export type LikeQueryFindLikeByIdArgs = {
   input: FindLikeInput;
 };
 
+
 export type LikeQueryFindLikeByIdsArgs = {
   input: BulkFindLikeInput;
 };
+
 
 export type LikeQuerySearchPaperFavoriteArgs = {
   input: SearchLikeInput;
@@ -1071,7 +1204,7 @@ export type LikeType = {
 
 export enum LikeTypeEnum {
   Article = 'ARTICLE',
-  Comment = 'COMMENT',
+  Comment = 'COMMENT'
 }
 
 export type Mutation = {
@@ -1088,6 +1221,7 @@ export type Mutation = {
   seoSetting: SeoSettingMutation;
   tag: TagMutation;
   users: UserMutation;
+  visitStatistics: VisitStatisticsMutation;
 };
 
 export type OptionInputType = {
@@ -1115,6 +1249,7 @@ export type Query = {
   seoSetting: SeoSettingQuery;
   tag: TagQuery;
   users: UserQuery;
+  visitStatistics: VisitStatisticsQuery;
 };
 
 export type QuestionMutation = {
@@ -1125,17 +1260,21 @@ export type QuestionMutation = {
   updateQuestion: UpdateQuestionOutput;
 };
 
+
 export type QuestionMutationCreateQuestionArgs = {
   input: CreateQuestionInput;
 };
+
 
 export type QuestionMutationDeleteQuestionArgs = {
   input: DeleteQuestionInput;
 };
 
+
 export type QuestionMutationDeleteQuestionsArgs = {
   input: BulkDeleteQuestionInput;
 };
+
 
 export type QuestionMutationUpdateQuestionArgs = {
   input: UpdateQuestionInput;
@@ -1147,9 +1286,11 @@ export type QuestionQuery = {
   searchQuestions: SearchQuestionOutput;
 };
 
+
 export type QuestionQueryFindQuestionByIdArgs = {
   input: FindQuestionInput;
 };
+
 
 export type QuestionQuerySearchQuestionsArgs = {
   input: SearchQuestionInput;
@@ -1175,17 +1316,21 @@ export type QuizMutation = {
   updateQuiz: UpdateQuizOutput;
 };
 
+
 export type QuizMutationCreateQuizArgs = {
   input: CreateQuizInput;
 };
+
 
 export type QuizMutationDeleteQuizArgs = {
   input: DeleteQuizInput;
 };
 
+
 export type QuizMutationDeleteQuizzesArgs = {
   input: BulkDeleteQuizInput;
 };
+
 
 export type QuizMutationUpdateQuizArgs = {
   input: UpdateQuizInput;
@@ -1197,9 +1342,11 @@ export type QuizQuery = {
   searchQuizzes: SearchQuizOutput;
 };
 
+
 export type QuizQueryFindQuizByIdArgs = {
   input: FindQuizInput;
 };
+
 
 export type QuizQuerySearchQuizzesArgs = {
   input: SearchQuizInput;
@@ -1225,13 +1372,14 @@ export enum Role {
   Author = 'Author',
   AuthorJunior = 'AuthorJunior',
   Ceo = 'CEO',
+  ContentManager = 'ContentManager',
   Contributor = 'Contributor',
   Editor = 'Editor',
   FeedbackViewer = 'FeedbackViewer',
   Secretary = 'Secretary',
   SeoEditor = 'SeoEditor',
   SeoManager = 'SeoManager',
-  User = 'User',
+  User = 'User'
 }
 
 export type RoleOutput = {
@@ -1372,7 +1520,7 @@ export type SearchQuizOutput = {
 
 export enum SearchSortType {
   Newest = 'NEWEST',
-  PostCount = 'POST_COUNT',
+  PostCount = 'POST_COUNT'
 }
 
 export type SearchTagInput = {
@@ -1440,7 +1588,7 @@ export type SendVerificationCodeOutput = {
 export enum SeoCollectionName {
   Articles = 'ARTICLES',
   Categories = 'CATEGORIES',
-  Tags = 'TAGS',
+  Tags = 'TAGS'
 }
 
 export type SeoGeneralSettingInputType = {
@@ -1477,17 +1625,21 @@ export type SeoSettingMutation = {
   updateSeoSetting: UpdateSeoSettingOutput;
 };
 
+
 export type SeoSettingMutationCreateSeoSettingArgs = {
   input: CreateSeoSettingInput;
 };
+
 
 export type SeoSettingMutationDeleteSeoSettingArgs = {
   input: DeleteSeoSettingInput;
 };
 
+
 export type SeoSettingMutationDeleteSeoSettingsArgs = {
   input: BulkDeleteSeoSettingInput;
 };
+
 
 export type SeoSettingMutationUpdateSeoSettingArgs = {
   input: UpdateSeoSettingInput;
@@ -1502,21 +1654,26 @@ export type SeoSettingQuery = {
   getFocusKeywordNumbers: FocusKeywordOutput;
 };
 
+
 export type SeoSettingQueryFindSeoSettingByIdArgs = {
   input: FindSeoSettingInput;
 };
+
 
 export type SeoSettingQueryFindSeoSettingByIdAndTypeArgs = {
   input: FindSeoSettingByIdAndTypeInput;
 };
 
+
 export type SeoSettingQueryFindSeoSettingByIdsArgs = {
   input: BulkFindSeoSettingInput;
 };
 
+
 export type SeoSettingQueryGetFocusKeywordListNumbersArgs = {
   input: FocusKeywordListInput;
 };
+
 
 export type SeoSettingQueryGetFocusKeywordNumbersArgs = {
   input: FocusKeywordInput;
@@ -1550,9 +1707,15 @@ export type SigninOutput = {
 export type SignupInputType = {
   displayName?: InputMaybe<Scalars['String']['input']>;
   email?: InputMaybe<Scalars['String']['input']>;
+  firstName?: InputMaybe<Scalars['String']['input']>;
+  gender?: InputMaybe<GenderEnum>;
+  hometown?: InputMaybe<Scalars['String']['input']>;
+  lastName?: InputMaybe<Scalars['String']['input']>;
+  nickname?: InputMaybe<Scalars['String']['input']>;
   password?: InputMaybe<Scalars['String']['input']>;
   phone?: InputMaybe<Scalars['String']['input']>;
   username?: InputMaybe<Scalars['String']['input']>;
+  website?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type SignupOutput = {
@@ -1562,7 +1725,7 @@ export type SignupOutput = {
 
 export enum StatusType {
   Draft = 'DRAFT',
-  Publish = 'PUBLISH',
+  Publish = 'PUBLISH'
 }
 
 export type TagInputType = {
@@ -1578,17 +1741,21 @@ export type TagMutation = {
   updateTag: UpdateTagOutput;
 };
 
+
 export type TagMutationCreateTagArgs = {
   input: CreateTagInput;
 };
+
 
 export type TagMutationDeleteTagArgs = {
   input: DeleteTagInput;
 };
 
+
 export type TagMutationDeleteTagsArgs = {
   input: BulkDeleteTagInput;
 };
+
 
 export type TagMutationUpdateTagArgs = {
   input: UpdateTagInput;
@@ -1602,17 +1769,21 @@ export type TagQuery = {
   searchTags: SearchTagOutput;
 };
 
+
 export type TagQueryFindTagByIdArgs = {
   input: FindTagInput;
 };
+
 
 export type TagQueryFindTagByIdsArgs = {
   input: BulkFindTagInput;
 };
 
+
 export type TagQueryFindTagBySlugArgs = {
   input: FindTagBySlugInput;
 };
+
 
 export type TagQuerySearchTagsArgs = {
   input: SearchTagInput;
@@ -1621,7 +1792,7 @@ export type TagQuerySearchTagsArgs = {
 export enum TagStatusEnum {
   Draft = 'DRAFT',
   Publish = 'PUBLISH',
-  Trash = 'TRASH',
+  Trash = 'TRASH'
 }
 
 export type TagType = {
@@ -1790,22 +1961,34 @@ export type UpdateTagOutput = {
 export type UpdateUserByCeo = {
   displayName?: InputMaybe<Scalars['String']['input']>;
   email?: InputMaybe<Scalars['String']['input']>;
+  firstName?: InputMaybe<Scalars['String']['input']>;
+  gender?: InputMaybe<GenderEnum>;
   googleId?: InputMaybe<Scalars['String']['input']>;
+  hometown?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['String']['input'];
   isVerified?: InputMaybe<Scalars['Boolean']['input']>;
+  lastName?: InputMaybe<Scalars['String']['input']>;
+  nickname?: InputMaybe<Scalars['String']['input']>;
   password?: InputMaybe<Scalars['String']['input']>;
   phone?: InputMaybe<Scalars['String']['input']>;
   role?: InputMaybe<Role>;
   username?: InputMaybe<Scalars['String']['input']>;
+  website?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UpdateUserInput = {
   displayName?: InputMaybe<Scalars['String']['input']>;
   email?: InputMaybe<Scalars['String']['input']>;
+  firstName?: InputMaybe<Scalars['String']['input']>;
+  gender?: InputMaybe<GenderEnum>;
+  hometown?: InputMaybe<Scalars['String']['input']>;
+  lastName?: InputMaybe<Scalars['String']['input']>;
+  nickname?: InputMaybe<Scalars['String']['input']>;
   oldPassword?: InputMaybe<Scalars['String']['input']>;
   password?: InputMaybe<Scalars['String']['input']>;
   phone?: InputMaybe<Scalars['String']['input']>;
   username?: InputMaybe<Scalars['String']['input']>;
+  website?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UpdateUserOutput = {
@@ -1836,19 +2019,25 @@ export type User = {
   createdAt?: Maybe<Scalars['DateTime']['output']>;
   displayName?: Maybe<Scalars['String']['output']>;
   email?: Maybe<Scalars['String']['output']>;
+  firstName?: Maybe<Scalars['String']['output']>;
+  gender?: Maybe<GenderEnum>;
   googleId?: Maybe<Scalars['String']['output']>;
+  hometown?: Maybe<Scalars['String']['output']>;
   isCreatedWithSocialMedia?: Maybe<Scalars['Boolean']['output']>;
   isVerified: Scalars['Boolean']['output'];
+  lastName?: Maybe<Scalars['String']['output']>;
+  nickname?: Maybe<Scalars['String']['output']>;
   password?: Maybe<Scalars['String']['output']>;
   phone?: Maybe<Scalars['String']['output']>;
   role: Role;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
   username?: Maybe<Scalars['String']['output']>;
+  website?: Maybe<Scalars['String']['output']>;
 };
 
 export enum UserAvatarStatusEnum {
   Draft = 'DRAFT',
-  Publish = 'PUBLISH',
+  Publish = 'PUBLISH'
 }
 
 export type UserMutation = {
@@ -1861,26 +2050,32 @@ export type UserMutation = {
   uploadAvatar: UploadUserAvatarOutput;
 };
 
+
 export type UserMutationCreateUserArgs = {
   input: CreateUserByCeo;
 };
+
 
 export type UserMutationDeleteUserArgs = {
   input: DeleteUserInput;
 };
 
+
 export type UserMutationDeleteUsersArgs = {
   input: BulkDeleteUsersInput;
 };
+
 
 export type UserMutationUpdateOperatorUserArgs = {
   avatar?: InputMaybe<Scalars['Upload']['input']>;
   input: UpdateUserInput;
 };
 
+
 export type UserMutationUpdateUserArgs = {
   input: UpdateUserByCeo;
 };
+
 
 export type UserMutationUploadAvatarArgs = {
   file: Scalars['Upload']['input'];
@@ -1893,28 +2088,48 @@ export type UserOutputInputType = {
   createdAt?: InputMaybe<Scalars['String']['input']>;
   displayName?: InputMaybe<Scalars['String']['input']>;
   email?: InputMaybe<Scalars['String']['input']>;
+  firstName?: InputMaybe<Scalars['String']['input']>;
+  gender?: InputMaybe<GenderEnum>;
+  hometown?: InputMaybe<Scalars['String']['input']>;
   isCreatedWithSocialMedia?: InputMaybe<Scalars['Boolean']['input']>;
   isVerified: Scalars['Boolean']['input'];
+  lastName?: InputMaybe<Scalars['String']['input']>;
+  nickname?: InputMaybe<Scalars['String']['input']>;
   phone?: InputMaybe<Scalars['String']['input']>;
   role: Role;
   updatedAt?: InputMaybe<Scalars['String']['input']>;
   username?: InputMaybe<Scalars['String']['input']>;
+  website?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UserOutputType = {
   __typename?: 'UserOutputType';
   _id: Scalars['String']['output'];
+  articlesWrittenCount: Scalars['Int']['output'];
+  articlesWrittenSavedCount: Scalars['Int']['output'];
+  articlesWrittenVisitedCount: Scalars['Int']['output'];
   avatar?: Maybe<ImageType>;
   avatarStatus?: Maybe<UserAvatarStatusEnum>;
+  commentsCount: Scalars['Int']['output'];
   createdAt?: Maybe<Scalars['String']['output']>;
   displayName?: Maybe<Scalars['String']['output']>;
+  downloadedArticlesCount: Scalars['Int']['output'];
   email?: Maybe<Scalars['String']['output']>;
+  firstName?: Maybe<Scalars['String']['output']>;
+  gender?: Maybe<GenderEnum>;
+  hometown?: Maybe<Scalars['String']['output']>;
   isCreatedWithSocialMedia?: Maybe<Scalars['Boolean']['output']>;
   isVerified: Scalars['Boolean']['output'];
+  lastName?: Maybe<Scalars['String']['output']>;
+  nickname?: Maybe<Scalars['String']['output']>;
   phone?: Maybe<Scalars['String']['output']>;
   role: Role;
+  savedArticlesCount: Scalars['Int']['output'];
+  timeSpent: Scalars['Float']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
   username?: Maybe<Scalars['String']['output']>;
+  visitedArticlesCount: Scalars['Int']['output'];
+  website?: Maybe<Scalars['String']['output']>;
 };
 
 export type UserQuery = {
@@ -1926,17 +2141,21 @@ export type UserQuery = {
   searchUserByRole: SearchUserByRoleOutput;
 };
 
+
 export type UserQueryFindUserByIdArgs = {
   input: FindUserInput;
 };
+
 
 export type UserQueryFindUsersByIdsArgs = {
   input: FindUsersInput;
 };
 
+
 export type UserQuerySearchUserArgs = {
   input: SearchUserInput;
 };
+
 
 export type UserQuerySearchUserByRoleArgs = {
   input: SearchUserByRoleInput;
@@ -1955,4 +2174,46 @@ export type VerifyAccountInput = {
 export type VerifyAccountOutput = {
   __typename?: 'VerifyAccountOutput';
   success: Scalars['Boolean']['output'];
+};
+
+export type VisitStatisticsMutation = {
+  __typename?: 'VisitStatisticsMutation';
+  deleteVisitStatistics: DeleteVisitStatisticsOutput;
+  recordVisitStatistics: CreateVisitStatisticsOutput;
+};
+
+
+export type VisitStatisticsMutationDeleteVisitStatisticsArgs = {
+  input: DeleteVisitStatisticsInput;
+};
+
+
+export type VisitStatisticsMutationRecordVisitStatisticsArgs = {
+  input: CreateVisitStatisticsInput;
+};
+
+export type VisitStatisticsQuery = {
+  __typename?: 'VisitStatisticsQuery';
+  findById: FindVisitStatisticsOutput;
+  getUserVisits: GetUserVisitsOutput;
+};
+
+
+export type VisitStatisticsQueryFindByIdArgs = {
+  input: FindVisitStatisticsInput;
+};
+
+
+export type VisitStatisticsQueryGetUserVisitsArgs = {
+  input: GetUserVisitsInput;
+};
+
+export type VisitStatisticsType = {
+  __typename?: 'VisitStatisticsType';
+  _id: Scalars['String']['output'];
+  article: ArticleType;
+  clientId?: Maybe<Scalars['String']['output']>;
+  createdAt?: Maybe<Scalars['DateTime']['output']>;
+  updatedAt?: Maybe<Scalars['DateTime']['output']>;
+  user?: Maybe<UserOutputType>;
 };

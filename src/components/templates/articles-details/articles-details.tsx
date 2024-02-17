@@ -23,9 +23,7 @@ import {
   UserInfo,
 } from '@/components';
 import {CookieName} from '@/constants';
-import {ArticleType, DeleteOneArticleBookmarkInput} from '@/graphql/generated/types';
-import {addBookmark} from '@/graphql/mutation/bookmark/add-bokmark';
-import {deleteBookmark} from '@/graphql/mutation/bookmark/remove-bokmark';
+import {ArticleType, DeleteOneArticleBookmarkInput, addBookmark, deleteBookmark} from '@/graphql';
 import {findArticleByName} from '@/graphql/query/find-article-by-name';
 import {findRelatedArticles} from '@/graphql/query/find-related-articles';
 import {getArticlePdfById} from '@/graphql/query/get-article-pdf-by-id';
