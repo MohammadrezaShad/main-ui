@@ -3,7 +3,7 @@
 import {css} from '@styled/css';
 import {Box} from '@styled/jsx';
 import {flex} from '@styled/patterns';
-import {useQuery} from '@tanstack/react-query';
+import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
 import {getCookie} from 'cookies-next';
 import {useRouter} from 'next/navigation';
 
@@ -11,15 +11,44 @@ import {IconArrowRight} from '@/assets';
 import {AuthButton, TextField} from '@/components';
 import RadioButton from '@/components/atoms/radio-button/radio-button';
 import {CookieName} from '@/constants';
+import {GenderEnum, updateUser} from '@/graphql';
 import {getUser} from '@/graphql/query/users/get-user';
+import {FormikValues, useFormik} from 'formik';
+import {toast} from 'react-toastify';
 
 export default function Settings() {
   const authToken = getCookie(CookieName.AUTH_TOKEN)!;
+  const queryClient = useQueryClient();
   const {data} = useQuery({
     queryKey: ['get-profile'],
     queryFn: () => getUser(authToken),
   });
   const router = useRouter();
+
+  const formik = useFormik({
+    initialValues: {
+      gender: data?.gender,
+      firstName: data?.firstName,
+      lastName: data?.lastName,
+      nickname: data?.nickname,
+      hometown: data?.hometown,
+      website: data?.website,
+    },
+    // validationSchema: schema,
+    onSubmit: async (values: FormikValues) => {
+      try {
+        await updateUserMutation.mutateAsync({...values});
+        queryClient.clear();
+        toast.success('Author edited successfully');
+      } catch (error: Error | any) {
+        toast.error(error.message);
+      }
+    },
+  });
+  const {errors, touched, values, handleChange, isSubmitting, handleSubmit} = formik;
+  const updateUserMutation = useMutation({
+    mutationFn: (items: any) => updateUser(items, authToken!),
+  });
 
   return (
     <div
@@ -40,7 +69,8 @@ export default function Settings() {
             w: 'full',
           })}
         >
-          <div
+          <form
+            onSubmit={handleSubmit}
             className={css({
               display: 'flex',
               flexGrow: '1',
@@ -74,9 +104,27 @@ export default function Settings() {
                 mt: '8',
               })}
             >
-              <TextField label='First Name' />
-              <TextField label='Last Name' />
-              <TextField label='Nickname' />
+              <TextField
+                label='First Name'
+                name='firstName'
+                id='firstName'
+                onChange={handleChange}
+                value={values.firstName}
+              />
+              <TextField
+                label='Last Name'
+                name='lastName'
+                id='lastName'
+                onChange={handleChange}
+                value={values.lastName}
+              />
+              <TextField
+                label='Nickname'
+                name='nickname'
+                id='nickname'
+                onChange={handleChange}
+                value={values.nickname}
+              />
             </Box>
             <h5
               className={css({
@@ -100,7 +148,13 @@ export default function Settings() {
                 mt: '4',
               })}
             >
-              <RadioButton id='female' name='gender' />
+              <RadioButton
+                id='female'
+                name='gender'
+                value={GenderEnum.Female}
+                checked={values.gender === GenderEnum.Female}
+                onChange={handleChange}
+              />
               <div
                 className={css({
                   color: 'text.primary',
@@ -122,7 +176,13 @@ export default function Settings() {
                 mt: '4',
               })}
             >
-              <RadioButton id='male' name='gender' />
+              <RadioButton
+                id='male'
+                name='gender'
+                value={GenderEnum.Male}
+                checked={values.gender === GenderEnum.Male}
+                onChange={handleChange}
+              />
               <div
                 className={css({
                   color: 'text.primary',
@@ -144,7 +204,13 @@ export default function Settings() {
                 mt: '4',
               })}
             >
-              <RadioButton id='other' name='gender' />
+              <RadioButton
+                id='other'
+                name='gender'
+                value={GenderEnum.Other}
+                checked={values.gender === GenderEnum.Other}
+                onChange={handleChange}
+              />
               <div
                 className={css({
                   color: 'text.primary',
@@ -162,8 +228,20 @@ export default function Settings() {
                 mt: '8',
               })}
             >
-              <TextField label='My Hometown' />
-              <TextField label='My Blog or Website' />
+              <TextField
+                label='My Hometown'
+                name='hometown'
+                id='hometown'
+                value={values.hometown}
+                onChange={handleChange}
+              />
+              <TextField
+                name='website'
+                id='website'
+                label='My Blog or Website'
+                value={values.website}
+                onChange={handleChange}
+              />
             </Box>
             <div
               className={css({
@@ -175,6 +253,7 @@ export default function Settings() {
               })}
             >
               <AuthButton
+                type='submit'
                 text='Save changes'
                 className={css({
                   '& span': {color: 'text.invert'},
@@ -185,6 +264,8 @@ export default function Settings() {
                 })}
               />
               <AuthButton
+                onClick={() => router.push('/profile')}
+                type='button'
                 text='Cancel'
                 variant='outlined'
                 className={css({
@@ -196,7 +277,7 @@ export default function Settings() {
                 })}
               />
             </div>
-          </div>
+          </form>
         </div>
       </div>
     </div>

@@ -1,19 +1,21 @@
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
-export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
-export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
-export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
+export type Exact<T extends {[key: string]: unknown}> = {[K in keyof T]: T[K]};
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {[SubKey in K]?: Maybe<T[SubKey]>};
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {[SubKey in K]: Maybe<T[SubKey]>};
+export type MakeEmpty<T extends {[key: string]: unknown}, K extends keyof T> = {[_ in K]?: never};
+export type Incremental<T> =
+  | T
+  | {[P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never};
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: { input: string; output: string; }
-  String: { input: string; output: string; }
-  Boolean: { input: boolean; output: boolean; }
-  Int: { input: number; output: number; }
-  Float: { input: number; output: number; }
-  DateTime: { input: any; output: any; }
-  Upload: { input: any; output: any; }
+  ID: {input: string; output: string};
+  String: {input: string; output: string};
+  Boolean: {input: boolean; output: boolean};
+  Int: {input: number; output: number};
+  Float: {input: number; output: number};
+  DateTime: {input: any; output: any};
+  Upload: {input: any; output: any};
 };
 
 export type ArticleInputType = {
@@ -42,21 +44,17 @@ export type ArticleMutation = {
   updateArticle: UpdateArticleOutput;
 };
 
-
 export type ArticleMutationCreateArticleArgs = {
   input: CreateArticleInput;
 };
-
 
 export type ArticleMutationDeleteArticleArgs = {
   input: DeleteArticleInput;
 };
 
-
 export type ArticleMutationDeleteArticlesArgs = {
   input: BulkDeleteArticleInput;
 };
-
 
 export type ArticleMutationUpdateArticleArgs = {
   input: UpdateArticleInput;
@@ -73,36 +71,29 @@ export type ArticleQuery = {
   searchArticles: SearchArticleOutput;
 };
 
-
 export type ArticleQueryFindArticleByIdArgs = {
   input: FindArticleInput;
 };
-
 
 export type ArticleQueryFindArticleByIdsArgs = {
   input: BulkFindArticleInput;
 };
 
-
 export type ArticleQueryFindArticleByNameArgs = {
   input: FindArticleBySlugInput;
 };
-
 
 export type ArticleQueryFindRelatedArticlesArgs = {
   input: FindRelatedArticlesInput;
 };
 
-
 export type ArticleQueryGetArticlePdfByIdArgs = {
   input: DownloadArticleInput;
 };
 
-
 export type ArticleQueryGetUserArticlesArgs = {
   input: GetUserArticlesInput;
 };
-
 
 export type ArticleQuerySearchArticlesArgs = {
   input: SearchArticleInput;
@@ -148,32 +139,26 @@ export type AuthMutation = {
   verifyAccount: VerifyAccountOutput;
 };
 
-
 export type AuthMutationForgetPasswordArgs = {
   input: ForgetPasswordInput;
 };
-
 
 export type AuthMutationResetPasswordArgs = {
   input: ChangePasswordInput;
 };
 
-
 export type AuthMutationSendVerificationCodeArgs = {
   input: SendVerificationCodeInput;
 };
-
 
 export type AuthMutationSignupArgs = {
   input: SignupInputType;
 };
 
-
 export type AuthMutationUpdateUserArgs = {
   avatar?: InputMaybe<Scalars['Upload']['input']>;
   input: UpdateUserInput;
 };
-
 
 export type AuthMutationVerifyAccountArgs = {
   input: VerifyAccountInput;
@@ -187,16 +172,13 @@ export type AuthQuery = {
   signinWithGoogle: SigninOutput;
 };
 
-
 export type AuthQueryIsValidAndVerifiedAccountArgs = {
   input: IsValidAndVerifiedAccountInput;
 };
 
-
 export type AuthQuerySigninArgs = {
   input: SigninInput;
 };
-
 
 export type AuthQuerySigninWithGoogleArgs = {
   input: GoogleTokenInput;
@@ -217,26 +199,21 @@ export type BookmarkMutation = {
   updateBookmark: UpdateBookmarkOutput;
 };
 
-
 export type BookmarkMutationCreateBookmarkArgs = {
   input: CreateBookmarkInput;
 };
-
 
 export type BookmarkMutationDeleteBookmarkArgs = {
   input: DeleteBookmarkInput;
 };
 
-
 export type BookmarkMutationDeleteBookmarksArgs = {
   input: BulkFindBookmarkInput;
 };
 
-
 export type BookmarkMutationDeleteOneBookmarkArgs = {
   input: DeleteOneArticleBookmarkInput;
 };
-
 
 export type BookmarkMutationUpdateBookmarkArgs = {
   input: UpdateBookmarkInput;
@@ -249,16 +226,13 @@ export type BookmarkQuery = {
   searchBookmarks: SearchBookmarkOutput;
 };
 
-
 export type BookmarkQueryFindBookmarkByIdArgs = {
   input: FindBookmarkInput;
 };
 
-
 export type BookmarkQueryFindBookmarkByIdsArgs = {
   input: BulkFindBookmarkInput;
 };
-
 
 export type BookmarkQuerySearchBookmarksArgs = {
   input: SearchBookmarkInput;
@@ -341,21 +315,17 @@ export type CategoryMutation = {
   updateCategory: UpdateCategoryOutput;
 };
 
-
 export type CategoryMutationCreateCategoryArgs = {
   input: CreateCategoryInput;
 };
-
 
 export type CategoryMutationDeleteCategoriesArgs = {
   input: BulkDeleteCategoryInput;
 };
 
-
 export type CategoryMutationDeleteCategoryArgs = {
   input: DeleteCategoryInput;
 };
-
 
 export type CategoryMutationUpdateCategoryArgs = {
   input: UpdateCategoryInput;
@@ -368,16 +338,13 @@ export type CategoryQuery = {
   searchCategories: SearchCategoryOutput;
 };
 
-
 export type CategoryQueryFindCategoryByIdArgs = {
   input: FindCategoryInput;
 };
 
-
 export type CategoryQueryFindCategoryBySlugArgs = {
   input: FindCategoryBySlugInput;
 };
-
 
 export type CategoryQuerySearchCategoriesArgs = {
   input: SearchCategoryInput;
@@ -436,36 +403,29 @@ export type CommentMutation = {
   updateComment: UpdateCommentOutput;
 };
 
-
 export type CommentMutationCreateAdminCommentArgs = {
   input: CreateAdminCommentInput;
 };
-
 
 export type CommentMutationCreateCommentArgs = {
   input: CreateCommentInput;
 };
 
-
 export type CommentMutationDeleteCommentArgs = {
   input: DeleteCommentInput;
 };
-
 
 export type CommentMutationDeleteCommentsArgs = {
   input: BulkDeleteCommentInput;
 };
 
-
 export type CommentMutationEditCommentArgs = {
   input: EditCommentInput;
 };
 
-
 export type CommentMutationRemoveCommentArgs = {
   input: RemoveCommentInput;
 };
-
 
 export type CommentMutationUpdateCommentArgs = {
   input: UpdateCommentInput;
@@ -486,11 +446,9 @@ export type CommentQuery = {
   searchCommentss: SearchCommentOutput;
 };
 
-
 export type CommentQueryFindCommentByIdArgs = {
   input: FindCommentInput;
 };
-
 
 export type CommentQuerySearchCommentssArgs = {
   input: SearchCommentInput;
@@ -516,7 +474,7 @@ export type CommentType = {
 };
 
 export enum CommentTypeEnum {
-  Article = 'ARTICLE'
+  Article = 'ARTICLE',
 }
 
 export type CoreOutput = {
@@ -1014,7 +972,7 @@ export type ForgetPasswordOutput = {
 export enum GenderEnum {
   Female = 'FEMALE',
   Male = 'MALE',
-  Other = 'OTHER'
+  Other = 'OTHER',
 }
 
 export type GetUserArticlesInput = {
@@ -1064,27 +1022,22 @@ export type ImageMutation = {
   uploadImages: CoreOutput;
 };
 
-
 export type ImageMutationDeleteImageArgs = {
   input: DeleteImageInput;
 };
-
 
 export type ImageMutationDeleteImagesArgs = {
   input: DeleteImagesInput;
 };
 
-
 export type ImageMutationUpdateImageArgs = {
   input: UpdateImageInput;
 };
-
 
 export type ImageMutationUploadImageArgs = {
   file: Scalars['Upload']['input'];
   input?: InputMaybe<UploadImageInputType>;
 };
-
 
 export type ImageMutationUploadImagesArgs = {
   files: Array<Scalars['Upload']['input']>;
@@ -1094,7 +1047,6 @@ export type ImageQuery = {
   __typename?: 'ImageQuery';
   searchImage: SearchImagesOutput;
 };
-
 
 export type ImageQuerySearchImageArgs = {
   input: SearchImagesInput;
@@ -1133,26 +1085,21 @@ export type LikeMutation = {
   updateLike: UpdateLikeOutput;
 };
 
-
 export type LikeMutationBulkDeleteLikesArgs = {
   input: BulkDeleteLikeInput;
 };
-
 
 export type LikeMutationCreateLikeArgs = {
   input: CreateLikeInput;
 };
 
-
 export type LikeMutationDeleteLikeArgs = {
   input: DeleteLikeInput;
 };
 
-
 export type LikeMutationDeleteLikeByUserArgs = {
   input: DeleteLikeByUserInput;
 };
-
 
 export type LikeMutationUpdateLikeArgs = {
   input: UpdateLikeInput;
@@ -1176,16 +1123,13 @@ export type LikeQuery = {
   searchPaperFavorite: SearchLikeOutput;
 };
 
-
 export type LikeQueryFindLikeByIdArgs = {
   input: FindLikeInput;
 };
 
-
 export type LikeQueryFindLikeByIdsArgs = {
   input: BulkFindLikeInput;
 };
-
 
 export type LikeQuerySearchPaperFavoriteArgs = {
   input: SearchLikeInput;
@@ -1204,7 +1148,7 @@ export type LikeType = {
 
 export enum LikeTypeEnum {
   Article = 'ARTICLE',
-  Comment = 'COMMENT'
+  Comment = 'COMMENT',
 }
 
 export type Mutation = {
@@ -1260,21 +1204,17 @@ export type QuestionMutation = {
   updateQuestion: UpdateQuestionOutput;
 };
 
-
 export type QuestionMutationCreateQuestionArgs = {
   input: CreateQuestionInput;
 };
-
 
 export type QuestionMutationDeleteQuestionArgs = {
   input: DeleteQuestionInput;
 };
 
-
 export type QuestionMutationDeleteQuestionsArgs = {
   input: BulkDeleteQuestionInput;
 };
-
 
 export type QuestionMutationUpdateQuestionArgs = {
   input: UpdateQuestionInput;
@@ -1286,11 +1226,9 @@ export type QuestionQuery = {
   searchQuestions: SearchQuestionOutput;
 };
 
-
 export type QuestionQueryFindQuestionByIdArgs = {
   input: FindQuestionInput;
 };
-
 
 export type QuestionQuerySearchQuestionsArgs = {
   input: SearchQuestionInput;
@@ -1316,21 +1254,17 @@ export type QuizMutation = {
   updateQuiz: UpdateQuizOutput;
 };
 
-
 export type QuizMutationCreateQuizArgs = {
   input: CreateQuizInput;
 };
-
 
 export type QuizMutationDeleteQuizArgs = {
   input: DeleteQuizInput;
 };
 
-
 export type QuizMutationDeleteQuizzesArgs = {
   input: BulkDeleteQuizInput;
 };
-
 
 export type QuizMutationUpdateQuizArgs = {
   input: UpdateQuizInput;
@@ -1342,11 +1276,9 @@ export type QuizQuery = {
   searchQuizzes: SearchQuizOutput;
 };
 
-
 export type QuizQueryFindQuizByIdArgs = {
   input: FindQuizInput;
 };
-
 
 export type QuizQuerySearchQuizzesArgs = {
   input: SearchQuizInput;
@@ -1379,7 +1311,7 @@ export enum Role {
   Secretary = 'Secretary',
   SeoEditor = 'SeoEditor',
   SeoManager = 'SeoManager',
-  User = 'User'
+  User = 'User',
 }
 
 export type RoleOutput = {
@@ -1520,7 +1452,7 @@ export type SearchQuizOutput = {
 
 export enum SearchSortType {
   Newest = 'NEWEST',
-  PostCount = 'POST_COUNT'
+  PostCount = 'POST_COUNT',
 }
 
 export type SearchTagInput = {
@@ -1588,7 +1520,7 @@ export type SendVerificationCodeOutput = {
 export enum SeoCollectionName {
   Articles = 'ARTICLES',
   Categories = 'CATEGORIES',
-  Tags = 'TAGS'
+  Tags = 'TAGS',
 }
 
 export type SeoGeneralSettingInputType = {
@@ -1625,21 +1557,17 @@ export type SeoSettingMutation = {
   updateSeoSetting: UpdateSeoSettingOutput;
 };
 
-
 export type SeoSettingMutationCreateSeoSettingArgs = {
   input: CreateSeoSettingInput;
 };
-
 
 export type SeoSettingMutationDeleteSeoSettingArgs = {
   input: DeleteSeoSettingInput;
 };
 
-
 export type SeoSettingMutationDeleteSeoSettingsArgs = {
   input: BulkDeleteSeoSettingInput;
 };
-
 
 export type SeoSettingMutationUpdateSeoSettingArgs = {
   input: UpdateSeoSettingInput;
@@ -1654,26 +1582,21 @@ export type SeoSettingQuery = {
   getFocusKeywordNumbers: FocusKeywordOutput;
 };
 
-
 export type SeoSettingQueryFindSeoSettingByIdArgs = {
   input: FindSeoSettingInput;
 };
-
 
 export type SeoSettingQueryFindSeoSettingByIdAndTypeArgs = {
   input: FindSeoSettingByIdAndTypeInput;
 };
 
-
 export type SeoSettingQueryFindSeoSettingByIdsArgs = {
   input: BulkFindSeoSettingInput;
 };
 
-
 export type SeoSettingQueryGetFocusKeywordListNumbersArgs = {
   input: FocusKeywordListInput;
 };
-
 
 export type SeoSettingQueryGetFocusKeywordNumbersArgs = {
   input: FocusKeywordInput;
@@ -1725,7 +1648,7 @@ export type SignupOutput = {
 
 export enum StatusType {
   Draft = 'DRAFT',
-  Publish = 'PUBLISH'
+  Publish = 'PUBLISH',
 }
 
 export type TagInputType = {
@@ -1741,21 +1664,17 @@ export type TagMutation = {
   updateTag: UpdateTagOutput;
 };
 
-
 export type TagMutationCreateTagArgs = {
   input: CreateTagInput;
 };
-
 
 export type TagMutationDeleteTagArgs = {
   input: DeleteTagInput;
 };
 
-
 export type TagMutationDeleteTagsArgs = {
   input: BulkDeleteTagInput;
 };
-
 
 export type TagMutationUpdateTagArgs = {
   input: UpdateTagInput;
@@ -1769,21 +1688,17 @@ export type TagQuery = {
   searchTags: SearchTagOutput;
 };
 
-
 export type TagQueryFindTagByIdArgs = {
   input: FindTagInput;
 };
-
 
 export type TagQueryFindTagByIdsArgs = {
   input: BulkFindTagInput;
 };
 
-
 export type TagQueryFindTagBySlugArgs = {
   input: FindTagBySlugInput;
 };
-
 
 export type TagQuerySearchTagsArgs = {
   input: SearchTagInput;
@@ -1792,7 +1707,7 @@ export type TagQuerySearchTagsArgs = {
 export enum TagStatusEnum {
   Draft = 'DRAFT',
   Publish = 'PUBLISH',
-  Trash = 'TRASH'
+  Trash = 'TRASH',
 }
 
 export type TagType = {
@@ -2037,7 +1952,7 @@ export type User = {
 
 export enum UserAvatarStatusEnum {
   Draft = 'DRAFT',
-  Publish = 'PUBLISH'
+  Publish = 'PUBLISH',
 }
 
 export type UserMutation = {
@@ -2050,32 +1965,26 @@ export type UserMutation = {
   uploadAvatar: UploadUserAvatarOutput;
 };
 
-
 export type UserMutationCreateUserArgs = {
   input: CreateUserByCeo;
 };
-
 
 export type UserMutationDeleteUserArgs = {
   input: DeleteUserInput;
 };
 
-
 export type UserMutationDeleteUsersArgs = {
   input: BulkDeleteUsersInput;
 };
-
 
 export type UserMutationUpdateOperatorUserArgs = {
   avatar?: InputMaybe<Scalars['Upload']['input']>;
   input: UpdateUserInput;
 };
 
-
 export type UserMutationUpdateUserArgs = {
   input: UpdateUserByCeo;
 };
-
 
 export type UserMutationUploadAvatarArgs = {
   file: Scalars['Upload']['input'];
@@ -2141,21 +2050,17 @@ export type UserQuery = {
   searchUserByRole: SearchUserByRoleOutput;
 };
 
-
 export type UserQueryFindUserByIdArgs = {
   input: FindUserInput;
 };
-
 
 export type UserQueryFindUsersByIdsArgs = {
   input: FindUsersInput;
 };
 
-
 export type UserQuerySearchUserArgs = {
   input: SearchUserInput;
 };
-
 
 export type UserQuerySearchUserByRoleArgs = {
   input: SearchUserByRoleInput;
@@ -2182,11 +2087,9 @@ export type VisitStatisticsMutation = {
   recordVisitStatistics: CreateVisitStatisticsOutput;
 };
 
-
 export type VisitStatisticsMutationDeleteVisitStatisticsArgs = {
   input: DeleteVisitStatisticsInput;
 };
-
 
 export type VisitStatisticsMutationRecordVisitStatisticsArgs = {
   input: CreateVisitStatisticsInput;
@@ -2198,11 +2101,9 @@ export type VisitStatisticsQuery = {
   getUserVisits: GetUserVisitsOutput;
 };
 
-
 export type VisitStatisticsQueryFindByIdArgs = {
   input: FindVisitStatisticsInput;
 };
-
 
 export type VisitStatisticsQueryGetUserVisitsArgs = {
   input: GetUserVisitsInput;
