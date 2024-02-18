@@ -9,7 +9,7 @@ import {Modal} from '@/components/atoms/modal';
 
 export default function NormalQuizzes() {
   const hasMorePages = true;
-  const targetQuiz$ = useObservable<boolean>(true);
+  const targetQuiz$ = useObservable<boolean>(false);
 
   return (
     <div
@@ -63,7 +63,7 @@ export default function NormalQuizzes() {
               textStyle: 'h1',
             })}
           >
-            Graphical Quizzes
+            Normal Quizzes
           </span>
         </div>
       </header>

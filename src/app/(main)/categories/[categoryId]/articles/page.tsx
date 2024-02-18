@@ -2,9 +2,8 @@ import {css} from '@styled/css';
 import {dehydrate} from '@tanstack/react-query';
 
 import {CategoryArticlesView} from '@/components';
+import {searchArticleByCategory, searchCategories} from '@/graphql';
 import {CategoryType} from '@/graphql/generated/types';
-import {searchCategories} from '@/graphql/query/categories';
-import {searchArticleByCategory} from '@/graphql/query/search-articles-by-category';
 import {getQueryClient} from '@/helpers';
 import {Hydrate} from '@/providers';
 

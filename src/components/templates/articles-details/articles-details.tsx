@@ -23,12 +23,17 @@ import {
   UserInfo,
 } from '@/components';
 import {CookieName} from '@/constants';
-import {ArticleType, DeleteOneArticleBookmarkInput} from '@/graphql/generated/types';
-import {addBookmark} from '@/graphql/mutation/bookmark/add-bokmark';
-import {deleteBookmark} from '@/graphql/mutation/bookmark/remove-bokmark';
-import {findArticleByName} from '@/graphql/query/find-article-by-name';
-import {findRelatedArticles} from '@/graphql/query/find-related-articles';
-import {getArticlePdfById} from '@/graphql/query/get-article-pdf-by-id';
+import {
+  ArticleType,
+  DeleteOneArticleBookmarkInput,
+  addBookmark,
+  deleteBookmark,
+  findArticleByName,
+  findRelatedArticles,
+  getArticlePdfById,
+  recordVisitStatistics,
+} from '@/graphql';
+import {useEffect} from 'react';
 
 const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
 
@@ -53,15 +58,15 @@ const Page = () => {
     queryKey: ['get-related-articles'],
     queryFn: () => findRelatedArticles({articleId: article._id, count: 3}),
   }) as any;
-  const pdf = useQuery({
+  const getArticlePdfByIdQuery = useQuery({
     queryKey: ['get-pdf'],
-    queryFn: () => getArticlePdfById(article._id),
-  }) as any;
+    queryFn: () => getArticlePdfById({id: article._id}),
+  });
 
   const relatedArticles: ArticleType[] = res.isSuccess
     ? res.data.article!.findRelatedArticles.results
     : [];
-  const articlePdf = pdf.isSuccess ? pdf.data.article.getArticlePdfById : [];
+  const articlePdfDownloadUrl = getArticlePdfByIdQuery.isSuccess ? getArticlePdfByIdQuery.data : '';
 
   const formattedDate = new Date(article.publishDate).toLocaleDateString('en-GB', {
     day: 'numeric',
@@ -69,27 +74,31 @@ const Page = () => {
     year: 'numeric',
   });
 
-  const {
-    mutate: createBookmark,
-    error,
-    isLoading,
-  } = useMutation({
+  const createBookmarkMutation = useMutation({
     mutationFn: (input: {article: string}) => addBookmark(input, token!),
     onSuccess: () => refetch(),
-  }) as any;
-  const {mutate: removeBookmark} = useMutation({
+  });
+  const removeBookmarkMutation = useMutation({
     mutationFn: (input: DeleteOneArticleBookmarkInput) => deleteBookmark(input, token!),
     onSuccess: () => refetch(),
-  }) as any;
+  });
+
+  const recordVisitStatisticsMutation = useMutation({
+    mutationFn: (input: {article: string}) => recordVisitStatistics(input, token!),
+  });
 
   const handleToggleBookmark = async (articleId: string) => {
     if (!token) return;
     if (article.isBookmark) {
-      await removeBookmark({articleId});
+      await removeBookmarkMutation.mutateAsync({articleId});
     } else {
-      await createBookmark({article: articleId});
+      await createBookmarkMutation.mutateAsync({article: articleId});
     }
   };
+
+  useEffect(() => {
+    recordVisitStatisticsMutation.mutateAsync({article: article._id});
+  }, []);
 
   return (
     <div>
@@ -156,7 +165,7 @@ const Page = () => {
           />
         ) : null}
 
-        {articlePdf ? (
+        {articlePdfDownloadUrl ? (
           <Box
             className={flex({
               alignItems: {
@@ -190,7 +199,7 @@ const Page = () => {
             >
               <Link
                 target='_blank'
-                href={articlePdf}
+                href={articlePdfDownloadUrl}
                 className={css({
                   '& span': {color: 'gray4'},
                   w: 'max-content',
@@ -205,7 +214,7 @@ const Page = () => {
               <Link
                 download
                 target='_blank'
-                href={articlePdf}
+                href={articlePdfDownloadUrl}
                 className={css({
                   '& span': {color: 'white'},
                   w: 'max-content',

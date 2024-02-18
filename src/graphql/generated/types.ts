@@ -67,6 +67,7 @@ export type ArticleQuery = {
   findArticleByName: FindArticleOutput;
   findRelatedArticles: FindRelatedArticlesOutput;
   getArticlePdfById?: Maybe<Scalars['String']['output']>;
+  getUserArticles: GetUserArticlesOutput;
   searchArticles: SearchArticleOutput;
 };
 
@@ -87,7 +88,11 @@ export type ArticleQueryFindRelatedArticlesArgs = {
 };
 
 export type ArticleQueryGetArticlePdfByIdArgs = {
-  input: Scalars['String']['input'];
+  input: DownloadArticleInput;
+};
+
+export type ArticleQueryGetUserArticlesArgs = {
+  input: GetUserArticlesInput;
 };
 
 export type ArticleQuerySearchArticlesArgs = {
@@ -111,6 +116,7 @@ export type ArticleType = {
   publishDate?: Maybe<Scalars['DateTime']['output']>;
   readingDuration?: Maybe<Scalars['Int']['output']>;
   reports?: Maybe<Array<Scalars['String']['output']>>;
+  savedCount: Scalars['Int']['output'];
   seoSetting?: Maybe<SeoSettingType>;
   slug: Scalars['String']['output'];
   status?: Maybe<StatusType>;
@@ -119,6 +125,7 @@ export type ArticleType = {
   title: Scalars['String']['output'];
   updateUser?: Maybe<UserOutputType>;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
+  visitsCount: Scalars['Int']['output'];
 };
 
 export type AuthMutation = {
@@ -611,16 +618,31 @@ export type CreateTagOutput = {
 export type CreateUserByCeo = {
   displayName?: InputMaybe<Scalars['String']['input']>;
   email?: InputMaybe<Scalars['String']['input']>;
+  firstName?: InputMaybe<Scalars['String']['input']>;
+  gender?: InputMaybe<GenderEnum>;
   googleId?: InputMaybe<Scalars['String']['input']>;
+  hometown?: InputMaybe<Scalars['String']['input']>;
   isVerified: Scalars['Boolean']['input'];
+  lastName?: InputMaybe<Scalars['String']['input']>;
+  nickname?: InputMaybe<Scalars['String']['input']>;
   password?: InputMaybe<Scalars['String']['input']>;
   phone?: InputMaybe<Scalars['String']['input']>;
   role: Role;
   username?: InputMaybe<Scalars['String']['input']>;
+  website?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type CreateUserOutput = {
   __typename?: 'CreateUserOutput';
+  success: Scalars['Boolean']['output'];
+};
+
+export type CreateVisitStatisticsInput = {
+  article: Scalars['String']['input'];
+};
+
+export type CreateVisitStatisticsOutput = {
+  __typename?: 'CreateVisitStatisticsOutput';
   success: Scalars['Boolean']['output'];
 };
 
@@ -734,6 +756,19 @@ export type DeleteUserInput = {
 export type DeleteUserOutput = {
   __typename?: 'DeleteUserOutput';
   success: Scalars['Boolean']['output'];
+};
+
+export type DeleteVisitStatisticsInput = {
+  id: Scalars['String']['input'];
+};
+
+export type DeleteVisitStatisticsOutput = {
+  __typename?: 'DeleteVisitStatisticsOutput';
+  success: Scalars['Boolean']['output'];
+};
+
+export type DownloadArticleInput = {
+  id: Scalars['String']['input'];
 };
 
 export type EditCommentInput = {
@@ -888,6 +923,16 @@ export type FindUsersInput = {
   ids: Array<Scalars['String']['input']>;
 };
 
+export type FindVisitStatisticsInput = {
+  id: Scalars['String']['input'];
+};
+
+export type FindVisitStatisticsOutput = {
+  __typename?: 'FindVisitStatisticsOutput';
+  result?: Maybe<VisitStatisticsType>;
+  success: Scalars['Boolean']['output'];
+};
+
 export type FocusKeyword = {
   __typename?: 'FocusKeyword';
   count: Scalars['Float']['output'];
@@ -922,6 +967,38 @@ export type ForgetPasswordInput = {
 export type ForgetPasswordOutput = {
   __typename?: 'ForgetPasswordOutput';
   success: Scalars['Boolean']['output'];
+};
+
+export enum GenderEnum {
+  Female = 'FEMALE',
+  Male = 'MALE',
+  Other = 'OTHER',
+}
+
+export type GetUserArticlesInput = {
+  count?: InputMaybe<Scalars['Int']['input']>;
+  page?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type GetUserArticlesOutput = {
+  __typename?: 'GetUserArticlesOutput';
+  results?: Maybe<Array<ArticleType>>;
+  success: Scalars['Boolean']['output'];
+  totalCount?: Maybe<Scalars['Int']['output']>;
+  totalPages?: Maybe<Scalars['Int']['output']>;
+};
+
+export type GetUserVisitsInput = {
+  count?: InputMaybe<Scalars['Int']['input']>;
+  page?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type GetUserVisitsOutput = {
+  __typename?: 'GetUserVisitsOutput';
+  results?: Maybe<Array<VisitStatisticsType>>;
+  success: Scalars['Boolean']['output'];
+  totalCount?: Maybe<Scalars['Int']['output']>;
+  totalPages?: Maybe<Scalars['Int']['output']>;
 };
 
 export type GoogleTokenInput = {
@@ -1088,6 +1165,7 @@ export type Mutation = {
   seoSetting: SeoSettingMutation;
   tag: TagMutation;
   users: UserMutation;
+  visitStatistics: VisitStatisticsMutation;
 };
 
 export type OptionInputType = {
@@ -1115,6 +1193,7 @@ export type Query = {
   seoSetting: SeoSettingQuery;
   tag: TagQuery;
   users: UserQuery;
+  visitStatistics: VisitStatisticsQuery;
 };
 
 export type QuestionMutation = {
@@ -1225,6 +1304,7 @@ export enum Role {
   Author = 'Author',
   AuthorJunior = 'AuthorJunior',
   Ceo = 'CEO',
+  ContentManager = 'ContentManager',
   Contributor = 'Contributor',
   Editor = 'Editor',
   FeedbackViewer = 'FeedbackViewer',
@@ -1550,9 +1630,15 @@ export type SigninOutput = {
 export type SignupInputType = {
   displayName?: InputMaybe<Scalars['String']['input']>;
   email?: InputMaybe<Scalars['String']['input']>;
+  firstName?: InputMaybe<Scalars['String']['input']>;
+  gender?: InputMaybe<GenderEnum>;
+  hometown?: InputMaybe<Scalars['String']['input']>;
+  lastName?: InputMaybe<Scalars['String']['input']>;
+  nickname?: InputMaybe<Scalars['String']['input']>;
   password?: InputMaybe<Scalars['String']['input']>;
   phone?: InputMaybe<Scalars['String']['input']>;
   username?: InputMaybe<Scalars['String']['input']>;
+  website?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type SignupOutput = {
@@ -1790,22 +1876,34 @@ export type UpdateTagOutput = {
 export type UpdateUserByCeo = {
   displayName?: InputMaybe<Scalars['String']['input']>;
   email?: InputMaybe<Scalars['String']['input']>;
+  firstName?: InputMaybe<Scalars['String']['input']>;
+  gender?: InputMaybe<GenderEnum>;
   googleId?: InputMaybe<Scalars['String']['input']>;
+  hometown?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['String']['input'];
   isVerified?: InputMaybe<Scalars['Boolean']['input']>;
+  lastName?: InputMaybe<Scalars['String']['input']>;
+  nickname?: InputMaybe<Scalars['String']['input']>;
   password?: InputMaybe<Scalars['String']['input']>;
   phone?: InputMaybe<Scalars['String']['input']>;
   role?: InputMaybe<Role>;
   username?: InputMaybe<Scalars['String']['input']>;
+  website?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UpdateUserInput = {
   displayName?: InputMaybe<Scalars['String']['input']>;
   email?: InputMaybe<Scalars['String']['input']>;
+  firstName?: InputMaybe<Scalars['String']['input']>;
+  gender?: InputMaybe<GenderEnum>;
+  hometown?: InputMaybe<Scalars['String']['input']>;
+  lastName?: InputMaybe<Scalars['String']['input']>;
+  nickname?: InputMaybe<Scalars['String']['input']>;
   oldPassword?: InputMaybe<Scalars['String']['input']>;
   password?: InputMaybe<Scalars['String']['input']>;
   phone?: InputMaybe<Scalars['String']['input']>;
   username?: InputMaybe<Scalars['String']['input']>;
+  website?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UpdateUserOutput = {
@@ -1836,14 +1934,20 @@ export type User = {
   createdAt?: Maybe<Scalars['DateTime']['output']>;
   displayName?: Maybe<Scalars['String']['output']>;
   email?: Maybe<Scalars['String']['output']>;
+  firstName?: Maybe<Scalars['String']['output']>;
+  gender?: Maybe<GenderEnum>;
   googleId?: Maybe<Scalars['String']['output']>;
+  hometown?: Maybe<Scalars['String']['output']>;
   isCreatedWithSocialMedia?: Maybe<Scalars['Boolean']['output']>;
   isVerified: Scalars['Boolean']['output'];
+  lastName?: Maybe<Scalars['String']['output']>;
+  nickname?: Maybe<Scalars['String']['output']>;
   password?: Maybe<Scalars['String']['output']>;
   phone?: Maybe<Scalars['String']['output']>;
   role: Role;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
   username?: Maybe<Scalars['String']['output']>;
+  website?: Maybe<Scalars['String']['output']>;
 };
 
 export enum UserAvatarStatusEnum {
@@ -1893,28 +1997,48 @@ export type UserOutputInputType = {
   createdAt?: InputMaybe<Scalars['String']['input']>;
   displayName?: InputMaybe<Scalars['String']['input']>;
   email?: InputMaybe<Scalars['String']['input']>;
+  firstName?: InputMaybe<Scalars['String']['input']>;
+  gender?: InputMaybe<GenderEnum>;
+  hometown?: InputMaybe<Scalars['String']['input']>;
   isCreatedWithSocialMedia?: InputMaybe<Scalars['Boolean']['input']>;
   isVerified: Scalars['Boolean']['input'];
+  lastName?: InputMaybe<Scalars['String']['input']>;
+  nickname?: InputMaybe<Scalars['String']['input']>;
   phone?: InputMaybe<Scalars['String']['input']>;
   role: Role;
   updatedAt?: InputMaybe<Scalars['String']['input']>;
   username?: InputMaybe<Scalars['String']['input']>;
+  website?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UserOutputType = {
   __typename?: 'UserOutputType';
   _id: Scalars['String']['output'];
+  articlesWrittenCount: Scalars['Int']['output'];
+  articlesWrittenSavedCount: Scalars['Int']['output'];
+  articlesWrittenVisitedCount: Scalars['Int']['output'];
   avatar?: Maybe<ImageType>;
   avatarStatus?: Maybe<UserAvatarStatusEnum>;
+  commentsCount: Scalars['Int']['output'];
   createdAt?: Maybe<Scalars['String']['output']>;
   displayName?: Maybe<Scalars['String']['output']>;
+  downloadedArticlesCount: Scalars['Int']['output'];
   email?: Maybe<Scalars['String']['output']>;
+  firstName?: Maybe<Scalars['String']['output']>;
+  gender?: Maybe<GenderEnum>;
+  hometown?: Maybe<Scalars['String']['output']>;
   isCreatedWithSocialMedia?: Maybe<Scalars['Boolean']['output']>;
   isVerified: Scalars['Boolean']['output'];
+  lastName?: Maybe<Scalars['String']['output']>;
+  nickname?: Maybe<Scalars['String']['output']>;
   phone?: Maybe<Scalars['String']['output']>;
   role: Role;
+  savedArticlesCount: Scalars['Int']['output'];
+  timeSpent: Scalars['Float']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
   username?: Maybe<Scalars['String']['output']>;
+  visitedArticlesCount: Scalars['Int']['output'];
+  website?: Maybe<Scalars['String']['output']>;
 };
 
 export type UserQuery = {
@@ -1955,4 +2079,42 @@ export type VerifyAccountInput = {
 export type VerifyAccountOutput = {
   __typename?: 'VerifyAccountOutput';
   success: Scalars['Boolean']['output'];
+};
+
+export type VisitStatisticsMutation = {
+  __typename?: 'VisitStatisticsMutation';
+  deleteVisitStatistics: DeleteVisitStatisticsOutput;
+  recordVisitStatistics: CreateVisitStatisticsOutput;
+};
+
+export type VisitStatisticsMutationDeleteVisitStatisticsArgs = {
+  input: DeleteVisitStatisticsInput;
+};
+
+export type VisitStatisticsMutationRecordVisitStatisticsArgs = {
+  input: CreateVisitStatisticsInput;
+};
+
+export type VisitStatisticsQuery = {
+  __typename?: 'VisitStatisticsQuery';
+  findById: FindVisitStatisticsOutput;
+  getUserVisits: GetUserVisitsOutput;
+};
+
+export type VisitStatisticsQueryFindByIdArgs = {
+  input: FindVisitStatisticsInput;
+};
+
+export type VisitStatisticsQueryGetUserVisitsArgs = {
+  input: GetUserVisitsInput;
+};
+
+export type VisitStatisticsType = {
+  __typename?: 'VisitStatisticsType';
+  _id: Scalars['String']['output'];
+  article: ArticleType;
+  clientId?: Maybe<Scalars['String']['output']>;
+  createdAt?: Maybe<Scalars['DateTime']['output']>;
+  updatedAt?: Maybe<Scalars['DateTime']['output']>;
+  user?: Maybe<UserOutputType>;
 };

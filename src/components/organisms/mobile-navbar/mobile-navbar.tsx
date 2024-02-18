@@ -11,8 +11,7 @@ import {IconDoc, IconHome, IconMenu, IconProfile, IconQuiz} from '@/assets';
 import {Avatar} from '@/components';
 import {CookieName} from '@/constants';
 import {useAuthContext} from '@/contexts';
-import {User} from '@/graphql/generated/types';
-import {getUser} from '@/graphql/query/users/get-user';
+import {getUser} from '@/graphql';
 
 const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
 
@@ -26,8 +25,8 @@ export default function MobileNavbar(props: Props) {
   const {data, isLoading} = useQuery({
     queryKey: ['get-profile'],
     queryFn: () => getUser(authToken),
-  }) as any;
-  const user: User = data?.auth.getUser;
+  });
+  const user = data;
   if (isLoading) return null;
 
   return (

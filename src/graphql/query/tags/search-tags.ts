@@ -1,7 +1,10 @@
+import {CookieName} from '@/constants';
 import {SearchTagInput, TagQuery} from '@/graphql/generated/types';
 import {gqlFetch} from '@/services/fetch';
+import {getCookie} from 'cookies-next';
 
 export async function SearchTags(input: SearchTagInput): Promise<TagQuery['searchTags']> {
+  const clientId = getCookie(CookieName.CLIENT_ID) as string;
   const res = await gqlFetch({
     url: process.env.NEXT_PUBLIC_API as string,
     query: `query SearchTags($input: SearchTagInput!) {
@@ -96,6 +99,9 @@ export async function SearchTags(input: SearchTagInput): Promise<TagQuery['searc
       }
     }`,
     variables: {input},
+    headers: {
+      'client-id': clientId,
+    },
   });
   if (!res.ok) {
     throw new Error('Failed to fetch data');

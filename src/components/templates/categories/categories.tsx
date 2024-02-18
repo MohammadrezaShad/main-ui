@@ -7,8 +7,7 @@ import {useQuery} from '@tanstack/react-query';
 import {Swiper, SwiperSlide} from 'swiper/react';
 
 import {CategoryCard, Divider, PrimarySubtitle, PrimaryTitle} from '@/components';
-import {CategoryType} from '@/graphql/generated/types';
-import {searchCategories} from '@/graphql/query/categories';
+import {CategoryType, searchCategories} from '@/graphql';
 
 import {Container, SliderWrapper, Wrapper} from './categories.styled';
 

@@ -17,6 +17,7 @@ export default function AuthButton({
   className,
   variant = 'contained',
   onClick,
+  ...otherProps
 }: AuthButtonProps) {
   const defaultClassName = css({
     rounded: 0,
@@ -29,7 +30,13 @@ export default function AuthButton({
   });
   const buttonClass = cx(defaultClassName, className);
   return (
-    <Button onClick={onClick} visual={variant} className={buttonClass} color='primary'>
+    <Button
+      {...otherProps}
+      onClick={onClick}
+      visual={variant}
+      className={buttonClass}
+      color='primary'
+    >
       <ButtonText textStyle='body1'>{text}</ButtonText>
     </Button>
   );

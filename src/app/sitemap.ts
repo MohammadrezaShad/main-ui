@@ -1,5 +1,4 @@
-import {ArticleType, StatusType} from '@/graphql/generated/types';
-import {searchArticles} from '@/graphql/query/search-articles';
+import {ArticleType, StatusType, searchArticles} from '@/graphql';
 
 export default async function sitemap() {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;

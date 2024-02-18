@@ -10,10 +10,9 @@ import {useRouter} from 'next/navigation';
 import {coin, IconLogout} from '@/assets';
 import {Avatar} from '@/components';
 import {CookieName} from '@/constants';
-import {User} from '@/graphql/generated/types';
-import {getUser} from '@/graphql/query/users/get-user';
 import {Paths} from '@/utils';
 
+import {getUser} from '@/graphql';
 import ProfileNavigation from '../profile-navigation/profile-navigation';
 
 const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
@@ -25,8 +24,8 @@ const ProfileSidebar = () => {
   const {data} = useQuery({
     queryKey: ['get-profile'],
     queryFn: () => getUser(authToken),
-  }) as any;
-  const user: User = data.auth!.getUser;
+  });
+  const user = data;
 
   const handleLogout = () => {
     deleteCookie(CookieName.AUTH_TOKEN, {path: '/'});
@@ -55,7 +54,7 @@ const ProfileSidebar = () => {
     >
       <Avatar
         size={134}
-        src={user.avatar?._id ? `${IMAGE_STORAGE_URL}/${user.avatar?._id}` : undefined}
+        src={user?.avatar?._id ? `${IMAGE_STORAGE_URL}/${user.avatar?._id}` : undefined}
       />
       <h3
         className={css({
@@ -65,7 +64,7 @@ const ProfileSidebar = () => {
           textAlign: 'center',
         })}
       >
-        {user.displayName}
+        {user?.displayName}
       </h3>
       <p
         className={css({
@@ -75,7 +74,7 @@ const ProfileSidebar = () => {
           textAlign: 'center',
         })}
       >
-        {user.email}
+        {user?.email}
       </p>
       <div
         className={flex({
@@ -128,7 +127,7 @@ const ProfileSidebar = () => {
             textAlign: 'center',
           })}
         >
-          717
+          400
         </h1>
       </div>
       <ProfileNavigation />
