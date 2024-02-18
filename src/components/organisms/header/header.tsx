@@ -1,6 +1,5 @@
 'use client';
 
-import {useEffect} from 'react';
 import {useObservable} from '@legendapp/state/react';
 import {css} from '@styled/css';
 import {useQuery} from '@tanstack/react-query';
@@ -11,8 +10,7 @@ import {IconSearch} from '@/assets';
 import {AuthButton, Avatar, HeaderNavbar, Login, Logo, SearchDrawer, SignUp} from '@/components';
 import {CookieName} from '@/constants';
 import {useAuthContext} from '@/contexts';
-import {User} from '@/graphql/generated/types';
-import {getUser} from '@/graphql/query/users/get-user';
+import {getUser} from '@/graphql';
 
 import UserHeaderInfo from '../user-info/user-info';
 import {Container, Wrap} from './header.styled';
@@ -26,17 +24,11 @@ export default function Header(props: HeaderProps) {
   const isOpen$ = useObservable(false);
   const isClient$ = useObservable(false);
   const authToken = getCookie(CookieName.AUTH_TOKEN)!;
-  const {data, isLoading} = useQuery({
+  const {data} = useQuery({
     queryKey: ['get-profile'],
     queryFn: () => getUser(authToken),
-  }) as any;
-  const user: User = data?.auth.getUser;
-
-  useEffect(() => {
-    isClient$.set(true);
-  }, []);
-
-  if (isLoading) return null;
+  });
+  const user = data;
 
   return (
     <Container>
@@ -80,7 +72,7 @@ export default function Header(props: HeaderProps) {
             />
           </>
         )}
-        {isClient$.use() && authToken ? (
+        {user && authToken ? (
           <Link className={css({hideFrom: 'md'})} href='/profile'>
             <Avatar
               src={user?.avatar?._id ? `${IMAGE_STORAGE_URL}/${user.avatar?._id}` : undefined}

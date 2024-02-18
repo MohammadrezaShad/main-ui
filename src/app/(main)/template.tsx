@@ -6,14 +6,12 @@ import {cookies, headers} from 'next/headers';
 import {Footer, Header} from '@/components';
 import MobileNavbar from '@/components/organisms/mobile-navbar/mobile-navbar';
 import {CookieName, HeaderName} from '@/constants';
-import {getUser} from '@/graphql/query/users/get-user';
+import {getUser} from '@/graphql';
 import {getQueryClient} from '@/helpers';
 import {Hydrate} from '@/providers';
-import {isMatch, Paths} from '@/utils';
 
 export default async function Template({children}: {children: React.ReactNode}) {
   const currentUrl = headers().get(HeaderName.PATHNAME) || '';
-  const isVideoUrl = isMatch(Paths.Video.Detail('').getRoute() as string, currentUrl as string);
   const cookieStore = cookies();
   const authToken = cookieStore.get(CookieName.AUTH_TOKEN)?.value || '';
   const queryClient = getQueryClient();

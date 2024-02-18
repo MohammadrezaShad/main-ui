@@ -6,11 +6,32 @@ import {useRouter} from 'next/navigation';
 
 import {IconArrowRight} from '@/assets';
 import {Chip} from '@/components';
+import {CookieName} from '@/constants';
+import {getUser} from '@/graphql';
+import {useQuery, useQueryClient} from '@tanstack/react-query';
+import {getCookie} from 'cookies-next';
 
 const tags = ['water crisis', 'TagName', 'TagName254', 'Another tag'];
 
 const ProfileDetails = () => {
   const router = useRouter();
+  const queryClient = useQueryClient();
+  const authToken = getCookie(CookieName.AUTH_TOKEN)!;
+  const {data} = useQuery({
+    queryKey: ['get-profile'],
+    queryFn: () => getUser(authToken),
+  });
+  const user = data;
+
+  const renderHometown = () => (user?.hometown ? user.hometown : `You haven't told us yet`);
+
+  const renderDateRegistered = () =>
+    user?.createdAt
+      ? new Date(+user.createdAt).toLocaleDateString(navigator.language, {
+          year: 'numeric',
+          month: 'long',
+        })
+      : '';
 
   return (
     <div
@@ -59,7 +80,7 @@ const ProfileDetails = () => {
           mt: '3.5',
         })}
       >
-        You haven&apos;t told us yet
+        {renderHometown()}
       </p>
       <div
         className={css({
@@ -77,7 +98,7 @@ const ProfileDetails = () => {
           mt: '3.5',
         })}
       >
-        Feb 2018
+        {renderDateRegistered()}
       </p>
       <div
         className={css({

@@ -11,7 +11,6 @@ import {IconArrowRight} from '@/assets';
 import {AuthButton, TextField} from '@/components';
 import RadioButton from '@/components/atoms/radio-button/radio-button';
 import {CookieName} from '@/constants';
-import {User} from '@/graphql/generated/types';
 import {getUser} from '@/graphql/query/users/get-user';
 
 export default function Settings() {
@@ -19,8 +18,7 @@ export default function Settings() {
   const {data} = useQuery({
     queryKey: ['get-profile'],
     queryFn: () => getUser(authToken),
-  }) as any;
-  const user: User = data!.auth.getUser;
+  });
   const router = useRouter();
 
   return (
