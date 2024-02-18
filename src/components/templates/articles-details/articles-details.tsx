@@ -84,7 +84,7 @@ const Page = () => {
   });
 
   const recordVisitStatisticsMutation = useMutation({
-    mutationFn: (input: {article: string}) => recordVisitStatistics(input),
+    mutationFn: (input: {article: string}) => recordVisitStatistics(input, token!),
   });
 
   const handleToggleBookmark = async (articleId: string) => {

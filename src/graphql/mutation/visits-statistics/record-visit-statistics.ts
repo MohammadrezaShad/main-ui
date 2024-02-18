@@ -5,7 +5,7 @@ import {getCookie} from 'cookies-next';
 
 export async function recordVisitStatistics(
   input: CreateVisitStatisticsInput,
-  // accessToken: string,
+  accessToken: string,
 ): Promise<VisitStatisticsMutation['recordVisitStatistics']> {
   const clientId = getCookie(CookieName.CLIENT_ID) as string;
   const res = await gqlFetch({
@@ -19,7 +19,7 @@ export async function recordVisitStatistics(
       }`,
     variables: {input},
     headers: {
-      // Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${accessToken}`,
       'client-id': clientId,
     },
   });
