@@ -28,7 +28,16 @@ export default function Card({imageUrl, date, title, articleLink}: Props) {
   return (
     <Container>
       {imageUrl ? (
-        <Image unoptimized width={112} height={112} src={imageUrl} alt={title} />
+        <Image
+          unoptimized
+          width={112}
+          height={112}
+          src={imageUrl}
+          alt={title}
+          className={css({
+            objectFit: 'cover',
+          })}
+        />
       ) : (
         <div
           className={grid({

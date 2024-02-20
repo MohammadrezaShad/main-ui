@@ -13,6 +13,7 @@ import {getUserVisits} from '@/graphql';
 import {useUpdateSearchParam} from '@/hooks';
 import {keepPreviousData, useQuery} from '@tanstack/react-query';
 import {getCookie} from 'cookies-next';
+import Link from 'next/link';
 import {Pagination} from '../articles/articles.styled';
 
 const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
@@ -196,7 +197,8 @@ export default function Profile() {
                       >
                         {moment(result.article.publishDate).format('DD MMMM YYYY')}
                       </span>
-                      <h6
+                      <Link
+                        href={`/articles/${result.article.slug}`}
                         className={css({
                           textStyle: 'h4',
                           mt: '2.5',
@@ -204,7 +206,7 @@ export default function Profile() {
                         })}
                       >
                         {result.article.title}
-                      </h6>
+                      </Link>
                     </div>
                   </div>
                 </li>

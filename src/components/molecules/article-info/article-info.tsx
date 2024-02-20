@@ -5,6 +5,7 @@ import {IconCollection} from '@/assets';
 import {Avatar} from '@/components';
 import {CookieName} from '@/constants';
 import {Maybe, UserOutputType} from '@/graphql/generated/types';
+import Link from 'next/link';
 
 const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
 
@@ -50,14 +51,14 @@ const ArticleInfo = ({
         />
 
         {/** NAME */}
-        <span
+        <div
           className={css({
             textStyle: 'body2',
             color: 'text.primary',
           })}
         >
-          By {author.displayName}
-        </span>
+          By <Link href={`/author/${author._id}`}>{author.displayName}</Link>
+        </div>
 
         {/** DIVIDER */}
         {readingDuration ? (
