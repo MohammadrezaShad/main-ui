@@ -59,12 +59,11 @@ export default function CollectionsView() {
           <PageTitle>Collections</PageTitle>
         </div>
         <Tabs>
-          <Tab active={true}>Articles</Tab>
+          <Tab active>Articles</Tab>
           <Tab>Corporates</Tab>
         </Tabs>
-        {isLoading ? (
-          <Spinner />
-        ) : !data?.results || data?.results.length < 1 ? (
+        {isLoading ? <Spinner /> : null}
+        {!data?.results || data?.results.length < 1 ? (
           <div
             className={flex({
               alignSelf: 'center',

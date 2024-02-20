@@ -24,7 +24,7 @@ export default function Profile() {
   const token = getCookie(CookieName.AUTH_TOKEN);
   const {data, isLoading} = useQuery({
     queryKey: ['get-user-visits', page],
-    queryFn: () => getUserVisits({count: 10, page: page}, token!),
+    queryFn: () => getUserVisits({count: 10, page}, token!),
     placeholderData: keepPreviousData,
   });
   const router = useRouter();
@@ -71,9 +71,8 @@ export default function Profile() {
             Recent Activity
           </h3>
         </div>
-        {isLoading ? (
-          <Spinner />
-        ) : !data?.results || data?.results.length < 1 ? (
+        {isLoading ? <Spinner /> : null}
+        {!data?.results || data?.results.length < 1 ? (
           <div
             className={flex({
               alignSelf: 'center',

@@ -13,10 +13,16 @@ export const Container = styled('div', {
       base: 'column',
       mdDown: 'row',
     },
-    justifyContent: 'center',
+    justifyContent: {
+      base: 'center',
+      mdDown: 'stretch',
+    },
     breakInside: 'avoid',
     alignItems: {
       mdDown: 'start',
+    },
+    mdDown: {
+      px: '1',
     },
   },
   variants: {

@@ -1,29 +1,86 @@
 import {css} from '@styled/css';
+import {dehydrate} from '@tanstack/react-query';
+import {cookies} from 'next/headers';
 
-import NotFoundImage from '@/assets/images/404.svg';
+// @ts-expect-error it probably soesn't generate any error
+import notFoundImage from '@/assets/images/404-2.svg?url';
+import {Footer, Header} from '@/components';
+import MobileNavbar from '@/components/organisms/mobile-navbar/mobile-navbar';
+import {CookieName} from '@/constants';
+import {getUser} from '@/graphql';
+import {getQueryClient} from '@/helpers';
+import {Hydrate} from '@/providers';
 
-const NotFound = () => (
-  <div
-    className={css({
-      display: 'flex',
-      flexDir: 'column',
-      justifyContent: 'center',
-      alignItems: 'center',
-      height: 'calc(100vh - 164px)',
-      mx: 'auto',
-    })}
-  >
-    <NotFoundImage />
-    <div
-      className={css({
-        textStyle: 'h4',
-        color: 'text.primary',
-        mt: '4',
-      })}
-    >
-      PAGE NOT FOUND
-    </div>
-  </div>
-);
+export default async function NotFound() {
+  const cookieStore = cookies();
+  const authToken = cookieStore.get(CookieName.AUTH_TOKEN)?.value || '';
+  const queryClient = getQueryClient();
+  await queryClient.prefetchQuery({
+    queryKey: ['get-profile'],
+    queryFn: () => getUser(authToken),
+    staleTime: 1000,
+  });
+  const dehydratedState = dehydrate(queryClient);
 
-export default NotFound;
+  return (
+    <Hydrate state={dehydratedState}>
+      <Header />
+      <div
+        className={css({
+          bgColor: '#FBC886',
+          flex: '1',
+          overflow: 'hidden',
+          mdDown: {
+            pt: '50%',
+          },
+        })}
+      >
+        <div
+          style={{backgroundImage: `url(${notFoundImage.src})`}}
+          className={css({
+            height: 'calc(100vh - 164px)',
+            backgroundSize: 'contain',
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'bottom',
+            position: 'relative',
+            mdDown: {
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+            },
+          })}
+        >
+          <div
+            className={css({
+              textStyle: 'h4',
+              color: 'text.primary',
+              mt: '4',
+              position: 'absolute',
+              top: '60%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              mdDown: {
+                top: 'unset',
+                bottom: '50%',
+              },
+            })}
+          >
+            PAGE NOT FOUND
+          </div>
+        </div>
+      </div>
+      <Footer />
+      <div
+        className={css({
+          hideFrom: 'md',
+          zIndex: 50,
+          position: 'fixed',
+          bottom: 0,
+          left: 0,
+          right: 0,
+        })}
+      >
+        <MobileNavbar />
+      </div>
+    </Hydrate>
+  );
+}
