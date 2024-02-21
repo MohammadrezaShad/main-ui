@@ -20,7 +20,7 @@ const Page = () => {
   const [page, setPage] = useState(1);
   const READMORE_PAGE_COUNT = 12;
   const {isPending, isError, error, data, isFetching, refetch, isPlaceholderData} = useQuery({
-    queryKey: ['search-articles', 18],
+    queryKey: ['search-articles', page],
     queryFn: () => searchArticles({status: StatusType.Publish, count: 18, page}),
     placeholderData: keepPreviousData,
   }) as any;

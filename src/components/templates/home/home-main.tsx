@@ -8,7 +8,7 @@ import {useEffect, useState} from 'react';
 import Select from 'react-select';
 
 import {hero, IconSearch} from '@/assets';
-import {Articles, Divider, RecentArticles, Spinner} from '@/components';
+import {Articles, Divider, RecentArticles} from '@/components';
 
 import {ArticleType, CategoryType, searchArticles, searchCategories, StatusType} from '@/graphql';
 import {
@@ -27,21 +27,20 @@ const cities = [{id: 1, value: 'amsterdam', label: 'Amsterdam'}];
 
 export default function HomeMain() {
   const [articles, setArticles] = useState<ArticleType[]>([]);
-  const {data, fetchNextPage, hasNextPage, isError, isFetching, isLoading, isFetched, refetch} =
-    useInfiniteQuery({
-      queryKey: ['search-articles-home'],
-      queryFn: ({pageParam}) =>
-        searchArticles({status: StatusType.Publish, count: 15, page: pageParam}),
-      initialPageParam: 1,
-      getNextPageParam: (lastPage: any, allPages, lastPagParam, allPagesParam) => {
-        const totalPages = lastPage?.article?.searchArticles?.totalPages;
-        if (totalPages) {
-          return lastPagParam + 1 <= totalPages ? lastPagParam + 1 : undefined;
-        }
+  const {data, fetchNextPage, hasNextPage} = useInfiniteQuery({
+    queryKey: ['search-articles-home'],
+    queryFn: ({pageParam}) =>
+      searchArticles({status: StatusType.Publish, count: 15, page: pageParam}),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage: any, allPages, lastPagParam, allPagesParam) => {
+      const totalPages = lastPage?.article?.searchArticles?.totalPages;
+      if (totalPages) {
+        return lastPagParam + 1 <= totalPages ? lastPagParam + 1 : undefined;
+      }
 
-        return undefined;
-      },
-    }) as any;
+      return undefined;
+    },
+  }) as any;
   const res = useQuery({
     queryKey: ['search-categories-home'],
     queryFn: () => searchCategories({}),
@@ -189,45 +188,39 @@ export default function HomeMain() {
         </HeroWrapper>
       </Hero>
       <Container className={css({mt: '8'})}>
-        {isLoading ? (
-          <Spinner />
-        ) : (
-          <>
-            <RecentArticles posts={articles?.slice(0, 3)} />
-            <Divider label='Keep Reading' />
-            <Articles articles={articles?.slice(3)} />
-            {hasNextPage ? (
-              <div
+        <RecentArticles posts={articles?.slice(0, 3)} />
+        <Divider label='Keep Reading' />
+        <Articles articles={articles?.slice(3)} />
+        {hasNextPage ? (
+          <div
+            className={css({
+              mt: 6,
+              mb: -6,
+            })}
+          >
+            <button
+              type='button'
+              onClick={() => fetchNextPage()}
+              className={css({
+                backgroundColor: 'primary',
+                px: '4',
+                py: '3',
+                mx: 'auto',
+                display: 'block',
+                cursor: 'pointer',
+              })}
+            >
+              <span
                 className={css({
-                  mt: 6,
-                  mb: -6,
+                  textStyle: 'body',
+                  color: 'text.invert',
                 })}
               >
-                <button
-                  type='button'
-                  onClick={() => fetchNextPage()}
-                  className={css({
-                    backgroundColor: 'primary',
-                    px: '4',
-                    py: '3',
-                    mx: 'auto',
-                    display: 'block',
-                    cursor: 'pointer',
-                  })}
-                >
-                  <span
-                    className={css({
-                      textStyle: 'body',
-                      color: 'text.invert',
-                    })}
-                  >
-                    Show more
-                  </span>
-                </button>
-              </div>
-            ) : null}
-          </>
-        )}
+                Show more
+              </span>
+            </button>
+          </div>
+        ) : null}
       </Container>
     </>
   );
