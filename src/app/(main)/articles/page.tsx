@@ -9,7 +9,7 @@ import {Hydrate} from '@/providers';
 const Page = async () => {
   const queryClient = getQueryClient();
   await queryClient.prefetchQuery({
-    queryKey: ['search-articles', 18],
+    queryKey: ['search-articles', 1],
     queryFn: () => searchArticles({status: StatusType.Publish, count: 18, page: 1}),
   });
   const dehydratedState = dehydrate(queryClient);

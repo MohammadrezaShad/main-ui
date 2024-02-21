@@ -4,7 +4,7 @@ import {Observable} from '@legendapp/state';
 import {useObservable} from '@legendapp/state/react';
 import {css} from '@styled/css';
 import {flex} from '@styled/patterns';
-import {useMutation} from '@tanstack/react-query';
+import {useMutation, useQueryClient} from '@tanstack/react-query';
 import {setCookie} from 'cookies-next';
 import {useFormik} from 'formik';
 import Link from 'next/link';
@@ -31,6 +31,7 @@ export default function Login({
   isOpen$: Observable<boolean>;
   isSignUpOpen$: Observable<boolean>;
 }) {
+  const queryClient = useQueryClient();
   const router = useRouter();
   const enabled$ = useObservable<boolean>(false);
   const formik = useFormik({
@@ -40,7 +41,7 @@ export default function Login({
     },
     validationSchema: schema,
     onSubmit: async ({email, password}) => {
-      mutateAsync();
+      await mutateAsync();
     },
   });
   const {errors, touched, values, handleChange, handleSubmit} = formik;
@@ -76,6 +77,7 @@ export default function Login({
   useEffect(() => {
     if (data) {
       if (data.auth.signin.token) {
+        queryClient.invalidateQueries({queryKey: ['get-profile']});
         const expirationTime = 14 * 24 * 60 * 60 * 1000;
         const expirationDate = new Date(Date.now() + expirationTime);
         setCookie(CookieName.AUTH_TOKEN, data.auth.signin.token, {
