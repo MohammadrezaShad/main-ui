@@ -2,6 +2,7 @@ import {css} from '@styled/css';
 
 import {Avatar} from '@/components';
 import {UserOutputType} from '@/graphql/generated/types';
+import Link from 'next/link';
 
 const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
 
@@ -25,14 +26,15 @@ const UserInfo = ({author}: {author: UserOutputType}) => (
         gap: 2,
       })}
     >
-      <h6
+      <Link
+        href={`/author/${author._id}`}
         className={css({
           textStyle: 'subtitle1',
           color: 'text.primary',
         })}
       >
         {author.displayName}
-      </h6>
+      </Link>
       <p
         className={css({
           textStyle: 'body2',

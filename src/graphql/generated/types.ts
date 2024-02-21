@@ -68,6 +68,7 @@ export type ArticleQuery = {
   findRelatedArticles: FindRelatedArticlesOutput;
   getArticlePdfById?: Maybe<Scalars['String']['output']>;
   getUserArticles: GetUserArticlesOutput;
+  getUserBookmarkedArticles: GetUserArticlesOutput;
   searchArticles: SearchArticleOutput;
 };
 
@@ -93,6 +94,10 @@ export type ArticleQueryGetArticlePdfByIdArgs = {
 
 export type ArticleQueryGetUserArticlesArgs = {
   input: GetUserArticlesInput;
+};
+
+export type ArticleQueryGetUserBookmarkedArticlesArgs = {
+  input: GetUserBookmarkedArticlesInput;
 };
 
 export type ArticleQuerySearchArticlesArgs = {
@@ -152,6 +157,7 @@ export type AuthMutationSendVerificationCodeArgs = {
 };
 
 export type AuthMutationSignupArgs = {
+  avatar?: InputMaybe<Scalars['Upload']['input']>;
   input: SignupInputType;
 };
 
@@ -616,6 +622,7 @@ export type CreateTagOutput = {
 };
 
 export type CreateUserByCeo = {
+  coins?: InputMaybe<Scalars['Int']['input']>;
   displayName?: InputMaybe<Scalars['String']['input']>;
   email?: InputMaybe<Scalars['String']['input']>;
   firstName?: InputMaybe<Scalars['String']['input']>;
@@ -986,6 +993,11 @@ export type GetUserArticlesOutput = {
   success: Scalars['Boolean']['output'];
   totalCount?: Maybe<Scalars['Int']['output']>;
   totalPages?: Maybe<Scalars['Int']['output']>;
+};
+
+export type GetUserBookmarkedArticlesInput = {
+  count?: InputMaybe<Scalars['Int']['input']>;
+  page?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type GetUserVisitsInput = {
@@ -1628,6 +1640,7 @@ export type SigninOutput = {
 };
 
 export type SignupInputType = {
+  coins?: InputMaybe<Scalars['Int']['input']>;
   displayName?: InputMaybe<Scalars['String']['input']>;
   email?: InputMaybe<Scalars['String']['input']>;
   firstName?: InputMaybe<Scalars['String']['input']>;
@@ -1874,6 +1887,7 @@ export type UpdateTagOutput = {
 };
 
 export type UpdateUserByCeo = {
+  coins?: InputMaybe<Scalars['Int']['input']>;
   displayName?: InputMaybe<Scalars['String']['input']>;
   email?: InputMaybe<Scalars['String']['input']>;
   firstName?: InputMaybe<Scalars['String']['input']>;
@@ -1892,6 +1906,7 @@ export type UpdateUserByCeo = {
 };
 
 export type UpdateUserInput = {
+  coins?: InputMaybe<Scalars['Int']['input']>;
   displayName?: InputMaybe<Scalars['String']['input']>;
   email?: InputMaybe<Scalars['String']['input']>;
   firstName?: InputMaybe<Scalars['String']['input']>;
@@ -1931,6 +1946,7 @@ export type User = {
   _id: Scalars['String']['output'];
   avatar?: Maybe<ImageType>;
   avatarStatus?: Maybe<UserAvatarStatusEnum>;
+  coins?: Maybe<Scalars['Int']['output']>;
   createdAt?: Maybe<Scalars['DateTime']['output']>;
   displayName?: Maybe<Scalars['String']['output']>;
   email?: Maybe<Scalars['String']['output']>;
@@ -1966,6 +1982,7 @@ export type UserMutation = {
 };
 
 export type UserMutationCreateUserArgs = {
+  avatar?: InputMaybe<Scalars['Upload']['input']>;
   input: CreateUserByCeo;
 };
 
@@ -1994,6 +2011,7 @@ export type UserOutputInputType = {
   _id: Scalars['String']['input'];
   avatar?: InputMaybe<ImageInputType>;
   avatarStatus?: InputMaybe<UserAvatarStatusEnum>;
+  coins?: InputMaybe<Scalars['Int']['input']>;
   createdAt?: InputMaybe<Scalars['String']['input']>;
   displayName?: InputMaybe<Scalars['String']['input']>;
   email?: InputMaybe<Scalars['String']['input']>;
@@ -2019,6 +2037,7 @@ export type UserOutputType = {
   articlesWrittenVisitedCount: Scalars['Int']['output'];
   avatar?: Maybe<ImageType>;
   avatarStatus?: Maybe<UserAvatarStatusEnum>;
+  coins?: Maybe<Scalars['Int']['output']>;
   commentsCount: Scalars['Int']['output'];
   createdAt?: Maybe<Scalars['String']['output']>;
   displayName?: Maybe<Scalars['String']['output']>;

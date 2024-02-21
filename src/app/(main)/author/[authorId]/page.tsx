@@ -13,7 +13,7 @@ const Page = async ({params}: {params: {authorId: string}}) => {
   const authToken = cookieStore.get(CookieName.AUTH_TOKEN)?.value || '';
   const queryClient = getQueryClient();
   await queryClient.prefetchQuery({
-    queryKey: ['get-user', 1],
+    queryKey: ['get-user', params.authorId],
     queryFn: () => findUserById({id: params.authorId}, authToken),
   });
   await queryClient.prefetchQuery({

@@ -14,6 +14,8 @@ export async function getUserVisits(
         visitStatistics {
           getUserVisits(input: $input) {
             success
+            totalCount
+            totalPages
             results {
               _id
               clientId

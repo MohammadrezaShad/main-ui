@@ -3,7 +3,7 @@
 import {css} from '@styled/css';
 import {Box} from '@styled/jsx';
 import {flex} from '@styled/patterns';
-import {useMutation, useQuery} from '@tanstack/react-query';
+import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
 import {getCookie} from 'cookies-next';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -46,6 +46,7 @@ const socialMediaLinks = [
 ];
 
 const Page = () => {
+  const queryClient = useQueryClient();
   const token = getCookie(CookieName.AUTH_TOKEN);
   const params = useParams();
   const {data, refetch} = useQuery({
@@ -76,15 +77,22 @@ const Page = () => {
 
   const createBookmarkMutation = useMutation({
     mutationFn: (input: {article: string}) => addBookmark(input, token!),
-    onSuccess: () => refetch(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({queryKey: ['get-user-bookmarked-articles']});
+      refetch();
+    },
   });
   const removeBookmarkMutation = useMutation({
     mutationFn: (input: DeleteOneArticleBookmarkInput) => deleteBookmark(input, token!),
-    onSuccess: () => refetch(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({queryKey: ['get-user-bookmarked-articles']});
+      refetch();
+    },
   });
 
   const recordVisitStatisticsMutation = useMutation({
     mutationFn: (input: {article: string}) => recordVisitStatistics(input, token!),
+    onSuccess: () => queryClient.invalidateQueries({queryKey: ['get-user-visits']}),
   });
 
   const handleToggleBookmark = async (articleId: string) => {

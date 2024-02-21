@@ -2,11 +2,11 @@
 
 import {css} from '@styled/css';
 import {Box} from '@styled/jsx';
-import {flex, grid} from '@styled/patterns';
-import {useQuery} from '@tanstack/react-query';
+import {flex} from '@styled/patterns';
+import {useInfiniteQuery, useQuery} from '@tanstack/react-query';
 import {getCookie} from 'cookies-next';
 import {useParams, useRouter} from 'next/navigation';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 
 import {IconFacebook, IconInstagram, IconLinkedIn, IconNotify, IconRG, IconTwitter} from '@/assets';
 import {AuthButton, Avatar, Card, Chip, SmallCard, SocialMediaLinks} from '@/components';
@@ -34,44 +34,66 @@ enum ETabs {
 }
 
 export default function Author() {
+  const [articles, setArticles] = useState<ArticleType[]>([]);
   const token = getCookie(CookieName.AUTH_TOKEN)!;
   const [selectedTab, setSelectedTab] = useState<string>(ETabs.ARTICLES);
   const params = useParams();
   const {data} = useQuery({
-    queryKey: ['get-user', 1],
+    queryKey: ['get-user', params.authorId as string],
     queryFn: () => findUserById({id: params.authorId as string}, token),
   }) as any;
   const currentUser = useQuery({
     queryKey: ['get-profile'],
     queryFn: () => getUser(token),
-  }) as any;
-  const response = useQuery({
-    queryKey: ['search-articles', 2],
-    queryFn: () =>
-      searchArticlesByAuthorId({authors: [params.authorId as string], count: 9, page: 1}),
+  });
+  const response = useInfiniteQuery({
+    queryKey: ['search-articles', params.authorId as string],
+    queryFn: ({pageParam}) =>
+      searchArticlesByAuthorId({authors: [params.authorId as string], count: 9, page: pageParam}),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage: any, allPages, lastPagParam, allPagesParam) => {
+      const totalPages = lastPage?.article?.searchArticles?.totalPages;
+      if (totalPages) {
+        return lastPagParam + 1 <= totalPages ? lastPagParam + 1 : undefined;
+      }
+
+      return undefined;
+    },
   }) as any;
   const user: User = data.users!.findUserById;
-  const articles: ArticleType[] = response.data.article.searchArticles.results;
-  const {totalCount} = response.data.article.searchArticles;
-  const currenUserId = currentUser.data?.auth.getUser._id;
+  const currenUserId = currentUser.data?._id;
   const router = useRouter();
 
   const handleClickNewArticle = () => {
     router.push(`${ADMIN_PANEL_URL}/articles/new`);
   };
 
+  useEffect(() => {
+    if (response.data) {
+      const _articles =
+        response.data?.pages.reduce(
+          (acc: any, page: any, index: any) =>
+            index !== 0 ? [...acc, ...page?.article?.searchArticles.results] : [...acc],
+          response.data?.pages[0]?.article?.searchArticles.results,
+        ) || [];
+      console.log('🚀 ~ useEffect ~ _articles:', _articles);
+      setArticles(_articles);
+    }
+  }, [response.data]);
+
   return (
     <Container>
       <Wrapper>
         <div
-          className={grid({
+          className={css({
+            display: 'grid',
             alignItems: 'stretch',
             justifyContent: 'space-between',
             gap: '5',
             w: 'full',
             gridTemplateColumns: {
-              base: 2,
-              mdDown: 1,
+              base: '2',
+              mdDown: '1',
             },
             position: 'relative',
           })}
@@ -148,9 +170,10 @@ export default function Author() {
             </div>
           </div>
           <div
-            className={flex({
-              grow: 1,
-              basis: '0%',
+            className={css({
+              display: 'flex',
+              flexGrow: 1,
+              flexBasis: '0%',
               flexDir: 'column',
               alignItems: 'end',
               justifyContent: 'space-between',
@@ -312,10 +335,11 @@ export default function Author() {
         <Card articleLink='' title='Lorem ipsum dolor sit amet consectetur' />
       </Cards> : null */}
 
-      {totalCount > 9 ? (
+      {response.hasNextPage ? (
         <Box mt='12' display='flex' justifyContent='center'>
           <AuthButton
             text='Load More'
+            onClick={() => response.fetchNextPage()}
             className={css({
               '& span': {color: 'text.invert'},
               w: 'max-content',

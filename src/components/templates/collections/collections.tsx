@@ -2,248 +2,147 @@
 
 import {css} from '@styled/css';
 import {flex} from '@styled/patterns';
-import Image from 'next/image';
-import {useRouter} from 'next/navigation';
+import {useRouter, useSearchParams} from 'next/navigation';
 
-import {IconArrowRight} from '@/assets';
+import {IconArrowRight, IconChevronLeft, IconChevronRight, IconInfo} from '@/assets';
+import {Spinner} from '@/components';
+import {CookieName} from '@/constants';
+import {DeleteOneArticleBookmarkInput, deleteBookmark, getUserBookmarkedArticles} from '@/graphql';
+import {useUpdateSearchParam} from '@/hooks';
+import {keepPreviousData, useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
+import {getCookie} from 'cookies-next';
+import {Pagination} from '../articles/articles.styled';
+import BookmarkItem from './bookmark-item';
+import {Bookmarks, Container, PageTitle, Tab, Tabs, Wrapper} from './collections.styled';
 
 export default function CollectionsView() {
+  const searchParams = useSearchParams();
+  const page = +(searchParams.get('page') ?? '1');
+  const queryClient = useQueryClient();
+  const authToken = getCookie(CookieName.AUTH_TOKEN)!;
+  const {data, isLoading} = useQuery({
+    queryKey: ['get-user-bookmarked-articles', page],
+    queryFn: () => getUserBookmarkedArticles({count: 10, page}, authToken),
+    placeholderData: keepPreviousData,
+  });
   const router = useRouter();
+  const updateSearchParams = useUpdateSearchParam();
+
+  const totalPages = data?.totalPages as number;
+  const totalCount = data?.totalCount;
+  const count = 10;
+
+  const startResult = (+page - 1) * count + 1;
+  const endResult = Math.min(+page * count, totalCount || 0);
+
+  const removeBookmarkMutation = useMutation({
+    mutationFn: (input: DeleteOneArticleBookmarkInput) => deleteBookmark(input, authToken!),
+    onSuccess: () => queryClient.invalidateQueries({queryKey: ['get-user-bookmarked-articles']}),
+  });
+
+  const handleRemoveBookmark = async (articleId: string) => {
+    if (!authToken) return;
+    await removeBookmarkMutation.mutateAsync({articleId});
+  };
 
   return (
-    <div
-      className={css({
-        gap: '5',
-        display: 'flex',
-      })}
-    >
-      <div
-        className={css({
-          display: 'flex',
-          flexDir: 'column',
-          alignItems: 'stretch',
-          w: 'full',
-        })}
-      >
-        <div
-          className={css({
-            display: 'flex',
-            flexDir: 'column',
-            alignItems: 'stretch',
-            mt: '7',
-          })}
-        >
-          <div className={flex({alignItems: 'center', gap: '3'})}>
-            <button
-              type='button'
-              aria-label='back to dashboard'
-              onClick={() => router.push('/profile')}
-            >
-              <IconArrowRight className={css({rotate: '180deg', hideFrom: 'md'})} />
-            </button>
-            <h3
-              className={css({
-                textStyle: 'h3',
-                color: 'text.primary',
-              })}
-            >
-              Collections
-            </h3>
-          </div>
+    <Container>
+      <Wrapper>
+        <div className={flex({alignItems: 'center', gap: '3'})}>
+          <button
+            type='button'
+            aria-label='back to dashboard'
+            onClick={() => router.push('/profile')}
+          >
+            <IconArrowRight className={css({rotate: '180deg', hideFrom: 'md'})} />
+          </button>
+          <PageTitle>Collections</PageTitle>
+        </div>
+        <Tabs>
+          <Tab active>Articles</Tab>
+          <Tab>Corporates</Tab>
+        </Tabs>
+        {isLoading ? <Spinner /> : null}
+        {!data?.results || data?.results.length < 1 ? (
           <div
-            className={css({
-              display: 'flex',
-              alignItems: 'stretch',
-              gap: '8',
-              mt: '10',
-              borderBottom: '1px solid token(colors.gray3)',
+            className={flex({
+              alignSelf: 'center',
+              flex: 0,
+              flexBasis: '0%',
+              flexDir: 'column',
+              alignItems: 'center',
+              my: 'auto',
             })}
           >
-            <button
-              type='button'
+            <IconInfo
               className={css({
-                pb: '4',
-                borderBottom: '2px solid',
-                borderColor: 'primary',
-                textStyle: 'h4',
-                cursor: 'pointer',
-                color: 'text.primary',
+                w: '16',
+                h: '16',
               })}
-            >
-              Articles
-            </button>
-            <button
-              type='button'
+            />
+            <p
               className={css({
-                pb: '4',
-                textStyle: 'h4',
-                cursor: 'pointer',
+                textStyle: 'body',
+                textAlign: 'center',
+                mt: '5',
                 color: 'gray4',
               })}
             >
-              Corporates
-            </button>
+              You haven&apos;t bookmarked any articles yet.
+            </p>
           </div>
-          <ul
-            className={flex({
-              mt: '10',
-              flexDir: 'column',
-              gap: '4',
-            })}
-          >
-            <li
-              className={flex({
-                flexDir: 'column',
-                flex: 1,
-                alignItems: 'stretch',
-                border: '1px solid token(colors.gray3)',
-                pr: '4',
+        ) : (
+          <>
+            <Bookmarks>
+              {data?.results?.map(article => (
+                <BookmarkItem
+                  key={article._id}
+                  article={article}
+                  onRemoveBookmark={handleRemoveBookmark}
+                />
+              ))}
+            </Bookmarks>
+            <div
+              className={css({
+                mt: 6,
+                mb: -6,
+                mx: 'auto',
               })}
             >
-              <div
-                className={flex({
-                  alignItems: 'stretch',
-                  justifyContent: 'space-between',
-                  gap: '4',
+              <Pagination
+                nextLabel={<IconChevronRight />}
+                onPageChange={current => updateSearchParams('page', String(current.selected + 1))}
+                pageRangeDisplayed={3}
+                marginPagesDisplayed={2}
+                pageCount={totalPages}
+                previousLabel={<IconChevronLeft />}
+                pageClassName='page-item'
+                pageLinkClassName='page-link'
+                previousClassName='page-item'
+                previousLinkClassName='page-link'
+                nextClassName='page-item'
+                nextLinkClassName='page-link'
+                breakLabel='...'
+                breakClassName='page-item'
+                breakLinkClassName='page-link'
+                containerClassName='pagination'
+                activeClassName='active'
+                renderOnZeroPageCount={null}
+              />
+              <span
+                className={css({
+                  color: 'gray4',
+                  fontWeight: 300,
+                  fontSize: '14px',
+                  textAlign: 'center',
                 })}
               >
-                <Image
-                  unoptimized
-                  width={128}
-                  height={128}
-                  alt=''
-                  src='https://cdn.builder.io/api/v1/image/assets/TEMP/eb456fdd1ecb37b29e21a79aa6c76f635d947ea637a0759778af0879359b13f9?apiKey=89ab6d1f78ed4babb16b79acd6ff9275'
-                  className={css({
-                    aspectRatio: 'square',
-                    objectFit: 'contain',
-                    objectPosition: 'center',
-                    w: '32',
-                    overflow: 'hidden',
-                    flexShrink: '0',
-                  })}
-                />
-                <div
-                  className={flex({
-                    flex: 1,
-                    flexDir: 'column',
-                    alignItems: 'stretch',
-                    alignSelf: 'stretch',
-                    py: '6',
-                  })}
-                >
-                  <span
-                    className={css({
-                      textStyle: 'caption',
-                      color: 'gray4',
-                    })}
-                  >
-                    20 June 2023
-                  </span>
-                  <h6
-                    className={css({
-                      textStyle: 'h4',
-                      mt: '1',
-                      color: 'text.primary',
-                    })}
-                  >
-                    Water: a commons beyond economic value
-                  </h6>
-                  <button
-                    type='button'
-                    className={css({
-                      color: 'primary',
-                      mt: 'auto',
-                      textStyle: 'body2',
-                      w: 'max-content',
-                      px: '3',
-                      py: '1.5',
-                      ml: '-3',
-                      cursor: 'pointer',
-                    })}
-                  >
-                    Remove
-                  </button>
-                </div>
-              </div>
-            </li>
-            <li
-              className={flex({
-                flexDir: 'column',
-                flex: 1,
-                alignItems: 'stretch',
-                border: '1px solid token(colors.gray3)',
-                pr: '4',
-              })}
-            >
-              <div
-                className={flex({
-                  alignItems: 'stretch',
-                  justifyContent: 'space-between',
-                  gap: '4',
-                })}
-              >
-                <Image
-                  unoptimized
-                  width={128}
-                  height={128}
-                  alt=''
-                  src='https://cdn.builder.io/api/v1/image/assets/TEMP/eb456fdd1ecb37b29e21a79aa6c76f635d947ea637a0759778af0879359b13f9?apiKey=89ab6d1f78ed4babb16b79acd6ff9275'
-                  className={css({
-                    aspectRatio: 'square',
-                    objectFit: 'contain',
-                    objectPosition: 'center',
-                    w: '32',
-                    overflow: 'hidden',
-                    flexShrink: '0',
-                  })}
-                />
-                <div
-                  className={flex({
-                    flex: 1,
-                    flexDir: 'column',
-                    alignItems: 'stretch',
-                    alignSelf: 'stretch',
-                    py: '6',
-                  })}
-                >
-                  <span
-                    className={css({
-                      textStyle: 'caption',
-                      color: 'gray4',
-                    })}
-                  >
-                    20 June 2023
-                  </span>
-                  <h6
-                    className={css({
-                      textStyle: 'h4',
-                      mt: '1',
-                      color: 'text.primary',
-                    })}
-                  >
-                    Water: a commons beyond economic value
-                  </h6>
-                  <button
-                    type='button'
-                    className={css({
-                      color: 'primary',
-                      mt: 'auto',
-                      textStyle: 'body2',
-                      w: 'max-content',
-                      px: '3',
-                      py: '1.5',
-                      ml: '-3',
-                      cursor: 'pointer',
-                    })}
-                  >
-                    Remove
-                  </button>
-                </div>
-              </div>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
+                Showing {startResult}-{endResult} of {totalCount || 0}
+              </span>
+            </div>
+          </>
+        )}
+      </Wrapper>
+    </Container>
   );
 }
