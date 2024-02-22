@@ -6,6 +6,7 @@ import {ToastContainer} from 'react-toastify';
 import {CookieName, ThemeType} from '@/constants';
 import {MainProviders} from '@/providers';
 
+import {FacebookPixel} from '@/components';
 import '@/styles/globals.css';
 import Script from 'next/script';
 
@@ -53,7 +54,10 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
       <body className={ubuntu.className}>
         <MainProviders theme={theme?.value as ThemeType}>
           <main>
-            <div className='root'>{children}</div>
+            <div className='root'>
+              {children}
+              <FacebookPixel />
+            </div>
           </main>
           <ToastContainer />
         </MainProviders>
