@@ -4,6 +4,7 @@ import {Card, SmallCard} from '@/components';
 import {ArticleType, StatusType, searchArticles} from '@/graphql';
 import {css} from '@styled/css';
 import {keepPreviousData, useQuery} from '@tanstack/react-query';
+import moment from 'moment';
 import {useParams} from 'next/navigation';
 import {useState} from 'react';
 import Tabs from './Tabs';
@@ -59,7 +60,7 @@ const renderCard = (article: ArticleType) => (
   <Card
     key={article._id}
     articleLink={`/articles/${article.slug}`}
-    date={article.publishDate}
+    date={moment(article.publishDate).format('DD MMMM YYYY')}
     imageUrl={article.thumbnail?._id ? `${IMAGE_STORAGE_URL}/${article.thumbnail?._id}` : undefined}
     title={article.title}
   />
@@ -69,7 +70,7 @@ const renderSmallCard = (article: ArticleType) => (
   <SmallCard
     key={article._id}
     articleLink={`/articles/${article.slug}`}
-    date={article.publishDate}
+    date={moment(article.publishDate).format('DD MMMM YYYY')}
     imageUrl={article.thumbnail?._id ? `${IMAGE_STORAGE_URL}/${article.thumbnail?._id}` : undefined}
     title={article.title}
   />

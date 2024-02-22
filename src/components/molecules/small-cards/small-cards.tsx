@@ -5,7 +5,6 @@ import Image from 'next/image';
 import {CardDate} from '@/components/atoms/card-date';
 import {CardLink} from '@/components/atoms/card-link';
 import {CardTitle} from '@/components/atoms/card-title';
-import {formatDate} from '@/utils/format-date';
 
 import {Container, Wrap} from './small-card.styled';
 
@@ -14,17 +13,10 @@ interface Props {
   date?: string;
   title: string;
   articleLink: string;
+  linkTitle?: string;
 }
 
-export default function Card({imageUrl, date, title, articleLink}: Props) {
-  let formattedDate: string = '';
-  if (date) {
-    formattedDate = new Date(date).toLocaleDateString('en-GB', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric',
-    });
-  }
+export default function Card({imageUrl, date, title, articleLink, linkTitle = 'READ MORE'}: Props) {
   return (
     <Container>
       {imageUrl ? (
@@ -36,6 +28,8 @@ export default function Card({imageUrl, date, title, articleLink}: Props) {
           alt={title}
           className={css({
             objectFit: 'cover',
+            w: '[112px]',
+            aspectRatio: '1',
           })}
         />
       ) : (
@@ -56,11 +50,11 @@ export default function Card({imageUrl, date, title, articleLink}: Props) {
         })}
       >
         <Wrap className={css({})}>
-          {date && <CardDate dateTime={formatDate(date)}>{formattedDate}</CardDate>}
+          {date && <CardDate dateTime={date}>{date}</CardDate>}
           <CardTitle>{title}</CardTitle>
         </Wrap>
         <Wrap className={css({})}>
-          <CardLink href={articleLink}>READ MORE</CardLink>
+          <CardLink href={articleLink}>{linkTitle}</CardLink>
         </Wrap>
       </div>
     </Container>

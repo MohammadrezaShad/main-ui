@@ -21,6 +21,8 @@ class Route {
 
   Quiz = new Uri('/quizzes');
 
+  WaterCrisis = new Uri('/water-crisis');
+
   Viko = new Uri('/viko');
 
   News = new Uri('/news');

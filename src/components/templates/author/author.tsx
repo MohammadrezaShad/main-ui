@@ -14,6 +14,7 @@ import {CookieName} from '@/constants';
 import {ArticleType, User, findUserById, searchArticlesByAuthorId} from '@/graphql';
 import {getUser} from '@/graphql/query/users/get-user';
 
+import moment from 'moment';
 import {Actions, Cards, Chips, Container, Tab, Tabs, Wrapper} from './author.styled';
 
 const ADMIN_PANEL_URL = process.env.NEXT_PUBLIC_ADMIN_PANEL_URL;
@@ -306,7 +307,7 @@ export default function Author() {
               <Card
                 key={article._id}
                 articleLink={`/articles/${article.slug}`}
-                date={article.publishDate}
+                date={moment(article.publishDate).format('DD MMMM YYYY')}
                 imageUrl={`${IMAGE_STORAGE_URL}/${article.thumbnail?._id}`}
                 title={article.title}
               />
@@ -317,7 +318,7 @@ export default function Author() {
               <SmallCard
                 key={article._id}
                 articleLink={`/articles/${article.slug}`}
-                date={article.publishDate}
+                date={moment(article.publishDate).format('DD MMMM YYYY')}
                 imageUrl={`${IMAGE_STORAGE_URL}/${article.thumbnail?._id}`}
                 title={article.title}
               />

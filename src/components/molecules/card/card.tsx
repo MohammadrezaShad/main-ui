@@ -5,7 +5,6 @@ import {CardDate} from '@/components/atoms/card-date';
 import {CardImage} from '@/components/atoms/card-image';
 import {CardLink} from '@/components/atoms/card-link';
 import {CardTitle} from '@/components/atoms/card-title';
-import {formatDate} from '@/utils/format-date';
 
 import {Container, Wrap} from './card.styled';
 
@@ -14,17 +13,10 @@ interface Props {
   date?: string;
   title: string;
   articleLink: string;
+  linkTitle?: string;
 }
 
-export default function Card({imageUrl, date, title, articleLink}: Props) {
-  let formattedDate: string = '';
-  if (date) {
-    formattedDate = new Date(date).toLocaleDateString('en-GB', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric',
-    });
-  }
+export default function Card({imageUrl, date, title, articleLink, linkTitle = 'READ MORE'}: Props) {
   return (
     <Container>
       {imageUrl ? (
@@ -45,7 +37,7 @@ export default function Card({imageUrl, date, title, articleLink}: Props) {
           mb: 4,
         })}
       >
-        {date && <CardDate dateTime={formatDate(date)}>{formattedDate}</CardDate>}
+        {date && <CardDate dateTime={date}>{date}</CardDate>}
         <CardTitle>{title}</CardTitle>
       </Wrap>
       <Wrap
@@ -53,7 +45,7 @@ export default function Card({imageUrl, date, title, articleLink}: Props) {
           mb: 6,
         })}
       >
-        <CardLink href={articleLink}>READ MORE</CardLink>
+        <CardLink href={articleLink}>{linkTitle}</CardLink>
       </Wrap>
     </Container>
   );

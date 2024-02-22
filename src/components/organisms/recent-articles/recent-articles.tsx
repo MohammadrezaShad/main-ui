@@ -6,6 +6,7 @@ import {Swiper, SwiperSlide} from 'swiper/react';
 
 import {Card} from '@/components/molecules/card';
 import {ArticleType} from '@/graphql/generated/types';
+import moment from 'moment';
 
 const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
 
@@ -23,7 +24,7 @@ const RecentArticles = ({posts}: {posts: ArticleType[]}) => (
           key={post._id}
           title={post.title}
           articleLink={`/articles/${post.slug}`}
-          date={post.publishDate}
+          date={moment(post.publishDate).format('DD MMMM YYYY')}
           imageUrl={post.thumbnail?._id && `${IMAGE_STORAGE_URL}/${post.thumbnail?._id}`}
         />
       ))}
@@ -55,7 +56,7 @@ const RecentArticles = ({posts}: {posts: ArticleType[]}) => (
                 key={post._id}
                 title={post.title}
                 articleLink={`/articles/${post.slug}`}
-                date={post.publishDate}
+                date={moment(post.publishDate).format('DD MMMM YYYY')}
                 imageUrl={post.thumbnail?._id && `${IMAGE_STORAGE_URL}/${post.thumbnail?._id}`}
               />
             </div>

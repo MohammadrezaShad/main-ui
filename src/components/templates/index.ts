@@ -13,3 +13,4 @@ export * from './quizzes';
 export * from './settings';
 export * from './tags';
 export * from './water-crisis';
+export * from './youtube';

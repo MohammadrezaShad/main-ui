@@ -9,6 +9,7 @@ import {Card, SmallCard, Spinner} from '@/components';
 import {FindTagBySlug} from '@/graphql/query/tags';
 
 import {useSearchArticles} from '@/hooks';
+import moment from 'moment';
 import PaginationSection from './pagination-section';
 import {Cards, Container, Wrapper} from './tags.styled';
 
@@ -90,7 +91,7 @@ const renderCard = (article: ArticleType) => (
   <Card
     key={article._id}
     articleLink={`/articles/${article.slug}`}
-    date={article.publishDate}
+    date={moment(article.publishDate).format('DD MMMM YYYY')}
     imageUrl={article.thumbnail?._id ? `${IMAGE_STORAGE_URL}/${article.thumbnail?._id}` : undefined}
     title={article.title}
   />

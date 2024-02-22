@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import {usePathname} from 'next/navigation';
 
+import {Paths} from '@/utils';
 import {Container, Item} from './navbar.styled';
 
 const Navbar = () => {
@@ -17,11 +18,11 @@ const Navbar = () => {
       <Item _isActive={isActive('/about') || undefined}>
         <Link href='/'>About</Link>
       </Item>
-      <Item _isActive={isActive('/quizzes') || undefined}>
-        <Link href='/quizzes'>Quizzes</Link>
+      <Item _isActive={isActive(Paths.Quiz.getPath()) || undefined}>
+        <Link href={Paths.Quiz.getPath()}>Quizzes</Link>
       </Item>
-      <Item _isActive={isActive('/water-crisis') || undefined}>
-        <Link href='/'>Water Crisis</Link>
+      <Item _isActive={isActive(Paths.WaterCrisis.getPath()) || undefined}>
+        <Link href={Paths.WaterCrisis.getPath()}>Water Crisis</Link>
       </Item>
       <Item _isActive={isActive('/contact') || undefined}>
         <Link href='/'>Contact</Link>
