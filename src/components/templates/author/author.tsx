@@ -21,11 +21,11 @@ const ADMIN_PANEL_URL = process.env.NEXT_PUBLIC_ADMIN_PANEL_URL;
 const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
 
 const socialMediaLinks = [
-  {id: 1, icon: IconTwitter, href: ''},
-  {id: 2, icon: IconLinkedIn, href: ''},
-  {id: 3, icon: IconFacebook, href: ''},
-  {id: 4, icon: IconRG, href: ''},
-  {id: 5, icon: IconInstagram, href: ''},
+  {id: 1, icon: IconTwitter, action: ''},
+  {id: 2, icon: IconLinkedIn, action: ''},
+  {id: 3, icon: IconFacebook, action: ''},
+  {id: 4, icon: IconRG, action: ''},
+  {id: 5, icon: IconInstagram, action: ''},
 ];
 
 enum ETabs {

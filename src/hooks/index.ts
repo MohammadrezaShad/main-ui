@@ -1,3 +1,4 @@
+export * from './use-clipboard';
 export * from './use-countdown-timer';
 export * from './use-match';
 export * from './use-popper';

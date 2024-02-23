@@ -14,27 +14,25 @@ interface YouTubeProps {
   data: any;
 }
 
-const YouTube: FC<YouTubeProps> = ({data}) => {
-  return (
-    <Container>
-      <Wrapper>
-        <header className={css({textStyle: 'h1', color: 'text.primary', px: '-4'})}>
-          <Image width={179} height={40} alt='' src={youtubeLogo.src} />
-        </header>
-        <div
-          className={css({textStyle: 'body2', color: 'text.primary'})}
-          role='status'
-          aria-label={`Result: ${data.items.length} videos`}
-        >
-          Result: {data.items.length} videos
-        </div>
-      </Wrapper>
+const YouTube: FC<YouTubeProps> = ({data}) => (
+  <Container>
+    <Wrapper>
+      <header className={css({textStyle: 'h1', color: 'text.primary', px: '-4'})}>
+        <Image width={179} height={40} alt='' src={youtubeLogo.src} />
+      </header>
+      <div
+        className={css({textStyle: 'body2', color: 'text.primary'})}
+        role='status'
+        aria-label={`Result: ${data.items.length} videos`}
+      >
+        Result: {data.items.length} videos
+      </div>
+    </Wrapper>
 
-      <Cards hideBelow='md'>{data.items.map(renderCard)}</Cards>
-      <Cards hideFrom='md'>{data.items.map(renderSmallCard)}</Cards>
-    </Container>
-  );
-};
+    <Cards hideBelow='md'>{data.items.map(renderCard)}</Cards>
+    <Cards hideFrom='md'>{data.items.map(renderSmallCard)}</Cards>
+  </Container>
+);
 
 export default YouTube;
 

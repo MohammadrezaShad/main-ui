@@ -24,9 +24,9 @@ const languages = [
 ];
 
 const socialMediaLinks = [
-  {id: 1, icon: IconX, href: ''},
-  {id: 2, icon: IconInstagram, href: ''},
-  {id: 3, icon: IconFacebook, href: ''},
+  {id: 1, icon: IconX, action: ''},
+  {id: 2, icon: IconInstagram, action: ''},
+  {id: 3, icon: IconFacebook, action: ''},
 ];
 
 const Footer = () => (

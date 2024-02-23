@@ -10,6 +10,7 @@ const Tab = ({
   onSelect: (name: string) => void;
 }) => (
   <button
+    type='button'
     className={cx(
       css({
         px: '4',

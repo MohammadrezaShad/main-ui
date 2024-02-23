@@ -48,7 +48,7 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
         <Script
           async
           src={`https://www.googletagmanager.com/gtag/js?id=${process.env.GOOGLE_ANALYTICS_API_KEY}`}
-        ></Script>
+        />
         <Script id='google-analytics'>
           {`
             window.dataLayer = window.dataLayer || [];
@@ -61,11 +61,12 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
       <body className={ubuntu.className}>
         <noscript>
           <iframe
+            title='google-tag-manager'
             src='https://www.googletagmanager.com/ns.html?id=GTM-5BDQMKVV'
             height='0'
             width='0'
             style={{display: 'none', visibility: 'hidden'}}
-          ></iframe>
+          />
         </noscript>
         <MainProviders theme={theme?.value as ThemeType}>
           <main>
