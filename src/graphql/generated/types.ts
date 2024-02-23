@@ -2000,6 +2000,7 @@ export type UserMutationUpdateOperatorUserArgs = {
 };
 
 export type UserMutationUpdateUserArgs = {
+  avatar?: InputMaybe<Scalars['Upload']['input']>;
   input: UpdateUserByCeo;
 };
 

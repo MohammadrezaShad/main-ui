@@ -115,7 +115,7 @@ export default function Profile() {
                     flexDir: 'column',
                     flex: 1,
                     alignItems: 'stretch',
-                    pb: '4',
+                    py: '4',
                     '&:not(:last-of-type)': {
                       borderBottom: '1px solid token(colors.gray3)',
                       mb: '4',
@@ -216,6 +216,9 @@ export default function Profile() {
                 mt: 6,
                 mb: -6,
                 mx: 'auto',
+                display: 'flex',
+                flexDir: 'column',
+                gap: '1',
               })}
             >
               <Pagination

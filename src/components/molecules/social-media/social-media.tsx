@@ -1,28 +1,50 @@
-import React from 'react';
 import {css, cx} from '@styled/css';
 import Link from 'next/link';
+import React from 'react';
 
 interface SocialMediaLinkProps {
   icon: React.ComponentType<{className: string}>;
-  href: string;
+  action: any;
+  type?: 'button' | 'link';
 }
 
-const SocialMediaLink: React.FC<SocialMediaLinkProps> = ({icon: Icon, href}) => (
+const SocialMediaLink: React.FC<SocialMediaLinkProps> = ({icon: Icon, action, type}) => (
   <li>
-    <Link
-      className={css({
-        display: 'grid',
-        placeItems: 'center',
-      })}
-      href={href}
-    >
-      <Icon className={css({fill: '#272727', width: 6, height: 6})} />
-    </Link>
+    {type === 'link' ? (
+      <Link
+        target='_blank'
+        className={css({
+          display: 'grid',
+          placeItems: 'center',
+          cursor: 'pointer',
+        })}
+        href={action}
+      >
+        <Icon className={css({fill: '#272727', width: 6, height: 6})} />
+      </Link>
+    ) : (
+      <button
+        type='button'
+        onClick={action}
+        className={css({
+          display: 'grid',
+          placeItems: 'center',
+          cursor: 'pointer',
+        })}
+      >
+        <Icon className={css({fill: '#272727', width: 6, height: 6})} />
+      </button>
+    )}
   </li>
 );
 
 interface SocialMediaLinksProps {
-  links: {icon: React.ComponentType<{className: string}>; href: string; id: number}[];
+  links: {
+    icon: React.ComponentType<{className: string}>;
+    action: any;
+    id: number;
+    type?: 'button' | 'link';
+  }[];
   classNames?: string;
 }
 

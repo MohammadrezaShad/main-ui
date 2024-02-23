@@ -1,5 +1,3 @@
-'use client';
-
 import {css} from '@styled/css';
 import {flex} from '@styled/patterns';
 
@@ -23,10 +21,15 @@ const languages = [
   {id: 2, value: 'fa', label: 'Persian'},
 ];
 
-const socialMediaLinks = [
-  {id: 1, icon: IconX, href: ''},
-  {id: 2, icon: IconInstagram, href: ''},
-  {id: 3, icon: IconFacebook, href: ''},
+const socialMediaLinks: {
+  id: number;
+  icon: any;
+  action: any;
+  type: 'button' | 'link';
+}[] = [
+  {id: 1, icon: IconX, action: '', type: 'link'},
+  {id: 2, icon: IconInstagram, action: '', type: 'link'},
+  {id: 3, icon: IconFacebook, action: '', type: 'link'},
 ];
 
 const Footer = () => (

@@ -28,10 +28,10 @@ const Questions = ({faqs}: {faqs: FaqType[]}) => (
             color: 'primary',
           })}
         >
-          Contact Page
+          &nbsp;Contact Page&nbsp;
         </span>
       </Link>
-      or email contact@waterdrop.com
+      or email <Link href='mailto:contact@waterlyst.com'>contact@waterlyst.com</Link>{' '}
     </p>
     {faqs.map(faq => (
       <Expandable key={faq.question} faq={faq} />

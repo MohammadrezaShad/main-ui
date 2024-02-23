@@ -1,54 +1,30 @@
 'use client';
 
+import {Card, SmallCard} from '@/components';
+import {ArticleType, StatusType, searchArticles} from '@/graphql';
 import {css} from '@styled/css';
-import {useQuery} from '@tanstack/react-query';
-import {useParams} from 'next/navigation';
-import {FC, useEffect, useState} from 'react';
-
-import {Card, SmallCard, Spinner} from '@/components';
-import {FindTagBySlug} from '@/graphql/query/tags';
-
-import {useSearchArticles} from '@/hooks';
+import {keepPreviousData, useQuery} from '@tanstack/react-query';
 import moment from 'moment';
+import {useParams} from 'next/navigation';
+import {useState} from 'react';
+import Tabs from './Tabs';
 import PaginationSection from './pagination-section';
-import {Cards, Container, Wrapper} from './tags.styled';
+import {Cards, Container, Wrapper} from './water-crisis.styled';
 
 const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
 const READMORE_PAGE_COUNT = 12;
 
-interface ArticleType {
-  _id: string;
-  slug: string;
-  publishDate: string;
-  title: string;
-  thumbnail?: {_id: string};
-}
-
-interface TagsProps {}
-
-const Tags: FC<TagsProps> = () => {
+const WaterCrisis = () => {
   const params = useParams();
-  const [articles, setArticles] = useState<ArticleType[]>([]);
   const [page, setPage] = useState(1);
 
-  const findTagQuery = useQuery({
-    queryKey: ['find-tag', params.tagId],
-    queryFn: () => FindTagBySlug({slug: params.tagId as string}),
-  });
+  const {data, isLoading} = useQuery({
+    queryKey: ['water-crisis', page],
+    queryFn: () => searchArticles({status: StatusType.Publish, count: 12, page}),
+    placeholderData: keepPreviousData,
+  }) as any;
 
-  const {data, isLoading}: {data: any; isLoading: boolean} = useSearchArticles({
-    tagId: findTagQuery.data!.result!._id,
-    page,
-  });
-
-  useEffect(() => {
-    if (data) {
-      const _articles: ArticleType[] = data.article.searchArticles.results;
-      setArticles(_articles);
-    }
-  }, [data]);
-
-  if (isLoading) return <Spinner />;
+  const articles = data?.article.searchArticles.results;
 
   const {totalCount, totalPages} = data?.article.searchArticles;
   const startResult = (+page - 1) * READMORE_PAGE_COUNT + 1;
@@ -57,18 +33,11 @@ const Tags: FC<TagsProps> = () => {
   return (
     <Container>
       <Wrapper>
-        <header className={css({textStyle: 'h1', color: 'text.invert', px: '-4'})}>
-          {findTagQuery.data?.result?.title}
+        <header className={css({textStyle: 'h1', color: 'text.primary', px: '-4'})}>
+          Water Crisis
         </header>
-        <div
-          className={css({textStyle: 'body2', color: 'text.invert'})}
-          role='status'
-          aria-label={`Result: ${totalCount} Articles`}
-        >
-          Result: {findTagQuery.data?.result?.postCount} Articles
-        </div>
       </Wrapper>
-
+      <Tabs />
       <Cards hideBelow='md'>{articles.map(renderCard)}</Cards>
       <Cards hideFrom='md'>{articles.map(renderSmallCard)}</Cards>
 
@@ -85,7 +54,7 @@ const Tags: FC<TagsProps> = () => {
   );
 };
 
-export default Tags;
+export default WaterCrisis;
 
 const renderCard = (article: ArticleType) => (
   <Card
@@ -101,7 +70,7 @@ const renderSmallCard = (article: ArticleType) => (
   <SmallCard
     key={article._id}
     articleLink={`/articles/${article.slug}`}
-    date={article.publishDate}
+    date={moment(article.publishDate).format('DD MMMM YYYY')}
     imageUrl={article.thumbnail?._id ? `${IMAGE_STORAGE_URL}/${article.thumbnail?._id}` : undefined}
     title={article.title}
   />

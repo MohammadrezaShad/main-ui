@@ -9,7 +9,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import {useParams} from 'next/navigation';
 
-import {IconEmail, IconFacebook, IconInstagram, IconLink, IconTwitter} from '@/assets';
+import {IconEmail, IconFacebook, IconInstagram, IconLink, IconX} from '@/assets';
 import {
   ArticleBody,
   ArticleInfo,
@@ -33,17 +33,12 @@ import {
   getArticlePdfById,
   recordVisitStatistics,
 } from '@/graphql';
+import useClipboard from '@/hooks/use-clipboard';
 import {useEffect} from 'react';
+import {toast} from 'react-toastify';
 
 const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
-
-const socialMediaLinks = [
-  {id: 1, icon: IconTwitter, href: ''},
-  {id: 2, icon: IconInstagram, href: ''},
-  {id: 3, icon: IconFacebook, href: ''},
-  {id: 4, icon: IconEmail, href: ''},
-  {id: 5, icon: IconLink, href: ''},
-];
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 const Page = () => {
   const queryClient = useQueryClient();
@@ -54,6 +49,61 @@ const Page = () => {
     queryFn: () => findArticleByName({slug: params.articleId as string}, token),
   }) as any;
   const article: ArticleType = data.article!.findArticleByName.result;
+  const {copyToClipboard} = useClipboard();
+
+  const socialMediaLinks: {
+    id: number;
+    icon: any;
+    action: any;
+    type?: 'button' | 'link';
+  }[] = [
+    {
+      id: 1,
+      icon: IconX,
+      action: `https://twitter.com/intent/tweet?text=${article.title}&url=${BASE_URL}/${
+        article.slug
+      }${article?.tags ? `&hashtags=${article.tags.map(tag => tag.title).join(',')}` : ''}`,
+      type: 'link',
+    },
+    {id: 2, icon: IconInstagram, action: () => shareImageAsset(), type: 'button'},
+    {
+      id: 3,
+      icon: IconFacebook,
+      action: ``,
+      type: 'link',
+    },
+    {
+      id: 4,
+      icon: IconEmail,
+      action: `mailto:?subject=${article.title}&body=Check%20out%20this%20article:%20${BASE_URL}/${article.slug}`,
+      type: 'link',
+    },
+    {id: 5, icon: IconLink, action: () => copyLinkToClipboard(), type: 'button'},
+  ];
+
+  async function shareImageAsset() {
+    const response = await fetch(`${IMAGE_STORAGE_URL}/${article?.thumbnail?._id}`);
+    const blob = await response.blob();
+    const filesArray = [
+      new File([blob], `${article?.title}.png`, {
+        type: 'image/png',
+        lastModified: new Date().getTime(),
+      }),
+    ];
+    const shareData = {
+      title: `${article?.title}`,
+      files: filesArray,
+    };
+
+    if (navigator.canShare && navigator.canShare(shareData)) {
+      await navigator.share(shareData);
+    }
+  }
+
+  async function copyLinkToClipboard() {
+    await copyToClipboard(`${BASE_URL}/${article.slug}`);
+    toast.success('Link copied to clipboard');
+  }
 
   const res = useQuery({
     queryKey: ['get-related-articles'],
@@ -200,9 +250,14 @@ const Page = () => {
               Download or read the full article as a PDF
             </h6>
             <Box
-              className={flex({
+              className={css({
+                display: 'flex',
                 alignItems: 'center',
                 gap: '4',
+                mdDown: {
+                  w: 'full',
+                  justifyContent: 'space-between',
+                },
               })}
             >
               <Link
@@ -242,6 +297,12 @@ const Page = () => {
           className={css({
             order: {
               mdDown: 4,
+            },
+            '& img': {
+              mx: 'auto',
+              my: '1',
+              w: 'full',
+              h: 'auto',
             },
           })}
           content={article.content}

@@ -16,6 +16,6 @@ export const Container = styled('header', {
   },
 });
 
-export const Wrap = styled('header', {
+export const Wrap = styled('div', {
   base: {display: 'flex', alignItems: 'center'},
 });

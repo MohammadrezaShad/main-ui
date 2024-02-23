@@ -9,22 +9,28 @@ import {useParams, useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
 
 import {IconFacebook, IconInstagram, IconLinkedIn, IconNotify, IconRG, IconTwitter} from '@/assets';
-import {AuthButton, Avatar, Card, Chip, SmallCard, SocialMediaLinks} from '@/components';
+import {Avatar, Button, Card, Chip, SmallCard, SocialMediaLinks} from '@/components';
 import {CookieName} from '@/constants';
 import {ArticleType, User, findUserById, searchArticlesByAuthorId} from '@/graphql';
 import {getUser} from '@/graphql/query/users/get-user';
 
+import moment from 'moment';
 import {Actions, Cards, Chips, Container, Tab, Tabs, Wrapper} from './author.styled';
 
 const ADMIN_PANEL_URL = process.env.NEXT_PUBLIC_ADMIN_PANEL_URL;
 const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
 
-const socialMediaLinks = [
-  {id: 1, icon: IconTwitter, href: ''},
-  {id: 2, icon: IconLinkedIn, href: ''},
-  {id: 3, icon: IconFacebook, href: ''},
-  {id: 4, icon: IconRG, href: ''},
-  {id: 5, icon: IconInstagram, href: ''},
+const socialMediaLinks: {
+  id: number;
+  icon: any;
+  action: any;
+  type: 'button' | 'link';
+}[] = [
+  {id: 1, icon: IconTwitter, action: '', type: 'link'},
+  {id: 2, icon: IconLinkedIn, action: '', type: 'link'},
+  {id: 3, icon: IconFacebook, action: '', type: 'link'},
+  {id: 4, icon: IconRG, action: '', type: 'link'},
+  {id: 5, icon: IconInstagram, action: '', type: 'link'},
 ];
 
 enum ETabs {
@@ -202,43 +208,54 @@ export default function Author() {
                       },
                     })}
                   />
-                  <AuthButton
+                  <Button
                     onClick={handleClickNewArticle}
-                    text='Write New Article'
-                    variant='contained'
+                    visual='contained'
                     className={css({
-                      '& span': {color: 'white'},
+                      color: 'white',
                       w: 'max-content',
                       px: 4,
                       py: 3,
                       bgColor: 'primary',
                     })}
-                  />
+                  >
+                    Write New Article
+                  </Button>
                 </>
               ) : (
                 <>
-                  <AuthButton
-                    text='Follow'
-                    variant='outlined'
+                  <Button
+                    visual='outlined'
                     className={css({
-                      '& span': {color: 'gray4'},
+                      color: {
+                        base: 'gray4',
+                        _hover: 'white',
+                      },
                       w: 'max-content',
                       px: 4,
                       py: 3,
                       border: '1px solid token(colors.gray3)',
+                      borderRadius: 0,
                     })}
-                  />
-                  <AuthButton
-                    text='Report'
-                    variant='outlined'
+                  >
+                    Follow
+                  </Button>
+                  <Button
+                    visual='outlined'
                     className={css({
-                      '& span': {color: 'gray4'},
+                      color: {
+                        base: 'gray4',
+                        _hover: 'white',
+                      },
                       w: 'max-content',
                       px: 4,
                       py: 3,
                       border: '1px solid token(colors.gray3)',
+                      borderRadius: 0,
                     })}
-                  />
+                  >
+                    Report
+                  </Button>
                 </>
               )}
             </Actions>
@@ -306,7 +323,7 @@ export default function Author() {
               <Card
                 key={article._id}
                 articleLink={`/articles/${article.slug}`}
-                date={article.publishDate}
+                date={moment(article.publishDate).format('DD MMMM YYYY')}
                 imageUrl={`${IMAGE_STORAGE_URL}/${article.thumbnail?._id}`}
                 title={article.title}
               />
@@ -317,7 +334,7 @@ export default function Author() {
               <SmallCard
                 key={article._id}
                 articleLink={`/articles/${article.slug}`}
-                date={article.publishDate}
+                date={moment(article.publishDate).format('DD MMMM YYYY')}
                 imageUrl={`${IMAGE_STORAGE_URL}/${article.thumbnail?._id}`}
                 title={article.title}
               />
@@ -337,18 +354,20 @@ export default function Author() {
 
       {response.hasNextPage ? (
         <Box mt='12' display='flex' justifyContent='center'>
-          <AuthButton
-            text='Load More'
+          <Button
             onClick={() => response.fetchNextPage()}
+            visual='contained'
             className={css({
-              '& span': {color: 'text.invert'},
+              color: 'text.invert',
               w: 'max-content',
               px: 4,
               py: 3,
               hideBelow: 'md',
               bg: 'primary',
             })}
-          />
+          >
+            Load More
+          </Button>
         </Box>
       ) : null}
     </Container>

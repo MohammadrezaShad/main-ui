@@ -11,7 +11,6 @@ export async function middleware(req: NextRequest) {
   const clientId = getCookie(CookieName.CLIENT_ID, {res, req});
   const originalPath = req.headers.get('x-original-url') || new URL(req.url).pathname;
   const profilePath = '/profile';
-  const authorPath = '/author';
   const homePath = '/';
 
   if (!clientId) {
@@ -24,10 +23,6 @@ export async function middleware(req: NextRequest) {
   }
 
   if (!accessToken && originalPath === profilePath) {
-    return NextResponse.redirect(new URL(homePath, req.url));
-  }
-
-  if (!accessToken && originalPath.includes(authorPath)) {
     return NextResponse.redirect(new URL(homePath, req.url));
   }
 

@@ -19,12 +19,20 @@ import {Pagination} from './articles.styled';
 const Page = () => {
   const [page, setPage] = useState(1);
   const READMORE_PAGE_COUNT = 12;
-  const {isPending, isError, error, data, isFetching, refetch, isPlaceholderData} = useQuery({
+
+  const topThreeArticlesQuery = useQuery({
+    queryKey: ['top-three-articles'],
+    queryFn: () => searchArticles({status: StatusType.Publish, count: 6}),
+  }) as any;
+
+  const {data, refetch} = useQuery({
     queryKey: ['search-articles', page],
     queryFn: () => searchArticles({status: StatusType.Publish, count: 18, page}),
     placeholderData: keepPreviousData,
   }) as any;
 
+  const topThreeArticles: Array<ArticleType> =
+    topThreeArticlesQuery.data?.article!.searchArticles.results;
   const articles: Array<ArticleType> = data.article!.searchArticles.results;
   const {totalPages} = data.article!.searchArticles;
   const totalCount: number = data.article!.searchArticles.totalCount - 6;
@@ -39,11 +47,11 @@ const Page = () => {
   return (
     <>
       <Box className={css({mx: {mdDown: '-4'}})}>
-        <Slider slides={articles.slice(0, 3)} />
+        <Slider slides={topThreeArticles.slice(0, 3)} />
       </Box>
-      <RecentArticles posts={articles.slice(3, 6)} />
+      <RecentArticles posts={topThreeArticles.slice(3, 6)} />
       <Divider label='Keep Reading' />
-      <Articles articles={articles.slice(6)} />
+      <Articles articles={page === 1 ? articles.slice(6) : articles} />
       <div
         className={css({
           mt: 6,

@@ -1,7 +1,7 @@
 'use client';
 
-import {useState} from 'react';
 import {css} from '@styled/css';
+import {useState} from 'react';
 
 import {IconAdd, IconMinus} from '@/assets';
 import {FaqType} from '@/graphql/generated/types';
@@ -33,6 +33,7 @@ const Expandable = ({faq}: {faq: FaqType}) => {
           className={css({
             textStyle: 'body',
             color: 'text.primary',
+            textAlign: 'left',
           })}
         >
           {faq.question}
@@ -44,6 +45,7 @@ const Expandable = ({faq}: {faq: FaqType}) => {
             textStyle: 'body2',
             color: 'gray4',
             pl: '36px',
+            textAlign: 'left',
           })}
         >
           {faq.answer}
