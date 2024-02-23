@@ -6,7 +6,7 @@ import {getQueryClient} from '@/helpers';
 import {Hydrate} from '@/providers';
 
 const YOUTUBE_PLAYLIST_ITEMS_API = 'https://www.googleapis.com/youtube/v3/playlistItems';
-const PLAYLIST_ID = 'PLyCSJvxjzJynD1L7YowrEK2afhjDkn7m5';
+const PLAYLIST_ID = process.env.YOUTUBE_PLAYLIST_ID;
 
 const Page = async () => {
   const response = await fetch(

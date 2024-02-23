@@ -29,6 +29,9 @@ export const Content = styled('div', {
     alignItems: 'stretch',
     alignSelf: 'stretch',
     py: '6',
+    mdDown: {
+      py: '3',
+    },
   },
 });
 

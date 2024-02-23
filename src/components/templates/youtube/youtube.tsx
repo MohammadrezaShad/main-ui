@@ -1,5 +1,3 @@
-'use client';
-
 import {css} from '@styled/css';
 import {FC} from 'react';
 
@@ -23,9 +21,9 @@ const YouTube: FC<YouTubeProps> = ({data}) => (
       <div
         className={css({textStyle: 'body2', color: 'text.primary'})}
         role='status'
-        aria-label={`Result: ${data.items.length} videos`}
+        aria-label={`Result: ${data.items?.length} videos`}
       >
-        Result: {data.items.length} videos
+        Result: {data.items?.length} videos
       </div>
     </Wrapper>
 

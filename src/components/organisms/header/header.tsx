@@ -7,7 +7,7 @@ import {getCookie} from 'cookies-next';
 import Link from 'next/link';
 
 import {IconSearch} from '@/assets';
-import {AuthButton, Avatar, HeaderNavbar, Login, Logo, SearchDrawer, SignUp} from '@/components';
+import {Avatar, Button, HeaderNavbar, Login, Logo, SearchDrawer, SignUp} from '@/components';
 import {CookieName} from '@/constants';
 import {useAuthContext} from '@/contexts';
 import {getUser} from '@/graphql';
@@ -45,31 +45,38 @@ export default function Header(props: HeaderProps) {
           <UserHeaderInfo />
         ) : (
           <>
-            <AuthButton
+            <Button
               onClick={() => isLoginOpen$.set(true)}
-              variant='outlined'
               className={css({
-                '& span': {color: 'gray4'},
+                color: {
+                  base: 'gray4',
+                  _hover: 'white',
+                },
                 w: 'max-content',
                 px: 4,
                 py: 3,
                 hideBelow: 'md',
                 mr: 4,
                 border: '1px solid token(colors.gray3)',
+                borderRadius: 0,
               })}
-            />
-            <AuthButton
+              visual='outlined'
+            >
+              Login
+            </Button>
+            <Button
               onClick={() => isSignUpOpen$.set(true)}
-              text='Sign Up'
               className={css({
-                '& span': {color: 'text.invert'},
                 w: 'max-content',
                 px: 4,
                 py: 3,
                 hideBelow: 'md',
                 bg: 'primary',
+                borderRadius: 0,
               })}
-            />
+            >
+              Sign Up
+            </Button>
           </>
         )}
         {user && authToken ? (

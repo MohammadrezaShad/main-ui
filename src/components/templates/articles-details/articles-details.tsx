@@ -250,9 +250,14 @@ const Page = () => {
               Download or read the full article as a PDF
             </h6>
             <Box
-              className={flex({
+              className={css({
+                display: 'flex',
                 alignItems: 'center',
                 gap: '4',
+                mdDown: {
+                  w: 'full',
+                  justifyContent: 'space-between',
+                },
               })}
             >
               <Link
@@ -292,6 +297,12 @@ const Page = () => {
           className={css({
             order: {
               mdDown: 4,
+            },
+            '& img': {
+              mx: 'auto',
+              my: '1',
+              w: 'full',
+              h: 'auto',
             },
           })}
           content={article.content}

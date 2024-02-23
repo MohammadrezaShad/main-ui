@@ -8,7 +8,7 @@ import {getCookie} from 'cookies-next';
 import {useRouter} from 'next/navigation';
 
 import {IconArrowRight} from '@/assets';
-import {AuthButton, TextField} from '@/components';
+import {Button, TextField} from '@/components';
 import RadioButton from '@/components/atoms/radio-button/radio-button';
 import {CookieName} from '@/constants';
 import {GenderEnum, updateUser} from '@/graphql';
@@ -252,30 +252,38 @@ export default function Settings() {
                 mt: '12',
               })}
             >
-              <AuthButton
+              <Button
                 type='submit'
-                text='Save changes'
+                visual='contained'
                 className={css({
-                  '& span': {color: 'text.invert'},
+                  color: 'text.invert',
                   w: 'max-content',
                   px: 4,
                   py: 3,
                   bg: 'primary',
+                  borderRadius: 0,
                 })}
-              />
-              <AuthButton
+              >
+                Save changes
+              </Button>
+              <Button
                 onClick={() => router.push('/profile')}
                 type='button'
-                text='Cancel'
-                variant='outlined'
+                visual='outlined'
                 className={css({
-                  '& span': {color: 'gray4'},
+                  color: {
+                    base: 'gray4',
+                    _hover: 'white',
+                  },
                   w: 'max-content',
                   px: 4,
                   py: 3,
-                  border: '1px solid token(colors.gray3)',
+                  borderColor: 'gray3',
+                  borderRadius: 0,
                 })}
-              />
+              >
+                Cancel
+              </Button>
             </div>
           </form>
         </div>

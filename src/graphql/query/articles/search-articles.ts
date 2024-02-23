@@ -43,5 +43,8 @@ export async function searchArticles(input: SearchArticleInput): Promise<Article
     throw new Error('Failed to fetch data');
   }
   const response = await res.json();
+  // if (response.errors?.[0]?.message) {
+  //   throw new Error(response.errors?.[0]?.message);
+  // }
   return response.data;
 }

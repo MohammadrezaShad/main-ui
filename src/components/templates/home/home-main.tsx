@@ -26,7 +26,6 @@ import {
 const cities = [{id: 1, value: 'amsterdam', label: 'Amsterdam'}];
 
 export default function HomeMain() {
-  const [articles, setArticles] = useState<ArticleType[]>([]);
   const {data, fetchNextPage, hasNextPage} = useInfiniteQuery({
     queryKey: ['search-articles-home'],
     queryFn: ({pageParam}) =>
@@ -41,6 +40,11 @@ export default function HomeMain() {
       return undefined;
     },
   }) as any;
+
+  const [articles, setArticles] = useState<ArticleType[]>(
+    data.pages[0].article.searchArticles.results,
+  );
+
   const res = useQuery({
     queryKey: ['search-categories-home'],
     queryFn: () => searchCategories({}),

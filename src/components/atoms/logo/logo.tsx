@@ -1,5 +1,3 @@
-'use client';
-
 import {css, cx} from '@styled/css';
 
 import Paths from '@/utils/paths';

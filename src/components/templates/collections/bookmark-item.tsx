@@ -22,6 +22,7 @@ const BookmarkItem = ({
             objectFit: 'cover',
             objectPosition: 'center',
             w: '32',
+            h: '32',
             overflow: 'hidden',
             flexShrink: '0',
           })}
