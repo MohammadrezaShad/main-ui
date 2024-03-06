@@ -16,6 +16,7 @@ export async function findArticleByName(
         findArticleByName(input: $input) {
           success
           result {
+            updatedAt
             isBookmark
             _id
             author {
@@ -32,6 +33,8 @@ export async function findArticleByName(
               }
               displayName
               isVerified
+              firstName
+              lastName
               username
             }
             categories {

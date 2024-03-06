@@ -4,11 +4,13 @@ import {getCookie} from 'cookies-next';
 import {Metadata} from 'next';
 import {cookies} from 'next/headers';
 
+import JsonLdScript from '@/components/shared/json-ld-script';
 import {ArticlesDetails} from '@/components/templates/articles-details';
 import {CookieName} from '@/constants';
 import {ArticleType, StatusType, findArticleByName, searchArticles} from '@/graphql';
 import {getQueryClient} from '@/helpers';
 import {Hydrate} from '@/providers';
+import {getBlogArticleSchema, getBreadCrumbListSchema, getOrganizationSchema} from '@/utils';
 
 export const revalidate = 3600;
 
@@ -49,8 +51,17 @@ const Page = async ({params}: {params: {articleId: string}}) => {
   });
   const dehydratedState = dehydrate(queryClient);
 
+  const data: any = await findArticleByName({slug: params.articleId}, token);
+  if (!data) {
+    return {
+      title: 'Not found',
+      description: 'The page not found',
+    };
+  }
+  const post: ArticleType = data.article.findArticleByName.result;
+
   return (
-    <div
+    <section
       className={css({
         display: 'flex',
         flexDir: 'column',
@@ -60,10 +71,16 @@ const Page = async ({params}: {params: {articleId: string}}) => {
         p: {lgDown: 4},
       })}
     >
+      <JsonLdScript id='organization' data={getOrganizationSchema()} />
+      <JsonLdScript id={params.articleId} data={getBlogArticleSchema(post)} />
+      <JsonLdScript
+        id='breadcrumbs'
+        data={getBreadCrumbListSchema([{title: 'Articles', pathName: '/articles'}], post.title)}
+      />
       <Hydrate state={dehydratedState}>
         <ArticlesDetails />
       </Hydrate>
-    </div>
+    </section>
   );
 };
 

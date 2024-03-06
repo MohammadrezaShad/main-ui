@@ -38,6 +38,7 @@
     "react-tabs": "^6.0.2",
     "react-toastify": "^10.0.1",
     "react-use": "^17.4.2",
+    "schema-dts": "^1.1.2",
     "sharp": "^0.33.1",
     "swiper": "^11.0.5",
     "tw2panda": "^0.3.0",
