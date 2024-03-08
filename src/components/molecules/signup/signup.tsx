@@ -136,7 +136,7 @@ export default function SignUp({
             mt: '2',
           })}
         />
-        <h3
+        <h1
           className={css({
             textStyle: 'headline3',
             color: 'text.primary',
@@ -146,7 +146,7 @@ export default function SignUp({
           })}
         >
           Sign up for Waterlyst
-        </h3>
+        </h1>
         <div
           className={css({
             textAlign: 'center',

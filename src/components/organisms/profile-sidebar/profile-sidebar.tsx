@@ -56,7 +56,7 @@ const ProfileSidebar = () => {
         size={134}
         src={user?.avatar?._id ? `${IMAGE_STORAGE_URL}/${user.avatar?._id}` : undefined}
       />
-      <h3
+      <h1
         className={css({
           textStyle: 'headline3',
           color: 'text.primary',
@@ -65,7 +65,7 @@ const ProfileSidebar = () => {
         })}
       >
         {user?.displayName}
-      </h3>
+      </h1>
       <p
         className={css({
           textStyle: 'body2',

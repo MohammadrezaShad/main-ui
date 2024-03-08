@@ -87,14 +87,14 @@ export default function Settings() {
               >
                 <IconArrowRight className={css({rotate: '180deg', hideFrom: 'md'})} />
               </button>
-              <h3
+              <div
                 className={css({
                   textStyle: 'h3',
                   color: 'text.primary',
                 })}
               >
                 Settings
-              </h3>
+              </div>
             </div>
             <Box
               className={flex({

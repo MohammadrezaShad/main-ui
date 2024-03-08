@@ -34,14 +34,14 @@ export default function Profile() {
           >
             <IconArrowRight className={css({rotate: '180deg', hideFrom: 'md'})} />
           </button>
-          <h3
+          <div
             className={css({
               textStyle: 'h3',
               color: 'text.primary',
             })}
           >
             Notifications
-          </h3>
+          </div>
         </div>
         {/** Empty state */}
         <div

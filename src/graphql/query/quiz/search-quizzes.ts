@@ -1,7 +1,7 @@
-import { QuizQuery, SearchQuizInput } from "@/graphql/generated/types";
-import { gqlFetch } from "@/services/fetch";
+import {QuizQuery, SearchQuizInput} from '@/graphql/generated/types';
+import {gqlFetch} from '@/services/fetch';
 
-export async function searchQuizzes(input: SearchQuizInput): Promise<QuizQuery["searchQuizzes"]> {
+export async function searchQuizzes(input: SearchQuizInput): Promise<QuizQuery['searchQuizzes']> {
   const res = await gqlFetch({
     url: process.env.NEXT_PUBLIC_API as string,
     query: `query SearchQuizzes($input: SearchQuizInput!) {
@@ -240,10 +240,10 @@ export async function searchQuizzes(input: SearchQuizInput): Promise<QuizQuery["
           }
         }
       }`,
-    variables: { input },
+    variables: {input},
   });
   if (!res.ok) {
-    throw new Error("Failed to fetch data");
+    throw new Error('Failed to fetch data');
   }
   const response = await res.json();
   if (response.errors?.[0]?.message) {

@@ -141,14 +141,14 @@ export default function Author() {
                   },
                 })}
               >
-                <h3
+                <h1
                   className={css({
                     textStyle: 'headline3',
                     color: 'text.primary',
                   })}
                 >
                   {user.displayName}
-                </h3>
+                </h1>
                 <p
                   className={css({
                     textStyle: 'body2',

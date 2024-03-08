@@ -55,14 +55,14 @@ const ProfileDetails = () => {
         >
           <IconArrowRight className={css({rotate: '180deg', hideFrom: 'md'})} />
         </button>
-        <h3
+        <div
           className={css({
             textStyle: 'h3',
             color: 'text.primary',
           })}
         >
           About you
-        </h3>
+        </div>
       </div>
       <div
         className={css({

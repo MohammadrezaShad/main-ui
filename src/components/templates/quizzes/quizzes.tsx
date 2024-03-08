@@ -68,7 +68,7 @@ export default function Quizzes() {
           },
         })}
       >
-        <div
+        <h1
           className={css({
             alignSelf: 'center',
             textAlign: 'center',
@@ -77,7 +77,7 @@ export default function Quizzes() {
           })}
         >
           Quizzes
-        </div>
+        </h1>
         <div
           className={css({
             mt: {
@@ -256,7 +256,7 @@ export default function Quizzes() {
             mdDown: {maxW: 'full'},
           })}
         />
-        <div
+        <h2
           className={css({
             mt: '9',
             fontSize: '2xl',
@@ -267,7 +267,7 @@ export default function Quizzes() {
           })}
         >
           Top Quizzes
-        </div>
+        </h2>
         <div className={css({mt: '6', mdDown: {maxW: 'full'}})}>
           <div className={css({display: 'flex', gap: '5', mdDown: {flexDir: 'column', gap: '0'}})}>
             {topQuizzes.data?.result?.map(quiz => (
@@ -284,7 +284,7 @@ export default function Quizzes() {
             mdDown: {maxW: 'full'},
           })}
         />
-        <h3
+        <h2
           className={css({
             mt: '9',
             color: 'text.primary',
@@ -293,7 +293,7 @@ export default function Quizzes() {
           })}
         >
           The Best People
-        </h3>
+        </h2>
         <div className={css({mt: '6', mdDown: {maxW: 'full'}})}>
           <div
             className={css({
@@ -317,7 +317,7 @@ export default function Quizzes() {
                     mb: 'auto',
                   })}
                 >
-                  <h2
+                  <div
                     className={css({
                       fontSize: 'base',
                       lineHeight: 'base',
@@ -328,7 +328,7 @@ export default function Quizzes() {
                     })}
                   >
                     {`${user.firstName} ${user.lastName}`}
-                  </h2>
+                  </div>
                   <p className={css({mt: '2', fontSize: 'sm', lineHeight: 'sm', color: 'gray4'})}>
                     Score: 0
                   </p>

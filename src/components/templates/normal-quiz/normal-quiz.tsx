@@ -31,7 +31,7 @@ const WaterSavingQuiz = () => {
   const [answers, setAnswers] = useState<{answer: string; question: string}[]>([]);
 
   const handleSetAnswer = (questionId: string, answer: string) => {
-    const questionIndex = answers.findIndex(answer => answer.question == questionId);
+    const questionIndex = answers.findIndex(currentAnswer => currentAnswer.question === questionId);
     if (questionIndex) {
       setAnswers(prev => [...prev, {question: questionId, answer}]);
     } else {

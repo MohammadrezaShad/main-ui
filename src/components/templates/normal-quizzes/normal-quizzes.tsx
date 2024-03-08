@@ -56,8 +56,8 @@ export default function NormalQuizzes() {
     if (data) {
       const _articles =
         data?.pages.reduce(
-          (acc: any, page: any, index: any) =>
-            index !== 0 ? [...acc, ...page?.results] : [...acc],
+          (acc: any, currentPage: any, index: any) =>
+            index !== 0 ? [...acc, ...currentPage?.results] : [...acc],
           data?.pages[0]?.results,
         ) || [];
       setQuizzes(_articles);

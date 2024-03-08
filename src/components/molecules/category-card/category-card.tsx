@@ -64,7 +64,7 @@ const CategoryCard = ({
         </div>
       </Box>
       <Box mt='1' w='10/12' mx='auto'>
-        <h3
+        <div
           title={category.title}
           className={css({
             textStyle: {
@@ -77,7 +77,7 @@ const CategoryCard = ({
           })}
         >
           {category.title}
-        </h3>
+        </div>
       </Box>
       <Box display={collapsed ? 'none' : 'block'} mt='9'>
         <div
