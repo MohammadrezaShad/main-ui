@@ -82,7 +82,7 @@ export default function SignUp({
   };
 
   return (
-    <Modal onClose={onClose} isOpen$={isOpen$}>
+    <Modal onClose={onClose} isOpen$={isOpen$.use()}>
       <Container
         style={{height: '100%'}}
         onClick={e => e.stopPropagation()}

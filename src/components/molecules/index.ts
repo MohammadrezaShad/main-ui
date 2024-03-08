@@ -15,6 +15,7 @@ export * from './post-date';
 export * from './primary-subtitle';
 export * from './primary-title';
 export * from './questions';
+export * from './quiz-card';
 export * from './review';
 export * from './search';
 export * from './select';

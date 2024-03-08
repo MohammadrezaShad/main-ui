@@ -356,7 +356,7 @@ export default function GraphicalQuizzes() {
           </button>
         </div>
       ) : null}
-      <Modal isOpen$={targetQuiz$} onClose={() => targetQuiz$.set(false)}>
+      <Modal isOpen$={targetQuiz$.use()} onClose={() => targetQuiz$.set(false)}>
         <form
           className={css({
             display: 'flex',

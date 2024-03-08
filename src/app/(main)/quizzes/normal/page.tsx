@@ -2,15 +2,17 @@ import {css} from '@styled/css';
 import {dehydrate} from '@tanstack/react-query';
 
 import {NormalQuizzesView} from '@/components';
+import {searchQuizzes} from '@/graphql';
 import {getQueryClient} from '@/helpers';
 import {Hydrate} from '@/providers';
 
 const Page = async () => {
   const queryClient = getQueryClient();
-  //   await queryClient.prefetchQuery({
-  //     queryKey: ['search-articles', 18],
-  //     queryFn: () => searchArticles({status: StatusType.Publish, count: 18, page: 1}),
-  //   });
+  await queryClient.prefetchInfiniteQuery({
+    queryKey: ['search-quizzes'],
+    queryFn: () => searchQuizzes({count: 12, page: 1}),
+    initialPageParam: 1,
+  });
   const dehydratedState = dehydrate(queryClient);
   return (
     <div

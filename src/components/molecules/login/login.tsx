@@ -94,7 +94,7 @@ export default function Login({
   }, [data]);
 
   return (
-    <Modal onClose={onClose} isOpen$={isOpen$}>
+    <Modal onClose={onClose} isOpen$={isOpen$.use()}>
       <div
         style={{height: '100%'}}
         className={css({
