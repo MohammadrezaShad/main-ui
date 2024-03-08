@@ -28,14 +28,14 @@ const Review = ({children}: {children?: React.ReactNode}) => (
           gap: 6,
         })}
       >
-        <h6
+        <div
           className={css({
             textStyle: 'subtitle1',
             color: 'text.primary',
           })}
         >
           Sergio Aquinna
-        </h6>
+        </div>
         <time
           className={css({
             textStyle: 'body2',

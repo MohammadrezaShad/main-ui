@@ -15,7 +15,7 @@ const PrimarySubtitle = ({text, className}: Props) => {
     lineHeight: '1.148',
   });
   const subtitleClass = cx(defualtClassName, className);
-  return <h6 className={subtitleClass}>{text}</h6>;
+  return <p className={subtitleClass}>{text}</p>;
 };
 
 export default PrimarySubtitle;
