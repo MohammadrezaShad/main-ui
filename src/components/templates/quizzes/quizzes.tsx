@@ -6,12 +6,44 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import {coin, IconClose} from '@/assets';
-import {Avatar} from '@/components';
+import {Avatar, QuizCard} from '@/components';
 import {Modal} from '@/components/atoms/modal';
+import {
+  findQuizById,
+  getBestUsers,
+  getTopQuizzes,
+  getTotalCount,
+  getTotalGraphicalCount,
+  QuizType,
+} from '@/graphql';
 import {Paths} from '@/utils';
+import {useQuery} from '@tanstack/react-query';
 
 export default function Quizzes() {
-  const targetQuiz$ = useObservable<boolean>(false);
+  const targetQuiz$ = useObservable<QuizType>();
+
+  const totalNormalQuizzes = useQuery({
+    queryKey: ['get-normal-quiz-count'],
+    queryFn: () => getTotalCount(),
+  });
+  const totalGraphicalQuizzes = useQuery({
+    queryKey: ['get-graphical-quiz-count'],
+    queryFn: () => getTotalGraphicalCount(),
+  });
+  const topQuizzes = useQuery({
+    queryKey: ['get-top-quizzes'],
+    queryFn: () => getTopQuizzes(),
+  });
+  const bestUsers = useQuery({
+    queryKey: ['get-best-user', 8],
+    queryFn: () => getBestUsers({count: 8}),
+  });
+
+  const getQuizInfo = async (id: string) => {
+    const quiz = await findQuizById({id});
+    targetQuiz$.set(quiz.result);
+  };
+
   return (
     <div
       className={css({display: 'flex', flexDir: 'column', bgColor: 'white', overflowY: 'hidden'})}
@@ -36,7 +68,7 @@ export default function Quizzes() {
           },
         })}
       >
-        <div
+        <h1
           className={css({
             alignSelf: 'center',
             textAlign: 'center',
@@ -45,7 +77,7 @@ export default function Quizzes() {
           })}
         >
           Quizzes
-        </div>
+        </h1>
         <div
           className={css({
             mt: {
@@ -115,7 +147,7 @@ export default function Quizzes() {
                     color: 'text.primary',
                   })}
                 >
-                  26 Available Quizzes
+                  {totalGraphicalQuizzes.data} Available Quizzes
                 </div>
                 <Link
                   href={`${Paths.Quiz.getPath()}/graphical`}
@@ -193,7 +225,7 @@ export default function Quizzes() {
                     color: 'text.primary',
                   })}
                 >
-                  234 Available Quizzes
+                  {totalNormalQuizzes.data} Available Quizzes
                 </div>
                 <Link
                   href={`${Paths.Quiz.getPath()}/normal`}
@@ -224,7 +256,7 @@ export default function Quizzes() {
             mdDown: {maxW: 'full'},
           })}
         />
-        <div
+        <h2
           className={css({
             mt: '9',
             fontSize: '2xl',
@@ -235,254 +267,12 @@ export default function Quizzes() {
           })}
         >
           Top Quizzes
-        </div>
+        </h2>
         <div className={css({mt: '6', mdDown: {maxW: 'full'}})}>
           <div className={css({display: 'flex', gap: '5', mdDown: {flexDir: 'column', gap: '0'}})}>
-            <div
-              className={css({
-                display: 'flex',
-                flexDir: 'column',
-                w: '33%',
-                mdDown: {ml: '0', w: 'full'},
-              })}
-            >
-              <div
-                className={css({
-                  display: 'flex',
-                  flexDir: 'column',
-                  flexGrow: '1',
-                  pb: '6',
-                  w: 'full',
-                  bgColor: 'white',
-                  borderWidth: '1px',
-                  borderStyle: 'solid',
-                  borderColor: 'gray3',
-                  mdDown: {mt: '6', flexDir: 'row', borderWidth: '0'},
-                })}
-              >
-                <img
-                  alt=''
-                  loading='lazy'
-                  srcSet='https://cdn.builder.io/api/v1/image/assets/TEMP/432ae614d587f42a5b08708c8e5c4e739cf4fef3111205962856702f53587694?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&width=100 100w, https://cdn.builder.io/api/v1/image/assets/TEMP/432ae614d587f42a5b08708c8e5c4e739cf4fef3111205962856702f53587694?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&width=200 200w, https://cdn.builder.io/api/v1/image/assets/TEMP/432ae614d587f42a5b08708c8e5c4e739cf4fef3111205962856702f53587694?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&width=400 400w, https://cdn.builder.io/api/v1/image/assets/TEMP/432ae614d587f42a5b08708c8e5c4e739cf4fef3111205962856702f53587694?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&width=800 800w, https://cdn.builder.io/api/v1/image/assets/TEMP/432ae614d587f42a5b08708c8e5c4e739cf4fef3111205962856702f53587694?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&width=1200 1200w, https://cdn.builder.io/api/v1/image/assets/TEMP/432ae614d587f42a5b08708c8e5c4e739cf4fef3111205962856702f53587694?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&width=1600 1600w, https://cdn.builder.io/api/v1/image/assets/TEMP/432ae614d587f42a5b08708c8e5c4e739cf4fef3111205962856702f53587694?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&width=2000 2000w, https://cdn.builder.io/api/v1/image/assets/TEMP/432ae614d587f42a5b08708c8e5c4e739cf4fef3111205962856702f53587694?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&'
-                  className={css({
-                    w: 'full',
-                    aspectRatio: '1.33',
-                    mdDown: {aspectRatio: 'square', w: '[112px]', h: '[112px]', objectFit: 'cover'},
-                  })}
-                />
-                <div
-                  className={css({
-                    display: 'flex',
-                    flexDir: 'column',
-                    alignSelf: 'flex-start',
-                    mt: '7',
-                    ml: '6',
-                    mdDown: {ml: '2.5', mt: '0'},
-                  })}
-                >
-                  <div
-                    className={css({
-                      fontSize: 'xs',
-                      lineHeight: 'xs',
-                      fontWeight: 'light',
-                      color: 'gray4',
-                    })}
-                  >
-                    20 Questions
-                  </div>
-                  <div
-                    className={css({
-                      mt: '2',
-                      fontSize: 'base',
-                      lineHeight: 'base',
-                      fontWeight: 'medium',
-                      color: 'text.primary',
-                    })}
-                  >
-                    Water Saving Quiz
-                  </div>
-                  <button
-                    onClick={() => targetQuiz$.set(true)}
-                    type='button'
-                    className={css({
-                      cursor: 'pointer',
-                      mt: '9',
-                      textAlign: 'left',
-                      fontSize: 'sm',
-                      lineHeight: 'sm',
-                      color: 'primary',
-                      mdDown: {mt: '8'},
-                    })}
-                  >
-                    START THE QUIZ
-                  </button>
-                </div>
-              </div>
-            </div>
-            <div
-              className={css({
-                display: 'flex',
-                flexDir: 'column',
-                ml: '5',
-                w: '33%',
-                mdDown: {ml: '0', w: 'full'},
-              })}
-            >
-              <div
-                className={css({
-                  display: 'flex',
-                  flexDir: 'column',
-                  flexGrow: '1',
-                  pb: '6',
-                  w: 'full',
-                  bgColor: 'white',
-                  borderWidth: '1px',
-                  borderStyle: 'solid',
-                  borderColor: 'gray3',
-                  mdDown: {mt: '6', flexDir: 'row', borderWidth: '0'},
-                })}
-              >
-                <img
-                  alt=''
-                  loading='lazy'
-                  srcSet='https://cdn.builder.io/api/v1/image/assets/TEMP/ae6c2284c437e7dad2e5eb0bcd2647c5a2e1cc2d156db2e0e47e61ddda4f8cca?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&width=100 100w, https://cdn.builder.io/api/v1/image/assets/TEMP/ae6c2284c437e7dad2e5eb0bcd2647c5a2e1cc2d156db2e0e47e61ddda4f8cca?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&width=200 200w, https://cdn.builder.io/api/v1/image/assets/TEMP/ae6c2284c437e7dad2e5eb0bcd2647c5a2e1cc2d156db2e0e47e61ddda4f8cca?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&width=400 400w, https://cdn.builder.io/api/v1/image/assets/TEMP/ae6c2284c437e7dad2e5eb0bcd2647c5a2e1cc2d156db2e0e47e61ddda4f8cca?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&width=800 800w, https://cdn.builder.io/api/v1/image/assets/TEMP/ae6c2284c437e7dad2e5eb0bcd2647c5a2e1cc2d156db2e0e47e61ddda4f8cca?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&width=1200 1200w, https://cdn.builder.io/api/v1/image/assets/TEMP/ae6c2284c437e7dad2e5eb0bcd2647c5a2e1cc2d156db2e0e47e61ddda4f8cca?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&width=1600 1600w, https://cdn.builder.io/api/v1/image/assets/TEMP/ae6c2284c437e7dad2e5eb0bcd2647c5a2e1cc2d156db2e0e47e61ddda4f8cca?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&width=2000 2000w, https://cdn.builder.io/api/v1/image/assets/TEMP/ae6c2284c437e7dad2e5eb0bcd2647c5a2e1cc2d156db2e0e47e61ddda4f8cca?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&'
-                  className={css({
-                    w: 'full',
-                    aspectRatio: '1.33',
-                    mdDown: {aspectRatio: 'square', w: '[112px]', h: '[112px]', objectFit: 'cover'},
-                  })}
-                />
-                <div
-                  className={css({
-                    display: 'flex',
-                    flexDir: 'column',
-                    alignSelf: 'flex-start',
-                    mt: '7',
-                    ml: '6',
-                    mdDown: {ml: '2.5', mt: '0'},
-                  })}
-                >
-                  <div
-                    className={css({
-                      fontSize: 'xs',
-                      lineHeight: 'xs',
-                      fontWeight: 'light',
-                      color: 'gray4',
-                    })}
-                  >
-                    20 Questions
-                  </div>
-                  <div
-                    className={css({
-                      mt: '2',
-                      fontSize: 'base',
-                      lineHeight: 'base',
-                      fontWeight: 'medium',
-                      color: 'text.primary',
-                    })}
-                  >
-                    Water Crisis Quiz
-                  </div>
-                  <button
-                    onClick={() => targetQuiz$.set(true)}
-                    type='button'
-                    className={css({
-                      cursor: 'pointer',
-                      mt: '9',
-                      textAlign: 'left',
-                      fontSize: 'sm',
-                      lineHeight: 'sm',
-                      color: 'primary',
-                      mdDown: {mt: '8'},
-                    })}
-                  >
-                    START THE QUIZ
-                  </button>
-                </div>
-              </div>
-            </div>
-            <div
-              className={css({
-                display: 'flex',
-                flexDir: 'column',
-                ml: '5',
-                w: '33%',
-                mdDown: {ml: '0', w: 'full'},
-              })}
-            >
-              <div
-                className={css({
-                  display: 'flex',
-                  flexDir: 'column',
-                  flexGrow: '1',
-                  pb: '6',
-                  w: 'full',
-                  bgColor: 'white',
-                  borderWidth: '1px',
-                  borderStyle: 'solid',
-                  borderColor: 'gray3',
-                  mdDown: {mt: '6', flexDir: 'row', borderWidth: '0'},
-                })}
-              >
-                <img
-                  alt=''
-                  loading='lazy'
-                  srcSet='https://cdn.builder.io/api/v1/image/assets/TEMP/432ae614d587f42a5b08708c8e5c4e739cf4fef3111205962856702f53587694?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&width=100 100w, https://cdn.builder.io/api/v1/image/assets/TEMP/432ae614d587f42a5b08708c8e5c4e739cf4fef3111205962856702f53587694?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&width=200 200w, https://cdn.builder.io/api/v1/image/assets/TEMP/432ae614d587f42a5b08708c8e5c4e739cf4fef3111205962856702f53587694?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&width=400 400w, https://cdn.builder.io/api/v1/image/assets/TEMP/432ae614d587f42a5b08708c8e5c4e739cf4fef3111205962856702f53587694?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&width=800 800w, https://cdn.builder.io/api/v1/image/assets/TEMP/432ae614d587f42a5b08708c8e5c4e739cf4fef3111205962856702f53587694?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&width=1200 1200w, https://cdn.builder.io/api/v1/image/assets/TEMP/432ae614d587f42a5b08708c8e5c4e739cf4fef3111205962856702f53587694?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&width=1600 1600w, https://cdn.builder.io/api/v1/image/assets/TEMP/432ae614d587f42a5b08708c8e5c4e739cf4fef3111205962856702f53587694?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&width=2000 2000w, https://cdn.builder.io/api/v1/image/assets/TEMP/432ae614d587f42a5b08708c8e5c4e739cf4fef3111205962856702f53587694?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&'
-                  className={css({
-                    w: 'full',
-                    aspectRatio: '1.33',
-                    mdDown: {aspectRatio: 'square', w: '[112px]', h: '[112px]', objectFit: 'cover'},
-                  })}
-                />
-                <div
-                  className={css({
-                    display: 'flex',
-                    flexDir: 'column',
-                    alignSelf: 'flex-start',
-                    mt: '7',
-                    ml: '6',
-                    mdDown: {ml: '2.5', mt: '0'},
-                  })}
-                >
-                  <div
-                    className={css({
-                      fontSize: 'xs',
-                      lineHeight: 'xs',
-                      fontWeight: 'light',
-                      color: 'gray4',
-                    })}
-                  >
-                    20 Questions
-                  </div>
-                  <div
-                    className={css({
-                      mt: '2',
-                      fontSize: 'base',
-                      lineHeight: 'base',
-                      fontWeight: 'medium',
-                      color: 'text.primary',
-                    })}
-                  >
-                    Water Saving Quiz 2
-                  </div>
-                  <button
-                    onClick={() => targetQuiz$.set(true)}
-                    type='button'
-                    className={css({
-                      cursor: 'pointer',
-                      mt: '9',
-                      textAlign: 'left',
-                      fontSize: 'sm',
-                      lineHeight: 'sm',
-                      color: 'primary',
-                      mdDown: {mt: '8'},
-                    })}
-                  >
-                    START THE QUIZ
-                  </button>
-                </div>
-              </div>
-            </div>
+            {topQuizzes.data?.result?.map(quiz => (
+              <QuizCard key={quiz._id} quiz={quiz} getQuizInfo={getQuizInfo} />
+            ))}
           </div>
         </div>
         <div
@@ -494,7 +284,7 @@ export default function Quizzes() {
             mdDown: {maxW: 'full'},
           })}
         />
-        <h3
+        <h2
           className={css({
             mt: '9',
             color: 'text.primary',
@@ -503,7 +293,7 @@ export default function Quizzes() {
           })}
         >
           The Best People
-        </h3>
+        </h2>
         <div className={css({mt: '6', mdDown: {maxW: 'full'}})}>
           <div
             className={css({
@@ -513,39 +303,42 @@ export default function Quizzes() {
               mdDown: {gridTemplateColumns: '1'},
             })}
           >
-            <div className={css({display: 'flex', gap: '4'})}>
-              <Avatar size={48} />
-              <div
-                className={css({
-                  display: 'flex',
-                  flexDir: 'column',
-                  flex: '1',
-                  pl: '5',
-                  pr: '5',
-                  mt: 'auto',
-                  mb: 'auto',
-                })}
-              >
-                <h2
+            {bestUsers.data?.results?.map(user => (
+              <div key={user._id} className={css({display: 'flex', gap: '4'})}>
+                <Avatar src={user.avatar?._id} size={48} />
+                <div
                   className={css({
-                    fontSize: 'base',
-                    lineHeight: 'base',
-                    fontWeight: 'medium',
-                    whiteSpace: 'nowrap',
-                    color: 'text.primary',
+                    display: 'flex',
+                    flexDir: 'column',
+                    flex: '1',
+                    pl: '5',
+                    pr: '5',
+                    mt: 'auto',
+                    mb: 'auto',
                   })}
                 >
-                  Sergio Aquinna
-                </h2>
-                <p className={css({mt: '2', fontSize: 'sm', lineHeight: 'sm', color: 'gray4'})}>
-                  Score: 4456
-                </p>
+                  <div
+                    className={css({
+                      fontSize: 'base',
+                      lineHeight: 'base',
+                      fontWeight: 'medium',
+                      whiteSpace: 'nowrap',
+                      color: 'text.primary',
+                      textTransform: 'capitalize',
+                    })}
+                  >
+                    {`${user.firstName} ${user.lastName}`}
+                  </div>
+                  <p className={css({mt: '2', fontSize: 'sm', lineHeight: 'sm', color: 'gray4'})}>
+                    Score: 0
+                  </p>
+                </div>
               </div>
-            </div>
+            ))}
           </div>
         </div>
       </div>
-      <Modal isOpen$={targetQuiz$} onClose={() => targetQuiz$.set(false)}>
+      <Modal isOpen$={!!targetQuiz$.use()} onClose={() => targetQuiz$.set(undefined)}>
         <form
           className={css({
             display: 'flex',
@@ -592,7 +385,7 @@ export default function Quizzes() {
             />
             <button
               type='button'
-              onClick={() => targetQuiz$.set(false)}
+              onClick={() => targetQuiz$.set(undefined)}
               className={css({
                 cursor: 'pointer',
                 alignSelf: 'flex-start',
@@ -657,7 +450,7 @@ export default function Quizzes() {
             </button>
             <button
               type='button'
-              onClick={() => targetQuiz$.set(false)}
+              onClick={() => targetQuiz$.set(undefined)}
               className={css({
                 pl: '10',
                 pr: '10',

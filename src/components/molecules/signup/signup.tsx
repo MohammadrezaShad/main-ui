@@ -82,7 +82,7 @@ export default function SignUp({
   };
 
   return (
-    <Modal onClose={onClose} isOpen$={isOpen$}>
+    <Modal onClose={onClose} isOpen$={isOpen$.use()}>
       <Container
         style={{height: '100%'}}
         onClick={e => e.stopPropagation()}
@@ -136,7 +136,7 @@ export default function SignUp({
             mt: '2',
           })}
         />
-        <h3
+        <h1
           className={css({
             textStyle: 'headline3',
             color: 'text.primary',
@@ -146,7 +146,7 @@ export default function SignUp({
           })}
         >
           Sign up for Waterlyst
-        </h3>
+        </h1>
         <div
           className={css({
             textAlign: 'center',

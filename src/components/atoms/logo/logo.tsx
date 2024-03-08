@@ -13,7 +13,7 @@ export default function Logo({className}: LogoProps) {
   const containerClass = cx(defaultClassName, className);
   return (
     <Container className={containerClass} href={Paths.Home.getPath()}>
-      <h1
+      <span
         className={css({
           color: 'text.primary',
           fontSize: '32px',
@@ -28,7 +28,7 @@ export default function Logo({className}: LogoProps) {
         >
           lyst
         </span>
-      </h1>
+      </span>
     </Container>
   );
 }

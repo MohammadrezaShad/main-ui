@@ -29,14 +29,15 @@ const PostDate = ({date}: Props) => (
       py: '1px',
     })}
   >
-    <span
+    <time
+      dateTime={convertDateFormat(date)}
       className={css({
         textStyle: 'body',
         color: 'text.invert',
       })}
     >
       {convertDateFormat(date)}
-    </span>
+    </time>
   </div>
 );
 

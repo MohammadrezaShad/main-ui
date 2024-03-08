@@ -1,7 +1,7 @@
 import {css} from '@styled/css';
 import {dehydrate} from '@tanstack/react-query';
 import {getCookie} from 'cookies-next';
-import {Metadata} from 'next';
+import type {Metadata} from 'next';
 import {cookies} from 'next/headers';
 
 import JsonLdScript from '@/components/shared/json-ld-script';
@@ -25,12 +25,24 @@ export async function generateMetadata({params}: {params: {articleId: string}}):
   }
   const post: ArticleType = data.article.findArticleByName.result;
   return {
-    title: post.title,
-    description: post.excerpt,
+    title: post.seoSetting?.general?.title ?? post.title,
+    description: post.seoSetting?.general?.description ?? post.excerpt,
     alternates: {
-      canonical: `/articles/${post.slug}`,
+      canonical:
+        post.seoSetting?.general?.canonicalUrl ??
+        `${process.env.NEXT_PUBLIC_BASE_URL}/articles/${post.slug}`,
     },
-    keywords: post.tags?.map(tag => tag.title).join(', '),
+    keywords: post.seoSetting?.general?.focusKeyword ?? post.tags?.map(tag => tag.title).join(', '),
+    authors: [{name: `${post.author.firstName} ${post.author.lastName}`}],
+    creator: `${post.author.firstName} ${post.author.lastName}`,
+    robots: {
+      follow: !post.seoSetting?.general?.nofollow,
+      index: !post.seoSetting?.general?.noindex,
+      googleBot: {
+        follow: !post.seoSetting?.general?.nofollow,
+        index: !post.seoSetting?.general?.noindex,
+      },
+    },
   };
 }
 

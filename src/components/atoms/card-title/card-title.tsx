@@ -1,5 +1,5 @@
-import React from 'react';
 import {css, cx} from '@styled/css';
+import React from 'react';
 
 interface Props {
   children: React.ReactNode;
@@ -16,7 +16,7 @@ const CardTitle = ({children, className}: Props) => {
     },
   });
   const titleClass = cx(defaultClassName, className);
-  return <h6 className={titleClass}>{children}</h6>;
+  return <div className={titleClass}>{children}</div>;
 };
 
 export default CardTitle;

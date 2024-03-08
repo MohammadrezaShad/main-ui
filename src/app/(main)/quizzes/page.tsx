@@ -2,15 +2,28 @@ import {css} from '@styled/css';
 import {dehydrate} from '@tanstack/react-query';
 
 import {QuizzesView} from '@/components';
+import {getBestUsers, getTopQuizzes, getTotalCount, getTotalGraphicalCount} from '@/graphql';
 import {getQueryClient} from '@/helpers';
 import {Hydrate} from '@/providers';
 
 const Page = async () => {
   const queryClient = getQueryClient();
-  //   await queryClient.prefetchQuery({
-  //     queryKey: ['search-articles', 18],
-  //     queryFn: () => searchArticles({status: StatusType.Publish, count: 18, page: 1}),
-  //   });
+  await queryClient.prefetchQuery({
+    queryKey: ['get-normal-quiz-count'],
+    queryFn: () => getTotalCount(),
+  });
+  await queryClient.prefetchQuery({
+    queryKey: ['get-graphical-quiz-count'],
+    queryFn: () => getTotalGraphicalCount(),
+  });
+  await queryClient.prefetchQuery({
+    queryKey: ['get-top-quizzes'],
+    queryFn: () => getTopQuizzes(),
+  });
+  await queryClient.prefetchQuery({
+    queryKey: ['get-best-user', 8],
+    queryFn: () => getBestUsers({count: 8}),
+  });
   const dehydratedState = dehydrate(queryClient);
   return (
     <div

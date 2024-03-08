@@ -1,9 +1,8 @@
 'use client';
 
+import {css} from '@styled/css';
 import * as React from 'react';
 import {createPortal} from 'react-dom';
-import {Observable} from '@legendapp/state';
-import {css} from '@styled/css';
 
 export default function Modal({
   children,
@@ -11,10 +10,10 @@ export default function Modal({
   onClose,
 }: {
   children: React.ReactNode;
-  isOpen$: Observable<boolean>;
+  isOpen$: boolean;
   onClose?: () => void;
 }) {
-  const isOpen = isOpen$.use();
+  const isOpen = isOpen$;
 
   // eslint-disable-next-line react/jsx-no-useless-fragment
   return isOpen

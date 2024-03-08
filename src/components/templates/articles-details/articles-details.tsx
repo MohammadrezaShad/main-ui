@@ -241,14 +241,14 @@ const Page = () => {
               gap: {mdDown: '4'},
             })}
           >
-            <h6
+            <div
               className={css({
                 textStyle: 'h4',
                 color: 'text.primary',
               })}
             >
               Download or read the full article as a PDF
-            </h6>
+            </div>
             <Box
               className={css({
                 display: 'flex',
@@ -323,7 +323,7 @@ const Page = () => {
             mb: '10',
           })}
         >
-          <h3
+          <div
             className={css({
               textStyle: 'headline3',
               color: 'text.primary',
@@ -331,7 +331,7 @@ const Page = () => {
             })}
           >
             Related Articles
-          </h3>
+          </div>
 
           <RecentArticles posts={relatedArticles} />
         </div>

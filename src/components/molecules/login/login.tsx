@@ -94,7 +94,7 @@ export default function Login({
   }, [data]);
 
   return (
-    <Modal onClose={onClose} isOpen$={isOpen$}>
+    <Modal onClose={onClose} isOpen$={isOpen$.use()}>
       <div
         style={{height: '100%'}}
         className={css({
@@ -140,7 +140,7 @@ export default function Login({
             mt: '2',
           })}
         />
-        <h3
+        <h1
           className={css({
             textStyle: 'headline3',
             color: 'text.primary',
@@ -150,7 +150,7 @@ export default function Login({
           })}
         >
           Sign in to Waterlyst
-        </h3>
+        </h1>
         <p
           className={css({
             textStyle: 'body2',

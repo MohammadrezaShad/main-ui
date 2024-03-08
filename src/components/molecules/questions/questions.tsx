@@ -7,14 +7,14 @@ import {Expandable} from '..';
 
 const Questions = ({faqs}: {faqs: FaqType[]}) => (
   <>
-    <h3
+    <div
       className={css({
         textStyle: 'headline3',
         color: 'text.primary',
       })}
     >
       Questions? Look here.
-    </h3>
+    </div>
     <p
       className={css({
         textStyle: 'body2',
