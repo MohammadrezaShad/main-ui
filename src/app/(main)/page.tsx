@@ -5,7 +5,10 @@ import {StatusType, searchArticles, searchCategories} from '@/graphql';
 import {getQueryClient} from '@/helpers';
 import {Hydrate} from '@/providers';
 
+import {unstable_noStore as noStore} from 'next/cache';
+
 export default async function Home() {
+  noStore();
   const queryClient = getQueryClient();
   await queryClient.prefetchInfiniteQuery({
     queryKey: ['search-articles-home'],
