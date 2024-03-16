@@ -10,7 +10,13 @@ import {CookieName} from '@/constants';
 import {ArticleType, StatusType, findArticleByName, searchArticles} from '@/graphql';
 import {getQueryClient} from '@/helpers';
 import {Hydrate} from '@/providers';
-import {getBlogArticleSchema, getBreadCrumbListSchema, getOrganizationSchema} from '@/utils';
+import {
+  getBlogArticleSchema,
+  getBreadCrumbListSchema,
+  getFAQSchema,
+  getOrganizationSchema,
+  getPersonSchema,
+} from '@/utils';
 
 export const revalidate = 3600;
 
@@ -85,6 +91,8 @@ const Page = async ({params}: {params: {articleId: string}}) => {
     >
       <JsonLdScript id='organization' data={getOrganizationSchema()} />
       <JsonLdScript id={params.articleId} data={getBlogArticleSchema(post)} />
+      <JsonLdScript id={post.author._id} data={getPersonSchema(post.author)} />
+      {post.faqs && <JsonLdScript id='faqs' data={getFAQSchema(post.faqs)} />}
       <JsonLdScript
         id='breadcrumbs'
         data={getBreadCrumbListSchema([{title: 'Articles', pathName: '/articles'}], post.title)}
