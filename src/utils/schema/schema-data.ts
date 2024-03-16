@@ -1,6 +1,13 @@
-import {Article, CreativeWorkSeries, EntertainmentBusiness, WithContext} from 'schema-dts';
+import {
+  Article,
+  CreativeWorkSeries,
+  EntertainmentBusiness,
+  FAQPage,
+  Person,
+  WithContext,
+} from 'schema-dts';
 
-import {ArticleType} from '@/graphql';
+import {ArticleType, FaqInputType, UserOutputType} from '@/graphql';
 import {formatDate} from '../format-date';
 
 type Crumb = {
@@ -129,6 +136,27 @@ export const getLocalBusinessSchema = (): WithContext<EntertainmentBusiness> => 
     longitude: '49.59389723629701',
     latitude: '37.27634796425523',
   },
+});
+
+export const getPersonSchema = (author: UserOutputType): WithContext<Person> => ({
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: `${author.firstName} ${author.lastName}`,
+  url: author.website ?? '',
+  image: `${process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL}/${author.avatar?._id}`,
+});
+
+export const getFAQSchema = (faqs: FaqInputType[]): WithContext<FAQPage> => ({
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(faq => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: faq.answer,
+    },
+  })),
 });
 
 export const searchActionSchema = {
