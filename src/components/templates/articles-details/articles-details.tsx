@@ -196,7 +196,7 @@ const Page = () => {
         >
           <ArticleInfo
             articleId={article._id}
-            author={article.author}
+            author={article.author!}
             readingDuration={article.readingDuration}
             handleToggleBookmark={handleToggleBookmark}
             isBookmark={article.isBookmark}
@@ -313,7 +313,7 @@ const Page = () => {
         <SocialMediaLinks links={socialMediaLinks} />
       </Box>
       {article.faqs ? <Questions faqs={article.faqs} /> : null}
-      <UserInfo author={article.author} />
+      <UserInfo author={article.author!} />
 
       {relatedArticles.length > 0 ? (
         <div

@@ -65,6 +65,7 @@ export async function findArticleByName(
               width
             }
             title
+            hasPdf
           }
         }
       }

@@ -15,11 +15,12 @@ import 'swiper/css/pagination';
 
 interface Props {
   slides: Array<ArticleType>;
+  hasPdf?: boolean;
 }
 
 const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL!;
 
-const Slider = ({slides}: Props) => (
+const Slider = ({slides, hasPdf}: Props) => (
   <Swiper
     autoplay
     pagination={{type: 'bullets', clickable: true}}
@@ -103,7 +104,7 @@ const Slider = ({slides}: Props) => (
             </p>
             <Box zIndex='50' mt='4'>
               <Link
-                href={`/articles/${slide.slug}`}
+                href={`/${hasPdf ? 'pdf-articles' : 'articles'}/${slide.slug}`}
                 className={css({
                   border: '1px solid token(colors.gray3)',
                   color: 'gray3',

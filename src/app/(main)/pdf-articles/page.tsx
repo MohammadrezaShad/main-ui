@@ -13,11 +13,11 @@ const Page = async () => {
   const queryClient = getQueryClient();
   await queryClient.prefetchQuery({
     queryKey: ['top-three-articles'],
-    queryFn: () => searchArticles({status: StatusType.Publish, count: 6, hasPdf: false}),
+    queryFn: () => searchArticles({status: StatusType.Publish, count: 6, hasPdf: true}),
   });
   await queryClient.prefetchQuery({
     queryKey: ['search-articles', 1],
-    queryFn: () => searchArticles({status: StatusType.Publish, count: 18, page: 1, hasPdf: false}),
+    queryFn: () => searchArticles({status: StatusType.Publish, count: 18, page: 1, hasPdf: true}),
   });
   const dehydratedState = dehydrate(queryClient);
   return (
@@ -32,7 +32,7 @@ const Page = async () => {
       })}
     >
       <Hydrate state={dehydratedState}>
-        <ArticlesView hasPdf={false} />
+        <ArticlesView hasPdf />
       </Hydrate>
     </div>
   );

@@ -24,12 +24,13 @@ export type AnswerItem = {
 };
 
 export type ArticleInputType = {
-  author: UserOutputInputType;
+  author?: InputMaybe<UserOutputInputType>;
   categories?: InputMaybe<Array<CategoryInputType>>;
   content: Scalars['String']['input'];
   createUser?: InputMaybe<UserOutputInputType>;
   excerpt?: InputMaybe<Scalars['String']['input']>;
   faqs?: InputMaybe<Array<FaqInputType>>;
+  hasPdf?: InputMaybe<Scalars['Boolean']['input']>;
   publishDate?: InputMaybe<Scalars['DateTime']['input']>;
   readingDuration?: InputMaybe<Scalars['Int']['input']>;
   reports?: InputMaybe<Array<Scalars['String']['input']>>;
@@ -112,7 +113,7 @@ export type ArticleQuerySearchArticlesArgs = {
 export type ArticleType = {
   __typename?: 'ArticleType';
   _id: Scalars['String']['output'];
-  author: UserOutputType;
+  author?: Maybe<UserOutputType>;
   categories?: Maybe<Array<CategoryType>>;
   commentsCount: Scalars['Int']['output'];
   content: Scalars['String']['output'];
@@ -121,6 +122,7 @@ export type ArticleType = {
   engagementCount: Scalars['Int']['output'];
   excerpt?: Maybe<Scalars['String']['output']>;
   faqs?: Maybe<Array<FaqType>>;
+  hasPdf?: Maybe<Scalars['Boolean']['output']>;
   isBookmark: Scalars['Boolean']['output'];
   isUserFavorite: Scalars['Boolean']['output'];
   likeCount: Scalars['Int']['output'];
@@ -522,10 +524,12 @@ export type CreateAdminCommentInput = {
 };
 
 export type CreateArticleInput = {
+  author?: InputMaybe<Scalars['String']['input']>;
   categories?: InputMaybe<Array<Scalars['String']['input']>>;
   content: Scalars['String']['input'];
   excerpt?: InputMaybe<Scalars['String']['input']>;
   faqs?: InputMaybe<Array<FaqInputType>>;
+  hasPdf?: InputMaybe<Scalars['Boolean']['input']>;
   publishDate?: InputMaybe<Scalars['DateTime']['input']>;
   readingDuration?: InputMaybe<Scalars['Int']['input']>;
   reports?: InputMaybe<Array<Scalars['String']['input']>>;
@@ -1582,6 +1586,7 @@ export type SearchArticleInput = {
   authors?: InputMaybe<Array<Scalars['String']['input']>>;
   categories?: InputMaybe<Array<Scalars['String']['input']>>;
   count?: InputMaybe<Scalars['Int']['input']>;
+  hasPdf?: InputMaybe<Scalars['Boolean']['input']>;
   isPublishing?: InputMaybe<Scalars['Boolean']['input']>;
   page?: InputMaybe<Scalars['Int']['input']>;
   showMyPosts?: InputMaybe<Scalars['Boolean']['input']>;
@@ -2011,10 +2016,12 @@ export type TopQuizzesOutput = {
 };
 
 export type UpdateArticleInput = {
+  author?: InputMaybe<Scalars['String']['input']>;
   categories?: InputMaybe<Array<Scalars['String']['input']>>;
   content?: InputMaybe<Scalars['String']['input']>;
   excerpt?: InputMaybe<Scalars['String']['input']>;
   faqs?: InputMaybe<Array<FaqInputType>>;
+  hasPdf?: InputMaybe<Scalars['Boolean']['input']>;
   id: Scalars['String']['input'];
   publishDate?: InputMaybe<Scalars['DateTime']['input']>;
   readingDuration?: InputMaybe<Scalars['Int']['input']>;
