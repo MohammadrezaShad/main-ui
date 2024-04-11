@@ -15,6 +15,9 @@ const Navbar = () => {
       <Item _isActive={isActive('/articles') || undefined}>
         <Link href='/articles'>Articles</Link>
       </Item>
+      <Item _isActive={isActive('/pdf-articles') || undefined}>
+        <Link href='/pdf-articles'>PDF Articles</Link>
+      </Item>
       <Item _isActive={isActive('/about') || undefined}>
         <Link href='/'>About</Link>
       </Item>

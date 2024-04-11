@@ -61,7 +61,7 @@ export const getBlogArticleSchema = (article: ArticleType): WithContext<Article>
     : '',
   author: {
     '@type': 'Person',
-    name: `${article.author.firstName} ${article.author.lastName}`,
+    name: `${article.author?.firstName} ${article.author?.lastName}`,
   },
   publisher: {
     '@type': 'Organization',

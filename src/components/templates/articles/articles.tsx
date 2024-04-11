@@ -16,18 +16,18 @@ import 'swiper/css/pagination';
 import {ArticleType, StatusType, searchArticles} from '@/graphql';
 import {Pagination} from './articles.styled';
 
-const Page = () => {
+const Page = ({hasPdf}: {hasPdf: boolean}) => {
   const [page, setPage] = useState(1);
   const READMORE_PAGE_COUNT = 12;
 
   const topThreeArticlesQuery = useQuery({
     queryKey: ['top-three-articles'],
-    queryFn: () => searchArticles({status: StatusType.Publish, count: 6}),
+    queryFn: () => searchArticles({status: StatusType.Publish, count: 6, hasPdf}),
   }) as any;
 
   const {data, refetch} = useQuery({
     queryKey: ['search-articles', page],
-    queryFn: () => searchArticles({status: StatusType.Publish, count: 18, page}),
+    queryFn: () => searchArticles({status: StatusType.Publish, count: 18, page, hasPdf}),
     placeholderData: keepPreviousData,
   }) as any;
 
@@ -47,11 +47,11 @@ const Page = () => {
   return (
     <>
       <Box className={css({mx: {mdDown: '-4'}})}>
-        <Slider slides={topThreeArticles.slice(0, 3)} />
+        <Slider hasPdf={hasPdf} slides={topThreeArticles.slice(0, 3)} />
       </Box>
-      <RecentArticles posts={topThreeArticles.slice(3, 6)} />
+      <RecentArticles hasPdf={hasPdf} posts={topThreeArticles.slice(3, 6)} />
       <Divider label='Keep Reading' />
-      <Articles articles={page === 1 ? articles.slice(6) : articles} />
+      <Articles hasPdf={hasPdf} articles={page === 1 ? articles.slice(6) : articles} />
       <div
         className={css({
           mt: 6,

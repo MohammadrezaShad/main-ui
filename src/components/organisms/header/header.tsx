@@ -22,7 +22,6 @@ interface HeaderProps {}
 export default function Header(props: HeaderProps) {
   const {isLoginOpen$, isSignUpOpen$} = useAuthContext();
   const isOpen$ = useObservable(false);
-  const isClient$ = useObservable(false);
   const authToken = getCookie(CookieName.AUTH_TOKEN)!;
   const {data} = useQuery({
     queryKey: ['get-profile'],
