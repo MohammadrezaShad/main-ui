@@ -11,7 +11,7 @@ const QuizCard = ({quiz, getQuizInfo}: {quiz: QuizType; getQuizInfo: any}) => (
     className={css({
       display: 'flex',
       flexDir: 'column',
-      w: '33%',
+      w: '100%',
       mdDown: {ml: '0', w: 'full'},
     })}
   >

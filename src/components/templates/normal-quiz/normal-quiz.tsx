@@ -4,7 +4,7 @@ import {css} from '@styled/css';
 import Image from 'next/image';
 import {useEffect, useState} from 'react';
 
-import {coin} from '@/assets';
+import {IconCheck, coin} from '@/assets';
 import RadioButton from '@/components/atoms/radio-button/radio-button';
 import {CookieName} from '@/constants';
 import {EndQuizInput, OptionType, QuestionType, QuizType, endQuiz, findQuizById} from '@/graphql';
@@ -16,6 +16,11 @@ import {useParams, useRouter} from 'next/navigation';
 import {toast} from 'react-toastify';
 import {Maybe} from 'yup';
 
+interface Answer {
+  answer: string;
+  question: string;
+}
+
 const WaterSavingQuiz = () => {
   const router = useRouter();
   const params = useParams();
@@ -24,15 +29,33 @@ const WaterSavingQuiz = () => {
     queryFn: () => findQuizById({id: params.quizId as string}),
   });
   const quiz = data?.result;
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+
+  const handleClickNext = () => {
+    if (!data || !data.result) return;
+    if (
+      currentQuestionIndex + 1 <= data?.result?.questions.length &&
+      !answers[currentQuestionIndex]
+    ) {
+      toast.error('Please select an answer');
+      return;
+    }
+    setCurrentQuestionIndex(prev => prev + 1);
+  };
+
+  const handleClickBack = () => {
+    if (currentQuestionIndex === 0) return;
+    setCurrentQuestionIndex(prev => prev - 1);
+  };
 
   const endQuizMutation = useMutation({
     mutationFn: ({args, token}: {args: EndQuizInput; token: string}) => endQuiz(args, token),
   });
-  const [answers, setAnswers] = useState<{answer: string; question: string}[]>([]);
+  const [answers, setAnswers] = useState<Answer[]>([]);
 
   const handleSetAnswer = (questionId: string, answer: string) => {
     const questionIndex = answers.findIndex(currentAnswer => currentAnswer.question === questionId);
-    if (questionIndex) {
+    if (questionIndex === -1) {
       setAnswers(prev => [...prev, {question: questionId, answer}]);
     } else {
       const newAnswers = [...answers];
@@ -69,14 +92,32 @@ const WaterSavingQuiz = () => {
 
   return (
     <section className={css({display: 'flex', flexDir: 'column', bgColor: 'white'})}>
-      <QuizHeader quiz={quiz} />
-      <QuizContent questions={quiz?.questions ?? []} onSetAnswer={handleSetAnswer} />
-      <QuizEndButton handleClick={handleClick} />
+      <QuizHeader quiz={quiz} answers={answers} currentIndex={currentQuestionIndex} />
+      {currentQuestionIndex + 1 <= (data?.result?.questions.length || 0) ? (
+        <QuizContent
+          questions={quiz?.questions ?? []}
+          onSetAnswer={handleSetAnswer}
+          currentIndex={currentQuestionIndex}
+          onBack={handleClickBack}
+          onNext={handleClickNext}
+          answers={answers}
+        />
+      ) : (
+        <QuizEndButton handleClick={handleClick} />
+      )}
     </section>
   );
 };
 
-const QuizHeader = ({quiz}: {quiz: Maybe<QuizType> | undefined}) => {
+const QuizHeader = ({
+  quiz,
+  answers,
+  currentIndex,
+}: {
+  quiz: Maybe<QuizType> | undefined;
+  answers: Answer[];
+  currentIndex: number;
+}) => {
   const {timeRemaining, percentageRemaining, isTimeout} = useCountdownTimer(quiz?.duration ?? 300);
 
   useEffect(() => {
@@ -121,7 +162,7 @@ const QuizHeader = ({quiz}: {quiz: Maybe<QuizType> | undefined}) => {
               textStyle: 'title2',
             })}
           >
-            Water Saving Quiz
+            {quiz?.title}
           </h1>
           <div
             className={css({
@@ -205,11 +246,50 @@ const QuizHeader = ({quiz}: {quiz: Maybe<QuizType> | undefined}) => {
           </div>
         </div>
       </div>
+      <div className={css({display: 'flex', alignItems: 'center', gap: '2', mt: '9'})}>
+        {Array.from({length: quiz?.questions.length || 0}).map((_, index) => {
+          return (
+            <div
+              className={css({
+                display: 'grid',
+                placeContent: 'center',
+                w: '6',
+                h: '6',
+                bgColor: !!answers[index] ? '#62C2CE' : 'gray.300',
+              })}
+            >
+              {!!answers[index] && (
+                <IconCheck
+                  className={css({
+                    '& path': {
+                      fill: '#FFF',
+                    },
+                  })}
+                />
+              )}
+            </div>
+          );
+        })}
+      </div>
     </header>
   );
 };
 
-const QuizContent = ({questions, onSetAnswer}: {questions: QuestionType[]; onSetAnswer: any}) => (
+const QuizContent = ({
+  questions,
+  onSetAnswer,
+  currentIndex,
+  onBack,
+  onNext,
+  answers,
+}: {
+  questions: QuestionType[];
+  onSetAnswer: any;
+  currentIndex: number;
+  onBack: any;
+  onNext: any;
+  answers: Answer[];
+}) => (
   <div
     className={css({
       pt: '9',
@@ -225,16 +305,76 @@ const QuizContent = ({questions, onSetAnswer}: {questions: QuestionType[]; onSet
     })}
   >
     <div className={css({display: 'flex', gap: '5', flexDir: 'column', mdDown: {gap: '0'}})}>
-      {questions.map((question, index) => (
-        <>
-          <QuizQuestion key={question._id} question={question} index={index + 1} />
-          <QuizOptions
-            questionId={question._id}
-            handleClick={onSetAnswer}
-            options={question.options}
-          />
-        </>
-      ))}
+      <>
+        <QuizQuestion
+          key={questions[currentIndex]._id}
+          question={questions[currentIndex]}
+          index={currentIndex + 1}
+        />
+        <QuizOptions
+          questionId={questions[currentIndex]._id}
+          handleClick={onSetAnswer}
+          options={questions[currentIndex].options}
+          answers={answers}
+          currentIndex={currentIndex}
+        />
+        <div
+          className={css({
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'flex-end',
+            gap: '8',
+          })}
+        >
+          <button
+            type='button'
+            className={css({
+              justifyContent: 'center',
+              alignSelf: 'center',
+              pl: '12',
+              pr: '12',
+              pt: '3',
+              pb: '3',
+              mt: '8',
+              fontSize: 'base',
+              lineHeight: 'base',
+              textAlign: 'center',
+              color: 'gray.400',
+              whiteSpace: 'nowrap',
+              border: '1px solid token(colors.gray3)',
+              bgColor: 'white',
+              mdDown: {pl: '5', pr: '5'},
+              cursor: 'pointer',
+            })}
+            onClick={onBack}
+          >
+            Prev
+          </button>
+          <button
+            type='button'
+            className={css({
+              justifyContent: 'center',
+              alignSelf: 'center',
+              pl: '12',
+              pr: '12',
+              pt: '3',
+              pb: '3',
+              mt: '8',
+              fontSize: 'base',
+              lineHeight: 'base',
+              textAlign: 'center',
+              color: 'white',
+              whiteSpace: 'nowrap',
+              bgColor: 'sky.400',
+              mdDown: {pl: '5', pr: '5'},
+              cursor: 'pointer',
+            })}
+            onClick={onNext}
+          >
+            Next
+          </button>
+        </div>
+      </>
     </div>
   </div>
 );
@@ -265,10 +405,14 @@ const QuizOptions = ({
   handleClick,
   options,
   questionId,
+  answers,
+  currentIndex,
 }: {
   handleClick: any;
   options: OptionType[];
   questionId: string;
+  answers: Answer[];
+  currentIndex: number;
 }) => (
   <div
     className={css({
@@ -308,6 +452,7 @@ const QuizOptions = ({
             id={`option1-${questionId}`}
             name={`id-${questionId}`}
             onClick={() => handleClick(questionId, options[0].answer)}
+            checked={answers[currentIndex]?.answer === options[0].answer}
           />
           <div className={css({mt: 'auto', mb: 'auto'})}>{options[0].answer}</div>
         </label>
@@ -326,6 +471,7 @@ const QuizOptions = ({
             id={`option2-${questionId}`}
             name={`id-${questionId}`}
             onClick={() => handleClick(questionId, options[1].answer)}
+            checked={answers[currentIndex]?.answer === options[1].answer}
           />
           <div className={css({mt: 'auto', mb: 'auto'})}>{options[1].answer}</div>
         </label>
@@ -345,6 +491,7 @@ const QuizOptions = ({
             id={`option3-${questionId}`}
             name={`id-${questionId}`}
             onClick={() => handleClick(questionId, options[2].answer)}
+            checked={answers[currentIndex]?.answer === options[2].answer}
           />
           <div className={css({mt: 'auto', mb: 'auto'})}>{options[2].answer}</div>
         </label>
@@ -364,6 +511,7 @@ const QuizOptions = ({
             id={`option4-${questionId}`}
             name={`id-${questionId}`}
             onClick={() => handleClick(questionId, options[3].answer)}
+            checked={answers[currentIndex]?.answer === options[3].answer}
           />
           <div className={css({mt: 'auto', mb: 'auto'})}>{options[3].answer}</div>
         </label>
@@ -373,29 +521,84 @@ const QuizOptions = ({
 );
 
 const QuizEndButton = ({handleClick}: {handleClick: any}) => (
-  <button
-    type='button'
+  <div
     className={css({
+      border: '1px solid token(colors.gray2)',
+      display: 'flex',
+      flexDir: 'column',
+      gap: '4',
+      alignItems: 'center',
       justifyContent: 'center',
-      alignSelf: 'center',
-      pl: '12',
-      pr: '12',
-      pt: '3',
-      pb: '3',
-      mt: '8',
-      fontSize: 'base',
-      lineHeight: 'base',
-      textAlign: 'center',
-      color: 'white',
-      whiteSpace: 'nowrap',
-      bgColor: 'sky.400',
-      mdDown: {pl: '5', pr: '5'},
-      cursor: 'pointer',
+      p: '8',
+      mt: '4',
     })}
-    onClick={handleClick}
   >
-    End
-  </button>
+    <Image
+      unoptimized
+      width={128}
+      height={128}
+      src={coin}
+      alt=''
+      className={css({
+        w: '16',
+        h: '16',
+        aspectRatio: 'square',
+        objectFit: 'contain',
+        objectPosition: 'center',
+        overflow: 'hidden',
+        flexShrink: '0',
+        mdDown: {w: '32', h: '32'},
+      })}
+    />
+    <div
+      className={css({
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: '8',
+      })}
+    >
+      <p
+        className={css({
+          textStyle: 'body',
+          color: 'success',
+        })}
+      >
+        4 Correct Answers
+      </p>
+      <p
+        className={css({
+          textStyle: 'body',
+          color: 'danger',
+        })}
+      >
+        1 Wrong Answer
+      </p>
+    </div>
+    <button
+      type='button'
+      className={css({
+        justifyContent: 'center',
+        alignSelf: 'center',
+        pl: '12',
+        pr: '12',
+        pt: '3',
+        pb: '3',
+        mt: '4',
+        fontSize: 'base',
+        lineHeight: 'base',
+        textAlign: 'center',
+        color: 'white',
+        whiteSpace: 'nowrap',
+        bgColor: 'sky.400',
+        mdDown: {pl: '5', pr: '5'},
+        cursor: 'pointer',
+      })}
+      onClick={handleClick}
+    >
+      Collect your 240 points
+    </button>
+  </div>
 );
 
 export default WaterSavingQuiz;
