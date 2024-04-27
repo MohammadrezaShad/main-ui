@@ -2,17 +2,17 @@
 
 import {css} from '@styled/css';
 import Image from 'next/image';
-import {useEffect, useState} from 'react';
+import {useState} from 'react';
 
 import {IconCheck, coin} from '@/assets';
 import RadioButton from '@/components/atoms/radio-button/radio-button';
 import {CookieName} from '@/constants';
 import {EndQuizInput, OptionType, QuestionType, QuizType, endQuiz, findQuizById} from '@/graphql';
-import useCountdownTimer from '@/hooks/use-countdown-timer';
 import {Paths} from '@/utils';
 import {useMutation, useQuery} from '@tanstack/react-query';
 import {getCookie} from 'cookies-next';
-import {useParams, useRouter} from 'next/navigation';
+import Link from 'next/link';
+import {useParams} from 'next/navigation';
 import {toast} from 'react-toastify';
 import {Maybe} from 'yup';
 
@@ -22,8 +22,10 @@ interface Answer {
 }
 
 const WaterSavingQuiz = () => {
-  const router = useRouter();
   const params = useParams();
+  const [correctAnswerCount, setCorrectAnswerCount] = useState(0);
+  const [wrongAnswerCount, setWrongAnswerCount] = useState(0);
+  const [gainedCoins, setGainedCoins] = useState(0);
   const {data} = useQuery({
     queryKey: ['find-quiz-by-id', params.quizId],
     queryFn: () => findQuizById({id: params.quizId as string}),
@@ -32,7 +34,6 @@ const WaterSavingQuiz = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
   const handleClickNext = () => {
-    // !TODO: CALL END QUIZ ON LAST QUESTION
     if (!data || !data.result) return;
     if (
       currentQuestionIndex + 1 <= data?.result?.questions.length &&
@@ -40,6 +41,9 @@ const WaterSavingQuiz = () => {
     ) {
       toast.error('Please select an answer');
       return;
+    }
+    if (currentQuestionIndex + 1 === quiz?.questions.length) {
+      handleClick();
     }
     setCurrentQuestionIndex(prev => prev + 1);
   };
@@ -67,18 +71,17 @@ const WaterSavingQuiz = () => {
 
   const handleClick = async () => {
     const token = getCookie(CookieName.AUTH_TOKEN);
-    // Handle button click event
     if (token) {
       try {
-        await endQuizMutation.mutateAsync({
+        const data = await endQuizMutation.mutateAsync({
           args: {quiz: params.quizId as string, answers},
           token,
         });
-        if (endQuizMutation.data?.success) {
+        if (data?.success) {
+          setCorrectAnswerCount(data.correctAnswerCount);
+          setWrongAnswerCount(data.wrongAnswerCount);
+          setGainedCoins(data.gainedCoins);
           toast.success('Quiz successfully complete');
-          setTimeout(() => {
-            router.push(`${Paths.Quiz.getPath()}/normal`);
-          }, 1000);
         } else {
           toast.error(
             endQuizMutation.error?.message ??
@@ -93,7 +96,7 @@ const WaterSavingQuiz = () => {
 
   return (
     <section className={css({display: 'flex', flexDir: 'column', bgColor: 'white'})}>
-      <QuizHeader quiz={quiz} answers={answers} currentIndex={currentQuestionIndex} />
+      <QuizHeader quiz={quiz} answers={answers} />
       {currentQuestionIndex + 1 <= (data?.result?.questions.length || 0) ? (
         <QuizContent
           questions={quiz?.questions ?? []}
@@ -104,30 +107,18 @@ const WaterSavingQuiz = () => {
           answers={answers}
         />
       ) : (
-        <QuizEndButton handleClick={handleClick} />
+        <QuizEndButton
+          handleClick={handleClick}
+          correct={correctAnswerCount}
+          wrong={wrongAnswerCount}
+          coins={gainedCoins}
+        />
       )}
     </section>
   );
 };
 
-const QuizHeader = ({
-  quiz,
-  answers,
-  currentIndex,
-}: {
-  quiz: Maybe<QuizType> | undefined;
-  answers: Answer[];
-  currentIndex: number;
-}) => {
-  const {timeRemaining, percentageRemaining, isTimeout} = useCountdownTimer(quiz?.duration ?? 300);
-
-  useEffect(() => {
-    if (isTimeout) {
-      alert('Time is up!');
-      console.log('Time is up!');
-    }
-  }, [isTimeout]);
-
+const QuizHeader = ({quiz, answers}: {quiz: Maybe<QuizType> | undefined; answers: Answer[]}) => {
   return (
     <header
       className={css({
@@ -145,7 +136,7 @@ const QuizHeader = ({
         className={css({
           display: 'flex',
           gap: '5',
-          justifyContent: 'center',
+          justifyContent: 'start',
           alignItems: 'flex-start',
           alignSelf: 'flex-end',
           maxW: 'full',
@@ -165,45 +156,6 @@ const QuizHeader = ({
           >
             {quiz?.title}
           </h1>
-          {currentIndex + 1 <= (quiz?.questions.length || 0) && (
-            <>
-              <div
-                className={css({
-                  display: 'flex',
-                  flexDir: 'column',
-                  justifyContent: 'center',
-                  // pr: '9',
-                  mt: '6',
-                  w: '64',
-                  maxW: 'full',
-                  bgColor: 'gray.200',
-                  mdDown: {pr: '5'},
-                })}
-              >
-                <div
-                  style={{width: `${percentageRemaining}%`}}
-                  className={css({
-                    flexShrink: '0',
-                    h: '2.5',
-                    bgColor: 'primary',
-                    transition: 'width 1s ease',
-                  })}
-                />
-              </div>
-              <div
-                className={css({
-                  mt: '2',
-                  fontSize: 'xs',
-                  lineHeight: 'xs',
-                  fontWeight: 'light',
-                  whiteSpace: 'nowrap',
-                  color: 'zinc.800',
-                })}
-              >
-                Time Remaining: {timeRemaining}
-              </div>
-            </>
-          )}
         </div>
         <div
           className={css({
@@ -525,7 +477,17 @@ const QuizOptions = ({
   </div>
 );
 
-const QuizEndButton = ({handleClick}: {handleClick: any}) => (
+const QuizEndButton = ({
+  handleClick,
+  coins,
+  correct,
+  wrong,
+}: {
+  handleClick: any;
+  wrong: number;
+  correct: number;
+  coins: number;
+}) => (
   <div
     className={css({
       border: '1px solid token(colors.gray2)',
@@ -569,7 +531,7 @@ const QuizEndButton = ({handleClick}: {handleClick: any}) => (
           color: 'success',
         })}
       >
-        4 Correct Answers
+        {correct} Correct Answers
       </p>
       <p
         className={css({
@@ -577,11 +539,11 @@ const QuizEndButton = ({handleClick}: {handleClick: any}) => (
           color: 'danger',
         })}
       >
-        1 Wrong Answer
+        {wrong}Wrong Answers
       </p>
     </div>
-    <button
-      type='button'
+    <Link
+      href={`${Paths.Quiz.getPath()}/normal`}
       className={css({
         justifyContent: 'center',
         alignSelf: 'center',
@@ -599,10 +561,9 @@ const QuizEndButton = ({handleClick}: {handleClick: any}) => (
         mdDown: {pl: '5', pr: '5'},
         cursor: 'pointer',
       })}
-      onClick={handleClick}
     >
-      Collect your 240 points
-    </button>
+      Collect your {coins} points
+    </Link>
   </div>
 );
 
