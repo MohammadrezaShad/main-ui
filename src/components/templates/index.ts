@@ -3,6 +3,7 @@ export * from './author';
 export * from './categories';
 export * from './category-articles';
 export * from './collections';
+export * from './graphical-quiz';
 export * from './graphical-quizzes';
 export * from './home';
 export * from './normal-quiz';

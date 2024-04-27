@@ -32,6 +32,7 @@ const WaterSavingQuiz = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
   const handleClickNext = () => {
+    // !TODO: CALL END QUIZ ON LAST QUESTION
     if (!data || !data.result) return;
     if (
       currentQuestionIndex + 1 <= data?.result?.questions.length &&
@@ -164,41 +165,45 @@ const QuizHeader = ({
           >
             {quiz?.title}
           </h1>
-          <div
-            className={css({
-              display: 'flex',
-              flexDir: 'column',
-              justifyContent: 'center',
-              // pr: '9',
-              mt: '6',
-              w: '64',
-              maxW: 'full',
-              bgColor: 'gray.200',
-              mdDown: {pr: '5'},
-            })}
-          >
-            <div
-              style={{width: `${percentageRemaining}%`}}
-              className={css({
-                flexShrink: '0',
-                h: '2.5',
-                bgColor: 'primary',
-                transition: 'width 1s ease',
-              })}
-            />
-          </div>
-          <div
-            className={css({
-              mt: '2',
-              fontSize: 'xs',
-              lineHeight: 'xs',
-              fontWeight: 'light',
-              whiteSpace: 'nowrap',
-              color: 'zinc.800',
-            })}
-          >
-            Time Remaining: {timeRemaining}
-          </div>
+          {currentIndex + 1 <= (quiz?.questions.length || 0) && (
+            <>
+              <div
+                className={css({
+                  display: 'flex',
+                  flexDir: 'column',
+                  justifyContent: 'center',
+                  // pr: '9',
+                  mt: '6',
+                  w: '64',
+                  maxW: 'full',
+                  bgColor: 'gray.200',
+                  mdDown: {pr: '5'},
+                })}
+              >
+                <div
+                  style={{width: `${percentageRemaining}%`}}
+                  className={css({
+                    flexShrink: '0',
+                    h: '2.5',
+                    bgColor: 'primary',
+                    transition: 'width 1s ease',
+                  })}
+                />
+              </div>
+              <div
+                className={css({
+                  mt: '2',
+                  fontSize: 'xs',
+                  lineHeight: 'xs',
+                  fontWeight: 'light',
+                  whiteSpace: 'nowrap',
+                  color: 'zinc.800',
+                })}
+              >
+                Time Remaining: {timeRemaining}
+              </div>
+            </>
+          )}
         </div>
         <div
           className={css({

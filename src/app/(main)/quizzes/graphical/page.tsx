@@ -2,15 +2,21 @@ import {css} from '@styled/css';
 import {dehydrate} from '@tanstack/react-query';
 
 import {GraphicalQuizzesView} from '@/components';
+import {CookieName} from '@/constants';
+import {searchGraphicalQuizzes} from '@/graphql';
 import {getQueryClient} from '@/helpers';
 import {Hydrate} from '@/providers';
+import {cookies} from 'next/headers';
 
 const Page = async () => {
+  const cookieStore = cookies();
+  const authToken = cookieStore.get(CookieName.AUTH_TOKEN)?.value || '';
   const queryClient = getQueryClient();
-  //   await queryClient.prefetchQuery({
-  //     queryKey: ['search-articles', 18],
-  //     queryFn: () => searchArticles({status: StatusType.Publish, count: 18, page: 1}),
-  //   });
+  await queryClient.prefetchInfiniteQuery({
+    queryKey: ['search-graphical-quizzes'],
+    queryFn: () => searchGraphicalQuizzes({count: 12, page: 1}, authToken),
+    initialPageParam: 1,
+  });
   const dehydratedState = dehydrate(queryClient);
   return (
     <div

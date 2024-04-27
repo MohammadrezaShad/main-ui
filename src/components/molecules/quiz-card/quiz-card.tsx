@@ -1,12 +1,12 @@
 'use client';
 
-import {QuizType} from '@/graphql';
+import {GraphicalQuizType, QuizType} from '@/graphql';
 import {css} from '@styled/css';
 import Image from 'next/image';
 
 const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
 
-const QuizCard = ({quiz, getQuizInfo}: {quiz: QuizType; getQuizInfo: any}) => (
+const QuizCard = ({quiz, getQuizInfo}: {quiz: QuizType | GraphicalQuizType; getQuizInfo: any}) => (
   <div
     className={css({
       display: 'flex',
@@ -60,7 +60,11 @@ const QuizCard = ({quiz, getQuizInfo}: {quiz: QuizType; getQuizInfo: any}) => (
             color: 'gray4',
           })}
         >
-          {quiz.questions.length} Questions
+          {quiz.__typename === 'QuizType'
+            ? `${quiz.questions.length} Questions`
+            : quiz.__typename === 'GraphicalQuizType'
+              ? `${quiz.quizPoints.length} quizzes`
+              : ''}
         </div>
         <div
           className={css({
