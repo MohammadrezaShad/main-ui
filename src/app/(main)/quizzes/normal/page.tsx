@@ -5,8 +5,10 @@ import {NormalQuizzesView} from '@/components';
 import {searchQuizzes} from '@/graphql';
 import {getQueryClient} from '@/helpers';
 import {Hydrate} from '@/providers';
+import {unstable_noStore as noStore} from 'next/cache';
 
 const Page = async () => {
+  noStore();
   const queryClient = getQueryClient();
   await queryClient.prefetchInfiniteQuery({
     queryKey: ['search-quizzes'],

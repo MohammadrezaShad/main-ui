@@ -49,6 +49,40 @@ const QuizContent = ({
   gainedCoins,
   handleGoToNextQuiz,
 }: Props) => {
+  const generateBorder = (index: number) => {
+    if (completedQuizzesIds[index]) return '2px solid token(colors.success)';
+    if (currentQuizIndex === index) return '2px solid token(colors.gray2)';
+    return '2px solid white';
+  };
+
+  const generateGradientFrom = (index: number) => {
+    if (completedQuizzesIds[index]) return 'white';
+    if (currentQuizIndex === index) return 'white';
+    return '#B8EAFF';
+  };
+
+  const generateGadientTo = (index: number) => {
+    if (completedQuizzesIds[index]) return 'white';
+    if (currentQuizIndex === index) return 'white';
+    return '#62C2CE';
+  };
+
+  const generateIcon = (index: number) => {
+    if (completedQuizzesIds[index])
+      return (
+        <IconCheck
+          className={css({
+            stroke: 'success',
+            '& path': {fill: 'success'},
+            w: '[24px]',
+            h: '[24px]',
+          })}
+        />
+      );
+    if (currentQuizIndex === index) return `${currentIndex + 1}/${questionsCount}`;
+    return index + 1;
+  };
+
   return (
     <>
       <div
@@ -103,8 +137,8 @@ const QuizContent = ({
           })}
         />
         <map name='image-map'>
-          {areas.map((area, index) => (
-            <area key={index} {...area} />
+          {areas.map(area => (
+            <area alt='' key={crypto.randomUUID()} {...area} />
           ))}
         </map>
         {areas.map((area, index) => {
@@ -117,28 +151,16 @@ const QuizContent = ({
           return (
             <div
               style={{left: `${x}%`, top: `${y}%`}}
-              key={index}
+              key={crypto.randomUUID()}
               className={css({
-                border: !!completedQuizzesIds[index]
-                  ? '2px solid token(colors.success)'
-                  : currentQuizIndex === index
-                    ? '2px solid token(colors.gray2)'
-                    : '2px solid white',
+                border: generateBorder(index),
                 position: 'absolute',
                 width: '10',
                 height: '10',
                 borderRadius: '50%',
                 bgGradient: 'to-b',
-                gradientFrom: !!completedQuizzesIds[index]
-                  ? 'white'
-                  : currentQuizIndex === index
-                    ? 'white'
-                    : '#B8EAFF',
-                gradientTo: !!completedQuizzesIds[index]
-                  ? 'white'
-                  : currentQuizIndex === index
-                    ? 'white'
-                    : '#62C2CE',
+                gradientFrom: generateGradientFrom(index),
+                gradientTo: generateGadientTo(index),
                 color: currentQuizIndex === index ? 'primary' : 'white',
                 zIndex: '50', // Ensure it's above the image
                 display: 'flex',
@@ -149,20 +171,7 @@ const QuizContent = ({
                 },
               })}
             >
-              {completedQuizzesIds[index] ? (
-                <IconCheck
-                  className={css({
-                    stroke: 'success',
-                    '& path': {fill: 'success'},
-                    w: '[24px]',
-                    h: '[24px]',
-                  })}
-                />
-              ) : currentQuizIndex === index ? (
-                `${currentIndex + 1}/${questionsCount}`
-              ) : (
-                index + 1
-              )}
+              {generateIcon(index)}
             </div>
           );
         })}
@@ -191,7 +200,8 @@ const QuizContent = ({
         >
           Finish
         </Link>
-      ) : currentQuestionIndex + 1 <= quizzes[currentQuizIndex]?.questions.length ? (
+      ) : null}
+      {currentQuestionIndex + 1 <= quizzes[currentQuizIndex]?.questions.length ? (
         <QuizQuestions
           questions={questions ?? []}
           onSetAnswer={handleSetAnswer}

@@ -11,12 +11,18 @@ const TopUser = ({
   rank: number;
   isCurrentUser: boolean;
 }) => {
+  const generateBackgroundColor = () => {
+    if (isCurrentUser) return '#E7FDF6';
+    if (rank % 2 === 0) return 'white';
+    return 'gray.100';
+  };
+
   return (
     <div
       className={css({
         display: 'flex',
         gap: '[61px]',
-        backgroundColor: isCurrentUser ? '#E7FDF6' : rank % 2 === 0 ? 'white' : 'gray.100',
+        backgroundColor: generateBackgroundColor(),
         px: '4',
         py: '2',
         border: isCurrentUser ? '1px solid token(colors.success)' : 'none',

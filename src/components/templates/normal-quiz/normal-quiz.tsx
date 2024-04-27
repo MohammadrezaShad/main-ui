@@ -118,119 +118,116 @@ const WaterSavingQuiz = () => {
   );
 };
 
-const QuizHeader = ({quiz, answers}: {quiz: Maybe<QuizType> | undefined; answers: Answer[]}) => {
-  return (
-    <header
+const QuizHeader = ({quiz, answers}: {quiz: Maybe<QuizType> | undefined; answers: Answer[]}) => (
+  <header
+    className={css({
+      display: 'flex',
+      flexDir: 'column',
+      alignSelf: 'center',
+      mt: '14',
+      w: 'full',
+      maxW: '1004px',
+      mdDown: {mt: '10', maxW: 'full'},
+      position: 'relative',
+    })}
+  >
+    <div
       className={css({
         display: 'flex',
-        flexDir: 'column',
-        alignSelf: 'center',
-        mt: '14',
+        gap: '5',
+        justifyContent: 'start',
+        alignItems: 'flex-start',
+        alignSelf: 'flex-end',
+        maxW: 'full',
         w: 'full',
-        maxW: '1004px',
-        mdDown: {mt: '10', maxW: 'full'},
-        position: 'relative',
+        mdDown: {flexWrap: 'wrap'},
       })}
     >
+      <div className={css({display: 'flex', flexDir: 'column', alignItems: 'center', mt: '2'})}>
+        <h1
+          className={css({
+            alignSelf: 'stretch',
+            textAlign: 'center',
+            whiteSpace: 'nowrap',
+            color: 'text.primary',
+            textStyle: 'title2',
+          })}
+        >
+          {quiz?.title}
+        </h1>
+      </div>
       <div
         className={css({
           display: 'flex',
-          gap: '5',
-          justifyContent: 'start',
-          alignItems: 'flex-start',
-          alignSelf: 'flex-end',
-          maxW: 'full',
-          w: 'full',
-          mdDown: {flexWrap: 'wrap'},
+          gap: '3',
+          alignItems: 'center',
+          p: '4',
+          whiteSpace: 'nowrap',
+          bgColor: 'neutral.100',
+          position: 'absolute',
+          right: '11',
+          mdDown: {
+            display: 'none',
+          },
         })}
       >
-        <div className={css({display: 'flex', flexDir: 'column', alignItems: 'center', mt: '2'})}>
-          <h1
+        <Image
+          unoptimized
+          width={32}
+          height={32}
+          src={coin}
+          alt=''
+          className={css({
+            w: '8',
+            h: '8',
+            aspectRatio: 'square',
+            objectFit: 'contain',
+            objectPosition: 'center',
+            overflow: 'hidden',
+            flexShrink: '0',
+          })}
+        />
+        <div className={css({display: 'flex', flexDir: 'column', flex: '1'})}>
+          <div className={css({fontSize: 'sm', color: 'neutral.500'})}>Reward</div>
+          <div
             className={css({
-              alignSelf: 'stretch',
-              textAlign: 'center',
-              whiteSpace: 'nowrap',
-              color: 'text.primary',
-              textStyle: 'title2',
+              fontSize: 'xl',
+              lineHeight: 'xl',
+              fontWeight: 'medium',
+              color: 'zinc.800',
             })}
           >
-            {quiz?.title}
-          </h1>
-        </div>
-        <div
-          className={css({
-            display: 'flex',
-            gap: '3',
-            alignItems: 'center',
-            p: '4',
-            whiteSpace: 'nowrap',
-            bgColor: 'neutral.100',
-            position: 'absolute',
-            right: '11',
-            mdDown: {
-              display: 'none',
-            },
-          })}
-        >
-          <Image
-            unoptimized
-            width={32}
-            height={32}
-            src={coin}
-            alt=''
-            className={css({
-              w: '8',
-              h: '8',
-              aspectRatio: 'square',
-              objectFit: 'contain',
-              objectPosition: 'center',
-              overflow: 'hidden',
-              flexShrink: '0',
-            })}
-          />
-          <div className={css({display: 'flex', flexDir: 'column', flex: '1'})}>
-            <div className={css({fontSize: 'sm', color: 'neutral.500'})}>Reward</div>
-            <div
-              className={css({
-                fontSize: 'xl',
-                lineHeight: 'xl',
-                fontWeight: 'medium',
-                color: 'zinc.800',
-              })}
-            >
-              {quiz?.reward}
-            </div>
+            {quiz?.reward}
           </div>
         </div>
       </div>
-      <div className={css({display: 'flex', alignItems: 'center', gap: '2', mt: '9'})}>
-        {Array.from({length: quiz?.questions.length || 0}).map((_, index) => {
-          return (
-            <div
+    </div>
+    <div className={css({display: 'flex', alignItems: 'center', gap: '2', mt: '9'})}>
+      {Array.from({length: quiz?.questions.length || 0}).map((_, index) => (
+        <div
+          key={crypto.randomUUID()}
+          className={css({
+            display: 'grid',
+            placeContent: 'center',
+            w: '6',
+            h: '6',
+            bgColor: answers[index] ? '#62C2CE' : 'gray.300',
+          })}
+        >
+          {!!answers[index] && (
+            <IconCheck
               className={css({
-                display: 'grid',
-                placeContent: 'center',
-                w: '6',
-                h: '6',
-                bgColor: !!answers[index] ? '#62C2CE' : 'gray.300',
+                '& path': {
+                  fill: '#FFF',
+                },
               })}
-            >
-              {!!answers[index] && (
-                <IconCheck
-                  className={css({
-                    '& path': {
-                      fill: '#FFF',
-                    },
-                  })}
-                />
-              )}
-            </div>
-          );
-        })}
-      </div>
-    </header>
-  );
-};
+            />
+          )}
+        </div>
+      ))}
+    </div>
+  </header>
+);
 
 const QuizContent = ({
   questions,
@@ -262,76 +259,74 @@ const QuizContent = ({
     })}
   >
     <div className={css({display: 'flex', gap: '5', flexDir: 'column', mdDown: {gap: '0'}})}>
-      <>
-        <QuizQuestion
-          key={questions[currentIndex]._id}
-          question={questions[currentIndex]}
-          index={currentIndex + 1}
-        />
-        <QuizOptions
-          questionId={questions[currentIndex]._id}
-          handleClick={onSetAnswer}
-          options={questions[currentIndex].options}
-          answers={answers}
-          currentIndex={currentIndex}
-        />
-        <div
+      <QuizQuestion
+        key={questions[currentIndex]._id}
+        question={questions[currentIndex]}
+        index={currentIndex + 1}
+      />
+      <QuizOptions
+        questionId={questions[currentIndex]._id}
+        handleClick={onSetAnswer}
+        options={questions[currentIndex].options}
+        answers={answers}
+        currentIndex={currentIndex}
+      />
+      <div
+        className={css({
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'flex-end',
+          gap: '8',
+        })}
+      >
+        <button
+          type='button'
           className={css({
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'flex-end',
-            gap: '8',
+            justifyContent: 'center',
+            alignSelf: 'center',
+            pl: '12',
+            pr: '12',
+            pt: '3',
+            pb: '3',
+            mt: '8',
+            fontSize: 'base',
+            lineHeight: 'base',
+            textAlign: 'center',
+            color: 'gray.400',
+            whiteSpace: 'nowrap',
+            border: '1px solid token(colors.gray3)',
+            bgColor: 'white',
+            mdDown: {pl: '5', pr: '5'},
+            cursor: 'pointer',
           })}
+          onClick={onBack}
         >
-          <button
-            type='button'
-            className={css({
-              justifyContent: 'center',
-              alignSelf: 'center',
-              pl: '12',
-              pr: '12',
-              pt: '3',
-              pb: '3',
-              mt: '8',
-              fontSize: 'base',
-              lineHeight: 'base',
-              textAlign: 'center',
-              color: 'gray.400',
-              whiteSpace: 'nowrap',
-              border: '1px solid token(colors.gray3)',
-              bgColor: 'white',
-              mdDown: {pl: '5', pr: '5'},
-              cursor: 'pointer',
-            })}
-            onClick={onBack}
-          >
-            Prev
-          </button>
-          <button
-            type='button'
-            className={css({
-              justifyContent: 'center',
-              alignSelf: 'center',
-              pl: '12',
-              pr: '12',
-              pt: '3',
-              pb: '3',
-              mt: '8',
-              fontSize: 'base',
-              lineHeight: 'base',
-              textAlign: 'center',
-              color: 'white',
-              whiteSpace: 'nowrap',
-              bgColor: 'sky.400',
-              mdDown: {pl: '5', pr: '5'},
-              cursor: 'pointer',
-            })}
-            onClick={onNext}
-          >
-            Next
-          </button>
-        </div>
-      </>
+          Prev
+        </button>
+        <button
+          type='button'
+          className={css({
+            justifyContent: 'center',
+            alignSelf: 'center',
+            pl: '12',
+            pr: '12',
+            pt: '3',
+            pb: '3',
+            mt: '8',
+            fontSize: 'base',
+            lineHeight: 'base',
+            textAlign: 'center',
+            color: 'white',
+            whiteSpace: 'nowrap',
+            bgColor: 'sky.400',
+            mdDown: {pl: '5', pr: '5'},
+            cursor: 'pointer',
+          })}
+          onClick={onNext}
+        >
+          Next
+        </button>
+      </div>
     </div>
   </div>
 );

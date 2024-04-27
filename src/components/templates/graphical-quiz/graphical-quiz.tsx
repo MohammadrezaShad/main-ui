@@ -21,15 +21,11 @@ import {toast} from 'react-toastify';
 import QuizContent from './quiz-content';
 import QuizReward from './quiz-reward';
 import QuizSummary from './quiz-summary';
+
 interface Answer {
   answer: string;
   question: string;
 }
-interface QuizAnswer {
-  quizId: string;
-  answers: Answer[];
-}
-const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
 
 const WaterSavingQuiz = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -38,8 +34,6 @@ const WaterSavingQuiz = () => {
   const [correctAnswers, setCorrectAnswers] = useState(0);
   const [wrongAnswers, setWrongAnswers] = useState(0);
   const [gainedCoins, setGainedCoins] = useState(0);
-  const [totalCorrectAnswers, setTotalCorrectAnswers] = useState(0);
-  const [totalWrongAnswers, setTotalWrongAnswers] = useState(0);
   const [totalGainedCoins, setTotalGainedCoins] = useState(0);
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [quizzes, setQuizzes] = useState<QuizType[]>([]);
@@ -89,21 +83,14 @@ const WaterSavingQuiz = () => {
     }
   };
 
-  const handleGoToNextQuiz = (
-    correctAnswerCount: number,
-    wrongAnswerCount: number,
-    gainedCoins: number,
-  ) => {
-    setTotalCorrectAnswers(prev => prev + correctAnswerCount);
-    setTotalWrongAnswers(prev => prev + wrongAnswerCount);
-    setTotalGainedCoins(prev => prev + gainedCoins);
+  const handleGoToNextQuiz = (userGainedCoins: number) => {
+    setTotalGainedCoins(prev => prev + userGainedCoins);
     setAnswers([]);
     setCurrentQuestionIndex(0);
     setCurrentQuizIndex(prev => prev + 1);
   };
 
   const handleClick = async () => {
-    const token = getCookie(CookieName.AUTH_TOKEN);
     if (token) {
       try {
         const data = await endQuizMutation.mutateAsync({

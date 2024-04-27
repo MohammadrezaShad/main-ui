@@ -8,10 +8,6 @@ interface Answer {
   answer: string;
   question: string;
 }
-interface QuizAnswer {
-  quizId: string;
-  answers: Answer[];
-}
 
 const QuizQuestions = ({
   questions,
@@ -63,29 +59,28 @@ const QuizQuestions = ({
         <div>
           <h2 className={css({textStyle: 'headline3'})}>Quiz {currentIndex + 1}</h2>
           <div className={css({display: 'flex', alignItems: 'center', gap: '2'})}>
-            {Array.from({length: quiz?.questions.length || 0}).map((_, index) => {
-              return (
-                <div
-                  className={css({
-                    display: 'grid',
-                    placeContent: 'center',
-                    w: '6',
-                    h: '6',
-                    bgColor: !!answers?.[index] ? '#62C2CE' : 'gray.300',
-                  })}
-                >
-                  {!!answers?.[index] && (
-                    <IconCheck
-                      className={css({
-                        '& path': {
-                          fill: '#FFF',
-                        },
-                      })}
-                    />
-                  )}
-                </div>
-              );
-            })}
+            {Array.from({length: quiz?.questions.length || 0}).map((_, index) => (
+              <div
+                key={crypto.randomUUID()}
+                className={css({
+                  display: 'grid',
+                  placeContent: 'center',
+                  w: '6',
+                  h: '6',
+                  bgColor: answers?.[index] ? '#62C2CE' : 'gray.300',
+                })}
+              >
+                {answers?.[index] && (
+                  <IconCheck
+                    className={css({
+                      '& path': {
+                        fill: '#FFF',
+                      },
+                    })}
+                  />
+                )}
+              </div>
+            ))}
           </div>
         </div>
         <div
@@ -130,76 +125,74 @@ const QuizQuestions = ({
           </div>
         </div>
       </div>
-      <>
-        <QuizQuestion
-          key={questions[currentIndex]?._id}
-          question={questions[currentIndex]}
-          index={currentIndex + 1}
-        />
-        <QuizOptions
-          questionId={questions[currentIndex]?._id}
-          handleClick={onSetAnswer}
-          options={questions[currentIndex]?.options}
-          answers={answers}
-          currentIndex={currentIndex}
-        />
-        <div
+      <QuizQuestion
+        key={questions[currentIndex]?._id}
+        question={questions[currentIndex]}
+        index={currentIndex + 1}
+      />
+      <QuizOptions
+        questionId={questions[currentIndex]?._id}
+        handleClick={onSetAnswer}
+        options={questions[currentIndex]?.options}
+        answers={answers}
+        currentIndex={currentIndex}
+      />
+      <div
+        className={css({
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'flex-end',
+          gap: '8',
+        })}
+      >
+        <button
+          type='button'
           className={css({
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'flex-end',
-            gap: '8',
+            justifyContent: 'center',
+            alignSelf: 'center',
+            pl: '12',
+            pr: '12',
+            pt: '3',
+            pb: '3',
+            mt: '8',
+            fontSize: 'base',
+            lineHeight: 'base',
+            textAlign: 'center',
+            color: 'gray.400',
+            whiteSpace: 'nowrap',
+            border: '1px solid token(colors.gray3)',
+            bgColor: 'white',
+            mdDown: {pl: '5', pr: '5'},
+            cursor: 'pointer',
           })}
+          onClick={onBack}
         >
-          <button
-            type='button'
-            className={css({
-              justifyContent: 'center',
-              alignSelf: 'center',
-              pl: '12',
-              pr: '12',
-              pt: '3',
-              pb: '3',
-              mt: '8',
-              fontSize: 'base',
-              lineHeight: 'base',
-              textAlign: 'center',
-              color: 'gray.400',
-              whiteSpace: 'nowrap',
-              border: '1px solid token(colors.gray3)',
-              bgColor: 'white',
-              mdDown: {pl: '5', pr: '5'},
-              cursor: 'pointer',
-            })}
-            onClick={onBack}
-          >
-            Prev
-          </button>
-          <button
-            type='button'
-            className={css({
-              justifyContent: 'center',
-              alignSelf: 'center',
-              pl: '12',
-              pr: '12',
-              pt: '3',
-              pb: '3',
-              mt: '8',
-              fontSize: 'base',
-              lineHeight: 'base',
-              textAlign: 'center',
-              color: 'white',
-              whiteSpace: 'nowrap',
-              bgColor: 'sky.400',
-              mdDown: {pl: '5', pr: '5'},
-              cursor: 'pointer',
-            })}
-            onClick={onNext}
-          >
-            Next
-          </button>
-        </div>
-      </>
+          Prev
+        </button>
+        <button
+          type='button'
+          className={css({
+            justifyContent: 'center',
+            alignSelf: 'center',
+            pl: '12',
+            pr: '12',
+            pt: '3',
+            pb: '3',
+            mt: '8',
+            fontSize: 'base',
+            lineHeight: 'base',
+            textAlign: 'center',
+            color: 'white',
+            whiteSpace: 'nowrap',
+            bgColor: 'sky.400',
+            mdDown: {pl: '5', pr: '5'},
+            cursor: 'pointer',
+          })}
+          onClick={onNext}
+        >
+          Next
+        </button>
+      </div>
     </div>
   </div>
 );
