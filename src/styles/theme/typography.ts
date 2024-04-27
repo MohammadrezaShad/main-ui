@@ -133,6 +133,13 @@ export const textStyles = defineTextStyles({
       fontSize: '12px',
     }),
   },
+  captionB: {
+    description: '',
+    value: getText({
+      fontWeight: fontWeight.regular,
+      fontSize: '12px',
+    }),
+  },
   overline: {
     description: '',
     value: getText({

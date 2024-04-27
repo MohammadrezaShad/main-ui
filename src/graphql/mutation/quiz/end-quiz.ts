@@ -14,6 +14,9 @@ export async function endQuiz(
       quiz {
         endQuiz(input: $input) {
           success
+          gainedCoins
+          correctAnswerCount
+          wrongAnswerCount
         }
       }
     }`,

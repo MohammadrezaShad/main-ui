@@ -6,20 +6,24 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import {coin, IconClose} from '@/assets';
-import {Avatar, QuizCard} from '@/components';
+import {QuizCard, TopUserCard} from '@/components';
 import {Modal} from '@/components/atoms/modal';
+import {CookieName} from '@/constants';
 import {
   findQuizById,
   getBestUsers,
   getTopQuizzes,
   getTotalCount,
   getTotalGraphicalCount,
+  getUser,
   QuizType,
 } from '@/graphql';
 import {Paths} from '@/utils';
 import {useQuery} from '@tanstack/react-query';
+import {getCookie} from 'cookies-next';
 
 export default function Quizzes() {
+  const token = getCookie(CookieName.AUTH_TOKEN)!;
   const targetQuiz$ = useObservable<QuizType>();
 
   const totalNormalQuizzes = useQuery({
@@ -37,6 +41,11 @@ export default function Quizzes() {
   const bestUsers = useQuery({
     queryKey: ['get-best-user', 8],
     queryFn: () => getBestUsers({count: 8}),
+  });
+
+  const currentUser = useQuery({
+    queryKey: ['get-profile'],
+    queryFn: () => getUser(token),
   });
 
   const getQuizInfo = async (id: string) => {
@@ -298,42 +307,17 @@ export default function Quizzes() {
           <div
             className={css({
               display: 'grid',
-              gridTemplateColumns: '4',
-              gap: '5',
-              mdDown: {gridTemplateColumns: '1'},
+              gap: '1',
+              gridTemplateColumns: '1',
             })}
           >
-            {bestUsers.data?.results?.map(user => (
-              <div key={user._id} className={css({display: 'flex', gap: '4'})}>
-                <Avatar src={user.avatar?._id} size={48} />
-                <div
-                  className={css({
-                    display: 'flex',
-                    flexDir: 'column',
-                    flex: '1',
-                    pl: '5',
-                    pr: '5',
-                    mt: 'auto',
-                    mb: 'auto',
-                  })}
-                >
-                  <div
-                    className={css({
-                      fontSize: 'base',
-                      lineHeight: 'base',
-                      fontWeight: 'medium',
-                      whiteSpace: 'nowrap',
-                      color: 'text.primary',
-                      textTransform: 'capitalize',
-                    })}
-                  >
-                    {`${user.firstName} ${user.lastName}`}
-                  </div>
-                  <p className={css({mt: '2', fontSize: 'sm', lineHeight: 'sm', color: 'gray4'})}>
-                    Score: 0
-                  </p>
-                </div>
-              </div>
+            {bestUsers.data?.results?.map((user, index) => (
+              <TopUserCard
+                key={user._id}
+                user={user}
+                rank={index + 1}
+                isCurrentUser={user._id === currentUser.data?._id}
+              />
             ))}
           </div>
         </div>

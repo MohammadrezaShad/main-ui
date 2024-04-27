@@ -6,10 +6,68 @@ import Image from 'next/image';
 
 import {bgMaze, coin, IconClose} from '@/assets';
 import {Modal} from '@/components/atoms/modal';
+import {QuizCard} from '@/components/molecules';
+import {CookieName} from '@/constants';
+import {
+  findGraphicalQuizById,
+  GraphicalQuizType,
+  payAndFindGraphical,
+  searchGraphicalQuizzes,
+} from '@/graphql';
+import {Paths} from '@/utils';
+import {useInfiniteQuery} from '@tanstack/react-query';
+import {getCookie} from 'cookies-next';
+import {useRouter} from 'next/navigation';
+import {useEffect, useState} from 'react';
+import {toast} from 'react-toastify';
 
 export default function GraphicalQuizzes() {
-  const targetQuiz$ = useObservable<boolean>(true);
-  const hasMorePages = true;
+  const token = getCookie(CookieName.AUTH_TOKEN)!;
+  const router = useRouter();
+  const [quizzes, setQuizzes] = useState<GraphicalQuizType[]>([]);
+  const [page, setPage] = useState(1);
+  const targetQuiz$ = useObservable<GraphicalQuizType>();
+  const {data, fetchNextPage, hasNextPage} = useInfiniteQuery({
+    queryKey: ['search-graphical-quizzes'],
+    queryFn: ({pageParam}) => searchGraphicalQuizzes({count: 12, page: pageParam}, token),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage: any, allPages, lastPagParam, allPagesParam) => {
+      const totalPages = lastPage?.totalPages;
+      if (totalPages) {
+        return lastPagParam + 1 <= totalPages ? lastPagParam + 1 : undefined;
+      }
+
+      return undefined;
+    },
+  });
+
+  const getQuizInfo = async (id: string) => {
+    const quiz = await findGraphicalQuizById({id}, token);
+    targetQuiz$.set(quiz.result);
+  };
+
+  const startQuiz = async (id: string) => {
+    try {
+      const response = await payAndFindGraphical({id}, token);
+      if (response.success && token) {
+        router.push(`${Paths.Quiz.getPath()}/graphical/${response.result?._id}`);
+      }
+    } catch (error: Error | any) {
+      toast.error(error.message);
+    }
+  };
+
+  useEffect(() => {
+    if (data) {
+      const _articles =
+        data?.pages.reduce(
+          (acc: any, currentPage: any, index: any) =>
+            index !== 0 ? [...acc, ...currentPage?.results] : [...acc],
+          data?.pages[0]?.results,
+        ) || [];
+      setQuizzes(_articles);
+    }
+  }, [data]);
 
   return (
     <div
@@ -77,256 +135,21 @@ export default function GraphicalQuizzes() {
         })}
       >
         <div className={css({mt: '6', mdDown: {maxW: 'full'}})}>
-          <div className={css({display: 'flex', gap: '5', mdDown: {flexDir: 'column', gap: '0'}})}>
-            <div
-              className={css({
-                display: 'flex',
-                flexDir: 'column',
-                w: '33%',
-                mdDown: {ml: '0', w: 'full'},
-              })}
-            >
-              <div
-                className={css({
-                  display: 'flex',
-                  flexDir: 'column',
-                  flexGrow: '1',
-                  pb: '6',
-                  w: 'full',
-                  bgColor: 'white',
-                  borderWidth: '1px',
-                  borderStyle: 'solid',
-                  borderColor: 'gray3',
-                  mdDown: {mt: '6', flexDir: 'row', borderWidth: '0'},
-                })}
-              >
-                <img
-                  alt=''
-                  loading='lazy'
-                  srcSet='https://cdn.builder.io/api/v1/image/assets/TEMP/432ae614d587f42a5b08708c8e5c4e739cf4fef3111205962856702f53587694?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&width=100 100w, https://cdn.builder.io/api/v1/image/assets/TEMP/432ae614d587f42a5b08708c8e5c4e739cf4fef3111205962856702f53587694?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&width=200 200w, https://cdn.builder.io/api/v1/image/assets/TEMP/432ae614d587f42a5b08708c8e5c4e739cf4fef3111205962856702f53587694?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&width=400 400w, https://cdn.builder.io/api/v1/image/assets/TEMP/432ae614d587f42a5b08708c8e5c4e739cf4fef3111205962856702f53587694?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&width=800 800w, https://cdn.builder.io/api/v1/image/assets/TEMP/432ae614d587f42a5b08708c8e5c4e739cf4fef3111205962856702f53587694?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&width=1200 1200w, https://cdn.builder.io/api/v1/image/assets/TEMP/432ae614d587f42a5b08708c8e5c4e739cf4fef3111205962856702f53587694?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&width=1600 1600w, https://cdn.builder.io/api/v1/image/assets/TEMP/432ae614d587f42a5b08708c8e5c4e739cf4fef3111205962856702f53587694?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&width=2000 2000w, https://cdn.builder.io/api/v1/image/assets/TEMP/432ae614d587f42a5b08708c8e5c4e739cf4fef3111205962856702f53587694?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&'
-                  className={css({
-                    w: 'full',
-                    aspectRatio: '1.33',
-                    mdDown: {aspectRatio: 'square', w: '[112px]', h: '[112px]', objectFit: 'cover'},
-                  })}
-                />
-                <div
-                  className={css({
-                    display: 'flex',
-                    flexDir: 'column',
-                    alignSelf: 'flex-start',
-                    mt: '7',
-                    ml: '6',
-                    mdDown: {ml: '2.5', mt: '0'},
-                  })}
-                >
-                  <div
-                    className={css({
-                      fontSize: 'xs',
-                      lineHeight: 'xs',
-                      fontWeight: 'light',
-                      color: 'gray4',
-                    })}
-                  >
-                    20 Questions
-                  </div>
-                  <div
-                    className={css({
-                      mt: '2',
-                      fontSize: 'base',
-                      lineHeight: 'base',
-                      fontWeight: 'medium',
-                      color: 'text.primary',
-                    })}
-                  >
-                    Water Saving Quiz
-                  </div>
-                  <button
-                    onClick={() => targetQuiz$.set(true)}
-                    type='button'
-                    className={css({
-                      cursor: 'pointer',
-                      mt: '9',
-                      textAlign: 'left',
-                      fontSize: 'sm',
-                      lineHeight: 'sm',
-                      color: 'primary',
-                      mdDown: {mt: '8'},
-                    })}
-                  >
-                    START THE QUIZ
-                  </button>
-                </div>
-              </div>
-            </div>
-            <div
-              className={css({
-                display: 'flex',
-                flexDir: 'column',
-                ml: '5',
-                w: '33%',
-                mdDown: {ml: '0', w: 'full'},
-              })}
-            >
-              <div
-                className={css({
-                  display: 'flex',
-                  flexDir: 'column',
-                  flexGrow: '1',
-                  pb: '6',
-                  w: 'full',
-                  bgColor: 'white',
-                  borderWidth: '1px',
-                  borderStyle: 'solid',
-                  borderColor: 'gray3',
-                  mdDown: {mt: '6', flexDir: 'row', borderWidth: '0'},
-                })}
-              >
-                <img
-                  alt=''
-                  loading='lazy'
-                  srcSet='https://cdn.builder.io/api/v1/image/assets/TEMP/ae6c2284c437e7dad2e5eb0bcd2647c5a2e1cc2d156db2e0e47e61ddda4f8cca?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&width=100 100w, https://cdn.builder.io/api/v1/image/assets/TEMP/ae6c2284c437e7dad2e5eb0bcd2647c5a2e1cc2d156db2e0e47e61ddda4f8cca?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&width=200 200w, https://cdn.builder.io/api/v1/image/assets/TEMP/ae6c2284c437e7dad2e5eb0bcd2647c5a2e1cc2d156db2e0e47e61ddda4f8cca?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&width=400 400w, https://cdn.builder.io/api/v1/image/assets/TEMP/ae6c2284c437e7dad2e5eb0bcd2647c5a2e1cc2d156db2e0e47e61ddda4f8cca?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&width=800 800w, https://cdn.builder.io/api/v1/image/assets/TEMP/ae6c2284c437e7dad2e5eb0bcd2647c5a2e1cc2d156db2e0e47e61ddda4f8cca?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&width=1200 1200w, https://cdn.builder.io/api/v1/image/assets/TEMP/ae6c2284c437e7dad2e5eb0bcd2647c5a2e1cc2d156db2e0e47e61ddda4f8cca?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&width=1600 1600w, https://cdn.builder.io/api/v1/image/assets/TEMP/ae6c2284c437e7dad2e5eb0bcd2647c5a2e1cc2d156db2e0e47e61ddda4f8cca?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&width=2000 2000w, https://cdn.builder.io/api/v1/image/assets/TEMP/ae6c2284c437e7dad2e5eb0bcd2647c5a2e1cc2d156db2e0e47e61ddda4f8cca?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&'
-                  className={css({
-                    w: 'full',
-                    aspectRatio: '1.33',
-                    mdDown: {aspectRatio: 'square', w: '[112px]', h: '[112px]', objectFit: 'cover'},
-                  })}
-                />
-                <div
-                  className={css({
-                    display: 'flex',
-                    flexDir: 'column',
-                    alignSelf: 'flex-start',
-                    mt: '7',
-                    ml: '6',
-                    mdDown: {ml: '2.5', mt: '0'},
-                  })}
-                >
-                  <div
-                    className={css({
-                      fontSize: 'xs',
-                      lineHeight: 'xs',
-                      fontWeight: 'light',
-                      color: 'gray4',
-                    })}
-                  >
-                    20 Questions
-                  </div>
-                  <div
-                    className={css({
-                      mt: '2',
-                      fontSize: 'base',
-                      lineHeight: 'base',
-                      fontWeight: 'medium',
-                      color: 'text.primary',
-                    })}
-                  >
-                    Water Crisis Quiz
-                  </div>
-                  <button
-                    onClick={() => targetQuiz$.set(true)}
-                    type='button'
-                    className={css({
-                      cursor: 'pointer',
-                      mt: '9',
-                      textAlign: 'left',
-                      fontSize: 'sm',
-                      lineHeight: 'sm',
-                      color: 'primary',
-                      mdDown: {mt: '8'},
-                    })}
-                  >
-                    START THE QUIZ
-                  </button>
-                </div>
-              </div>
-            </div>
-            <div
-              className={css({
-                display: 'flex',
-                flexDir: 'column',
-                ml: '5',
-                w: '33%',
-                mdDown: {ml: '0', w: 'full'},
-              })}
-            >
-              <div
-                className={css({
-                  display: 'flex',
-                  flexDir: 'column',
-                  flexGrow: '1',
-                  pb: '6',
-                  w: 'full',
-                  bgColor: 'white',
-                  borderWidth: '1px',
-                  borderStyle: 'solid',
-                  borderColor: 'gray3',
-                  mdDown: {mt: '6', flexDir: 'row', borderWidth: '0'},
-                })}
-              >
-                <img
-                  alt=''
-                  loading='lazy'
-                  srcSet='https://cdn.builder.io/api/v1/image/assets/TEMP/432ae614d587f42a5b08708c8e5c4e739cf4fef3111205962856702f53587694?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&width=100 100w, https://cdn.builder.io/api/v1/image/assets/TEMP/432ae614d587f42a5b08708c8e5c4e739cf4fef3111205962856702f53587694?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&width=200 200w, https://cdn.builder.io/api/v1/image/assets/TEMP/432ae614d587f42a5b08708c8e5c4e739cf4fef3111205962856702f53587694?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&width=400 400w, https://cdn.builder.io/api/v1/image/assets/TEMP/432ae614d587f42a5b08708c8e5c4e739cf4fef3111205962856702f53587694?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&width=800 800w, https://cdn.builder.io/api/v1/image/assets/TEMP/432ae614d587f42a5b08708c8e5c4e739cf4fef3111205962856702f53587694?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&width=1200 1200w, https://cdn.builder.io/api/v1/image/assets/TEMP/432ae614d587f42a5b08708c8e5c4e739cf4fef3111205962856702f53587694?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&width=1600 1600w, https://cdn.builder.io/api/v1/image/assets/TEMP/432ae614d587f42a5b08708c8e5c4e739cf4fef3111205962856702f53587694?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&width=2000 2000w, https://cdn.builder.io/api/v1/image/assets/TEMP/432ae614d587f42a5b08708c8e5c4e739cf4fef3111205962856702f53587694?apiKey=89ab6d1f78ed4babb16b79acd6ff9275&'
-                  className={css({
-                    w: 'full',
-                    aspectRatio: '1.33',
-                    mdDown: {aspectRatio: 'square', w: '[112px]', h: '[112px]', objectFit: 'cover'},
-                  })}
-                />
-                <div
-                  className={css({
-                    display: 'flex',
-                    flexDir: 'column',
-                    alignSelf: 'flex-start',
-                    mt: '7',
-                    ml: '6',
-                    mdDown: {ml: '2.5', mt: '0'},
-                  })}
-                >
-                  <div
-                    className={css({
-                      fontSize: 'xs',
-                      lineHeight: 'xs',
-                      fontWeight: 'light',
-                      color: 'gray4',
-                    })}
-                  >
-                    20 Questions
-                  </div>
-                  <div
-                    className={css({
-                      mt: '2',
-                      fontSize: 'base',
-                      lineHeight: 'base',
-                      fontWeight: 'medium',
-                      color: 'text.primary',
-                    })}
-                  >
-                    Water Saving Quiz 2
-                  </div>
-                  <button
-                    onClick={() => targetQuiz$.set(true)}
-                    type='button'
-                    className={css({
-                      cursor: 'pointer',
-                      mt: '9',
-                      textAlign: 'left',
-                      fontSize: 'sm',
-                      lineHeight: 'sm',
-                      color: 'primary',
-                      mdDown: {mt: '8'},
-                    })}
-                  >
-                    START THE QUIZ
-                  </button>
-                </div>
-              </div>
-            </div>
+          <div
+            className={css({
+              display: 'grid',
+              gridTemplateColumns: 3,
+              gap: '5',
+              mdDown: {gridTemplateColumns: 1, gap: '0'},
+            })}
+          >
+            {quizzes.map(quiz => (
+              <QuizCard key={quiz._id} getQuizInfo={getQuizInfo} quiz={quiz} />
+            ))}
           </div>
         </div>
       </div>
-      {hasMorePages ? (
+      {hasNextPage ? (
         <div
           className={css({
             mt: 6,
@@ -335,7 +158,7 @@ export default function GraphicalQuizzes() {
         >
           <button
             type='button'
-            onClick={() => {}} // fetchNextPage()
+            onClick={() => fetchNextPage()}
             className={css({
               backgroundColor: 'primary',
               px: '4',
@@ -356,7 +179,7 @@ export default function GraphicalQuizzes() {
           </button>
         </div>
       ) : null}
-      <Modal isOpen$={targetQuiz$.use()} onClose={() => targetQuiz$.set(false)}>
+      <Modal isOpen$={!!targetQuiz$.use()} onClose={() => targetQuiz$.set(undefined)}>
         <form
           className={css({
             display: 'flex',
@@ -403,7 +226,7 @@ export default function GraphicalQuizzes() {
             />
             <button
               type='button'
-              onClick={() => targetQuiz$.set(false)}
+              onClick={() => targetQuiz$.set(undefined)}
               className={css({
                 cursor: 'pointer',
                 alignSelf: 'flex-start',
@@ -428,7 +251,7 @@ export default function GraphicalQuizzes() {
               },
             })}
           >
-            You need to pay 100 coins to start the quiz
+            You need to pay {targetQuiz$.use()?.price} coins to start the quiz
           </h1>
           <div
             className={css({
@@ -450,6 +273,7 @@ export default function GraphicalQuizzes() {
           >
             <button
               type='button'
+              onClick={() => startQuiz(targetQuiz$.get()._id)}
               className={css({
                 pl: '12',
                 pr: '12',
@@ -468,7 +292,7 @@ export default function GraphicalQuizzes() {
             </button>
             <button
               type='button'
-              onClick={() => targetQuiz$.set(false)}
+              onClick={() => targetQuiz$.set(undefined)}
               className={css({
                 pl: '10',
                 pr: '10',

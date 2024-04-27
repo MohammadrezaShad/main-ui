@@ -1,7 +1,13 @@
+import {CookieName} from '@/constants';
 import {FindQuizInput, QuizQuery} from '@/graphql/generated/types';
 import {gqlFetch} from '@/services/fetch';
+import {getCookie} from 'cookies-next';
 
-export async function findQuizById(input: FindQuizInput): Promise<QuizQuery['findQuizById']> {
+export async function findQuizById(
+  input: FindQuizInput,
+  token?: string,
+): Promise<QuizQuery['findQuizById']> {
+  const clientId = getCookie(CookieName.CLIENT_ID) as string;
   const res = await gqlFetch({
     url: process.env.NEXT_PUBLIC_API as string,
     query: `query FindQuizById($input: FindQuizInput!) {
@@ -255,6 +261,10 @@ export async function findQuizById(input: FindQuizInput): Promise<QuizQuery['fin
         }
       }`,
     variables: {input},
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'client-id': clientId,
+    },
   });
   if (!res.ok) {
     throw new Error('Failed to fetch data');

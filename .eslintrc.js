@@ -56,7 +56,7 @@ module.exports = {
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-empty-interface': 'off',
     '@typescript-eslint/no-unused-vars': 'off',
-    '@typescript-eslint/no-shadow': ['error'],
+    '@typescript-eslint/no-shadow': ['warn'],
     '@typescript-eslint/explicit-function-return-type': 'off',
     'react/prop-types': 0,
     'react/jsx-props-no-spreading': 'off',

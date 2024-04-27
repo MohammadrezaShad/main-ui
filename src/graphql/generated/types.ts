@@ -215,6 +215,7 @@ export type BestUserOutput = {
   success: Scalars['Boolean']['output'];
   totalCount?: Maybe<Scalars['Int']['output']>;
   totalPages?: Maybe<Scalars['Int']['output']>;
+  userRank?: Maybe<UserRank>;
 };
 
 export type BookmarkMutation = {
@@ -597,9 +598,7 @@ export type CreateEngagementOutput = {
 
 export type CreateGraphicalQuizInput = {
   category?: InputMaybe<Scalars['String']['input']>;
-  duration?: InputMaybe<Scalars['Int']['input']>;
   image: Scalars['String']['input'];
-  price?: InputMaybe<Scalars['Int']['input']>;
   quizPoints: Array<QuizPointsInputType>;
   thumbnail?: InputMaybe<Scalars['String']['input']>;
   title?: InputMaybe<Scalars['String']['input']>;
@@ -860,7 +859,10 @@ export type EndQuizInput = {
 
 export type EndQuizOutput = {
   __typename?: 'EndQuizOutput';
+  correctAnswerCount: Scalars['Int']['output'];
+  gainedCoins: Scalars['Int']['output'];
   success: Scalars['Boolean']['output'];
+  wrongAnswerCount: Scalars['Int']['output'];
 };
 
 export type EngagementMutation = {
@@ -1215,6 +1217,7 @@ export type GraphicalQuizType = {
   title?: Maybe<Scalars['String']['output']>;
   updateUser?: Maybe<UserOutputType>;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
+  youEarned: Scalars['Float']['output'];
 };
 
 export type ImageInputType = {
@@ -1503,21 +1506,15 @@ export type QuizMutationUpdateQuizArgs = {
 };
 
 export type QuizPointsInputType = {
-  bottomLeft: PointInputType;
-  bottomRight: PointInputType;
+  point: PointInputType;
   quiz: Scalars['String']['input'];
-  topLeft: PointInputType;
-  topRight: PointInputType;
 };
 
 export type QuizPointsType = {
   __typename?: 'QuizPointsType';
-  bottomLeft: PointType;
-  bottomRight: PointType;
+  point: PointType;
   quiz: Scalars['String']['output'];
   quizPoints?: Maybe<QuizPointsType>;
-  topLeft: PointType;
-  topRight: PointType;
 };
 
 export type QuizQuery = {
@@ -1555,6 +1552,7 @@ export type QuizType = {
   title?: Maybe<Scalars['String']['output']>;
   updateUser?: Maybe<UserOutputType>;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
+  youEarned: Scalars['Float']['output'];
 };
 
 export type RemoveCommentInput = {
@@ -2084,10 +2082,8 @@ export type UpdateCommentOutput = {
 
 export type UpdateGraphicalQuizInput = {
   category?: InputMaybe<Scalars['String']['input']>;
-  duration?: InputMaybe<Scalars['Int']['input']>;
   id: Scalars['String']['input'];
   image?: InputMaybe<Scalars['String']['input']>;
-  price?: InputMaybe<Scalars['Int']['input']>;
   quizPoints?: InputMaybe<Array<QuizPointsInputType>>;
   thumbnail?: InputMaybe<Scalars['String']['input']>;
   title?: InputMaybe<Scalars['String']['input']>;
@@ -2384,6 +2380,12 @@ export type UserQuerySearchUserArgs = {
 
 export type UserQuerySearchUserByRoleArgs = {
   input: SearchUserByRoleInput;
+};
+
+export type UserRank = {
+  __typename?: 'UserRank';
+  rank: Scalars['Int']['output'];
+  user?: Maybe<User>;
 };
 
 export type UserRoleOutput = {

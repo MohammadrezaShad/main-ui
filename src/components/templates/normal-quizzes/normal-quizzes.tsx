@@ -130,7 +130,14 @@ export default function NormalQuizzes() {
         })}
       >
         <div className={css({mt: '6', mdDown: {maxW: 'full'}})}>
-          <div className={css({display: 'flex', gap: '5', mdDown: {flexDir: 'column', gap: '0'}})}>
+          <div
+            className={css({
+              display: 'grid',
+              gridTemplateColumns: 3,
+              gap: '5',
+              mdDown: {gridTemplateColumns: 1, gap: '0'},
+            })}
+          >
             {quizzes.map(quiz => (
               <QuizCard key={quiz._id} getQuizInfo={getQuizInfo} quiz={quiz} />
             ))}
