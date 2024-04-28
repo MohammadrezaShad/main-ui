@@ -4,9 +4,10 @@ import Image from 'next/image';
 
 interface Props {
   prices: number[];
+  titles: string[];
 }
 
-const QuizSummary = ({prices}: Props) => (
+const QuizSummary = ({prices, titles}: Props) => (
   <div className={css({display: 'flex', flexDir: 'column', alignItems: 'stretch', mt: '2'})}>
     <div
       className={css({
@@ -74,7 +75,7 @@ const QuizSummary = ({prices}: Props) => (
               color: 'text.primary',
             })}
           >
-            Quiz&nbsp;{crypto.randomUUID()}
+            {titles[index]}
           </span>
           <div className={css({display: 'flex', gap: '1', alignItems: 'center'})}>
             <span

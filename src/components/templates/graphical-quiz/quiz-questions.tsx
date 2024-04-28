@@ -57,7 +57,7 @@ const QuizQuestions = ({
         })}
       >
         <div>
-          <h2 className={css({textStyle: 'headline3'})}>Quiz {currentIndex + 1}</h2>
+          <h2 className={css({textStyle: 'headline3'})}>{quiz.title}</h2>
           <div className={css({display: 'flex', alignItems: 'center', gap: '2'})}>
             {Array.from({length: quiz?.questions.length || 0}).map((_, index) => (
               <div
@@ -213,7 +213,7 @@ const QuizQuestion = ({question, index}: {question: QuestionType; index: number}
       })}
     >
       <h2 className={css({fontWeight: 'medium', mdDown: {maxW: 'full'}})}>
-        {index < 10 ? `0${index}` : index}&nbsp;{question.question}
+        {index < 10 ? `0${index}` : index}.&nbsp;{question.question}
       </h2>
     </div>
   </div>
