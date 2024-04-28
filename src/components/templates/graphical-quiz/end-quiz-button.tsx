@@ -11,7 +11,7 @@ const QuizEndButton = ({
   correctAnswers: number;
   wrongAnswers: number;
   gainedCoins: number;
-  handleGoToNextQuiz: (x: number, y: number, z: number) => void;
+  handleGoToNextQuiz: (z: number) => void;
 }) => (
   <div
     className={css({
@@ -86,7 +86,7 @@ const QuizEndButton = ({
         mdDown: {pl: '5', pr: '5'},
         cursor: 'pointer',
       })}
-      onClick={() => handleGoToNextQuiz(correctAnswers, wrongAnswers, gainedCoins)}
+      onClick={() => handleGoToNextQuiz(gainedCoins)}
     >
       Collect your {gainedCoins} points
     </button>

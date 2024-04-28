@@ -180,7 +180,6 @@ const WaterSavingQuiz = () => {
         })}
       >
         <QuizContent
-          questions={quizzes[currentQuizIndex]?.questions ?? []}
           handleSetAnswer={handleSetAnswer}
           currentIndex={currentQuestionIndex}
           handleClickBack={handleClickBack}
@@ -191,13 +190,12 @@ const WaterSavingQuiz = () => {
           completedQuizzesIds={completedQuizzesIds}
           gainedCoins={gainedCoins}
           currentQuestionIndex={currentQuestionIndex}
-          quizImage={quiz?.image as ImageType}
           correctAnswers={correctAnswers}
           wrongAnswers={wrongAnswers}
           handleGoToNextQuiz={handleGoToNextQuiz}
-          questionsCount={quizzes[currentQuizIndex]?.questions.length}
           quizzes={quizzes}
           title={quiz?.title as string}
+          image={quiz?.image as ImageType}
         />
       </div>
       <div
@@ -210,7 +208,10 @@ const WaterSavingQuiz = () => {
           },
         })}
       >
-        <QuizSummary prices={quizzes.map(quiz => quiz.price) as number[]} />
+        <QuizSummary
+          titles={quizzes.map(quiz => quiz.title) as string[]}
+          prices={quizzes.map(quiz => quiz.reward) as number[]}
+        />
       </div>
     </section>
   );

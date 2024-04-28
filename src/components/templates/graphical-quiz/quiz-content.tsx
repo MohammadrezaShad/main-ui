@@ -10,14 +10,11 @@ const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
 
 interface Props {
   title: string;
-  quizImage: ImageType;
   areas: PointType[];
   completedQuizzesIds: string[];
   currentQuizIndex: number;
   currentIndex: number;
-  questionsCount: number;
   currentQuestionIndex: number;
-  questions: any[];
   quizzes: QuizType[];
   handleSetAnswer: any;
   handleClickBack: any;
@@ -27,6 +24,7 @@ interface Props {
   wrongAnswers: number;
   gainedCoins: number;
   handleGoToNextQuiz: any;
+  image: ImageType;
 }
 
 const QuizContent = ({
@@ -34,11 +32,8 @@ const QuizContent = ({
   areas,
   completedQuizzesIds,
   currentQuizIndex,
-  quizImage,
   currentIndex,
-  questionsCount,
   currentQuestionIndex,
-  questions,
   quizzes,
   handleSetAnswer,
   handleClickBack,
@@ -48,25 +43,8 @@ const QuizContent = ({
   wrongAnswers,
   gainedCoins,
   handleGoToNextQuiz,
+  image,
 }: Props) => {
-  const generateBorder = (index: number) => {
-    if (completedQuizzesIds[index]) return '2px solid token(colors.success)';
-    if (currentQuizIndex === index) return '2px solid token(colors.gray2)';
-    return '2px solid white';
-  };
-
-  const generateGradientFrom = (index: number) => {
-    if (completedQuizzesIds[index]) return 'white';
-    if (currentQuizIndex === index) return 'white';
-    return '#B8EAFF';
-  };
-
-  const generateGadientTo = (index: number) => {
-    if (completedQuizzesIds[index]) return 'white';
-    if (currentQuizIndex === index) return 'white';
-    return '#62C2CE';
-  };
-
   const generateIcon = (index: number) => {
     if (completedQuizzesIds[index])
       return (
@@ -79,7 +57,8 @@ const QuizContent = ({
           })}
         />
       );
-    if (currentQuizIndex === index) return `${currentIndex + 1}/${questionsCount}`;
+    if (currentQuizIndex === index)
+      return `${currentIndex + 1}/${quizzes[currentQuizIndex].questions.length}`;
     return index + 1;
   };
 
@@ -121,7 +100,7 @@ const QuizContent = ({
           id='quiz-image'
           useMap='#image-map'
           unoptimized
-          src={`${IMAGE_STORAGE_URL}/${quizImage._id}?w=960&q=85`}
+          src={`${IMAGE_STORAGE_URL}/${image._id}?w=960&q=85`}
           width={960}
           height={540}
           alt=''
@@ -142,25 +121,31 @@ const QuizContent = ({
           ))}
         </map>
         {areas.map((area, index) => {
-          const x =
-            ((area.x - 5) / (document.querySelector('#quiz-image') as HTMLImageElement)?.width) *
-            100;
-          const y =
-            ((area.y - 5) / (document.querySelector('#quiz-image') as HTMLImageElement)?.height) *
-            100;
+          // eslint-disable-next-line no-restricted-globals
+          const width = window.innerWidth > 0 ? window.innerWidth : screen.width;
+          const imageWidth = width > 768 ? 960 : 375;
+          const imageHeight = width > 768 ? 540 : 282;
+          const x = ((area.x - 5) / imageWidth) * 100;
+          const y = ((area.y - 5) / imageHeight) * 100;
           return (
             <div
               style={{left: `${x}%`, top: `${y}%`}}
               key={crypto.randomUUID()}
               className={css({
-                border: generateBorder(index),
+                border: completedQuizzesIds[index]
+                  ? '4px solid token(colors.success)'
+                  : currentQuizIndex === index
+                    ? '4px solid token(colors.gray2)'
+                    : '4px solid white',
                 position: 'absolute',
                 width: '10',
                 height: '10',
                 borderRadius: '50%',
                 bgGradient: 'to-b',
-                gradientFrom: generateGradientFrom(index),
-                gradientTo: generateGadientTo(index),
+                gradientFrom:
+                  completedQuizzesIds[index] || currentQuizIndex === index ? 'white' : '#B8EAFF',
+                gradientTo:
+                  completedQuizzesIds[index] || currentQuizIndex === index ? 'white' : '#62C2CE',
                 color: currentQuizIndex === index ? 'primary' : 'white',
                 zIndex: '50', // Ensure it's above the image
                 display: 'flex',
@@ -200,10 +185,9 @@ const QuizContent = ({
         >
           Finish
         </Link>
-      ) : null}
-      {currentQuestionIndex + 1 <= quizzes[currentQuizIndex]?.questions.length ? (
+      ) : currentQuestionIndex + 1 <= quizzes[currentQuizIndex]?.questions.length ? (
         <QuizQuestions
-          questions={questions ?? []}
+          questions={quizzes[currentQuizIndex].questions ?? []}
           onSetAnswer={handleSetAnswer}
           currentIndex={currentQuestionIndex}
           onBack={handleClickBack}

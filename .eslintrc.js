@@ -52,6 +52,7 @@ module.exports = {
     'no-unused-vars': ['off'],
     'no-empty-interface': 'off',
     'no-underscore-dangle': 'off',
+    'no-nested-ternary': 'warn',
     '@typescript-eslint/no-use-before-define': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-empty-interface': 'off',
