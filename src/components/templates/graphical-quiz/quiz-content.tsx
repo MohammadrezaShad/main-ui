@@ -25,6 +25,7 @@ interface Props {
   gainedCoins: number;
   handleGoToNextQuiz: any;
   image: ImageType;
+  currentQuiz: QuizType;
 }
 
 const QuizContent = ({
@@ -44,6 +45,7 @@ const QuizContent = ({
   gainedCoins,
   handleGoToNextQuiz,
   image,
+  currentQuiz,
 }: Props) => {
   const generateIcon = (index: number) => {
     if (completedQuizzesIds[index])
@@ -57,8 +59,7 @@ const QuizContent = ({
           })}
         />
       );
-    if (currentQuizIndex === index)
-      return `${currentIndex + 1}/${quizzes[currentQuizIndex].questions.length}`;
+    if (currentQuizIndex === index) return `${currentIndex + 1}/${currentQuiz.questions.length}`;
     return index + 1;
   };
 
@@ -185,15 +186,15 @@ const QuizContent = ({
         >
           Finish
         </Link>
-      ) : currentQuestionIndex + 1 <= quizzes[currentQuizIndex]?.questions.length ? (
+      ) : currentQuestionIndex + 1 <= currentQuiz?.questions.length ? (
         <QuizQuestions
-          questions={quizzes[currentQuizIndex].questions ?? []}
+          questions={currentQuiz.questions ?? []}
           onSetAnswer={handleSetAnswer}
           currentIndex={currentQuestionIndex}
           onBack={handleClickBack}
           onNext={handleClickNext}
           answers={answers}
-          quiz={quizzes[currentQuizIndex]}
+          quiz={currentQuiz}
         />
       ) : (
         <QuizEndButton

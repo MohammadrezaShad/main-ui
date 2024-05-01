@@ -1,5 +1,6 @@
 export * from './find-graphical-quiz-by-id';
 export * from './find-quiz-by-id';
+export * from './find-quiz-by-point';
 export * from './get-top-quizzes';
 export * from './get-total-count';
 export * from './get-total-graphcal-count';
