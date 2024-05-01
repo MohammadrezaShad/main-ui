@@ -1514,7 +1514,7 @@ export type QuizPointsType = {
   __typename?: 'QuizPointsType';
   point: PointType;
   quiz: Scalars['String']['output'];
-  quizPoints?: Maybe<QuizPointsType>;
+  quizObject?: Maybe<QuizType>;
 };
 
 export type QuizQuery = {

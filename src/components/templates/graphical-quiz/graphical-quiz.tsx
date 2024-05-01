@@ -12,7 +12,7 @@ import {
   QuizType,
   endQuiz,
   findGraphicalQuizById,
-  findQuizById,
+  findQuizByPoint,
 } from '@/graphql';
 import {useMutation, useQuery} from '@tanstack/react-query';
 import {getCookie} from 'cookies-next';
@@ -36,12 +36,13 @@ const WaterSavingQuiz = () => {
   const [gainedCoins, setGainedCoins] = useState(0);
   const [totalGainedCoins, setTotalGainedCoins] = useState(0);
   const [answers, setAnswers] = useState<Answer[]>([]);
-  const [quizzes, setQuizzes] = useState<QuizType[]>([]);
+  const [currentQuiz, setCurrentQuiz] = useState<QuizType>();
   const {data} = useQuery({
     queryKey: ['find-graphical-quiz-by-id', params.quizId],
     queryFn: () => findGraphicalQuizById({id: params.quizId as string}, token),
   });
   const quiz = data?.result;
+  const quizzes = data?.result?.quizPoints.map(quiz => quiz.quizObject);
 
   const [currentQuizIndex, setCurrentQuizIndex] = useState(0);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -52,16 +53,15 @@ const WaterSavingQuiz = () => {
   });
 
   const handleClickNext = () => {
-    // !TODO: CALL END QUIZ ON LAST QUESTION
-    if (!data || !data.result) return;
+    if (!data || !data.result || !currentQuiz) return;
     if (
-      currentQuestionIndex + 1 <= quizzes[currentQuizIndex]?.questions.length &&
+      currentQuestionIndex + 1 <= currentQuiz.questions.length &&
       !answers[currentQuestionIndex]
     ) {
       toast.error('Please select an answer');
       return;
     }
-    if (currentQuestionIndex + 1 === quizzes[currentQuizIndex].questions.length) {
+    if (currentQuestionIndex + 1 === currentQuiz.questions.length) {
       handleClick();
     }
     setCurrentQuestionIndex(prev => prev + 1);
@@ -91,14 +91,15 @@ const WaterSavingQuiz = () => {
   };
 
   const handleClick = async () => {
+    if (!currentQuiz) return;
     if (token) {
       try {
         const data = await endQuizMutation.mutateAsync({
-          args: {quiz: quizzes[currentQuizIndex]._id as string, answers},
+          args: {quiz: currentQuiz._id as string, answers},
           token,
         });
         if (data?.success) {
-          setCompletedQuizzesIds(prev => [...prev, quizzes[currentQuizIndex]._id]);
+          setCompletedQuizzesIds(prev => [...prev, currentQuiz._id]);
           setCorrectAnswers(data.correctAnswerCount);
           setWrongAnswers(data.wrongAnswerCount);
           setGainedCoins(data.gainedCoins);
@@ -117,25 +118,22 @@ const WaterSavingQuiz = () => {
   useEffect(() => {
     (async () => {
       if (data?.result) {
-        const quizIds = quiz?.quizPoints.map(quiz => quiz.quiz);
-        const quizzesPromise: Promise<any>[] = [];
-        if (quizIds && quizIds?.length > 0) {
-          quizIds?.forEach(async quizId => {
-            quizzesPromise.push(findQuizById({id: quizId as string}, token));
-          });
-        }
-        const response = await Promise.all(quizzesPromise);
-        if (response && response.length > 0) {
-          const newQuizzes: QuizType[] = [];
-          response.forEach(response => {
-            if (response?.result) newQuizzes.push(response.result);
-          });
-          setQuizzes(newQuizzes);
+        const currentQuizId = params.quizId as string;
+        const currentQuizPoints = data.result.quizPoints[currentQuizIndex].point;
+        try {
+          const response = await findQuizByPoint(
+            {id: currentQuizId, point: currentQuizPoints},
+            token,
+          );
+          setCurrentQuiz(response.result as QuizType);
+        } catch (error: Error | any) {
+          toast.error(error.message);
+        } finally {
           setIsLoading(false);
         }
       }
     })();
-  }, [data]);
+  }, [currentQuizIndex]);
 
   if (isLoading)
     return (
@@ -180,6 +178,7 @@ const WaterSavingQuiz = () => {
         })}
       >
         <QuizContent
+          currentQuiz={currentQuiz as QuizType}
           handleSetAnswer={handleSetAnswer}
           currentIndex={currentQuestionIndex}
           handleClickBack={handleClickBack}
@@ -193,7 +192,7 @@ const WaterSavingQuiz = () => {
           correctAnswers={correctAnswers}
           wrongAnswers={wrongAnswers}
           handleGoToNextQuiz={handleGoToNextQuiz}
-          quizzes={quizzes}
+          quizzes={quizzes as QuizType[]}
           title={quiz?.title as string}
           image={quiz?.image as ImageType}
         />
@@ -209,8 +208,8 @@ const WaterSavingQuiz = () => {
         })}
       >
         <QuizSummary
-          titles={quizzes.map(quiz => quiz.title) as string[]}
-          prices={quizzes.map(quiz => quiz.reward) as number[]}
+          titles={quizzes?.map(quiz => quiz?.title) as string[]}
+          prices={quizzes?.map(quiz => quiz?.reward) as number[]}
         />
       </div>
     </section>
