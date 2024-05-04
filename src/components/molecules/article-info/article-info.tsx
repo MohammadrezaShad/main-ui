@@ -17,7 +17,7 @@ const ArticleInfo = ({
   handleToggleBookmark,
   isBookmark,
 }: {
-  author: UserOutputType;
+  author: UserOutputType | null;
   readingDuration?: Maybe<number>;
   className?: string;
   articleId: string;
@@ -46,7 +46,7 @@ const ArticleInfo = ({
       >
         {/** AVATAR */}
         <Avatar
-          src={author.avatar?._id ? `${IMAGE_STORAGE_URL}/${author.avatar?._id}` : undefined}
+          src={author?.avatar?._id ? `${IMAGE_STORAGE_URL}/${author.avatar?._id}` : undefined}
           size={40}
         />
 
@@ -57,7 +57,12 @@ const ArticleInfo = ({
             color: 'text.primary',
           })}
         >
-          By <Link href={`/author/${author._id}`}>{author.displayName}</Link>
+          By&nbsp;
+          {author ? (
+            <Link href={`/author/${author._id}`}>{author.displayName}</Link>
+          ) : (
+            <span>Unknown Author</span>
+          )}
         </div>
 
         {/** DIVIDER */}

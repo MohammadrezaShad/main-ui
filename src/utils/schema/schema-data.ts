@@ -141,9 +141,9 @@ export const getLocalBusinessSchema = (): WithContext<EntertainmentBusiness> => 
 export const getPersonSchema = (author: UserOutputType): WithContext<Person> => ({
   '@context': 'https://schema.org',
   '@type': 'Person',
-  name: `${author.firstName} ${author.lastName}`,
-  url: author.website ?? '',
-  image: `${process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL}/${author.avatar?._id}`,
+  name: `${author?.firstName} ${author?.lastName}`,
+  url: author?.website ?? '',
+  image: `${process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL}/${author?.avatar?._id}`,
 });
 
 export const getFAQSchema = (faqs: FaqInputType[]): WithContext<FAQPage> => ({

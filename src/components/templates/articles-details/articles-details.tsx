@@ -26,6 +26,7 @@ import {CookieName} from '@/constants';
 import {
   ArticleType,
   DeleteOneArticleBookmarkInput,
+  UserOutputType,
   addBookmark,
   deleteBookmark,
   findArticleByName,
@@ -196,7 +197,7 @@ const Page = () => {
         >
           <ArticleInfo
             articleId={article._id}
-            author={article.author!}
+            author={article.author as UserOutputType}
             readingDuration={article.readingDuration}
             handleToggleBookmark={handleToggleBookmark}
             isBookmark={article.isBookmark}
@@ -313,7 +314,7 @@ const Page = () => {
         <SocialMediaLinks links={socialMediaLinks} />
       </Box>
       {article.faqs ? <Questions faqs={article.faqs} /> : null}
-      <UserInfo author={article.author!} />
+      {article.author && <UserInfo author={article.author} />}
 
       {relatedArticles.length > 0 ? (
         <div
