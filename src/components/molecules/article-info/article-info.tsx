@@ -5,7 +5,6 @@ import {IconCollection} from '@/assets';
 import {Avatar} from '@/components';
 import {CookieName} from '@/constants';
 import {Maybe, UserOutputType} from '@/graphql/generated/types';
-import Link from 'next/link';
 
 const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
 
@@ -25,6 +24,14 @@ const ArticleInfo = ({
   isBookmark: boolean;
 }) => {
   const token = getCookie(CookieName.AUTH_TOKEN);
+
+  function getAuthorName() {
+    if (!author) return 'Unknow Author';
+    if (author.displayName) return author.displayName;
+    if (author.firstName && author.lastName) return `${author.firstName} ${author.lastName}`;
+    if (author.username) return author.username;
+    return 'Unknow Author';
+  }
 
   return (
     <div
@@ -58,11 +65,7 @@ const ArticleInfo = ({
           })}
         >
           By&nbsp;
-          {author ? (
-            <Link href={`/author/${author._id}`}>{author.displayName}</Link>
-          ) : (
-            <span>Unknown Author</span>
-          )}
+          {getAuthorName()}
         </div>
 
         {/** DIVIDER */}
