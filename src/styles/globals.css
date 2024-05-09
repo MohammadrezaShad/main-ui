@@ -196,3 +196,7 @@
   background-color: var(--toastify-color-error);
   border-left: 8px solid var(--toastify-color-error--dark);
 }
+
+td {
+  border: 1px solid gray;
+}
