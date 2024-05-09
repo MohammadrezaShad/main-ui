@@ -22,6 +22,7 @@ export async function searchArticles(input: SearchArticleInput): Promise<Article
             status
             title
             excerpt
+            hasPdf
             thumbnail {
               _id
               alt
