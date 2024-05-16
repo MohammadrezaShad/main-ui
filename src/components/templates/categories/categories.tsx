@@ -11,13 +11,13 @@ import {CategoryType, searchCategories} from '@/graphql';
 
 import {Container, SliderWrapper, Wrapper} from './categories.styled';
 
-export default function Categories() {
+export default function Categories({hasPdf = false}: {hasPdf?: boolean}) {
   const {data} = useQuery({
     queryKey: ['get-categories'],
     queryFn: () => searchCategories({count: 50}),
   }) as any;
   const categories: Array<CategoryType> = data?.category!.searchCategories.results;
-  const hasExtraCategories = categories.length > 3;
+  const hasExtraCategories = categories?.length > 3;
 
   return (
     <Container>
@@ -42,7 +42,7 @@ export default function Categories() {
       </Box>
       <Wrapper hideBelow='md'>
         {categories.slice(0, 3).map(category => (
-          <CategoryCard id={category._id} key={category._id} category={category} />
+          <CategoryCard id={category._id} key={category._id} category={category} hasPdf={hasPdf} />
         ))}
       </Wrapper>
       <SliderWrapper>
@@ -63,7 +63,12 @@ export default function Categories() {
                   w: 'full',
                 })}
               >
-                <CategoryCard id={category._id} key={category._id} category={category} />
+                <CategoryCard
+                  id={category._id}
+                  key={category._id}
+                  category={category}
+                  hasPdf={hasPdf}
+                />
               </div>
             </SwiperSlide>
           ))}
@@ -74,12 +79,23 @@ export default function Categories() {
           <Divider label='Other Categories' />
           <Wrapper hideBelow='md'>
             {categories.slice(3).map(category => (
-              <CategoryCard id={category._id} key={category._id} category={category} />
+              <CategoryCard
+                id={category._id}
+                key={category._id}
+                category={category}
+                hasPdf={hasPdf}
+              />
             ))}
           </Wrapper>
           <Wrapper hideFrom='md'>
             {categories.slice(3).map(category => (
-              <CategoryCard id={category._id} key={category._id} collapsed category={category} />
+              <CategoryCard
+                id={category._id}
+                key={category._id}
+                collapsed
+                category={category}
+                hasPdf={hasPdf}
+              />
             ))}
           </Wrapper>
         </>
