@@ -24,7 +24,7 @@ export const Card = styled(Link, {
       base: '0.5',
       mdDown: '6',
     },
-    py: {
+    pb: {
       base: '14',
       mdDown: '6',
     },
@@ -47,6 +47,10 @@ export const CategoryImage = styled('div', {
     justifyContent: 'center',
     alignItems: 'center',
     p: '11',
+    mt: {
+      base: '14',
+      mdDown: '4',
+    },
     rounded: 'full',
     px: {
       mdDown: '5',

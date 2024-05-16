@@ -13,13 +13,18 @@ const CategoryCard = ({
   category,
   collapsed = false,
   id,
+  hasPdf,
 }: {
   category: CategoryType;
   collapsed?: boolean;
   id?: string;
+  hasPdf?: boolean;
 }) => (
   <Container>
-    <Card href={`/categories/${id ?? category.slug}/articles`} _small={collapsed}>
+    <Card
+      href={`${hasPdf ? '/pdf-articles' : '/articles'}/categories/${id ?? category.slug}/articles`}
+      _small={collapsed}
+    >
       {category.image ? (
         <Image
           unoptimized
@@ -27,7 +32,13 @@ const CategoryCard = ({
           width={category.image.width}
           height={category.image.height}
           src={`${IMAGE_STORAGE_URL}/${category.image?._id}`}
-          className={css({mx: 'auto', display: collapsed ? 'none' : 'block'})}
+          className={css({
+            mx: 'auto',
+            display: collapsed ? 'none' : 'block',
+            w: 'full',
+            h: '[216px]',
+            objectFit: 'cover',
+          })}
         />
       ) : (
         <CategoryImage _hidden={collapsed}>

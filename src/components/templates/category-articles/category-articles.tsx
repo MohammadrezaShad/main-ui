@@ -18,23 +18,43 @@ import 'swiper/css/pagination';
 import {searchArticleByCategory} from '@/graphql';
 import {Pagination} from './articles.styled';
 
-const Page = () => {
+const Page = ({hasPdf}: {hasPdf?: boolean}) => {
   const [page, setPage] = useState(1);
   const params = useParams();
   const READMORE_PAGE_COUNT = 1;
   const {isPending, isError, error, data, isFetching, isPlaceholderData} = useQuery({
     queryKey: ['search-cs', params.categoryId],
     queryFn: () =>
-      searchArticleByCategory({categories: [params.categoryId as string], count: 5, page}),
+      searchArticleByCategory({categories: [params.categoryId as string], count: 5, page, hasPdf}),
     placeholderData: keepPreviousData,
   }) as any;
 
   const articles: Array<ArticleType> = data.article!.searchArticles.results;
   const {totalPages} = data.article!.searchArticles;
-  const totalCount: number = data.article!.searchArticles.totalCount - 6;
+  const totalCount: number = data.article!.searchArticles.totalCount - 3;
 
   const startResult = (+page - 1) * READMORE_PAGE_COUNT + 1;
   const endResult = Math.min(+page * READMORE_PAGE_COUNT, totalCount || 0);
+
+  if (articles.length < 1)
+    return (
+      <div
+        className={css({
+          display: 'flex',
+          minH: 'screen',
+          alignItems: 'center',
+          justifyContent: 'center',
+        })}
+      >
+        <h2
+          className={css({
+            textStyle: 'h2',
+          })}
+        >
+          No articles found!
+        </h2>
+      </div>
+    );
 
   return (
     <>
@@ -48,43 +68,47 @@ const Page = () => {
           <Articles articles={articles.slice(6)} />
         </>
       ) : null}
-      <div
-        className={css({
-          mt: 6,
-          mb: -6,
-        })}
-      >
-        <Pagination
-          nextLabel={<IconChevronRight />}
-          onPageChange={current => setPage(current.selected + 1)}
-          pageRangeDisplayed={3}
-          marginPagesDisplayed={2}
-          pageCount={totalPages}
-          previousLabel={<IconChevronLeft />}
-          pageClassName='page-item'
-          pageLinkClassName='page-link'
-          previousClassName='page-item'
-          previousLinkClassName='page-link'
-          nextClassName='page-item'
-          nextLinkClassName='page-link'
-          breakLabel='...'
-          breakClassName='page-item'
-          breakLinkClassName='page-link'
-          containerClassName='pagination'
-          activeClassName='active'
-          renderOnZeroPageCount={null}
-        />
-      </div>
-      <span
-        className={css({
-          color: 'gray4',
-          fontWeight: 300,
-          fontSize: '14px',
-          textAlign: 'center',
-        })}
-      >
-        Showing {startResult}-{endResult} of {totalCount || 0}
-      </span>
+      {totalCount > 0 && (
+        <>
+          <div
+            className={css({
+              mt: 6,
+              mb: -6,
+            })}
+          >
+            <Pagination
+              nextLabel={<IconChevronRight />}
+              onPageChange={current => setPage(current.selected + 1)}
+              pageRangeDisplayed={3}
+              marginPagesDisplayed={2}
+              pageCount={totalPages}
+              previousLabel={<IconChevronLeft />}
+              pageClassName='page-item'
+              pageLinkClassName='page-link'
+              previousClassName='page-item'
+              previousLinkClassName='page-link'
+              nextClassName='page-item'
+              nextLinkClassName='page-link'
+              breakLabel='...'
+              breakClassName='page-item'
+              breakLinkClassName='page-link'
+              containerClassName='pagination'
+              activeClassName='active'
+              renderOnZeroPageCount={null}
+            />
+          </div>
+          <span
+            className={css({
+              color: 'gray4',
+              fontWeight: 300,
+              fontSize: '14px',
+              textAlign: 'center',
+            })}
+          >
+            Showing {startResult}-{endResult} of {totalCount || 0}
+          </span>
+        </>
+      )}
     </>
   );
 };
