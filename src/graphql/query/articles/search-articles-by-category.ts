@@ -48,7 +48,6 @@ export async function searchArticleByCategory(
                 createdAt
                 filename
                 height
-                preview
                 updatedAt
                 width
               }

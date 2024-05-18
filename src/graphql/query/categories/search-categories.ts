@@ -1,7 +1,8 @@
-import {gqlFetch} from '@/services/fetch';
+import {getCookie} from 'cookies-next';
 
 import {CookieName} from '@/constants';
-import {getCookie} from 'cookies-next';
+import {gqlFetch} from '@/services/fetch';
+
 import {CategoryQuery, SearchCategoryInput} from '../../generated/types';
 
 export async function searchCategories(
@@ -25,6 +26,8 @@ export async function searchCategories(
                   alt
                 }
                 postCount
+                withPdfArticlesPostCount
+                withoutPdfArticlesPostCount
               }
               success
               totalCount

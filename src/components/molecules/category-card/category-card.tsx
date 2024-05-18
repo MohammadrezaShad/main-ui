@@ -71,7 +71,8 @@ const CategoryCard = ({
             textAlign: 'center',
           })}
         >
-          Articles: {category.postCount ?? 0}
+          Articles:&nbsp;
+          {hasPdf ? category.withoutPdfArticlesPostCount : category.withPdfArticlesPostCount}
         </div>
       </Box>
       <Box mt='1' w='10/12' mx='auto'>

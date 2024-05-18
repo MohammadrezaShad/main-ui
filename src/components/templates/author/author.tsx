@@ -82,7 +82,6 @@ export default function Author() {
             index !== 0 ? [...acc, ...page?.article?.searchArticles.results] : [...acc],
           response.data?.pages[0]?.article?.searchArticles.results,
         ) || [];
-      console.log('🚀 ~ useEffect ~ _articles:', _articles);
       setArticles(_articles);
     }
   }, [response.data]);

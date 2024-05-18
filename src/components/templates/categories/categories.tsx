@@ -17,7 +17,17 @@ export default function Categories({hasPdf = false}: {hasPdf?: boolean}) {
     queryFn: () => searchCategories({count: 50}),
   }) as any;
   const categories: Array<CategoryType> = data?.category!.searchCategories.results;
-  const hasExtraCategories = categories?.length > 3;
+  let filteredCategories;
+  if (hasPdf) {
+    filteredCategories = categories.filter(
+      (cat: CategoryType) => cat.withPdfArticlesPostCount && cat.withPdfArticlesPostCount > 0,
+    );
+  } else {
+    filteredCategories = categories.filter(
+      (cat: CategoryType) => cat.withoutPdfArticlesPostCount && cat.withoutPdfArticlesPostCount > 0,
+    );
+  }
+  const hasExtraCategories = filteredCategories?.length > 3;
 
   return (
     <Container>
@@ -41,7 +51,7 @@ export default function Categories({hasPdf = false}: {hasPdf?: boolean}) {
         />
       </Box>
       <Wrapper hideBelow='md'>
-        {categories.slice(0, 3).map(category => (
+        {filteredCategories.slice(0, 3).map(category => (
           <CategoryCard id={category._id} key={category._id} category={category} hasPdf={hasPdf} />
         ))}
       </Wrapper>
@@ -55,7 +65,7 @@ export default function Categories({hasPdf = false}: {hasPdf?: boolean}) {
             maxW: '960px',
           })}
         >
-          {categories.slice(0, 3).map(category => (
+          {filteredCategories.slice(0, 3).map(category => (
             <SwiperSlide key={category._id}>
               <div
                 className={flex({
@@ -78,7 +88,7 @@ export default function Categories({hasPdf = false}: {hasPdf?: boolean}) {
         <>
           <Divider label='Other Categories' />
           <Wrapper hideBelow='md'>
-            {categories.slice(3).map(category => (
+            {filteredCategories.slice(3).map(category => (
               <CategoryCard
                 id={category._id}
                 key={category._id}
@@ -88,7 +98,7 @@ export default function Categories({hasPdf = false}: {hasPdf?: boolean}) {
             ))}
           </Wrapper>
           <Wrapper hideFrom='md'>
-            {categories.slice(3).map(category => (
+            {filteredCategories.slice(3).map(category => (
               <CategoryCard
                 id={category._id}
                 key={category._id}

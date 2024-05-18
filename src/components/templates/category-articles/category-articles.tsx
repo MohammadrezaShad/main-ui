@@ -1,28 +1,28 @@
 'use client';
 
+import {useState} from 'react';
 import {css} from '@styled/css';
 import {Box} from '@styled/jsx';
 import {keepPreviousData, useQuery} from '@tanstack/react-query';
 import {useParams} from 'next/navigation';
-import {useState} from 'react';
 
 import {IconChevronLeft, IconChevronRight} from '@/assets';
 import {Articles, Divider, RecentArticles} from '@/components';
 import {Slider} from '@/components/organisms/slider';
+import {searchArticleByCategory} from '@/graphql';
 import {ArticleType} from '@/graphql/generated/types';
 
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 
-import {searchArticleByCategory} from '@/graphql';
 import {Pagination} from './articles.styled';
 
 const Page = ({hasPdf}: {hasPdf?: boolean}) => {
   const [page, setPage] = useState(1);
   const params = useParams();
   const READMORE_PAGE_COUNT = 1;
-  const {isPending, isError, error, data, isFetching, isPlaceholderData} = useQuery({
+  const {data} = useQuery({
     queryKey: ['search-cs', params.categoryId],
     queryFn: () =>
       searchArticleByCategory({categories: [params.categoryId as string], count: 5, page, hasPdf}),

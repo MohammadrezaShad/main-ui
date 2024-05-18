@@ -1,13 +1,12 @@
 import {css} from '@styled/css';
 import {dehydrate} from '@tanstack/react-query';
+import {unstable_noStore as noStore} from 'next/cache';
 
 import {CategoryArticlesView} from '@/components';
 import {searchArticleByCategory, searchCategories} from '@/graphql';
 import {CategoryType} from '@/graphql/generated/types';
 import {getQueryClient} from '@/helpers';
 import {Hydrate} from '@/providers';
-
-export const revalidate = 3600;
 
 export async function generateStaticParams(): Promise<any> {
   const data = (await searchCategories({
@@ -20,6 +19,7 @@ export async function generateStaticParams(): Promise<any> {
 }
 
 const Page = async ({params}: {params: {categoryId: string}}) => {
+  noStore();
   const queryClient = getQueryClient();
   await queryClient.prefetchQuery({
     queryKey: ['search-cs', params.categoryId],

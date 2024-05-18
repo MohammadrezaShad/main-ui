@@ -400,6 +400,8 @@ export type CategoryType = {
   title: Scalars['String']['output'];
   updateUser?: Maybe<UserOutputType>;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
+  withPdfArticlesPostCount?: Maybe<Scalars['Float']['output']>;
+  withoutPdfArticlesPostCount?: Maybe<Scalars['Float']['output']>;
 };
 
 export type ChangePasswordInput = {
