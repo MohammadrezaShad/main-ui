@@ -5,8 +5,10 @@ import {Ubuntu} from 'next/font/google';
 import {cookies} from 'next/headers';
 
 import {FacebookPixel} from '@/components';
+import JsonLdScript from '@/components/shared/json-ld-script';
 import {CookieName, ThemeType} from '@/constants';
 import {MainProviders} from '@/providers';
+import {searchActionSchema} from '@/utils';
 
 import '@/styles/globals.css';
 
@@ -38,6 +40,7 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
   return (
     <html lang='en' dir='ltr' data-color-mode={theme?.value}>
       <body className={ubuntu.className}>
+        <JsonLdScript id='website' data={searchActionSchema} />
         <MainProviders theme={theme?.value as ThemeType}>
           <main>
             <div className='root'>
