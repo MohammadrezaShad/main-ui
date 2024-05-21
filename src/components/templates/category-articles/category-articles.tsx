@@ -18,20 +18,20 @@ import 'swiper/css/pagination';
 
 import {Pagination} from './articles.styled';
 
-const Page = ({hasPdf}: {hasPdf?: boolean}) => {
+const Page = ({hasPdf = false}: {hasPdf?: boolean}) => {
   const [page, setPage] = useState(1);
   const params = useParams();
   const READMORE_PAGE_COUNT = 1;
   const {data} = useQuery({
     queryKey: ['search-cs', params.categoryId],
     queryFn: () =>
-      searchArticleByCategory({categories: [params.categoryId as string], count: 5, page, hasPdf}),
+      searchArticleByCategory({categories: [params.categoryId as string], count: 12, page, hasPdf}),
     placeholderData: keepPreviousData,
   }) as any;
 
   const articles: Array<ArticleType> = data.article!.searchArticles.results;
   const {totalPages} = data.article!.searchArticles;
-  const totalCount: number = data.article!.searchArticles.totalCount - 3;
+  const totalCount: number = data.article!.searchArticles.totalCount - 9;
 
   const startResult = (+page - 1) * READMORE_PAGE_COUNT + 1;
   const endResult = Math.min(+page * READMORE_PAGE_COUNT, totalCount || 0);

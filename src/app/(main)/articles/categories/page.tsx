@@ -26,7 +26,7 @@ const Page = async () => {
       })}
     >
       <Hydrate state={dehydratedState}>
-        <CategoriesView />
+        <CategoriesView hasPdf={false} />
       </Hydrate>
     </div>
   );

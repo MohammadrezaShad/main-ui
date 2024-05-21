@@ -72,7 +72,7 @@ const CategoryCard = ({
           })}
         >
           Articles:&nbsp;
-          {hasPdf ? category.withoutPdfArticlesPostCount : category.withPdfArticlesPostCount}
+          {hasPdf ? category.withPdfArticlesPostCount : category.withoutPdfArticlesPostCount}
         </div>
       </Box>
       <Box mt='1' w='10/12' mx='auto'>
