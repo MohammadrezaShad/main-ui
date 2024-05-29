@@ -6,6 +6,8 @@ import {searchCategories} from '@/graphql';
 import {getQueryClient} from '@/helpers';
 import {Hydrate} from '@/providers';
 
+export const dynamic = 'force-dynamic';
+
 const Page = async () => {
   const queryClient = getQueryClient();
   await queryClient.prefetchQuery({

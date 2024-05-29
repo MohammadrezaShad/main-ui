@@ -20,7 +20,7 @@ interface Props {
 
 const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL!;
 
-const Slider = ({slides, hasPdf}: Props) => (
+const Slider = ({slides, hasPdf = false}: Props) => (
   <Swiper
     autoplay
     pagination={{type: 'bullets', clickable: true}}

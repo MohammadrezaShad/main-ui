@@ -63,18 +63,7 @@ const CategoryCard = ({
           />
         </CategoryImage>
       )}
-      <Box mt={collapsed ? 0 : '7'}>
-        <div
-          className={css({
-            textStyle: 'caption',
-            color: 'gray4',
-            textAlign: 'center',
-          })}
-        >
-          Articles:&nbsp;
-          {hasPdf ? category.withPdfArticlesPostCount : category.withoutPdfArticlesPostCount}
-        </div>
-      </Box>
+      <Box mt={collapsed ? 0 : '7'} />
       <Box mt='1' w='10/12' mx='auto'>
         <div
           title={category.title}

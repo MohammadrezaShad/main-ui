@@ -139,6 +139,10 @@
   transform: none;
 }
 
+p[data-f-id] {
+  display: none !important;
+}
+
 .swiper-pagination-horizontal.swiper-pagination-bullets .swiper-pagination-bullet {
   width: 16px;
   height: 4px;

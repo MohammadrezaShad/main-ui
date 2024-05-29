@@ -12,10 +12,10 @@ const Navbar = () => {
 
   return (
     <Container>
-      <Item _isActive={isActive('/articles/categories') || undefined}>
+      <Item _isActive={isActive('/articles/') || undefined}>
         <Link href='/articles/categories'>Articles</Link>
       </Item>
-      <Item _isActive={isActive('/pdf-articles/categories') || undefined}>
+      <Item _isActive={isActive('/pdf-articles') || undefined}>
         <Link href='/pdf-articles/categories'>PDF Articles</Link>
       </Item>
       <Item _isActive={isActive('/about') || undefined}>

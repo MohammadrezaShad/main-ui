@@ -7,7 +7,7 @@ import {CategoryType} from '@/graphql/generated/types';
 import {getQueryClient} from '@/helpers';
 import {Hydrate} from '@/providers';
 
-export const revalidate = 3600;
+export const dynamic = 'force-dynamic';
 
 export async function generateStaticParams(): Promise<any> {
   const data = (await searchCategories({

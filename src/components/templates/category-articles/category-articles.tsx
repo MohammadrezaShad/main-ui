@@ -29,6 +29,8 @@ const Page = ({hasPdf = false}: {hasPdf?: boolean}) => {
     placeholderData: keepPreviousData,
   }) as any;
 
+  if (!data) throw new Error('No data found from search catagories query');
+
   const articles: Array<ArticleType> = data.article!.searchArticles.results;
   const {totalPages} = data.article!.searchArticles;
   const totalCount: number = data.article!.searchArticles.totalCount - 9;
@@ -59,13 +61,13 @@ const Page = ({hasPdf = false}: {hasPdf?: boolean}) => {
   return (
     <>
       <Box className={css({mx: {mdDown: '-4'}})}>
-        <Slider slides={articles.slice(0, 3)} />
+        <Slider slides={articles.slice(0, 3)} hasPdf={hasPdf} />
       </Box>
-      <RecentArticles posts={articles.slice(3, 6)} />
+      <RecentArticles posts={articles.slice(3, 6)} hasPdf={hasPdf} />
       {articles.length > 6 ? (
         <>
           <Divider label='Keep Reading' />
-          <Articles articles={articles.slice(6)} />
+          <Articles articles={articles.slice(6)} hasPdf={hasPdf} />
         </>
       ) : null}
       {totalCount > 0 && (

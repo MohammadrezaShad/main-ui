@@ -21,7 +21,7 @@ const Articles = ({articles, hasPdf}: {articles: Array<ArticleType>; hasPdf?: bo
       {articles.map((article, index) => (
         <ImageCard
           key={article._id}
-          articleLink={`/${hasPdf ? 'articles' : 'pdf-articles'}/${article.slug}`}
+          articleLink={`/${hasPdf ? 'pdf-articles' : 'articles'}/${article.slug}`}
           date={article.publishDate}
           imageUrl={
             article.thumbnail?._id ? `${IMAGE_STORAGE_URL}/${article.thumbnail?._id}` : undefined

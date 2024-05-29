@@ -10,7 +10,7 @@ import moment from 'moment';
 
 const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
 
-const RecentArticles = ({posts, hasPdf}: {posts: ArticleType[]; hasPdf?: boolean}) => (
+const RecentArticles = ({posts, hasPdf = false}: {posts: ArticleType[]; hasPdf?: boolean}) => (
   <>
     <div
       className={grid({
@@ -23,7 +23,7 @@ const RecentArticles = ({posts, hasPdf}: {posts: ArticleType[]; hasPdf?: boolean
         <Card
           key={post._id}
           title={post.title}
-          articleLink={`/${hasPdf ? 'articles' : 'pdf-articles'}/${post.slug}`}
+          articleLink={`/${hasPdf ? 'pdf-articles' : 'articles'}/${post.slug}`}
           date={moment(post.publishDate).format('DD MMMM YYYY')}
           imageUrl={post.thumbnail?._id && `${IMAGE_STORAGE_URL}/${post.thumbnail?._id}`}
         />
@@ -55,7 +55,7 @@ const RecentArticles = ({posts, hasPdf}: {posts: ArticleType[]; hasPdf?: boolean
               <Card
                 key={post._id}
                 title={post.title}
-                articleLink={`/${hasPdf ? 'articles' : 'pdf-articles'}/${post.slug}`}
+                articleLink={`/${hasPdf ? 'pdf-articles' : 'articles'}/${post.slug}`}
                 date={moment(post.publishDate).format('DD MMMM YYYY')}
                 imageUrl={post.thumbnail?._id && `${IMAGE_STORAGE_URL}/${post.thumbnail?._id}`}
               />

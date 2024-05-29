@@ -8,6 +8,8 @@ import {Hydrate} from '@/providers';
 
 import {unstable_noStore as noStore} from 'next/cache';
 
+export const dynamic = 'force-dynamic';
+
 const Page = async () => {
   noStore();
   const queryClient = getQueryClient();
