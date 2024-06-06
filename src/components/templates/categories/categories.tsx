@@ -3,19 +3,14 @@
 import {css} from '@styled/css';
 import {Box} from '@styled/jsx';
 import {flex} from '@styled/patterns';
-import {useQuery} from '@tanstack/react-query';
 import {Swiper, SwiperSlide} from 'swiper/react';
 
 import {CategoryCard, Divider, PrimarySubtitle, PrimaryTitle} from '@/components';
-import {CategoryType, searchCategories} from '@/graphql';
+import {CategoryType} from '@/graphql';
 
 import {Container, SliderWrapper, Wrapper} from './categories.styled';
 
-export default function Categories({hasPdf = false}: {hasPdf?: boolean}) {
-  const {data} = useQuery({
-    queryKey: ['get-categories'],
-    queryFn: () => searchCategories({count: 50}),
-  }) as any;
+export default function Categories({hasPdf = false, data}: {hasPdf?: boolean; data: any}) {
   const categories: Array<CategoryType> = data?.category!.searchCategories.results;
   let filteredCategories;
   if (hasPdf) {
