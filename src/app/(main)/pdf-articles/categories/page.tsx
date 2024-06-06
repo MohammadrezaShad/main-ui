@@ -1,20 +1,12 @@
 import {css} from '@styled/css';
-import {dehydrate} from '@tanstack/react-query';
 
 import {CategoriesView} from '@/components';
 import {searchCategories} from '@/graphql';
-import {getQueryClient} from '@/helpers';
-import {Hydrate} from '@/providers';
 
 export const dynamic = 'force-dynamic';
 
 const Page = async () => {
-  const queryClient = getQueryClient();
-  await queryClient.prefetchQuery({
-    queryKey: ['get-categories'],
-    queryFn: () => searchCategories({count: 50}),
-  });
-  const dehydratedState = dehydrate(queryClient);
+  const data = await searchCategories({count: 50});
 
   return (
     <div
@@ -27,9 +19,7 @@ const Page = async () => {
         p: {lgDown: 4},
       })}
     >
-      <Hydrate state={dehydratedState}>
-        <CategoriesView hasPdf />
-      </Hydrate>
+      <CategoriesView hasPdf data={data} />
     </div>
   );
 };
