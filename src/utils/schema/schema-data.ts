@@ -167,7 +167,7 @@ export const searchActionSchema = {
   url: process.env.NEXT_PUBLIC_BASE_URL,
   potentialAction: {
     '@type': 'SearchAction',
-    target: `${process.env.NEXT_PUBLIC_BASE_URL}/search?q={query}`,
+    target: `${process.env.NEXT_PUBLIC_BASE_URL}/search?query={search_term_string}`,
     'query-input': 'required name=search_term_string',
   },
 };
