@@ -1,6 +1,8 @@
 'use client';
 
-import {css} from '@styled/css';
+import {useEffect} from 'react';
+import {toast} from 'react-toastify';
+import {css, cx} from '@styled/css';
 import {Box} from '@styled/jsx';
 import {flex} from '@styled/patterns';
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
@@ -24,19 +26,17 @@ import {
 } from '@/components';
 import {CookieName} from '@/constants';
 import {
-  ArticleType,
-  DeleteOneArticleBookmarkInput,
-  UserOutputType,
   addBookmark,
+  ArticleType,
   deleteBookmark,
+  DeleteOneArticleBookmarkInput,
   findArticleByName,
   findRelatedArticles,
   getArticlePdfById,
   recordVisitStatistics,
+  UserOutputType,
 } from '@/graphql';
 import useClipboard from '@/hooks/use-clipboard';
-import {useEffect} from 'react';
-import {toast} from 'react-toastify';
 
 const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
@@ -176,11 +176,14 @@ const Page = () => {
         {article.excerpt ? <PrimarySubtitle text={article.excerpt} /> : null}
       </div>
       <article
-        className={flex({
-          flexDir: 'column',
-          textStyle: 'body',
-          color: 'text.primary',
-        })}
+        className={cx(
+          'article',
+          flex({
+            flexDir: 'column',
+            textStyle: 'body',
+            color: 'text.primary',
+          }),
+        )}
       >
         <Box
           className={flex({
