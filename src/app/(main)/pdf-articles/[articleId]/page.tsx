@@ -7,7 +7,7 @@ import {cookies} from 'next/headers';
 import JsonLdScript from '@/components/shared/json-ld-script';
 import {ArticlesDetails} from '@/components/templates/articles-details';
 import {CookieName} from '@/constants';
-import {ArticleType, StatusType, findArticleByName, searchArticles} from '@/graphql';
+import {ArticleType, findArticleByName, searchArticles, StatusType} from '@/graphql';
 import {getQueryClient} from '@/helpers';
 import {Hydrate} from '@/providers';
 import {
@@ -92,7 +92,9 @@ const Page = async ({params}: {params: {articleId: string}}) => {
       <JsonLdScript id='organization' data={getOrganizationSchema()} />
       <JsonLdScript id={params.articleId} data={getBlogArticleSchema(post)} />
       {post.author && <JsonLdScript id={post.author._id} data={getPersonSchema(post.author)} />}
-      {post.faqs && <JsonLdScript id='faqs' data={getFAQSchema(post.faqs)} />}
+      {post.faqs && post.faqs.length > 0 && (
+        <JsonLdScript id='faqs' data={getFAQSchema(post.faqs)} />
+      )}
       <JsonLdScript
         id='breadcrumbs'
         data={getBreadCrumbListSchema([{title: 'Articles', pathName: '/articles'}], post.title)}

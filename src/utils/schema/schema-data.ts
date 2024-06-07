@@ -8,6 +8,7 @@ import {
 } from 'schema-dts';
 
 import {ArticleType, FaqInputType, UserOutputType} from '@/graphql';
+
 import {formatDate} from '../format-date';
 
 type Crumb = {
@@ -162,11 +163,12 @@ export const getFAQSchema = (faqs: FaqInputType[]): WithContext<FAQPage> => ({
 export const searchActionSchema = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
+  name: 'Waterlyst',
   url: process.env.NEXT_PUBLIC_BASE_URL,
   potentialAction: {
     '@type': 'SearchAction',
     target: `${process.env.NEXT_PUBLIC_BASE_URL}/search?q={query}`,
-    query: 'required',
+    'query-input': 'required name=search_term_string',
   },
 };
 
