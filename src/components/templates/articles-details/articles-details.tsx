@@ -2,7 +2,7 @@
 
 import {useEffect} from 'react';
 import {toast} from 'react-toastify';
-import {css, cx} from '@styled/css';
+import {css} from '@styled/css';
 import {Box} from '@styled/jsx';
 import {flex} from '@styled/patterns';
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
@@ -176,14 +176,11 @@ const Page = () => {
         {article.excerpt ? <PrimarySubtitle text={article.excerpt} /> : null}
       </div>
       <article
-        className={cx(
-          'article',
-          flex({
-            flexDir: 'column',
-            textStyle: 'body',
-            color: 'text.primary',
-          }),
-        )}
+        className={flex({
+          flexDir: 'column',
+          textStyle: 'body',
+          color: 'text.primary',
+        })}
       >
         <Box
           className={flex({

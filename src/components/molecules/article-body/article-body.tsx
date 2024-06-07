@@ -9,7 +9,7 @@ const ubuntu = Ubuntu({
 });
 
 const ArticleBody = ({content, className}: {content: string; className?: string}) => (
-  <div className={`${ubuntu.className} ${className}`}>
+  <div className={`article ${ubuntu.className} ${className}`}>
     {React.createElement('div', {dangerouslySetInnerHTML: {__html: content}})}
   </div>
 );
