@@ -52,6 +52,17 @@ export async function findArticleByName(
             readingDuration
             slug
             status
+            seoSetting {
+              general {
+                  title
+                  description
+                  canonicalUrl
+                  permalink
+                  focusKeyword
+                  nofollow
+                  noindex
+              }
+            }
             tags {
               _id
               title
