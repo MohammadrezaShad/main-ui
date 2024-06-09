@@ -2,32 +2,26 @@
 
 import {useObservable} from '@legendapp/state/react';
 import {css} from '@styled/css';
-import {useQuery} from '@tanstack/react-query';
-import {getCookie} from 'cookies-next';
 import Link from 'next/link';
 
 import {IconSearch} from '@/assets';
 import {Avatar, Button, HeaderNavbar, Login, Logo, SearchDrawer, SignUp} from '@/components';
-import {CookieName} from '@/constants';
 import {useAuthContext} from '@/contexts';
-import {getUser} from '@/graphql';
+import {UserOutputType} from '@/graphql';
 
 import UserHeaderInfo from '../user-info/user-info';
 import {Container, Wrap} from './header.styled';
 
 const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
 
-interface HeaderProps {}
+interface HeaderProps {
+  userData: UserOutputType;
+}
 
-export default function Header(props: HeaderProps) {
+export default function Header({userData}: HeaderProps) {
   const {isLoginOpen$, isSignUpOpen$} = useAuthContext();
   const isOpen$ = useObservable(false);
-  const authToken = getCookie(CookieName.AUTH_TOKEN)!;
-  const {data} = useQuery({
-    queryKey: ['get-profile'],
-    queryFn: () => getUser(authToken),
-  });
-  const user = data;
+  const user = userData;
 
   return (
     <Container>
@@ -40,7 +34,7 @@ export default function Header(props: HeaderProps) {
           className={css({cursor: 'pointer', mx: {base: 12, mdDown: 4}})}
           onClick={() => isOpen$.set(true)}
         />
-        {authToken ? (
+        {user ? (
           <UserHeaderInfo />
         ) : (
           <>
@@ -78,7 +72,7 @@ export default function Header(props: HeaderProps) {
             </Button>
           </>
         )}
-        {user && authToken ? (
+        {user ? (
           <Link className={css({hideFrom: 'md'})} href='/profile'>
             <Avatar
               src={user?.avatar?._id ? `${IMAGE_STORAGE_URL}/${user.avatar?._id}` : undefined}

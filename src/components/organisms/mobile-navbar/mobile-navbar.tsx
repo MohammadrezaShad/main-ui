@@ -2,32 +2,25 @@
 
 import {css} from '@styled/css';
 import {flex} from '@styled/patterns';
-import {useQuery} from '@tanstack/react-query';
-import {getCookie} from 'cookies-next';
 import Link from 'next/link';
 import {usePathname} from 'next/navigation';
 
 import {IconDoc, IconHome, IconMenu, IconProfile, IconQuiz} from '@/assets';
 import {Avatar} from '@/components';
-import {CookieName} from '@/constants';
 import {useAuthContext} from '@/contexts';
-import {getUser} from '@/graphql';
+import {UserOutputType} from '@/graphql';
 
 const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
 
-interface Props {}
+interface Props {
+  userData: UserOutputType;
+}
 
-export default function MobileNavbar(props: Props) {
+export default function MobileNavbar({userData}: Props) {
   const {isLoginOpen$} = useAuthContext();
   const pathname = usePathname();
   const isActive = (link: string) => pathname.includes(link);
-  const authToken = getCookie(CookieName.AUTH_TOKEN)!;
-  const {data, isLoading} = useQuery({
-    queryKey: ['get-profile'],
-    queryFn: () => getUser(authToken),
-  });
-  const user = data;
-  if (isLoading) return null;
+  const user = userData;
 
   return (
     <div
@@ -57,7 +50,7 @@ export default function MobileNavbar(props: Props) {
             flex: 1,
           })}
         >
-          {authToken ? (
+          {user ? (
             <Link
               href='/profile'
               className={css({
@@ -115,9 +108,9 @@ export default function MobileNavbar(props: Props) {
           })}
         >
           <Link
-            href='/articles'
+            href='/articles/categories'
             className={css({
-              color: isActive('/articles') ? 'primary' : 'gray4',
+              color: isActive('/articles/categories') ? 'primary' : 'gray4',
               textAlign: 'center',
               fontSize: 'xs',
               lineHeight: 'xs',
@@ -130,7 +123,7 @@ export default function MobileNavbar(props: Props) {
           >
             <IconDoc
               className={css({
-                fill: isActive('/articles') ? 'primary' : 'gray4',
+                fill: isActive('/articles/categories') ? 'primary' : 'gray4',
               })}
             />
             Articles

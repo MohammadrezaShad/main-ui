@@ -1,28 +1,23 @@
 import {css} from '@styled/css';
 import {flex} from '@styled/patterns';
-import {dehydrate} from '@tanstack/react-query';
 import {cookies} from 'next/headers';
 
 import {Footer, Header} from '@/components';
 import MobileNavbar from '@/components/organisms/mobile-navbar/mobile-navbar';
 import {CookieName} from '@/constants';
 import {getUser} from '@/graphql';
-import {getQueryClient} from '@/helpers';
-import {Hydrate} from '@/providers';
+
+export const dynamic = 'force-dynamic';
 
 export default async function Template({children}: {children: React.ReactNode}) {
   const cookieStore = cookies();
   const authToken = cookieStore.get(CookieName.AUTH_TOKEN)?.value || '';
-  const queryClient = getQueryClient();
-  await queryClient.prefetchQuery({
-    queryKey: ['get-profile'],
-    queryFn: () => getUser(authToken),
-  });
-  const dehydratedState = dehydrate(queryClient);
+
+  const data = await getUser(authToken);
 
   return (
-    <Hydrate state={dehydratedState}>
-      <Header />
+    <>
+      <Header userData={data} />
       <div
         className={css({
           pb: {base: '8', mdDown: '36'},
@@ -65,8 +60,8 @@ export default async function Template({children}: {children: React.ReactNode}) 
           right: 0,
         })}
       >
-        <MobileNavbar />
+        <MobileNavbar userData={data} />
       </div>
-    </Hydrate>
+    </>
   );
 }
