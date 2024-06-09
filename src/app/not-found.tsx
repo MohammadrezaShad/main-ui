@@ -1,5 +1,4 @@
 import {css} from '@styled/css';
-import {dehydrate} from '@tanstack/react-query';
 import {cookies} from 'next/headers';
 
 // @ts-expect-error it probably soesn't generate any error
@@ -8,23 +7,16 @@ import {Footer, Header} from '@/components';
 import MobileNavbar from '@/components/organisms/mobile-navbar/mobile-navbar';
 import {CookieName} from '@/constants';
 import {getUser} from '@/graphql';
-import {getQueryClient} from '@/helpers';
-import {Hydrate} from '@/providers';
 
 export default async function NotFound() {
   const cookieStore = cookies();
   const authToken = cookieStore.get(CookieName.AUTH_TOKEN)?.value || '';
-  const queryClient = getQueryClient();
-  await queryClient.prefetchQuery({
-    queryKey: ['get-profile'],
-    queryFn: () => getUser(authToken),
-    staleTime: 1000,
-  });
-  const dehydratedState = dehydrate(queryClient);
+
+  const data = await getUser(authToken);
 
   return (
-    <Hydrate state={dehydratedState}>
-      <Header />
+    <>
+      <Header userData={data} />
       <div
         className={css({
           bgColor: '#FBC886',
@@ -79,8 +71,8 @@ export default async function NotFound() {
           right: 0,
         })}
       >
-        <MobileNavbar />
+        <MobileNavbar userData={data} />
       </div>
-    </Hydrate>
+    </>
   );
 }

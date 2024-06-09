@@ -1,5 +1,6 @@
-import React from 'react';
 import {Ubuntu} from 'next/font/google';
+
+import HtmlManipulation from './html-manipulation';
 
 const ubuntu = Ubuntu({
   weight: ['300', '400', '500', '700'],
@@ -10,7 +11,7 @@ const ubuntu = Ubuntu({
 
 const ArticleBody = ({content, className}: {content: string; className?: string}) => (
   <div className={`article ${ubuntu.className} ${className}`}>
-    {React.createElement('div', {dangerouslySetInnerHTML: {__html: content}})}
+    <HtmlManipulation htmlString={content} className='fr-file' />
   </div>
 );
 

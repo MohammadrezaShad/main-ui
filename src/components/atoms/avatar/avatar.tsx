@@ -33,6 +33,7 @@ const Avatar = ({src, size = 64, alt = ''}: Props) => {
         rounded: 'full',
         placeContent: 'center',
         aspectRatio: 'square',
+        flexShrink: 0,
       })}
     >
       <Image
