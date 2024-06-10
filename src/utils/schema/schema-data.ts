@@ -9,8 +9,6 @@ import {
 
 import {ArticleType, FaqInputType, UserOutputType} from '@/graphql';
 
-import {formatDate} from '../format-date';
-
 type Crumb = {
   title: string;
   pathName: string;
@@ -63,6 +61,7 @@ export const getBlogArticleSchema = (article: ArticleType): WithContext<Article>
   author: {
     '@type': 'Person',
     name: `${article.author?.firstName} ${article.author?.lastName}`,
+    url: `${process.env.NEXT_PUBLIC_BASE_URL}/author/${article.author?._id}`,
   },
   publisher: {
     '@type': 'Organization',
@@ -72,8 +71,8 @@ export const getBlogArticleSchema = (article: ArticleType): WithContext<Article>
       url: `${process.env.NEXT_PUBLIC_BASE_URL}/next.svg`,
     },
   },
-  datePublished: formatDate(article.publishDate),
-  dateModified: formatDate(article.updatedAt),
+  datePublished: article.publishDate,
+  dateModified: article.updatedAt,
 });
 
 export const getBreadCrumbListSchema = (data: Crumb[], breadCrumbTitle?: string) => {
