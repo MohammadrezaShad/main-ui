@@ -1,9 +1,10 @@
+import {getCookie} from 'cookies-next';
+
 import {CookieName} from '@/constants';
 import {AuthQuery} from '@/graphql/generated/types';
 import {gqlFetch} from '@/services/fetch';
-import {getCookie} from 'cookies-next';
 
-export async function getUser(accessToken: string): Promise<AuthQuery['getUser']> {
+export async function getUser(accessToken: string): Promise<AuthQuery['getUser'] | null> {
   const clientId = getCookie(CookieName.CLIENT_ID) as string;
   const res = await gqlFetch({
     url: process.env.NEXT_PUBLIC_API as string,
@@ -55,8 +56,8 @@ export async function getUser(accessToken: string): Promise<AuthQuery['getUser']
     throw new Error('Failed to fetch data');
   }
   const response = await res.json();
-  // if (response.errors?.[0]?.message) {
-  //   throw new Error(response.errors?.[0]?.message);
-  // }
+  if (response.errors?.[0]?.message) {
+    return null;
+  }
   return response.data.auth.getUser;
 }

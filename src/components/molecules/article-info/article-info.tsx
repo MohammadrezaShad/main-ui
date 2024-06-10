@@ -1,5 +1,6 @@
 import {css, cx} from '@styled/css';
 import {getCookie} from 'cookies-next';
+import Link from 'next/link';
 
 import {IconCollection} from '@/assets';
 import {Avatar} from '@/components';
@@ -58,7 +59,8 @@ const ArticleInfo = ({
         />
 
         {/** NAME */}
-        <div
+        <Link
+          href={`/author/${author?._id}`}
           className={css({
             textStyle: 'body2',
             color: 'text.primary',
@@ -66,7 +68,7 @@ const ArticleInfo = ({
         >
           By&nbsp;
           {getAuthorName()}
-        </div>
+        </Link>
 
         {/** DIVIDER */}
         {readingDuration ? (

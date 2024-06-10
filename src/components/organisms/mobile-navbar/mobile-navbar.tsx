@@ -13,7 +13,7 @@ import {UserOutputType} from '@/graphql';
 const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
 
 interface Props {
-  userData: UserOutputType;
+  userData: UserOutputType | null;
 }
 
 export default function MobileNavbar({userData}: Props) {

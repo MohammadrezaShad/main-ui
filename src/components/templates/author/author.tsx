@@ -1,20 +1,21 @@
 'use client';
 
+import {useEffect, useState} from 'react';
 import {css} from '@styled/css';
 import {Box} from '@styled/jsx';
 import {flex} from '@styled/patterns';
 import {useInfiniteQuery, useQuery} from '@tanstack/react-query';
 import {getCookie} from 'cookies-next';
+import moment from 'moment';
 import {useParams, useRouter} from 'next/navigation';
-import {useEffect, useState} from 'react';
 
 import {IconFacebook, IconInstagram, IconLinkedIn, IconNotify, IconRG, IconTwitter} from '@/assets';
 import {Avatar, Button, Card, Chip, SmallCard, SocialMediaLinks} from '@/components';
+import {Modal} from '@/components/atoms/modal';
 import {CookieName} from '@/constants';
-import {ArticleType, User, findUserById, searchArticlesByAuthorId} from '@/graphql';
+import {ArticleType, findUserById, searchArticlesByAuthorId, User} from '@/graphql';
 import {getUser} from '@/graphql/query/users/get-user';
 
-import moment from 'moment';
 import {Actions, Cards, Chips, Container, Tab, Tabs, Wrapper} from './author.styled';
 
 const ADMIN_PANEL_URL = process.env.NEXT_PUBLIC_ADMIN_PANEL_URL;
@@ -40,6 +41,7 @@ enum ETabs {
 }
 
 export default function Author() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [articles, setArticles] = useState<ArticleType[]>([]);
   const token = getCookie(CookieName.AUTH_TOKEN)!;
   const [selectedTab, setSelectedTab] = useState<string>(ETabs.ARTICLES);
@@ -71,7 +73,7 @@ export default function Author() {
   const router = useRouter();
 
   const handleClickNewArticle = () => {
-    router.push(`${ADMIN_PANEL_URL}/articles/new`);
+    setIsModalOpen(true);
   };
 
   useEffect(() => {
@@ -85,6 +87,16 @@ export default function Author() {
       setArticles(_articles);
     }
   }, [response.data]);
+
+  useEffect(() => {
+    if (!isModalOpen) return;
+    const receiveMessage = (event: MessageEvent<any>) => {
+      if (event.data === 'removetheiframe') {
+        setIsModalOpen(false);
+      }
+    };
+    window.addEventListener('message', receiveMessage, false);
+  }, [isModalOpen]);
 
   return (
     <Container>
@@ -369,6 +381,26 @@ export default function Author() {
           </Button>
         </Box>
       ) : null}
+      <Modal
+        isOpen$={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        className={css({
+          display: {
+            base: '!grid',
+          },
+          placeContent: {
+            base: '!center',
+          },
+        })}
+      >
+        <iframe
+          id='editor'
+          className={css({w: '[90vw]', h: '[90vh]'})}
+          title='create new article'
+          src={`${ADMIN_PANEL_URL}/create-article`}
+          allowFullScreen
+        />
+      </Modal>
     </Container>
   );
 }

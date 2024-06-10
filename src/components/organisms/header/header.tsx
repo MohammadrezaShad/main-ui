@@ -2,10 +2,12 @@
 
 import {useObservable} from '@legendapp/state/react';
 import {css} from '@styled/css';
+import {getCookie} from 'cookies-next';
 import Link from 'next/link';
 
 import {IconSearch} from '@/assets';
 import {Avatar, Button, HeaderNavbar, Login, Logo, SearchDrawer, SignUp} from '@/components';
+import {CookieName} from '@/constants';
 import {useAuthContext} from '@/contexts';
 import {UserOutputType} from '@/graphql';
 
@@ -15,12 +17,13 @@ import {Container, Wrap} from './header.styled';
 const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
 
 interface HeaderProps {
-  userData: UserOutputType;
+  userData: UserOutputType | null;
 }
 
 export default function Header({userData}: HeaderProps) {
   const {isLoginOpen$, isSignUpOpen$} = useAuthContext();
   const isOpen$ = useObservable(false);
+  const token = getCookie(CookieName.AUTH_TOKEN);
   const user = userData;
 
   return (
@@ -34,7 +37,7 @@ export default function Header({userData}: HeaderProps) {
           className={css({cursor: 'pointer', mx: {base: 12, mdDown: 4}})}
           onClick={() => isOpen$.set(true)}
         />
-        {user ? (
+        {user && token ? (
           <UserHeaderInfo />
         ) : (
           <>
