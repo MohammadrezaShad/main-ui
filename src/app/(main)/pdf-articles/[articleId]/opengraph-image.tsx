@@ -26,7 +26,7 @@ export default async function Image({params}: {params: {articleId: string}}) {
         <img
           width='1200'
           height='630'
-          src={`${IMAGE_STORAGE_URL}/${post.thumbnail?._id}?w=1200&h=630`}
+          src={`${IMAGE_STORAGE_URL}/${post.thumbnail?.filename}-${post.thumbnail?._id}?w=1200&h=630`}
           alt={post.title ?? ''}
           style={{
             objectFit: 'cover',

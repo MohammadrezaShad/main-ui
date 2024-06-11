@@ -30,7 +30,7 @@ const BookmarkItem = ({
           width={128}
           height={128}
           alt=''
-          src={`${IMAGE_STORAGE_URL}/${article.thumbnail?._id}`}
+          src={`${IMAGE_STORAGE_URL}/${article.thumbnail?.filename}-${article.thumbnail?._id}`}
         />
       ) : (
         <div

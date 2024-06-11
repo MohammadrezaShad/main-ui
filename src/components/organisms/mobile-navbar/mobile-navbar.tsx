@@ -10,7 +10,7 @@ import {Avatar} from '@/components';
 import {useAuthContext} from '@/contexts';
 import {UserOutputType} from '@/graphql';
 
-const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
+const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_STORAGE_URL;
 
 interface Props {
   userData: UserOutputType | null;

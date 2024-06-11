@@ -159,7 +159,7 @@ export default function Profile() {
                         width={64}
                         height={64}
                         alt=''
-                        src={`${IMAGE_STORAGE_URL}/${result.article.thumbnail?._id}`}
+                        src={`${IMAGE_STORAGE_URL}/${result.article.thumbnail?.filename}-${result.article.thumbnail?._id}`}
                         className={css({
                           aspectRatio: 'square',
                           objectFit: 'cover',

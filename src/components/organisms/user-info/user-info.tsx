@@ -10,7 +10,7 @@ import {Avatar} from '@/components';
 import {CookieName} from '@/constants';
 import {getUser} from '@/graphql';
 
-const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
+const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_STORAGE_URL;
 
 function UserInfo() {
   const authToken = getCookie(CookieName.AUTH_TOKEN)!;

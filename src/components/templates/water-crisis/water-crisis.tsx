@@ -1,14 +1,16 @@
 'use client';
 
-import {Card, SmallCard} from '@/components';
-import {ArticleType, StatusType, searchArticles} from '@/graphql';
+import {useState} from 'react';
 import {css} from '@styled/css';
 import {keepPreviousData, useQuery} from '@tanstack/react-query';
 import moment from 'moment';
 import {useParams} from 'next/navigation';
-import {useState} from 'react';
-import Tabs from './Tabs';
+
+import {Card, SmallCard} from '@/components';
+import {ArticleType, searchArticles, StatusType} from '@/graphql';
+
 import PaginationSection from './pagination-section';
+import Tabs from './Tabs';
 import {Cards, Container, Wrapper} from './water-crisis.styled';
 
 const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
@@ -61,7 +63,11 @@ const renderCard = (article: ArticleType) => (
     key={article._id}
     articleLink={`/articles/${article.slug}`}
     date={moment(article.publishDate).format('DD MMMM YYYY')}
-    imageUrl={article.thumbnail?._id ? `${IMAGE_STORAGE_URL}/${article.thumbnail?._id}` : undefined}
+    imageUrl={
+      article.thumbnail?._id
+        ? `${IMAGE_STORAGE_URL}/${article.thumbnail?.filename}-${article.thumbnail?._id}`
+        : undefined
+    }
     title={article.title}
   />
 );
@@ -71,7 +77,11 @@ const renderSmallCard = (article: ArticleType) => (
     key={article._id}
     articleLink={`/articles/${article.slug}`}
     date={moment(article.publishDate).format('DD MMMM YYYY')}
-    imageUrl={article.thumbnail?._id ? `${IMAGE_STORAGE_URL}/${article.thumbnail?._id}` : undefined}
+    imageUrl={
+      article.thumbnail?._id
+        ? `${IMAGE_STORAGE_URL}/${article.thumbnail?.filename}-${article.thumbnail?._id}`
+        : undefined
+    }
     title={article.title}
   />
 );

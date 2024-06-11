@@ -4,7 +4,7 @@ import {Avatar} from '@/components';
 import {UserOutputType} from '@/graphql/generated/types';
 import Link from 'next/link';
 
-const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
+const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_STORAGE_URL;
 
 const UserInfo = ({author}: {author: UserOutputType}) => {
   function getAuthorName() {

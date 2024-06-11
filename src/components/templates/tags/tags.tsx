@@ -13,7 +13,7 @@ import moment from 'moment';
 import PaginationSection from './pagination-section';
 import {Cards, Container, Wrapper} from './tags.styled';
 
-const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
+const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_STORAGE_URL;
 const READMORE_PAGE_COUNT = 12;
 
 interface ArticleType {

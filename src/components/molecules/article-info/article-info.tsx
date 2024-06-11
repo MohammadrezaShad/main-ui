@@ -7,7 +7,7 @@ import {Avatar} from '@/components';
 import {CookieName} from '@/constants';
 import {Maybe, UserOutputType} from '@/graphql/generated/types';
 
-const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
+const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_STORAGE_URL;
 
 const ArticleInfo = ({
   author,

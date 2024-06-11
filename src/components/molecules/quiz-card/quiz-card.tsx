@@ -40,7 +40,7 @@ const QuizCard = ({quiz, getQuizInfo}: {quiz: QuizType | GraphicalQuizType; getQ
           height={128}
           unoptimized
           alt=''
-          src={`${IMAGE_STORAGE_URL}/${quiz.thumbnail?._id}`}
+          src={`${IMAGE_STORAGE_URL}/${quiz.thumbnail?.filename}-${quiz.thumbnail?._id}`}
           className={css({
             w: 'full',
             aspectRatio: '1.33',

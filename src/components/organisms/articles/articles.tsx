@@ -24,7 +24,9 @@ const Articles = ({articles, hasPdf}: {articles: Array<ArticleType>; hasPdf?: bo
           articleLink={`/${hasPdf ? 'pdf-articles' : 'articles'}/${article.slug}`}
           date={article.publishDate}
           imageUrl={
-            article.thumbnail?._id ? `${IMAGE_STORAGE_URL}/${article.thumbnail?._id}` : undefined
+            article.thumbnail?._id
+              ? `${IMAGE_STORAGE_URL}/${article.thumbnail?.filename}-${article.thumbnail?._id}`
+              : undefined
           }
           title={article.title}
           aspectRatio={!selectedIndexes.includes(index) ? 'square' : 'portrait'}

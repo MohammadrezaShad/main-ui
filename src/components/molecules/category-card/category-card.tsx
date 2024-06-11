@@ -31,7 +31,7 @@ const CategoryCard = ({
           alt={category.image.alt ?? ''}
           width={category.image.width}
           height={category.image.height}
-          src={`${IMAGE_STORAGE_URL}/${category.image?._id}`}
+          src={`${IMAGE_STORAGE_URL}/${category.image?.filename}-${category.image?._id}`}
           className={css({
             mx: 'auto',
             display: collapsed ? 'none' : 'block',

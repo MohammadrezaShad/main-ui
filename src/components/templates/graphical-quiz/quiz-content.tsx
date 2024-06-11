@@ -101,7 +101,7 @@ const QuizContent = ({
           id='quiz-image'
           useMap='#image-map'
           unoptimized
-          src={`${IMAGE_STORAGE_URL}/${image._id}?w=960&q=85`}
+          src={`${IMAGE_STORAGE_URL}/${image.filename}-${image._id}?w=960&q=85`}
           width={960}
           height={540}
           alt=''

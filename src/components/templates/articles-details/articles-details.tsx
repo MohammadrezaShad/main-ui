@@ -83,7 +83,9 @@ const Page = () => {
   ];
 
   async function shareImageAsset() {
-    const response = await fetch(`${IMAGE_STORAGE_URL}/${article?.thumbnail?._id}`);
+    const response = await fetch(
+      `${IMAGE_STORAGE_URL}/${article?.thumbnail?.filename}-${article?.thumbnail?._id}`,
+    );
     const blob = await response.blob();
     const filesArray = [
       new File([blob], `${article?.title}.png`, {
@@ -211,7 +213,7 @@ const Page = () => {
           <Image
             unoptimized
             alt={article.title ?? ''}
-            src={`${IMAGE_STORAGE_URL}/${article.thumbnail?._id}`}
+            src={`${IMAGE_STORAGE_URL}/${article.thumbnail?.filename}-${article.thumbnail?._id}`}
             width={960}
             height={540}
             className={css({

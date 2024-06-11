@@ -14,7 +14,7 @@ import {UserOutputType} from '@/graphql';
 import UserHeaderInfo from '../user-info/user-info';
 import {Container, Wrap} from './header.styled';
 
-const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
+const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_STORAGE_URL;
 
 interface HeaderProps {
   userData: UserOutputType | null;

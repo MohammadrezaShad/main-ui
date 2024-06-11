@@ -15,7 +15,7 @@ import {Paths} from '@/utils';
 import {getUser} from '@/graphql';
 import ProfileNavigation from '../profile-navigation/profile-navigation';
 
-const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
+const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_STORAGE_URL;
 
 const ProfileSidebar = () => {
   const queryClient = useQueryClient();

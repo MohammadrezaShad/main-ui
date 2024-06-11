@@ -46,7 +46,7 @@ const Slider = ({slides, hasPdf = false}: Props) => (
               unoptimized
               width={900}
               height={500}
-              src={`${IMAGE_STORAGE_URL}/${slide.thumbnail?._id}`}
+              src={`${IMAGE_STORAGE_URL}/${slide.thumbnail?.filename}-${slide.thumbnail?._id}`}
               alt={slide.title}
               className={css({
                 display: 'block',

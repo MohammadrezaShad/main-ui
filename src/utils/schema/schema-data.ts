@@ -56,7 +56,7 @@ export const getBlogArticleSchema = (article: ArticleType): WithContext<Article>
   '@type': 'BlogPosting',
   headline: article.title,
   image: article.thumbnail
-    ? `${process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL}/${article.thumbnail?._id}`
+    ? `${process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL}/${article.thumbnail?.filename}-${article.thumbnail?._id}`
     : '',
   author: {
     '@type': 'Person',
@@ -143,7 +143,7 @@ export const getPersonSchema = (author: UserOutputType): WithContext<Person> => 
   '@type': 'Person',
   name: `${author?.firstName} ${author?.lastName}`,
   url: author?.website ?? '',
-  image: `${process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL}/${author?.avatar?._id}`,
+  image: `${process.env.NEXT_PUBLIC_STORAGE_URL}/${author?.avatar?._id}`,
 });
 
 export const getFAQSchema = (faqs: FaqInputType[]): WithContext<FAQPage> => ({
