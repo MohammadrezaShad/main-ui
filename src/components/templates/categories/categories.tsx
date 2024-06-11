@@ -38,11 +38,7 @@ export default function Categories({hasPdf = false, data}: {hasPdf?: boolean; da
             textAlign: 'center',
             mt: '4',
           })}
-          text='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua. Viverra justo nec
-        ultrices dui sapien eget. Suspendisse in est ante in nibh mauris.
-        Facilisis sed odio morbi quis commodo. Egestas maecenas pharetra
-        convallis posuere morbi leo'
+          text='All types of categories are displayed here'
         />
       </Box>
       <Wrapper hideBelow='md'>

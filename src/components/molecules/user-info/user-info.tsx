@@ -49,12 +49,7 @@ const UserInfo = ({author}: {author: UserOutputType}) => {
             textStyle: 'body2',
             color: 'text.primary',
           })}
-        >
-          John Doe is a writer and restless explorer. He digs into buzzing metropolises, far-flung
-          villages, and the serenity of nature to discover inclusive and sustainable ways to make
-          lasting memories. When he&apos;s not on the move across the globe, you can still find him
-          in motion closer to home, as an enthusiastic, amateur rollerskater.
-        </p>
+        />
       </div>
     </div>
   );

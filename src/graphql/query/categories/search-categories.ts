@@ -18,6 +18,7 @@ export async function searchCategories(
                 title
                 slug
                 _id
+                description
                 image {
                   _id
                   filename

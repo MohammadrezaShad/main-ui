@@ -18,6 +18,34 @@ export type Scalars = {
   Upload: {input: any; output: any};
 };
 
+export enum ActivityModuleType {
+  Articles = 'ARTICLES',
+  Bookmarks = 'BOOKMARKS',
+  Comments = 'COMMENTS',
+  Likes = 'LIKES',
+  Users = 'USERS',
+}
+
+export type ActivityQuery = {
+  __typename?: 'ActivityQuery';
+  getRecentActivities: Array<ActivityType>;
+};
+
+export type ActivityType = {
+  __typename?: 'ActivityType';
+  _id: Scalars['String']['output'];
+  article?: Maybe<ArticleType>;
+  bookmark?: Maybe<BookmarkType>;
+  comment?: Maybe<CommentType>;
+  createdAt?: Maybe<Scalars['DateTime']['output']>;
+  like?: Maybe<LikeType>;
+  module: Scalars['String']['output'];
+  moduleType: ActivityModuleType;
+  operation: OperationType;
+  updatedAt?: Maybe<Scalars['DateTime']['output']>;
+  user: UserOutputType;
+};
+
 export type AnswerItem = {
   answer: Scalars['String']['input'];
   question: Scalars['String']['input'];
@@ -906,6 +934,34 @@ export type FaqType = {
   question: Scalars['String']['output'];
 };
 
+export type FileMutation = {
+  __typename?: 'FileMutation';
+  uploadFile: UploadFileOutput;
+};
+
+export type FileMutationUploadFileArgs = {
+  file: Scalars['Upload']['input'];
+};
+
+export type FileQuery = {
+  __typename?: 'FileQuery';
+  getFileUrlById?: Maybe<Scalars['String']['output']>;
+};
+
+export type FileQueryGetFileUrlByIdArgs = {
+  input: GetFileUrlInput;
+};
+
+export type FileType = {
+  __typename?: 'FileType';
+  _id: Scalars['String']['output'];
+  createdAt?: Maybe<Scalars['DateTime']['output']>;
+  extension: Scalars['String']['output'];
+  filename: Scalars['String']['output'];
+  mimetype: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['DateTime']['output']>;
+};
+
 export type FindArticleBySlugInput = {
   slug: Scalars['String']['input'];
 };
@@ -1119,6 +1175,10 @@ export enum GenderEnum {
   Male = 'MALE',
   Other = 'OTHER',
 }
+
+export type GetFileUrlInput = {
+  id: Scalars['String']['input'];
+};
 
 export type GetUserArticlesInput = {
   count?: InputMaybe<Scalars['Int']['input']>;
@@ -1376,6 +1436,7 @@ export type Mutation = {
   category: CategoryMutation;
   comment: CommentMutation;
   engagement: EngagementMutation;
+  file: FileMutation;
   graphicalQuiz: GraphicalQuizMutation;
   image: ImageMutation;
   like: LikeMutation;
@@ -1386,6 +1447,12 @@ export type Mutation = {
   users: UserMutation;
   visitStatistics: VisitStatisticsMutation;
 };
+
+export enum OperationType {
+  Create = 'CREATE',
+  Delete = 'DELETE',
+  Update = 'UPDATE',
+}
 
 export type OptionInputType = {
   answer: Scalars['String']['input'];
@@ -1411,12 +1478,14 @@ export type PointType = {
 
 export type Query = {
   __typename?: 'Query';
+  activity: ActivityQuery;
   article: ArticleQuery;
   auth: AuthQuery;
   bookmark: BookmarkQuery;
   category: CategoryQuery;
   comment: CommentQuery;
   engagement: EngagementQuery;
+  file: FileQuery;
   graphicalQuiz: GraphicalQuizQuery;
   image: ImageQuery;
   like: LikeQuery;
@@ -2215,6 +2284,13 @@ export type UpdateUserInput = {
 
 export type UpdateUserOutput = {
   __typename?: 'UpdateUserOutput';
+  success: Scalars['Boolean']['output'];
+};
+
+export type UploadFileOutput = {
+  __typename?: 'UploadFileOutput';
+  file?: Maybe<FileType>;
+  filePath: Scalars['String']['output'];
   success: Scalars['Boolean']['output'];
 };
 
