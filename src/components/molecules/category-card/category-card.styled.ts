@@ -7,7 +7,6 @@ export const Container = styled('div', {
     flexDir: 'column',
     alignItems: 'stretch',
     w: 'full',
-    height: 'max-content',
   },
 });
 

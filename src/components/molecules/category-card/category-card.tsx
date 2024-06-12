@@ -80,21 +80,19 @@ const CategoryCard = ({
           {category.title}
         </div>
       </Box>
-      {category.description && (
-        <Box mt='1' w='10/12' mx='auto'>
-          <div
-            title={category.description}
-            className={css({
-              textStyle: 'body2',
-              color: 'text.primary',
-              textAlign: 'center',
-              lineClamp: 3,
-            })}
-          >
-            {category.description}
-          </div>
-        </Box>
-      )}
+      <Box mt='1' w='10/12' mx='auto' height='64px'>
+        <div
+          title={category.description ?? ''}
+          className={css({
+            textStyle: 'body2',
+            color: 'text.primary',
+            textAlign: 'center',
+            lineClamp: 3,
+          })}
+        >
+          {category.description ?? ''}
+        </div>
+      </Box>
       <Box display={collapsed ? 'none' : 'block'} mt='9'>
         <div
           className={css({
