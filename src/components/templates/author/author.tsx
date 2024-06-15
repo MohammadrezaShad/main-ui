@@ -248,6 +248,7 @@ export default function Author() {
                       py: 3,
                       border: '1px solid token(colors.gray3)',
                       borderRadius: 0,
+                      display: 'none',
                     })}
                   >
                     Follow
@@ -264,6 +265,7 @@ export default function Author() {
                       py: 3,
                       border: '1px solid token(colors.gray3)',
                       borderRadius: 0,
+                      display: 'none',
                     })}
                   >
                     Report
