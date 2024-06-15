@@ -7,7 +7,7 @@ import {Avatar} from '@/components';
 import {CookieName} from '@/constants';
 import {Maybe, UserOutputType} from '@/graphql/generated/types';
 
-const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_STORAGE_URL;
+const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
 
 const ArticleInfo = ({
   author,
@@ -54,7 +54,11 @@ const ArticleInfo = ({
       >
         {/** AVATAR */}
         <Avatar
-          src={author?.avatar?._id ? `${IMAGE_STORAGE_URL}/${author.avatar?._id}` : undefined}
+          src={
+            author?.avatar?._id
+              ? `${IMAGE_STORAGE_URL}/${author.avatar?.filename}-${author.avatar?._id}`
+              : undefined
+          }
           size={40}
         />
 

@@ -20,7 +20,6 @@ import {Actions, Cards, Chips, Container, Tab, Tabs, Wrapper} from './author.sty
 
 const ADMIN_PANEL_URL = process.env.NEXT_PUBLIC_ADMIN_PANEL_URL;
 const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
-const STORAGE_URL = process.env.NEXT_PUBLIC_STORAGE_URL;
 
 const socialMediaLinks: {
   id: number;
@@ -128,7 +127,12 @@ export default function Author() {
             })}
           >
             <Box alignSelf='center'>
-              <Avatar size={128} src={`${STORAGE_URL}/${user.avatar?._id}` ?? undefined} />
+              <Avatar
+                size={128}
+                src={
+                  `${IMAGE_STORAGE_URL}/${user.avatar?.filename}-${user.avatar?._id}` ?? undefined
+                }
+              />
             </Box>
 
             <div

@@ -1,10 +1,10 @@
 import {css} from '@styled/css';
+import Link from 'next/link';
 
 import {Avatar} from '@/components';
 import {UserOutputType} from '@/graphql/generated/types';
-import Link from 'next/link';
 
-const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_STORAGE_URL;
+const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
 
 const UserInfo = ({author}: {author: UserOutputType}) => {
   function getAuthorName() {
@@ -26,7 +26,13 @@ const UserInfo = ({author}: {author: UserOutputType}) => {
       })}
     >
       {/** AVATAR */}
-      <Avatar src={author.avatar?._id ? `${IMAGE_STORAGE_URL}/${author.avatar?._id}` : undefined} />
+      <Avatar
+        src={
+          author.avatar?._id
+            ? `${IMAGE_STORAGE_URL}/${author.avatar?.filename}-${author.avatar?._id}`
+            : undefined
+        }
+      />
 
       <div
         className={css({

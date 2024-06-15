@@ -10,12 +10,12 @@ import {useRouter} from 'next/navigation';
 import {coin, IconLogout} from '@/assets';
 import {Avatar} from '@/components';
 import {CookieName} from '@/constants';
+import {getUser} from '@/graphql';
 import {Paths} from '@/utils';
 
-import {getUser} from '@/graphql';
 import ProfileNavigation from '../profile-navigation/profile-navigation';
 
-const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_STORAGE_URL;
+const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
 
 const ProfileSidebar = () => {
   const queryClient = useQueryClient();
@@ -54,7 +54,11 @@ const ProfileSidebar = () => {
     >
       <Avatar
         size={134}
-        src={user?.avatar?._id ? `${IMAGE_STORAGE_URL}/${user.avatar?._id}` : undefined}
+        src={
+          user?.avatar?._id
+            ? `${IMAGE_STORAGE_URL}/${user.avatar?.filename}-${user.avatar?._id}`
+            : undefined
+        }
       />
       <h1
         className={css({
