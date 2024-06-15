@@ -1,6 +1,7 @@
 import {css} from '@styled/css';
 import {grid} from '@styled/patterns';
 
+import {IconBook} from '@/assets';
 import {CardDate} from '@/components/atoms/card-date';
 import {CardImage} from '@/components/atoms/card-image';
 import {CardLink} from '@/components/atoms/card-link';
@@ -30,7 +31,15 @@ export default function Card({imageUrl, date, title, articleLink, linkTitle = 'R
             bgColor: 'gray3',
             mb: '6',
           })}
-        />
+        >
+          <IconBook
+            className={css({
+              w: '16',
+              h: '16',
+              fill: 'gray.500',
+            })}
+          />
+        </div>
       )}
       <Wrap
         className={css({

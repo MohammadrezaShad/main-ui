@@ -338,7 +338,11 @@ export default function Author() {
                 key={article._id}
                 articleLink={`/articles/${article.slug}`}
                 date={moment(article.publishDate).format('DD MMMM YYYY')}
-                imageUrl={`${IMAGE_STORAGE_URL}/${article.thumbnail?.filename}-${article.thumbnail?._id}`}
+                imageUrl={
+                  article.thumbnail
+                    ? `${IMAGE_STORAGE_URL}/${article.thumbnail?.filename}-${article.thumbnail?._id}`
+                    : undefined
+                }
                 title={article.title}
               />
             ))}
@@ -349,7 +353,11 @@ export default function Author() {
                 key={article._id}
                 articleLink={`/articles/${article.slug}`}
                 date={moment(article.publishDate).format('DD MMMM YYYY')}
-                imageUrl={`${IMAGE_STORAGE_URL}/${article.thumbnail?.filename}-${article.thumbnail?._id}`}
+                imageUrl={
+                  article.thumbnail
+                    ? `${IMAGE_STORAGE_URL}/${article.thumbnail?.filename}-${article.thumbnail?._id}`
+                    : undefined
+                }
                 title={article.title}
               />
             ))}
