@@ -18,7 +18,7 @@ import {
   getPersonSchema,
 } from '@/utils';
 
-export const revalidate = 3600;
+export const revalidate = 180;
 
 export async function generateMetadata({params}: {params: {articleId: string}}): Promise<Metadata> {
   const token = getCookie(CookieName.AUTH_TOKEN, {cookies});

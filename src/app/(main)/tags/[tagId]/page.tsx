@@ -7,7 +7,7 @@ import {FindTagBySlug, SearchTags} from '@/graphql/query/tags';
 import {getQueryClient} from '@/helpers';
 import {Hydrate} from '@/providers';
 
-export const revalidate = 3600;
+export const revalidate = 180;
 
 export async function generateStaticParams(): Promise<any> {
   const data = await SearchTags({status: TagStatusEnum.Publish, count: 100});
