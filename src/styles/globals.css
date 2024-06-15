@@ -454,6 +454,9 @@ td {
   cursor: col-resize;
 }
 
+.article p {
+  margin: 1em 0;
+}
 
 .article h1 {
   display: block;
