@@ -31,7 +31,7 @@ export default function Categories({hasPdf = false, data}: {hasPdf?: boolean; da
           className={css({
             textAlign: 'center',
           })}
-          title='Categories of Articles'
+          title='Categories'
         />
         <PrimarySubtitle
           className={css({

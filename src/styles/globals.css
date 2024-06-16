@@ -352,27 +352,34 @@ td {
 .article > * + * {
   margin-top: 0.75em;
   }
+
 .article .article-link {
   font-weight: 500;
   color: var(--toastify-color-info);
   text-decoration: underline;
 }
+
 .article ul {
   list-style: circle!important;
 }
+
 .article ol {
   list-style-type: decimal!important;
 }
+
 .article ul, .article ol {
   padding: 0 1rem;
 }
+
 .article h1, .article h2, .article h3, .article h4, .article h5, .article h6 {
   line-height: 1.1;
 }
+
 .article code {
   background-color: rgba(97, 97, 97, 0.1);
   color: #616161;
 }
+
 .article pre {
   background: #0d0d0d;
   color: #fff;
@@ -380,31 +387,39 @@ td {
   padding: 0.75rem 1rem;
   border-radius: 0.5rem;
 }
+
 .article pre code {
   color: inherit;
   padding: 0;
   background: none;
   font-size: 0.8rem;
 }
+
 .article img {
   max-width: max-content;
   height: auto;
+  margin-top: 0 !important;
 }
+
 .article blockquote {
   padding-left: 1rem;
   border-left: 2px solid rgba(13, 13, 13, 0.1);
 }
+
 .article hr {
   border: none;
   border-top: 2px solid rgba(13, 13, 13, 0.1);
   margin: 2rem 0;
 }
+
 .article em {
   font-style: italic !important;
 }
+
 .article s {
   text-decoration: line-through !important;
 }
+
 .article table {
   border-collapse: collapse;
   margin: 0;
@@ -412,6 +427,7 @@ td {
   table-layout: fixed;
   width: 100%;
 }
+
 .article table td, .article table th {
   border: 2px solid #ced4da;
   box-sizing: border-box;
@@ -420,14 +436,17 @@ td {
   position: relative;
   vertical-align: top;
 }
+
 .article table td > *, .article table th > * {
   margin-bottom: 0;
 }
+
 .article table th {
   background-color: #f1f3f5;
   font-weight: bold;
   text-align: left;
 }
+
 .article table .selectedCell:after {
   background: rgba(200, 200, 255, 0.4);
   content: "";
@@ -439,6 +458,7 @@ td {
   position: absolute;
   z-index: 2;
 }
+
 .article table .column-resize-handle {
   background-color: #adf;
   bottom: -2px;
@@ -448,13 +468,23 @@ td {
   top: 0;
   width: 4px;
 }
+
 .article table p {
   margin: 0;
 }
+
+.article figcaption {
+  font-size: 14px;
+  font-style: italic;
+  font-weight: 700;
+  color: #838383;
+}
+
 .article .tableWrapper {
   padding: 1rem 0;
   overflow-x: auto;
 }
+
 .article .resize-cursor {
   cursor: ew-resize;
   cursor: col-resize;
