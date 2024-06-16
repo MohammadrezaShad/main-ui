@@ -399,6 +399,12 @@ td {
   border-top: 2px solid rgba(13, 13, 13, 0.1);
   margin: 2rem 0;
 }
+.article em {
+  font-style: italic !important;
+}
+.article s {
+  text-decoration: line-through !important;
+}
 .article table {
   border-collapse: collapse;
   margin: 0;
