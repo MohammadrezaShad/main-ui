@@ -1,8 +1,13 @@
 'use client';
 
+import {useEffect, useState} from 'react';
+import {toast} from 'react-toastify';
 import {useObservable} from '@legendapp/state/react';
 import {css} from '@styled/css';
+import {useInfiniteQuery} from '@tanstack/react-query';
+import {getCookie} from 'cookies-next';
 import Image from 'next/image';
+import {useRouter} from 'next/navigation';
 
 import {bgMaze, coin, IconClose} from '@/assets';
 import {Modal} from '@/components/atoms/modal';
@@ -15,21 +20,28 @@ import {
   searchGraphicalQuizzes,
 } from '@/graphql';
 import {Paths} from '@/utils';
-import {useInfiniteQuery} from '@tanstack/react-query';
-import {getCookie} from 'cookies-next';
-import {useRouter} from 'next/navigation';
-import {useEffect, useState} from 'react';
-import {toast} from 'react-toastify';
+
+import {
+  Banner,
+  BannerShade,
+  Button,
+  CardList,
+  Container,
+  Header,
+  HeadTitle,
+  Title,
+  Wrapper,
+} from './graphical-quiz.styled';
 
 export default function GraphicalQuizzes() {
-  const token = getCookie(CookieName.AUTH_TOKEN)!;
+  const token: string | undefined = getCookie(CookieName.AUTH_TOKEN);
   const router = useRouter();
   const [quizzes, setQuizzes] = useState<GraphicalQuizType[]>([]);
   const [page, setPage] = useState(1);
   const targetQuiz$ = useObservable<GraphicalQuizType>();
   const {data, fetchNextPage, hasNextPage} = useInfiniteQuery({
     queryKey: ['search-graphical-quizzes'],
-    queryFn: ({pageParam}) => searchGraphicalQuizzes({count: 12, page: pageParam}, token),
+    queryFn: ({pageParam}) => searchGraphicalQuizzes({count: 12, page: pageParam}, token || ''),
     initialPageParam: 1,
     getNextPageParam: (lastPage: any, allPages, lastPagParam, allPagesParam) => {
       const totalPages = lastPage?.totalPages;
@@ -57,6 +69,19 @@ export default function GraphicalQuizzes() {
     }
   };
 
+  const renderContent = () => {
+    if (!token) return <HeadTitle>Please log in to view quizzes.</HeadTitle>;
+    if (quizzes.length > 0)
+      return (
+        <CardList>
+          {quizzes.map(quiz => (
+            <QuizCard key={quiz._id} getQuizInfo={getQuizInfo} quiz={quiz} />
+          ))}
+        </CardList>
+      );
+    return <HeadTitle>There are currently no quizzes.</HeadTitle>;
+  };
+
   useEffect(() => {
     if (data) {
       const _articles =
@@ -70,85 +95,20 @@ export default function GraphicalQuizzes() {
   }, [data]);
 
   return (
-    <div
-      className={css({
-        display: 'flex',
-        flexDir: 'column',
-        alignItems: 'center',
-        bgColor: 'white',
-        mx: '-8',
-      })}
-    >
-      <header
-        className={css({
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'stretch',
-          alignSelf: 'stretch',
-          w: 'full',
-          whiteSpace: 'nowrap',
-          mdDown: {pl: '5', pr: '5', maxW: 'full'},
-          minH: '[160px]',
-          pos: 'relative',
-        })}
-      >
-        <div
+    <Container>
+      <Header>
+        <Banner
           style={{
             backgroundImage: `url(${bgMaze.src})`,
           }}
-          className={css({
-            w: 'full',
-            maxW: '[640px]',
-            mdDown: {pl: '5', pr: '5'},
-            bgRepeat: 'no-repeat',
-            bgSize: 'cover',
-          })}
         >
-          <div
-            className={css({
-              bg: 'linear-gradient(90deg, rgba(4,25,14,1) 0%, rgba(4,25,14,1) 25%, rgba(4,25,14,0) 33%, rgba(4,25,14,0) 66%, rgba(4,25,14,1) 75%, rgba(4,25,14,1) 100%)',
-              position: 'absolute',
-              inset: '0',
-            })}
-          />
-          <span
-            className={css({
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              color: 'text.invert',
-              textStyle: 'h1',
-            })}
-          >
-            Graphical Quizzes
-          </span>
-        </div>
-      </header>
-      <div
-        className={css({
-          px: '16',
-          mt: '6',
-          w: 'full',
-          maxW: '960px',
-          mdDown: {maxW: 'full'},
-        })}
-      >
-        <div className={css({mt: '6', mdDown: {maxW: 'full'}})}>
-          <div
-            className={css({
-              display: 'grid',
-              gridTemplateColumns: 3,
-              gap: '5',
-              mdDown: {gridTemplateColumns: 1, gap: '0'},
-            })}
-          >
-            {quizzes.map(quiz => (
-              <QuizCard key={quiz._id} getQuizInfo={getQuizInfo} quiz={quiz} />
-            ))}
-          </div>
-        </div>
-      </div>
+          <BannerShade />
+          <Title>Graphical Quizzes</Title>
+        </Banner>
+      </Header>
+      <Wrapper>
+        <div className={css({mt: '6', mdDown: {maxW: 'full'}})}>{renderContent()}</div>
+      </Wrapper>
       {hasNextPage ? (
         <div
           className={css({
@@ -156,27 +116,9 @@ export default function GraphicalQuizzes() {
             mb: -6,
           })}
         >
-          <button
-            type='button'
-            onClick={() => fetchNextPage()}
-            className={css({
-              backgroundColor: 'primary',
-              px: '4',
-              py: '3',
-              mx: 'auto',
-              display: 'block',
-              cursor: 'pointer',
-            })}
-          >
-            <span
-              className={css({
-                textStyle: 'body',
-                color: 'text.invert',
-              })}
-            >
-              Show more
-            </span>
-          </button>
+          <Button type='button' onClick={() => fetchNextPage()}>
+            <span>Show more</span>
+          </Button>
         </div>
       ) : null}
       <Modal isOpen$={!!targetQuiz$.use()} onClose={() => targetQuiz$.set(undefined)}>
@@ -313,6 +255,6 @@ export default function GraphicalQuizzes() {
           </div>
         </form>
       </Modal>
-    </div>
+    </Container>
   );
 }

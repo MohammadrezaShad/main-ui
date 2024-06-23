@@ -1,40 +1,36 @@
 'use client';
 
-import {GraphicalQuizType, QuizType} from '@/graphql';
+import {toast} from 'react-toastify';
 import {css} from '@styled/css';
+import {getCookie} from 'cookies-next';
 import Image from 'next/image';
+
+import {CookieName} from '@/constants';
+import {GraphicalQuizType, QuizType} from '@/graphql';
+
+import {Button, Container, ContentWrapper, QuestionCount, Title, Wrapper} from './quiz-card.styled';
 
 const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
 
 const QuizCard = ({quiz, getQuizInfo}: {quiz: QuizType | GraphicalQuizType; getQuizInfo: any}) => {
-  const renderQuestionCOunt = () => {
+  const renderQuestionCount = () => {
     if (quiz.__typename === 'QuizType') return `${quiz.questions.length} Questions`;
     if (quiz.__typename === 'GraphicalQuizType') return `${quiz.quizPoints.length} quizzes`;
     return '';
   };
+
+  const handleClickQuiz = () => {
+    const token = getCookie(CookieName.AUTH_TOKEN);
+    if (!token) {
+      toast.error('You must log in first');
+    } else {
+      getQuizInfo(quiz._id);
+    }
+  };
+
   return (
-    <div
-      className={css({
-        display: 'flex',
-        flexDir: 'column',
-        w: '100%',
-        mdDown: {ml: '0', w: 'full'},
-      })}
-    >
-      <div
-        className={css({
-          display: 'flex',
-          flexDir: 'column',
-          flexGrow: '1',
-          pb: '6',
-          w: 'full',
-          bgColor: 'white',
-          borderWidth: '1px',
-          borderStyle: 'solid',
-          borderColor: 'gray3',
-          mdDown: {mt: '6', flexDir: 'row', borderWidth: '0'},
-        })}
-      >
+    <Container>
+      <Wrapper>
         <Image
           width={128}
           height={128}
@@ -48,55 +44,15 @@ const QuizCard = ({quiz, getQuizInfo}: {quiz: QuizType | GraphicalQuizType; getQ
             mdDown: {aspectRatio: 'square', w: '[112px]', h: '[112px]'},
           })}
         />
-        <div
-          className={css({
-            display: 'flex',
-            flexDir: 'column',
-            alignSelf: 'flex-start',
-            mt: '7',
-            ml: '6',
-            mdDown: {ml: '2.5', mt: '0'},
-          })}
-        >
-          <div
-            className={css({
-              fontSize: 'xs',
-              lineHeight: 'xs',
-              fontWeight: 'light',
-              color: 'gray4',
-            })}
-          >
-            {renderQuestionCOunt()}
-          </div>
-          <div
-            className={css({
-              mt: '2',
-              fontSize: 'base',
-              lineHeight: 'base',
-              fontWeight: 'medium',
-              color: 'text.primary',
-            })}
-          >
-            {quiz.title}
-          </div>
-          <button
-            onClick={() => getQuizInfo(quiz._id)}
-            type='button'
-            className={css({
-              cursor: 'pointer',
-              mt: '9',
-              textAlign: 'left',
-              fontSize: 'sm',
-              lineHeight: 'sm',
-              color: 'primary',
-              mdDown: {mt: '8'},
-            })}
-          >
+        <ContentWrapper>
+          <QuestionCount>{renderQuestionCount()}</QuestionCount>
+          <Title>{quiz.title}</Title>
+          <Button onClick={handleClickQuiz} type='button'>
             START THE QUIZ
-          </button>
-        </div>
-      </div>
-    </div>
+          </Button>
+        </ContentWrapper>
+      </Wrapper>
+    </Container>
   );
 };
 
