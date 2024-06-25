@@ -51,13 +51,31 @@ export const getOrganizationSchema = () => ({
   //   ],
 });
 
+function getArticleImages(article: ArticleType) {
+  const urls: string[] = [];
+  const articleThumbnail = article.thumbnail;
+  const articleImages = article.images;
+
+  if (articleThumbnail && (!articleImages || articleImages.length < 0))
+    return `${process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL}/${articleThumbnail.filename}-${articleThumbnail._id}`;
+
+  if (articleImages && articleImages.length > 0) {
+    if (articleThumbnail)
+      urls.push(
+        `${process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL}/${articleThumbnail.filename}-${articleThumbnail._id}`,
+      );
+    articleImages.forEach(image => {
+      urls.push(`${process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL}/${image.filename}-${image._id}`);
+    });
+  }
+  return urls;
+}
+
 export const getBlogArticleSchema = (article: ArticleType): WithContext<Article> => ({
   '@context': 'https://schema.org',
   '@type': 'BlogPosting',
   headline: article.title,
-  image: article.thumbnail
-    ? `${process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL}/${article.thumbnail?.filename}-${article.thumbnail?._id}`
-    : '',
+  image: getArticleImages(article),
   author: {
     '@type': 'Person',
     name: `${article.author?.firstName} ${article.author?.lastName}`,

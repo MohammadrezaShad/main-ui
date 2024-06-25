@@ -14,6 +14,16 @@ export async function findArticleById(
       article {
         findArticleById(input: $input) {
           result {
+            images {
+              _id
+              alt
+              createdAt
+              filename
+              height
+              preview
+              updatedAt
+              width
+            }
             _id
             author {
               _id
