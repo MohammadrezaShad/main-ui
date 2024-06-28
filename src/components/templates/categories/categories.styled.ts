@@ -8,9 +8,22 @@ export const Container = styled('div', {
   },
 });
 
+export const BackgroundShade = styled('div', {
+  base: {
+    w: 'full',
+    backgroundColor: 'rgb(255,255,255)',
+    background:
+      '[linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 49%, rgba(247,247,247,1) 49%, rgba(247,247,247,1) 100%)]',
+  },
+});
+
 export const Wrapper = styled('div', {
   base: {
+    w: 'full',
     display: 'grid',
+    maxWidth: '960px',
+    mx: 'auto',
+    pb: '[60px]',
     gridTemplateColumns: {
       base: 3,
       mdDown: 1,

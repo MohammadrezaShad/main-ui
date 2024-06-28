@@ -131,7 +131,7 @@ const ProfileSidebar = () => {
             textAlign: 'center',
           })}
         >
-          400
+          {user?.coins ?? 0}
         </h1>
       </div>
       <ProfileNavigation />

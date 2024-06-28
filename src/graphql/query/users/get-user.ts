@@ -12,6 +12,7 @@ export async function getUser(accessToken: string): Promise<AuthQuery['getUser']
       auth {
         getUser {
           _id
+          coins
           articlesWrittenCount
           articlesWrittenSavedCount
           articlesWrittenVisitedCount

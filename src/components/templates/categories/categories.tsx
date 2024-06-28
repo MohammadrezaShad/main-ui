@@ -14,7 +14,7 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 
-import {Container, SliderWrapper, Wrapper} from './categories.styled';
+import {BackgroundShade, Container, SliderWrapper, Wrapper} from './categories.styled';
 
 export default function Categories({hasPdf = false, data}: {hasPdf?: boolean; data: any}) {
   const categories: Array<CategoryType> = data?.category!.searchCategories.results;
@@ -47,76 +47,85 @@ export default function Categories({hasPdf = false, data}: {hasPdf?: boolean; da
           text='All types of categories are displayed here'
         />
       </Box>
-      <Wrapper hideBelow='md'>
-        {filteredCategories.slice(0, 3).map(category => (
-          <CategoryCard id={category._id} key={category._id} category={category} hasPdf={hasPdf} />
-        ))}
-      </Wrapper>
-      <SliderWrapper>
-        <Swiper
-          modules={[Navigation, Pagination]}
-          autoplay
-          pagination={{type: 'bullets', clickable: true}}
-          navigation={{nextEl: '.arrow-right', prevEl: '.arrow-left'}}
-          onSwiper={swiper => console.log(swiper)}
-          className={css({
-            w: 'full',
-            maxW: '960px',
-          })}
-        >
+      <BackgroundShade>
+        <Wrapper hideBelow='md'>
           {filteredCategories.slice(0, 3).map(category => (
-            <SwiperSlide key={category._id}>
-              <div
-                className={flex({
-                  position: 'relative',
-                  w: 'full',
-                })}
-              >
-                <CategoryCard
-                  id={category._id}
-                  key={category._id}
-                  category={category}
-                  hasPdf={hasPdf}
-                />
-              </div>
-            </SwiperSlide>
+            <CategoryCard
+              id={category._id}
+              key={category._id}
+              category={category}
+              hasPdf={hasPdf}
+            />
           ))}
-        </Swiper>
-        <button
-          type='button'
-          className={cx(
-            'arrow-left',
-            css({
-              position: 'absolute',
-              py: '6',
-              pr: '6',
-              top: '[50%]',
-              transform: '[translateY(-50%)]',
-              zIndex: 1,
-              left: 0,
-            }),
-          )}
-        >
-          <IconChevronLeft className={css({w: '6', h: '6', '& path': {fill: '#333'}})} />
-        </button>
-        <button
-          type='button'
-          className={cx(
-            'arrow-right',
-            css({
-              position: 'absolute',
-              py: '6',
-              pl: '6',
-              top: '[50%]',
-              transform: '[translateY(-50%)]',
-              zIndex: 1,
-              right: 0,
-            }),
-          )}
-        >
-          <IconChevronRight className={css({w: '6', h: '6', '& path': {fill: '#333'}})} />
-        </button>
-      </SliderWrapper>
+        </Wrapper>
+      </BackgroundShade>
+      <BackgroundShade>
+        <SliderWrapper>
+          <Swiper
+            modules={[Navigation, Pagination]}
+            autoplay
+            pagination={{type: 'bullets', clickable: true}}
+            navigation={{nextEl: '.arrow-right', prevEl: '.arrow-left'}}
+            onSwiper={swiper => console.log(swiper)}
+            className={css({
+              w: 'full',
+              maxW: '960px',
+            })}
+          >
+            {filteredCategories.slice(0, 3).map(category => (
+              <SwiperSlide key={category._id}>
+                <div
+                  className={flex({
+                    position: 'relative',
+                    w: 'full',
+                  })}
+                >
+                  <CategoryCard
+                    id={category._id}
+                    key={category._id}
+                    category={category}
+                    hasPdf={hasPdf}
+                  />
+                </div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+          <button
+            type='button'
+            className={cx(
+              'arrow-left',
+              css({
+                position: 'absolute',
+                py: '6',
+                pr: '6',
+                top: '[50%]',
+                transform: '[translateY(-50%)]',
+                zIndex: 1,
+                left: 0,
+              }),
+            )}
+          >
+            <IconChevronLeft className={css({w: '6', h: '6', '& path': {fill: '#333'}})} />
+          </button>
+          <button
+            type='button'
+            className={cx(
+              'arrow-right',
+              css({
+                position: 'absolute',
+                py: '6',
+                pl: '6',
+                top: '[50%]',
+                transform: '[translateY(-50%)]',
+                zIndex: 1,
+                right: 0,
+              }),
+            )}
+          >
+            <IconChevronRight className={css({w: '6', h: '6', '& path': {fill: '#333'}})} />
+          </button>
+        </SliderWrapper>
+      </BackgroundShade>
       {hasExtraCategories ? (
         <>
           <Divider label='Other Categories' />
@@ -130,7 +139,7 @@ export default function Categories({hasPdf = false, data}: {hasPdf?: boolean; da
               />
             ))}
           </Wrapper>
-          <Wrapper hideFrom='md'>
+          <Wrapper hideFrom='md' className={css({px: '4'})}>
             {filteredCategories.slice(3).map(category => (
               <CategoryCard
                 id={category._id}

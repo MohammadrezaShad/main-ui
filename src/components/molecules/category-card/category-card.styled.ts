@@ -32,6 +32,7 @@ export const Card = styled(Link, {
     _small: {
       true: {
         py: '4',
+        pb: '4',
         display: 'block',
         bgColor: 'gray1',
       },
