@@ -375,6 +375,7 @@ export type BulkFindTagInput = {
 };
 
 export type CategoryInputType = {
+  order?: InputMaybe<Scalars['Int']['input']>;
   parent?: InputMaybe<CategoryInputType>;
 };
 
@@ -430,6 +431,7 @@ export type CategoryType = {
   hasSeoApproval?: Maybe<Scalars['Boolean']['output']>;
   image?: Maybe<ImageType>;
   isDescriptionApproved?: Maybe<Scalars['Boolean']['output']>;
+  order?: Maybe<Scalars['Int']['output']>;
   originalDescription?: Maybe<Scalars['String']['output']>;
   parent?: Maybe<CategoryType>;
   postCount?: Maybe<Scalars['Int']['output']>;
@@ -603,6 +605,7 @@ export type CreateCategoryInput = {
   hasSeoApproval?: InputMaybe<Scalars['Boolean']['input']>;
   image?: InputMaybe<Scalars['String']['input']>;
   isDescriptionApproved?: InputMaybe<Scalars['Boolean']['input']>;
+  order?: InputMaybe<Scalars['Int']['input']>;
   parent?: InputMaybe<Scalars['String']['input']>;
   seoSetting?: InputMaybe<SeoSettingInput>;
   slug: Scalars['String']['input'];
@@ -1820,6 +1823,8 @@ export type SearchQuizOutput = {
 };
 
 export enum SearchSortType {
+  AscendingOrder = 'ASCENDING_ORDER',
+  DescendingOrder = 'DESCENDING_ORDER',
   Newest = 'NEWEST',
   PostCount = 'POST_COUNT',
 }
@@ -2152,6 +2157,7 @@ export type UpdateCategoryInput = {
   id: Scalars['String']['input'];
   image?: InputMaybe<Scalars['String']['input']>;
   isDescriptionApproved?: InputMaybe<Scalars['Boolean']['input']>;
+  order?: InputMaybe<Scalars['Int']['input']>;
   parent?: InputMaybe<Scalars['String']['input']>;
   seoSetting?: InputMaybe<SeoSettingInput>;
   slug?: InputMaybe<Scalars['String']['input']>;

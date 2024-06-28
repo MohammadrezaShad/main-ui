@@ -1,12 +1,12 @@
 import {css} from '@styled/css';
 
 import {CategoriesView} from '@/components';
-import {searchCategories} from '@/graphql';
+import {searchCategories, SearchSortType} from '@/graphql';
 
 export const dynamic = 'force-dynamic';
 
 const Page = async () => {
-  const data = await searchCategories({count: 50});
+  const data = await searchCategories({count: 50, sortType: SearchSortType.AscendingOrder});
 
   return (
     <div
