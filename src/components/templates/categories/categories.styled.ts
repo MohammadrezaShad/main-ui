@@ -27,5 +27,6 @@ export const SliderWrapper = styled('div', {
     maxW: '320px',
     mx: 'auto',
     hideFrom: 'md',
+    position: 'relative',
   },
 });

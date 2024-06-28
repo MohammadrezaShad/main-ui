@@ -1,12 +1,18 @@
 'use client';
 
-import {css} from '@styled/css';
+import {css, cx} from '@styled/css';
 import {Box} from '@styled/jsx';
 import {flex} from '@styled/patterns';
+import {Navigation, Pagination} from 'swiper/modules';
 import {Swiper, SwiperSlide} from 'swiper/react';
 
+import {IconChevronLeft, IconChevronRight} from '@/assets';
 import {CategoryCard, Divider, PrimarySubtitle, PrimaryTitle} from '@/components';
 import {CategoryType} from '@/graphql';
+
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
 
 import {Container, SliderWrapper, Wrapper} from './categories.styled';
 
@@ -48,8 +54,10 @@ export default function Categories({hasPdf = false, data}: {hasPdf?: boolean; da
       </Wrapper>
       <SliderWrapper>
         <Swiper
+          modules={[Navigation, Pagination]}
           autoplay
           pagination={{type: 'bullets', clickable: true}}
+          navigation={{nextEl: '.arrow-right', prevEl: '.arrow-left'}}
           onSwiper={swiper => console.log(swiper)}
           className={css({
             w: 'full',
@@ -74,6 +82,40 @@ export default function Categories({hasPdf = false, data}: {hasPdf?: boolean; da
             </SwiperSlide>
           ))}
         </Swiper>
+        <button
+          type='button'
+          className={cx(
+            'arrow-left',
+            css({
+              position: 'absolute',
+              py: '6',
+              pr: '6',
+              top: '[50%]',
+              transform: '[translateY(-50%)]',
+              zIndex: 1,
+              left: 0,
+            }),
+          )}
+        >
+          <IconChevronLeft className={css({w: '6', h: '6', '& path': {fill: '#333'}})} />
+        </button>
+        <button
+          type='button'
+          className={cx(
+            'arrow-right',
+            css({
+              position: 'absolute',
+              py: '6',
+              pl: '6',
+              top: '[50%]',
+              transform: '[translateY(-50%)]',
+              zIndex: 1,
+              right: 0,
+            }),
+          )}
+        >
+          <IconChevronRight className={css({w: '6', h: '6', '& path': {fill: '#333'}})} />
+        </button>
       </SliderWrapper>
       {hasExtraCategories ? (
         <>
