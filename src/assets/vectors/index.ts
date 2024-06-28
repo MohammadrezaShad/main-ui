@@ -95,3 +95,4 @@ export {default as IconVolumeSlash} from './icon-volume-slash.svg';
 export {default as IconWater} from './icon-water.svg';
 export {default as IconWaterWorld} from './icon-waterworld.svg';
 export {default as IconX} from './icon-x.svg';
+export {default as IconLinkedin} from './linkedin-icon.svg';

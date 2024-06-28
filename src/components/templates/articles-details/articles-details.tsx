@@ -10,7 +10,7 @@ import {getCookie} from 'cookies-next';
 import Link from 'next/link';
 import {useParams} from 'next/navigation';
 
-import {IconEmail, IconFacebook, IconInstagram, IconLink, IconX} from '@/assets';
+import {IconEmail, IconFacebook, IconInstagram, IconLink, IconLinkedin, IconX} from '@/assets';
 import {
   ArticleBody,
   ArticleInfo,
@@ -78,7 +78,8 @@ const Page = () => {
       action: `mailto:?subject=${article.title}&body=Check%20out%20this%20article:%20${BASE_URL}/${article.slug}`,
       type: 'link',
     },
-    {id: 5, icon: IconLink, action: () => copyLinkToClipboard(), type: 'button'},
+    {id: 5, icon: IconLinkedin, action: () => handleLinkedInShare(), type: 'button'},
+    {id: 6, icon: IconLink, action: () => copyLinkToClipboard(), type: 'button'},
   ];
 
   async function shareImageAsset() {
@@ -105,6 +106,12 @@ const Page = () => {
   async function copyLinkToClipboard() {
     await copyToClipboard(`${BASE_URL}/${article.slug}`);
     toast.success('Link copied to clipboard');
+  }
+
+  function handleLinkedInShare() {
+    const linkedInShareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`${BASE_URL}/${article.slug}`)}&title=${encodeURIComponent(article.title)}&summary=${encodeURIComponent(article.excerpt || '')}&source=${encodeURIComponent('Waterlyst.com' || '')}`;
+
+    window.open(linkedInShareUrl, '_blank', 'noopener,noreferrer');
   }
 
   const res = useQuery({
