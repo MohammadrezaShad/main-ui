@@ -4,7 +4,6 @@ export const Container = styled('div', {
   base: {
     w: 'full',
     objectFit: 'cover',
-    mb: 6,
     bgSize: 'cover',
     bgPosition: 'center',
     bgRepeat: 'no-repeat',

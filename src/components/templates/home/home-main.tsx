@@ -1,16 +1,18 @@
 'use client';
 
+import Select from 'react-select';
 import {css} from '@styled/css';
 import {Box} from '@styled/jsx';
 import {flex} from '@styled/patterns';
-import {useInfiniteQuery, useQuery} from '@tanstack/react-query';
-import {useEffect, useState} from 'react';
-import Select from 'react-select';
+import {keepPreviousData, useQuery} from '@tanstack/react-query';
+import {useSearchParams} from 'next/navigation';
 
-import {hero, IconSearch} from '@/assets';
+import {hero, IconChevronLeft, IconChevronRight, IconSearch} from '@/assets';
 import {Articles, Divider, RecentArticles} from '@/components';
+import {CategoryType, searchArticles, searchCategories, StatusType} from '@/graphql';
+import {useUpdateSearchParam} from '@/hooks';
 
-import {ArticleType, CategoryType, searchArticles, searchCategories, StatusType} from '@/graphql';
+import {Pagination} from '../articles/articles.styled';
 import {
   Container,
   Content,
@@ -26,24 +28,16 @@ import {
 const cities = [{id: 1, value: 'amsterdam', label: 'Amsterdam'}];
 
 export default function HomeMain() {
-  const {data, fetchNextPage, hasNextPage} = useInfiniteQuery({
-    queryKey: ['search-articles-home'],
-    queryFn: ({pageParam}) =>
-      searchArticles({status: StatusType.Publish, count: 15, page: pageParam}),
-    initialPageParam: 1,
-    getNextPageParam: (lastPage: any, allPages, lastPagParam, allPagesParam) => {
-      const totalPages = lastPage?.article?.searchArticles?.totalPages;
-      if (totalPages) {
-        return lastPagParam + 1 <= totalPages ? lastPagParam + 1 : undefined;
-      }
-
-      return undefined;
-    },
+  const updateSearchParams = useUpdateSearchParam();
+  const searchParams = useSearchParams();
+  const page = +(searchParams.get('page') ?? '1');
+  const {data} = useQuery({
+    queryKey: ['search-articles-home', page],
+    queryFn: ({pageParam}) => searchArticles({status: StatusType.Publish, count: 18, page}),
+    placeholderData: keepPreviousData,
   }) as any;
 
-  const [articles, setArticles] = useState<ArticleType[]>(
-    data.pages[0].article.searchArticles.results,
-  );
+  const articles = data?.article.searchArticles.results;
 
   const res = useQuery({
     queryKey: ['search-categories-home'],
@@ -57,17 +51,12 @@ export default function HomeMain() {
     label: category.title,
   }));
 
-  useEffect(() => {
-    if (data) {
-      const _articles =
-        data?.pages.reduce(
-          (acc: any, page: any, index: any) =>
-            index !== 0 ? [...acc, ...page?.article?.searchArticles.results] : [...acc],
-          data?.pages[0]?.article?.searchArticles.results,
-        ) || [];
-      setArticles(_articles);
-    }
-  }, [data]);
+  const totalPages = data?.article?.searchArticles?.totalPages as number;
+  const totalCount = data?.article?.searchArticles?.totalCount as number;
+  const count = 12;
+
+  const startResult = (+page - 1) * count + 1;
+  const endResult = Math.min(+page * count, totalCount || 0);
 
   return (
     <>
@@ -195,36 +184,45 @@ export default function HomeMain() {
         <RecentArticles posts={articles?.slice(0, 3)} />
         <Divider label='Keep Reading' />
         <Articles articles={articles?.slice(3)} />
-        {hasNextPage ? (
-          <div
+
+        <div
+          className={css({
+            mt: 6,
+            mb: -6,
+            mx: 'auto',
+          })}
+        >
+          <Pagination
+            nextLabel={<IconChevronRight />}
+            onPageChange={current => updateSearchParams('page', String(current.selected + 1))}
+            pageRangeDisplayed={3}
+            marginPagesDisplayed={2}
+            pageCount={totalPages}
+            previousLabel={<IconChevronLeft />}
+            pageClassName='page-item'
+            pageLinkClassName='page-link'
+            previousClassName='page-item'
+            previousLinkClassName='page-link'
+            nextClassName='page-item'
+            nextLinkClassName='page-link'
+            breakLabel='...'
+            breakClassName='page-item'
+            breakLinkClassName='page-link'
+            containerClassName='pagination'
+            activeClassName='active'
+            renderOnZeroPageCount={null}
+          />
+          <span
             className={css({
-              mt: 6,
-              mb: -6,
+              color: 'gray4',
+              fontWeight: 300,
+              fontSize: '14px',
+              textAlign: 'center',
             })}
           >
-            <button
-              type='button'
-              onClick={() => fetchNextPage()}
-              className={css({
-                backgroundColor: 'primary',
-                px: '4',
-                py: '3',
-                mx: 'auto',
-                display: 'block',
-                cursor: 'pointer',
-              })}
-            >
-              <span
-                className={css({
-                  textStyle: 'body',
-                  color: 'text.invert',
-                })}
-              >
-                Show more
-              </span>
-            </button>
-          </div>
-        ) : null}
+            Showing {startResult}-{endResult} of {totalCount || 0}
+          </span>
+        </div>
       </Container>
     </>
   );

@@ -1,5 +1,5 @@
-import {usePathname, useRouter, useSearchParams} from 'next/navigation';
 import {useCallback} from 'react';
+import {usePathname, useRouter, useSearchParams} from 'next/navigation';
 
 export const useUpdateSearchParam = () => {
   const router = useRouter();
@@ -17,7 +17,7 @@ export const useUpdateSearchParam = () => {
       if (name !== 'page' && params.has('page')) {
         params.delete('page');
       }
-      router.push(`${pathname}?${params.toString()}`);
+      router.push(`${pathname}?${params.toString()}`, {scroll: false});
     },
     [router, pathname, searchParams],
   );

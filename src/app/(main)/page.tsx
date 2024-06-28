@@ -1,19 +1,17 @@
 import {dehydrate} from '@tanstack/react-query';
+import {unstable_noStore as noStore} from 'next/cache';
 
 import {MainHome} from '@/components';
-import {StatusType, searchArticles, searchCategories} from '@/graphql';
+import {searchArticles, searchCategories, StatusType} from '@/graphql';
 import {getQueryClient} from '@/helpers';
 import {Hydrate} from '@/providers';
-
-import {unstable_noStore as noStore} from 'next/cache';
 
 export default async function Home() {
   noStore();
   const queryClient = getQueryClient();
-  await queryClient.prefetchInfiniteQuery({
-    queryKey: ['search-articles-home'],
-    queryFn: () => searchArticles({status: StatusType.Publish, count: 15, page: 1}),
-    initialPageParam: 1,
+  await queryClient.prefetchQuery({
+    queryKey: ['search-articles-home', 1],
+    queryFn: () => searchArticles({status: StatusType.Publish, count: 18, page: 1}),
   });
   await queryClient.prefetchQuery({
     queryKey: ['search-categories-home'],

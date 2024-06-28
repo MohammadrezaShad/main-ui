@@ -70,7 +70,7 @@ const ImageCard = ({imageUrl, date, title, aspectRatio = 'square', articleLink}:
           className={css({color: {base: 'gray3 !important', mdDown: 'gray4 !important'}})}
           dateTime={formatDate(date)}
         >
-          {date}
+          {formatDate(date)}
         </CardDate>
         <Link href={articleLink}>
           <CardTitle
