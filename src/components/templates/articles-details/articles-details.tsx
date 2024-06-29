@@ -297,6 +297,9 @@ const Page = () => {
               w: 'full',
               h: 'auto',
             },
+            '& h2': {
+              textAlign: 'unset !important',
+            },
           })}
           content={article.content}
         />
