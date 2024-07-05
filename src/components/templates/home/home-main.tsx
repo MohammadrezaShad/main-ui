@@ -3,7 +3,6 @@
 import Select from 'react-select';
 import {css} from '@styled/css';
 import {Box} from '@styled/jsx';
-import {flex} from '@styled/patterns';
 import {keepPreviousData, useQuery} from '@tanstack/react-query';
 import {useSearchParams} from 'next/navigation';
 
@@ -72,17 +71,18 @@ export default function HomeMain() {
             <Underline />
             <SearchContainer>
               <Box
-                className={flex({
+                className={css({
+                  display: 'flex',
                   alignItems: 'center',
                   mdDown: {
                     flexDirection: 'column',
                     gap: 2,
                   },
+                  py: '7',
                 })}
                 flex={1}
               >
                 <Box
-                  p={6}
                   className={css({
                     width: {
                       base: '1/3',
@@ -91,6 +91,8 @@ export default function HomeMain() {
                     bgColor: {
                       mdDown: 'white',
                     },
+                    borderRight: '1px solid token(colors.gray3)',
+                    px: '6',
                   })}
                 >
                   <Select
@@ -110,7 +112,6 @@ export default function HomeMain() {
                 </Box>
 
                 <Box
-                  p={6}
                   className={css({
                     width: {
                       base: '1/3',
@@ -119,6 +120,8 @@ export default function HomeMain() {
                     bgColor: {
                       mdDown: 'white',
                     },
+                    borderRight: '1px solid token(colors.gray3)',
+                    px: '6',
                   })}
                 >
                   <Select
@@ -137,7 +140,6 @@ export default function HomeMain() {
                   />
                 </Box>
                 <Box
-                  p={6}
                   className={css({
                     width: {
                       base: '1/3',
@@ -146,6 +148,7 @@ export default function HomeMain() {
                     bgColor: {
                       mdDown: 'white',
                     },
+                    px: '6',
                   })}
                 >
                   <Select
