@@ -7,7 +7,8 @@ export const Container = styled('div', {
     flexDir: 'column',
     border: '1px solid token(colors.gray3)',
     maxW: 'full',
-    w: 'full',
+    w: '[304px]',
+    h: '[362px]',
   },
 });
 

@@ -23,7 +23,6 @@ import {Paths} from '@/utils';
 
 import {
   Banner,
-  BannerShade,
   Button,
   CardList,
   Container,
@@ -102,7 +101,6 @@ export default function GraphicalQuizzes() {
             backgroundImage: `url(${bgMaze.src})`,
           }}
         >
-          <BannerShade />
           <Title>Graphical Quizzes</Title>
         </Banner>
       </Header>

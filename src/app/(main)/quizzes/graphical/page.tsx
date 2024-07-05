@@ -1,12 +1,12 @@
 import {css} from '@styled/css';
 import {dehydrate} from '@tanstack/react-query';
+import {cookies} from 'next/headers';
 
 import {GraphicalQuizzesView} from '@/components';
 import {CookieName} from '@/constants';
 import {searchGraphicalQuizzes} from '@/graphql';
 import {getQueryClient} from '@/helpers';
 import {Hydrate} from '@/providers';
-import {cookies} from 'next/headers';
 
 const Page = async () => {
   const cookieStore = cookies();
@@ -25,7 +25,7 @@ const Page = async () => {
         flexDir: 'column',
         rowGap: 8,
         mx: 'auto',
-        maxWidth: '960px',
+        maxWidth: 'full',
         p: {lgDown: 4},
       })}
     >

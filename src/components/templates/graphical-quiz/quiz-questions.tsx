@@ -1,8 +1,9 @@
-import {IconCheck, coin} from '@/assets';
-import RadioButton from '@/components/atoms/radio-button/radio-button';
-import {OptionType, QuestionType, QuizType} from '@/graphql';
 import {css} from '@styled/css';
 import Image from 'next/image';
+
+import {coin, IconCheck} from '@/assets';
+import RadioButton from '@/components/atoms/radio-button/radio-button';
+import {OptionType, QuestionType, QuizType} from '@/graphql';
 
 interface Answer {
   answer: string;
@@ -44,7 +45,7 @@ const QuizQuestions = ({
       mx: 'auto',
     })}
   >
-    <div className={css({display: 'flex', gap: '5', flexDir: 'column', mdDown: {gap: '0'}})}>
+    <div className={css({display: 'flex', gap: '4', flexDir: 'column', mdDown: {gap: '0'}})}>
       <div
         className={css({
           display: 'flex',
@@ -67,10 +68,10 @@ const QuizQuestions = ({
                   placeContent: 'center',
                   w: '6',
                   h: '6',
-                  bgColor: answers?.[index] ? '#62C2CE' : 'gray.300',
+                  bgColor: answers?.[index] && index !== currentIndex ? '#62C2CE' : 'gray.300',
                 })}
               >
-                {answers?.[index] && (
+                {answers?.[index] && index !== currentIndex && (
                   <IconCheck
                     className={css({
                       '& path': {
@@ -92,6 +93,7 @@ const QuizQuestions = ({
             whiteSpace: 'nowrap',
             bgColor: 'neutral.100',
             w: 'max-content',
+            h: '[56px]',
           })}
         >
           <Image
@@ -142,7 +144,7 @@ const QuizQuestions = ({
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'flex-end',
-          gap: '8',
+          gap: '4',
         })}
       >
         <button
@@ -150,11 +152,6 @@ const QuizQuestions = ({
           className={css({
             justifyContent: 'center',
             alignSelf: 'center',
-            pl: '12',
-            pr: '12',
-            pt: '3',
-            pb: '3',
-            mt: '8',
             fontSize: 'base',
             lineHeight: 'base',
             textAlign: 'center',
@@ -164,21 +161,20 @@ const QuizQuestions = ({
             bgColor: 'white',
             mdDown: {pl: '5', pr: '5'},
             cursor: 'pointer',
+            h: '10',
+            w: '[73px]',
+            display: 'flex',
+            alignItems: 'center',
           })}
           onClick={onBack}
         >
-          Prev
+          PREV
         </button>
         <button
           type='button'
           className={css({
             justifyContent: 'center',
             alignSelf: 'center',
-            pl: '12',
-            pr: '12',
-            pt: '3',
-            pb: '3',
-            mt: '8',
             fontSize: 'base',
             lineHeight: 'base',
             textAlign: 'center',
@@ -187,10 +183,14 @@ const QuizQuestions = ({
             bgColor: 'sky.400',
             mdDown: {pl: '5', pr: '5'},
             cursor: 'pointer',
+            h: '10',
+            w: '[73px]',
+            display: 'flex',
+            alignItems: 'center',
           })}
           onClick={onNext}
         >
-          Next
+          NEXT
         </button>
       </div>
     </div>
@@ -236,7 +236,6 @@ const QuizOptions = ({
     className={css({
       display: 'flex',
       flexDir: 'column',
-      ml: '5',
       w: 'full',
       mdDown: {ml: '0', w: 'full'},
     })}
@@ -247,7 +246,6 @@ const QuizOptions = ({
         gridTemplateColumns: 'repeat(3, 1fr)',
         gridTemplateRows: 'repeat(2, 1fr)',
         flexGrow: '1',
-        mt: '4',
         fontSize: 'base',
         lineHeight: 'base',
         textAlign: 'center',
@@ -264,6 +262,7 @@ const QuizOptions = ({
             display: 'flex',
             gap: '6',
             mt: '4',
+            ml: '-4',
           })}
         >
           <RadioButton
@@ -283,6 +282,7 @@ const QuizOptions = ({
             display: 'flex',
             gap: '6',
             mt: '4',
+            ml: '-4',
           })}
         >
           <RadioButton
@@ -303,6 +303,7 @@ const QuizOptions = ({
             display: 'flex',
             gap: '6',
             mt: '4',
+            ml: '-4',
           })}
         >
           <RadioButton
@@ -323,6 +324,7 @@ const QuizOptions = ({
             display: 'flex',
             gap: '6',
             mt: '4',
+            ml: '-4',
           })}
         >
           <RadioButton

@@ -13,8 +13,8 @@ export const Wrapper = styled('div', {
     flexDir: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    pt: '57px',
-    pb: '46px',
+    pt: '[56px]',
+    pb: '[32px]',
     gap: '2',
     mx: '-16 px',
   },
@@ -29,5 +29,7 @@ export const Cards = styled('div', {
     },
     gap: '6',
     mt: '6',
+    maxW: '[960px]',
+    mx: 'auto',
   },
 });

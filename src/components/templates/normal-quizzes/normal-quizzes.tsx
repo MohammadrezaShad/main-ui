@@ -1,8 +1,13 @@
 'use client';
 
+import {useEffect, useState} from 'react';
+import {toast} from 'react-toastify';
 import {useObservable} from '@legendapp/state/react';
 import {css} from '@styled/css';
+import {useInfiniteQuery} from '@tanstack/react-query';
+import {getCookie} from 'cookies-next';
 import Image from 'next/image';
+import {useRouter} from 'next/navigation';
 
 import {bgMaze2, coin, IconClose} from '@/assets';
 import {QuizCard} from '@/components';
@@ -10,11 +15,6 @@ import {Modal} from '@/components/atoms/modal';
 import {CookieName} from '@/constants';
 import {findQuizById, payAndFindNormal, QuizType, searchQuizzes} from '@/graphql';
 import {Paths} from '@/utils';
-import {useInfiniteQuery} from '@tanstack/react-query';
-import {getCookie} from 'cookies-next';
-import {useRouter} from 'next/navigation';
-import {useEffect, useState} from 'react';
-import {toast} from 'react-toastify';
 
 export default function NormalQuizzes() {
   const router = useRouter();
@@ -101,7 +101,7 @@ export default function NormalQuizzes() {
         >
           <div
             className={css({
-              bg: 'linear-gradient(90deg, rgba(4,25,14,1) 0%, rgba(4,25,14,1) 25%, rgba(4,25,14,0) 33%, rgba(4,25,14,0) 66%, rgba(4,25,14,1) 75%, rgba(4,25,14,1) 100%)',
+              bg: 'linear-gradient(90deg, rgba(4,25,14,1) 0%, rgba(4,25,14,1) 35%, rgba(4,25,14,0) 50%, rgba(4,25,14,0) 50%, rgba(4,25,14,1) 65%, rgba(4,25,14,1) 100%)',
               position: 'absolute',
               inset: '0',
             })}
@@ -122,7 +122,6 @@ export default function NormalQuizzes() {
       </header>
       <div
         className={css({
-          px: '16',
           mt: '6',
           w: 'full',
           maxW: '960px',
@@ -134,7 +133,7 @@ export default function NormalQuizzes() {
             className={css({
               display: 'grid',
               gridTemplateColumns: 3,
-              gap: '5',
+              gap: '3',
               mdDown: {gridTemplateColumns: 1, gap: '0'},
             })}
           >

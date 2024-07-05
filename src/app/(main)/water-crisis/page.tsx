@@ -19,7 +19,7 @@ const Page = async () => {
         flexDir: 'column',
         rowGap: 8,
         mx: 'auto',
-        maxWidth: '960px',
+        maxWidth: 'full',
         p: {lgDown: 4},
       })}
     >

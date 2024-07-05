@@ -13,6 +13,7 @@ export const Container = styled('header', {
       mdDown: 4,
     },
     h: 20,
+    borderBottom: '1px solid token(colors.gray3)',
   },
 });
 

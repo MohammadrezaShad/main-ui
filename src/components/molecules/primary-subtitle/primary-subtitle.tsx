@@ -13,6 +13,7 @@ const PrimarySubtitle = ({text, className}: Props) => {
     },
     color: 'text.primary',
     lineHeight: '1.148',
+    lineClamp: '2',
   });
   const subtitleClass = cx(defualtClassName, className);
   return <p className={subtitleClass}>{text}</p>;

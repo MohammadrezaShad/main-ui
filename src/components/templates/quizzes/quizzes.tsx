@@ -2,6 +2,8 @@
 
 import {useObservable} from '@legendapp/state/react';
 import {css} from '@styled/css';
+import {useQuery} from '@tanstack/react-query';
+import {getCookie} from 'cookies-next';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -19,8 +21,6 @@ import {
   QuizType,
 } from '@/graphql';
 import {Paths} from '@/utils';
-import {useQuery} from '@tanstack/react-query';
-import {getCookie} from 'cookies-next';
 
 export default function Quizzes() {
   const token = getCookie(CookieName.AUTH_TOKEN)!;
@@ -55,7 +55,16 @@ export default function Quizzes() {
 
   return (
     <div
-      className={css({display: 'flex', flexDir: 'column', bgColor: 'white', overflowY: 'hidden'})}
+      className={css({
+        display: 'flex',
+        flexDir: 'column',
+        bgColor: 'white',
+        overflowY: 'hidden',
+        pt: {
+          base: '16',
+          mdDown: '6',
+        },
+      })}
     >
       <div
         className={css({
@@ -65,10 +74,6 @@ export default function Quizzes() {
           px: {
             base: '5',
             mdDown: '0',
-          },
-          mt: {
-            base: '16',
-            mdDown: '6',
           },
           w: 'full',
           maxW: {

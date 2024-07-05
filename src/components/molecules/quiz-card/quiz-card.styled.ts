@@ -5,7 +5,8 @@ export const Container = styled('div', {
   base: {
     display: 'flex',
     flexDir: 'column',
-    w: '100%',
+    w: '[304px]',
+    h: '[362px]',
     mdDown: {ml: '0', w: 'full'},
   },
 });
@@ -15,7 +16,6 @@ export const Wrapper = styled('div', {
     display: 'flex',
     flexDir: 'column',
     flexGrow: '1',
-    pb: '6',
     w: 'full',
     bgColor: 'white',
     borderWidth: '1px',
@@ -30,9 +30,9 @@ export const ContentWrapper = styled('div', {
     display: 'flex',
     flexDir: 'column',
     alignSelf: 'flex-start',
-    mt: '7',
-    ml: '6',
-    mdDown: {ml: '2.5', mt: '0'},
+    p: '6',
+    mdDown: {p: '2.5'},
+    w: 'full',
   },
 });
 
@@ -47,7 +47,7 @@ export const QuestionCount = styled('div', {
 
 export const Title = styled('div', {
   base: {
-    mt: '2',
+    mt: '1',
     fontSize: 'base',
     lineHeight: 'base',
     fontWeight: 'medium',
@@ -58,10 +58,10 @@ export const Title = styled('div', {
 export const Button = styled('button', {
   base: {
     cursor: 'pointer',
-    mt: '9',
+    mt: '[34px]',
     textAlign: 'left',
     fontSize: 'sm',
-    lineHeight: 'sm',
+    lineHeight: '[16.09px]',
     color: 'primary',
     mdDown: {mt: '8'},
   },

@@ -1,8 +1,10 @@
-import {IconCheck} from '@/assets';
-import {ImageType, PointType, QuizType} from '@/graphql';
 import {css} from '@styled/css';
 import Image from 'next/image';
 import Link from 'next/link';
+
+import {IconCheck} from '@/assets';
+import {ImageType, PointType, QuizType} from '@/graphql';
+
 import QuizEndButton from './end-quiz-button';
 import QuizQuestions from './quiz-questions';
 
@@ -59,8 +61,17 @@ const QuizContent = ({
           })}
         />
       );
-    if (currentQuizIndex === index) return `${currentIndex + 1}/${currentQuiz.questions.length}`;
+    if (currentQuizIndex === index)
+      return (
+        <span className={css({color: 'primary', zIndex: '10'})}>
+          {currentIndex + 1}/{currentQuiz.questions.length}
+        </span>
+      );
     return index + 1;
+  };
+
+  const blueBorderStyle = {
+    background: `conic-gradient(#44BAEB ${(currentIndex / currentQuiz.questions.length) * 100}%, #EBEBEB ${(currentIndex / currentQuiz.questions.length) * 100}%)`,
   };
 
   return (
@@ -71,7 +82,6 @@ const QuizContent = ({
           mb: '[93px]',
           flexDir: 'column',
           alignItems: 'center',
-          mt: '2',
           mdDown: {
             mb: '8',
           },
@@ -136,7 +146,7 @@ const QuizContent = ({
                 border: completedQuizzesIds[index]
                   ? '4px solid token(colors.success)'
                   : currentQuizIndex === index
-                    ? '4px solid token(colors.gray2)'
+                    ? 'none'
                     : '4px solid white',
                 position: 'absolute',
                 width: '10',
@@ -147,7 +157,7 @@ const QuizContent = ({
                   completedQuizzesIds[index] || currentQuizIndex === index ? 'white' : '#B8EAFF',
                 gradientTo:
                   completedQuizzesIds[index] || currentQuizIndex === index ? 'white' : '#62C2CE',
-                color: currentQuizIndex === index ? 'primary' : 'white',
+                color: currentQuizIndex === index ? 'transparent' : 'white',
                 zIndex: '50', // Ensure it's above the image
                 display: 'flex',
                 alignItems: 'center',
@@ -157,6 +167,26 @@ const QuizContent = ({
                 },
               })}
             >
+              {currentQuizIndex === index && !completedQuizzesIds[index] && (
+                <>
+                  <div
+                    className={css({
+                      pos: 'absolute',
+                      inset: '0',
+                      rounded: 'full',
+                    })}
+                    style={blueBorderStyle}
+                  />
+                  <div
+                    className={css({
+                      pos: 'absolute',
+                      inset: '1',
+                      bgColor: 'white',
+                      rounded: 'full',
+                    })}
+                  />
+                </>
+              )}
               {generateIcon(index)}
             </div>
           );
