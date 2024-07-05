@@ -12,7 +12,6 @@ interface Props {
 const CardDate = ({dateTime, children, className}: Props) => {
   const defaultClassName = css({
     color: 'gray4',
-    fontWeight: 500,
     w: 'full',
   });
   const dateClass = cx(defaultClassName, className);
