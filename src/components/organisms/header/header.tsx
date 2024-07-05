@@ -53,12 +53,12 @@ export default function Header({userData}: HeaderProps) {
                 py: 3,
                 hideBelow: 'md',
                 mr: 4,
-                border: '1px solid token(colors.gray3)',
+                border: '1px solid token(colors.gray3) !important',
                 borderRadius: 0,
               })}
               visual='outlined'
             >
-              Login
+              Log In
             </Button>
             <Button
               onClick={() => isSignUpOpen$.set(true)}
