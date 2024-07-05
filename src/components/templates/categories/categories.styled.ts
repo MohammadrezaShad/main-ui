@@ -5,6 +5,7 @@ export const Container = styled('div', {
     display: 'flex',
     flexDir: 'column',
     gap: '8',
+    pt: '[78px]',
   },
 });
 
