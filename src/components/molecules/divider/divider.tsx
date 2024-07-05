@@ -9,13 +9,28 @@ const Divider = ({label}: {label: string}) => (
   >
     <div
       className={css({
-        w: 'full',
+        w: '1/2',
         h: '1px',
-        borderTop: '1px solid token(colors.gray3)',
+        bgGradient: 'to-l',
+        gradientFrom: '#E3E3E3',
+        gradientTo: '#E3E3E300',
         position: 'absolute',
-        left: '50%',
+        left: '0',
         top: '50%',
-        transform: 'translate(-50%, -50%)',
+        transform: 'translateY(-50%)',
+      })}
+    />
+    <div
+      className={css({
+        w: '1/2',
+        h: '1px',
+        bgGradient: 'to-r',
+        gradientFrom: '#E3E3E3',
+        gradientTo: '#E3E3E300',
+        position: 'absolute',
+        right: '0',
+        top: '50%',
+        transform: 'translateY(-50%)',
       })}
     />
     <h1
