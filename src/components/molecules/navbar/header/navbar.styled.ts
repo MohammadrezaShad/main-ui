@@ -10,7 +10,12 @@ export const Container = styled('ul', {
 });
 
 export const Item = styled('li', {
-  base: {textStyle: 'body', color: 'text.primary'},
+  base: {
+    textStyle: 'body',
+    color: 'text.primary',
+    _hover: {color: 'primary.light'},
+    transition: 'colors 0.3s ease-in-out',
+  },
   variants: {
     _isActive: {
       true: {

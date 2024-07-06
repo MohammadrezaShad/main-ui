@@ -1,5 +1,5 @@
 import {
-  Article,
+  BlogPosting,
   CreativeWorkSeries,
   EntertainmentBusiness,
   FAQPage,
@@ -71,11 +71,10 @@ function getArticleImages(article: ArticleType) {
   return urls;
 }
 
-export const getBlogArticleSchema = (article: ArticleType): WithContext<Article> => ({
+export const getBlogArticleSchema = (article: ArticleType): WithContext<BlogPosting> => ({
   '@context': 'https://schema.org',
   '@type': 'BlogPosting',
   headline: article.title,
-  image: getArticleImages(article),
   author: {
     '@type': 'Person',
     name: `${article.author?.firstName} ${article.author?.lastName}`,
@@ -90,6 +89,7 @@ export const getBlogArticleSchema = (article: ArticleType): WithContext<Article>
     },
   },
   datePublished: article.publishDate,
+  image: getArticleImages(article),
   dateModified: article.updatedAt,
 });
 

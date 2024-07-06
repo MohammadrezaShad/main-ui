@@ -17,6 +17,16 @@ export async function findArticleByName(
         findArticleByName(input: $input) {
           success
           result {
+            images {
+              _id
+              alt
+              createdAt
+              filename
+              height
+              preview
+              updatedAt
+              width
+            }
             updatedAt
             isBookmark
             _id
