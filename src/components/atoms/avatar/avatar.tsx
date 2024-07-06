@@ -47,8 +47,8 @@ const Avatar = ({src, size = 64, alt = ''}: Props) => {
       <ProfileCircle
         className={css({
           rounded: 'full',
-          width: `${size}px`,
-          height: `${size}px`,
+          width: `${size * (2 / 3)}px`,
+          height: `${size * (2 / 3)}px`,
           '& path': {
             fill: 'gray6',
           },
