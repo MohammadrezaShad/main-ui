@@ -168,7 +168,11 @@ const Page = () => {
   }, []);
 
   return (
-    <div>
+    <div
+      className={css({
+        pt: '12',
+      })}
+    >
       <PostDate date={formattedDate} />
 
       <div
@@ -304,11 +308,11 @@ const Page = () => {
           content={article.content}
         />
       </article>
-      {article.tags ? <Tags tags={article.tags} /> : null}
+      {article.tags && article.tags.length > 0 ? <Tags tags={article.tags} /> : null}
       <Box className={css({hideFrom: 'md', mb: '8'})}>
         <SocialMediaLinks links={socialMediaLinks} />
       </Box>
-      {article.faqs ? <Questions faqs={article.faqs} /> : null}
+      {article.faqs && article.faqs.length > 0 ? <Questions faqs={article.faqs} /> : null}
       {article.author && <UserInfo author={article.author} />}
 
       {relatedArticles.length > 0 ? (

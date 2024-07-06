@@ -35,9 +35,11 @@ const CategoryCard = ({
           className={css({
             mx: 'auto',
             display: collapsed ? 'none' : 'block',
-            w: 'full',
-            h: '[216px]',
+            w: '[160px]',
+            h: '[160px]',
             objectFit: 'cover',
+            rounded: 'full',
+            mt: '10',
           })}
         />
       ) : (
@@ -98,7 +100,7 @@ const CategoryCard = ({
             color: 'text.primary',
             textAlign: 'center',
             lineClamp: {
-              base: 3,
+              base: 2,
               mdDown: 1,
             },
           })}

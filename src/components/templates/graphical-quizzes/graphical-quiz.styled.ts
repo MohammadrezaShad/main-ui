@@ -27,18 +27,10 @@ export const Header = styled('header', {
 export const Banner = styled('div', {
   base: {
     w: 'full',
-    maxW: '[640px]',
+    maxW: 'full',
     mdDown: {pl: '5', pr: '5'},
     bgRepeat: 'no-repeat',
     bgSize: 'cover',
-  },
-});
-
-export const BannerShade = styled('div', {
-  base: {
-    bg: 'linear-gradient(90deg, rgba(4,25,14,1) 0%, rgba(4,25,14,1) 25%, rgba(4,25,14,0) 33%, rgba(4,25,14,0) 66%, rgba(4,25,14,1) 75%, rgba(4,25,14,1) 100%)',
-    position: 'absolute',
-    inset: '0',
   },
 });
 

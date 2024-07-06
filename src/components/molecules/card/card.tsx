@@ -29,7 +29,6 @@ export default function Card({imageUrl, date, title, articleLink, linkTitle = 'R
             w: 'full',
             h: 228,
             bgColor: 'gray3',
-            mb: '6',
           })}
         >
           <IconBook
@@ -41,19 +40,9 @@ export default function Card({imageUrl, date, title, articleLink, linkTitle = 'R
           />
         </div>
       )}
-      <Wrap
-        className={css({
-          mb: 4,
-        })}
-      >
+      <Wrap>
         {date && <CardDate dateTime={date}>{date}</CardDate>}
         <CardTitle>{title}</CardTitle>
-      </Wrap>
-      <Wrap
-        className={css({
-          mb: 6,
-        })}
-      >
         <CardLink href={articleLink}>{linkTitle}</CardLink>
       </Wrap>
     </Container>

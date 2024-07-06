@@ -1,6 +1,11 @@
-import {css} from '@styled/css';
-
 import {useState} from 'react';
+import {css} from '@styled/css';
+import {Swiper, SwiperSlide} from 'swiper/react';
+
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+
 import Tab from './Tab';
 
 const countryList = [
@@ -26,32 +31,40 @@ const Tabs = () => {
   };
 
   return (
-    <nav
+    <div
       className={css({
-        display: 'flex',
-        flexWrap: 'wrap',
-        gap: '4',
-        pl: '5',
-        pr: '5',
-        mt: '10',
-        fontSize: 'base',
-        lineHeight: 'base',
-        textAlign: 'center',
-        color: 'neutral.500',
-        alignItems: 'center',
-        justifyContent: 'center',
+        w: 'full',
         mx: 'auto',
+        maxW: '[1200px]',
       })}
     >
-      {countryList.map(country => (
-        <Tab
-          key={country.name}
-          name={country.name}
-          isSelected={selectedCountry === country.name}
-          onSelect={handleCountrySelect}
-        />
-      ))}
-    </nav>
+      <Swiper
+        slidesPerView={12}
+        spaceBetween={16}
+        breakpoints={{
+          640: {
+            slidesPerView: 3,
+          },
+          768: {
+            slidesPerView: 4,
+          },
+          1024: {
+            slidesPerView: 12,
+          },
+        }}
+      >
+        {countryList.map(country => (
+          <SwiperSlide key={country.name}>
+            <Tab
+              key={country.name}
+              name={country.name}
+              isSelected={selectedCountry === country.name}
+              onSelect={handleCountrySelect}
+            />
+          </SwiperSlide>
+        ))}
+      </Swiper>
+    </div>
   );
 };
 

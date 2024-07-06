@@ -2,7 +2,7 @@ import {css} from '@styled/css';
 import {grid} from '@styled/patterns';
 import Image from 'next/image';
 
-import ProfileCircle from '@/assets/images/profile-circle.png';
+import ProfileCircle from '@/assets/vectors/icon-user.svg';
 
 interface Props {
   src?: string;
@@ -19,7 +19,13 @@ const Avatar = ({src, size = 64, alt = ''}: Props) => {
         height={size}
         alt={alt}
         src={src}
-        className={css({rounded: 'full', width: `${size}px`, height: `${size}px`})}
+        className={css({
+          rounded: 'full',
+          flexShrink: '0',
+          objectFit: 'cover',
+          width: `${size}px`,
+          height: `${size}px`,
+        })}
       />
     );
   }
@@ -34,15 +40,19 @@ const Avatar = ({src, size = 64, alt = ''}: Props) => {
         placeContent: 'center',
         aspectRatio: 'square',
         flexShrink: 0,
+        border: '1px solid token(colors.gray3)',
+        bg: 'gray1',
       })}
     >
-      <Image
-        unoptimized
-        width={size}
-        height={size}
-        alt={alt}
-        src={ProfileCircle}
-        className={css({rounded: 'full', width: `${size}px`, height: `${size}px`})}
+      <ProfileCircle
+        className={css({
+          rounded: 'full',
+          width: `${size}px`,
+          height: `${size}px`,
+          '& path': {
+            fill: 'gray6',
+          },
+        })}
       />
     </div>
   );

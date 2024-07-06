@@ -1,6 +1,7 @@
-import {coin} from '@/assets';
 import {css} from '@styled/css';
 import Image from 'next/image';
+
+import {coin} from '@/assets';
 
 interface Props {
   gainedCoins: number;
@@ -17,6 +18,7 @@ const QuizReward = ({gainedCoins}: Props) => (
       w: 'full',
       maxWidth: '[156px]',
       mdDown: {flexWrap: 'wrap'},
+      h: '[71px]',
     })}
   >
     <div
@@ -48,7 +50,7 @@ const QuizReward = ({gainedCoins}: Props) => (
         })}
       />
       <div className={css({display: 'flex', flexDir: 'column', flex: '1'})}>
-        <div className={css({fontSize: 'sm', color: 'neutral.500'})}>You earned</div>
+        <div className={css({fontSize: 'sm', color: 'neutral.500'})}>You Earned</div>
         <div
           className={css({
             fontSize: 'xl',

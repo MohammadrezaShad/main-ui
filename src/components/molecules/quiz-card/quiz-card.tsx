@@ -14,8 +14,15 @@ const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
 
 const QuizCard = ({quiz, getQuizInfo}: {quiz: QuizType | GraphicalQuizType; getQuizInfo: any}) => {
   const renderQuestionCount = () => {
-    if (quiz.__typename === 'QuizType') return `${quiz.questions.length} Questions`;
-    if (quiz.__typename === 'GraphicalQuizType') return `${quiz.quizPoints.length} quizzes`;
+    if (quiz.__typename === 'QuizType' || Object.prototype.hasOwnProperty.call(quiz, 'questions'))
+      // @ts-expect-error Might not have question
+      return `${quiz.questions?.length} Questions`;
+    if (
+      quiz.__typename === 'GraphicalQuizType' ||
+      Object.prototype.hasOwnProperty.call(quiz, 'quizPoints')
+    )
+      // @ts-expect-error Might not have quizPoints
+      return `${quiz.quizPoints?.length} quizzes`;
     return '';
   };
 

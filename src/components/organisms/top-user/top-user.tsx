@@ -1,6 +1,9 @@
+import {css} from '@styled/css';
+
 import {Avatar} from '@/components/atoms';
 import {User} from '@/graphql';
-import {css} from '@styled/css';
+
+const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
 
 const TopUser = ({
   user,
@@ -13,16 +16,16 @@ const TopUser = ({
 }) => {
   const generateBackgroundColor = () => {
     if (isCurrentUser) return '#E7FDF6';
-    if (rank % 2 === 0) return 'white';
-    return 'gray.100';
+    if (rank % 2 === 0) return '#F7F7F7';
+    return 'white';
   };
 
   return (
     <div
+      style={{backgroundColor: generateBackgroundColor()}}
       className={css({
         display: 'flex',
         gap: '[61px]',
-        backgroundColor: generateBackgroundColor(),
         px: '4',
         py: '2',
         border: isCurrentUser ? '1px solid token(colors.success)' : 'none',
@@ -30,7 +33,14 @@ const TopUser = ({
     >
       <div className={css({fontSize: 32, color: 'gray.400', fontWeight: 300})}>{rank}.</div>
       <div className={css({display: 'flex', gap: '4'})}>
-        <Avatar src={user.avatar?._id} size={48} />
+        <Avatar
+          src={
+            user.avatar
+              ? `${IMAGE_STORAGE_URL}/${user.avatar?.filename}-${user.avatar?._id}`
+              : undefined
+          }
+          size={48}
+        />
         <div
           className={css({
             display: 'flex',

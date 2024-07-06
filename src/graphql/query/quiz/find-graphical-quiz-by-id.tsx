@@ -1,7 +1,8 @@
+import {getCookie} from 'cookies-next';
+
 import {CookieName} from '@/constants';
 import {FindGraphicalQuizInput, GraphicalQuizQuery} from '@/graphql/generated/types';
 import {gqlFetch} from '@/services/fetch';
-import {getCookie} from 'cookies-next';
 
 export async function findGraphicalQuizById(
   input: FindGraphicalQuizInput,
@@ -15,6 +16,7 @@ export async function findGraphicalQuizById(
         findGraphicalQuizById(input: $input) {
           success
           result {
+            __typename
             _id
             category {
               _id

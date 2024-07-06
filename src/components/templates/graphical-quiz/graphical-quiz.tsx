@@ -1,23 +1,24 @@
 'use client';
 
-import {css} from '@styled/css';
 import {useEffect, useState} from 'react';
+import {toast} from 'react-toastify';
+import {css} from '@styled/css';
+import {useMutation, useQuery} from '@tanstack/react-query';
+import {getCookie} from 'cookies-next';
+import {useParams} from 'next/navigation';
 
 import {Spinner} from '@/components/atoms';
 import {CookieName} from '@/constants';
 import {
+  endQuiz,
   EndQuizInput,
+  findGraphicalQuizById,
+  findQuizByPoint,
   ImageType,
   PointInputType,
   QuizType,
-  endQuiz,
-  findGraphicalQuizById,
-  findQuizByPoint,
 } from '@/graphql';
-import {useMutation, useQuery} from '@tanstack/react-query';
-import {getCookie} from 'cookies-next';
-import {useParams} from 'next/navigation';
-import {toast} from 'react-toastify';
+
 import QuizContent from './quiz-content';
 import QuizReward from './quiz-reward';
 import QuizSummary from './quiz-summary';
@@ -149,6 +150,7 @@ const WaterSavingQuiz = () => {
         gap: '4',
         bgColor: 'white',
         px: '[43px]',
+        pt: '[56px]',
         mdDown: {
           flexDir: 'column',
           px: '0',

@@ -1,11 +1,11 @@
 import {css} from '@styled/css';
 import {dehydrate} from '@tanstack/react-query';
+import {unstable_noStore as noStore} from 'next/cache';
 
 import {NormalQuizzesView} from '@/components';
 import {searchQuizzes} from '@/graphql';
 import {getQueryClient} from '@/helpers';
 import {Hydrate} from '@/providers';
-import {unstable_noStore as noStore} from 'next/cache';
 
 const Page = async () => {
   noStore();
@@ -23,7 +23,7 @@ const Page = async () => {
         flexDir: 'column',
         rowGap: 8,
         mx: 'auto',
-        maxWidth: '960px',
+        maxWidth: 'full',
         p: {lgDown: 4},
       })}
     >

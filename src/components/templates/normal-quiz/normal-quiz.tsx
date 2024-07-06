@@ -1,20 +1,20 @@
 'use client';
 
-import {css} from '@styled/css';
-import Image from 'next/image';
 import {useState} from 'react';
-
-import {IconCheck, coin} from '@/assets';
-import RadioButton from '@/components/atoms/radio-button/radio-button';
-import {CookieName} from '@/constants';
-import {EndQuizInput, OptionType, QuestionType, QuizType, endQuiz, findQuizById} from '@/graphql';
-import {Paths} from '@/utils';
+import {toast} from 'react-toastify';
+import {css} from '@styled/css';
 import {useMutation, useQuery} from '@tanstack/react-query';
 import {getCookie} from 'cookies-next';
+import Image from 'next/image';
 import Link from 'next/link';
 import {useParams} from 'next/navigation';
-import {toast} from 'react-toastify';
 import {Maybe} from 'yup';
+
+import {coin, IconCheck} from '@/assets';
+import RadioButton from '@/components/atoms/radio-button/radio-button';
+import {CookieName} from '@/constants';
+import {endQuiz, EndQuizInput, findQuizById, OptionType, QuestionType, QuizType} from '@/graphql';
+import {Paths} from '@/utils';
 
 interface Answer {
   answer: string;
@@ -96,7 +96,7 @@ const WaterSavingQuiz = () => {
 
   return (
     <section className={css({display: 'flex', flexDir: 'column', bgColor: 'white'})}>
-      <QuizHeader quiz={quiz} answers={answers} />
+      <QuizHeader quiz={quiz} answers={answers} currentIndex={currentQuestionIndex} />
       {currentQuestionIndex + 1 <= (data?.result?.questions.length || 0) ? (
         <QuizContent
           questions={quiz?.questions ?? []}
@@ -118,7 +118,15 @@ const WaterSavingQuiz = () => {
   );
 };
 
-const QuizHeader = ({quiz, answers}: {quiz: Maybe<QuizType> | undefined; answers: Answer[]}) => (
+const QuizHeader = ({
+  quiz,
+  answers,
+  currentIndex,
+}: {
+  quiz: Maybe<QuizType> | undefined;
+  answers: Answer[];
+  currentIndex: number;
+}) => (
   <header
     className={css({
       display: 'flex',
@@ -165,7 +173,7 @@ const QuizHeader = ({quiz, answers}: {quiz: Maybe<QuizType> | undefined; answers
           whiteSpace: 'nowrap',
           bgColor: 'neutral.100',
           position: 'absolute',
-          right: '11',
+          right: '0',
           mdDown: {
             display: 'none',
           },
@@ -211,10 +219,10 @@ const QuizHeader = ({quiz, answers}: {quiz: Maybe<QuizType> | undefined; answers
             placeContent: 'center',
             w: '6',
             h: '6',
-            bgColor: answers[index] ? '#62C2CE' : 'gray.300',
+            bgColor: answers[index] && index !== currentIndex ? '#62C2CE' : 'gray.300',
           })}
         >
-          {!!answers[index] && (
+          {!!answers[index] && index !== currentIndex && (
             <IconCheck
               className={css({
                 '& path': {
@@ -246,11 +254,10 @@ const QuizContent = ({
 }) => (
   <div
     className={css({
-      pt: '9',
-      pb: '9',
+      py: '9',
       pr: '20',
       pl: '8',
-      mt: '12',
+      mt: '4',
       bgColor: 'white',
       borderWidth: '1px',
       borderStyle: 'solid',
@@ -276,7 +283,7 @@ const QuizContent = ({
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'flex-end',
-          gap: '8',
+          gap: '4',
         })}
       >
         <button
@@ -284,10 +291,8 @@ const QuizContent = ({
           className={css({
             justifyContent: 'center',
             alignSelf: 'center',
-            pl: '12',
-            pr: '12',
-            pt: '3',
-            pb: '3',
+            px: '4',
+            py: '3',
             mt: '8',
             fontSize: 'base',
             lineHeight: 'base',
@@ -298,6 +303,10 @@ const QuizContent = ({
             bgColor: 'white',
             mdDown: {pl: '5', pr: '5'},
             cursor: 'pointer',
+            height: '10',
+            w: '[72px]',
+            display: 'flex',
+            alignItems: 'center',
           })}
           onClick={onBack}
         >
@@ -308,10 +317,8 @@ const QuizContent = ({
           className={css({
             justifyContent: 'center',
             alignSelf: 'center',
-            pl: '12',
-            pr: '12',
-            pt: '3',
-            pb: '3',
+            px: '4',
+            py: '3',
             mt: '8',
             fontSize: 'base',
             lineHeight: 'base',
@@ -321,6 +328,10 @@ const QuizContent = ({
             bgColor: 'sky.400',
             mdDown: {pl: '5', pr: '5'},
             cursor: 'pointer',
+            height: '10',
+            w: '[72px]',
+            display: 'flex',
+            alignItems: 'center',
           })}
           onClick={onNext}
         >
@@ -347,7 +358,7 @@ const QuizQuestion = ({question, index}: {question: QuestionType; index: number}
       })}
     >
       <h2 className={css({fontWeight: 'medium', mdDown: {maxW: 'full'}})}>
-        {index < 10 ? `0${index}` : index}&nbsp;{question.question}
+        {index < 10 ? `0${index}` : index}.&nbsp;{question.question}
       </h2>
     </div>
   </div>
@@ -370,7 +381,6 @@ const QuizOptions = ({
     className={css({
       display: 'flex',
       flexDir: 'column',
-      ml: '5',
       w: 'full',
       mdDown: {ml: '0', w: 'full'},
     })}
@@ -398,6 +408,7 @@ const QuizOptions = ({
             display: 'flex',
             gap: '6',
             mt: '4',
+            ml: '-4',
           })}
         >
           <RadioButton
@@ -417,6 +428,7 @@ const QuizOptions = ({
             display: 'flex',
             gap: '6',
             mt: '4',
+            ml: '-4',
           })}
         >
           <RadioButton
@@ -437,6 +449,7 @@ const QuizOptions = ({
             display: 'flex',
             gap: '6',
             mt: '4',
+            ml: '-4',
           })}
         >
           <RadioButton
@@ -457,6 +470,7 @@ const QuizOptions = ({
             display: 'flex',
             gap: '6',
             mt: '4',
+            ml: '-4',
           })}
         >
           <RadioButton

@@ -98,6 +98,7 @@ const Slider = ({slides, hasPdf = false}: Props) => (
                 zIndex: '50',
                 textStyle: 'subtitle1',
                 color: 'text.invert',
+                lineClamp: '2',
               })}
             >
               {slide.excerpt}
@@ -109,8 +110,11 @@ const Slider = ({slides, hasPdf = false}: Props) => (
                   border: '1px solid token(colors.gray3)',
                   color: 'gray3',
                   px: '4',
-                  py: '3',
+                  py: '2.5',
                   cursor: 'pointer',
+                  lineHeight: '[18.38px]',
+                  display: 'inline-block',
+                  h: '10',
                 })}
               >
                 Read more ...

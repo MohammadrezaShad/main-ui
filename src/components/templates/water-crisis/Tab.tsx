@@ -16,6 +16,7 @@ const Tab = ({
         px: '4',
         py: '3',
         flexShrink: '0',
+        whiteSpace: 'nowrap',
         cursor: 'pointer',
         transitionDuration: '200',
         transitionTimingFunction: 'in.out',
