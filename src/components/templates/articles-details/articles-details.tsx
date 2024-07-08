@@ -7,6 +7,7 @@ import {Box} from '@styled/jsx';
 import {flex} from '@styled/patterns';
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
 import {getCookie} from 'cookies-next';
+import Image from 'next/image';
 import Link from 'next/link';
 import {useParams} from 'next/navigation';
 
@@ -219,6 +220,27 @@ const Page = () => {
             <SocialMediaLinks links={socialMediaLinks} />
           </Box>
         </Box>
+
+        {article.thumbnail ? (
+          <Image
+            unoptimized
+            alt={article.title ?? ''}
+            src={`${IMAGE_STORAGE_URL}/${article.thumbnail?.filename}-${article.thumbnail?._id}`}
+            width={960}
+            height={540}
+            className={css({
+              width: 'full',
+              maxW: '[960px]',
+              mx: 'auto',
+              height: 'auto',
+              objectFit: 'cover',
+              mb: '8',
+              order: {
+                mdDown: 1,
+              },
+            })}
+          />
+        ) : null}
 
         {articlePdfDownloadUrl ? (
           <Box
