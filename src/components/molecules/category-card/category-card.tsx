@@ -65,7 +65,17 @@ const CategoryCard = ({
           />
         </CategoryImage>
       )}
-      <Box mt={collapsed ? 0 : '7'} />
+      <Box mt={collapsed ? 0 : '7'}>
+        <div
+          className={css({
+            textStyle: 'caption',
+            color: 'gray4',
+            textAlign: 'center',
+          })}
+        >
+          Articles: {category.postCount ?? 0}
+        </div>
+      </Box>
       <Box mt='1' w='10/12' mx='auto'>
         <div
           title={category.title}
@@ -80,32 +90,6 @@ const CategoryCard = ({
           })}
         >
           {category.title}
-        </div>
-      </Box>
-      <Box
-        mt='1'
-        w='10/12'
-        mx='auto'
-        className={css({
-          height: {
-            base: '[64px]',
-            mdDown: '8',
-          },
-        })}
-      >
-        <div
-          title={category.description ?? ''}
-          className={css({
-            textStyle: 'body2',
-            color: 'text.primary',
-            textAlign: 'center',
-            lineClamp: {
-              base: 2,
-              mdDown: 1,
-            },
-          })}
-        >
-          {category.description ?? ''}
         </div>
       </Box>
       <Box display={collapsed ? 'none' : 'block'} mt='9'>
