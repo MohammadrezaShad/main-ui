@@ -33,7 +33,7 @@ const WaterCrisis = () => {
   const endResult = Math.min(+page * READMORE_PAGE_COUNT, totalCount || 0);
 
   return (
-    <Container>
+    <Container className='water-crisis'>
       <Wrapper>
         <header className={css({textStyle: 'h1', color: 'text.primary', px: '-4'})}>
           Water Crisis
