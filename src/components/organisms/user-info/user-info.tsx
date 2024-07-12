@@ -10,7 +10,7 @@ import {Avatar} from '@/components';
 import {CookieName} from '@/constants';
 import {getUser} from '@/graphql';
 
-const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_STORAGE_URL;
+const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
 
 function UserInfo() {
   const authToken = getCookie(CookieName.AUTH_TOKEN)!;
@@ -73,7 +73,14 @@ function UserInfo() {
         </div>
       </div>
       <Link href='/profile'>
-        <Avatar size={40} src={user?.avatar?._id && `${IMAGE_STORAGE_URL}/${user?.avatar?._id}`} />
+        <Avatar
+          size={40}
+          src={
+            user?.avatar?._id
+              ? `${IMAGE_STORAGE_URL}/${user?.avatar?.filename}-${user?.avatar?._id}`
+              : undefined
+          }
+        />
       </Link>
     </div>
   );

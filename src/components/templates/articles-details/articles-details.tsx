@@ -15,11 +15,13 @@ import {IconEmail, IconFacebook, IconInstagram, IconLink, IconLinkedin, IconX} f
 import {
   ArticleBody,
   ArticleInfo,
+  Button,
   PostDate,
   PrimarySubtitle,
   PrimaryTitle,
   Questions,
   RecentArticles,
+  Review,
   SocialMediaLinks,
   Tags,
   UserInfo,
@@ -28,12 +30,17 @@ import {CookieName} from '@/constants';
 import {
   addBookmark,
   ArticleType,
+  CommentTypeEnum,
+  createComment,
+  type CreateCommentInput,
   deleteBookmark,
   DeleteOneArticleBookmarkInput,
   findArticleByName,
   findRelatedArticles,
   getArticlePdfById,
+  getUser,
   recordVisitStatistics,
+  searchComments,
   UserOutputType,
 } from '@/graphql';
 import useClipboard from '@/hooks/use-clipboard';
@@ -44,6 +51,12 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 const Page = () => {
   const queryClient = useQueryClient();
   const token = getCookie(CookieName.AUTH_TOKEN);
+
+  const userData = useQuery({
+    queryKey: ['get-profile'],
+    queryFn: () => getUser(token as string),
+  });
+
   const params = useParams();
   const {data, refetch} = useQuery({
     queryKey: ['get-article', params.articleId],
@@ -51,6 +64,11 @@ const Page = () => {
   }) as any;
   const article: ArticleType = data.article!.findArticleByName.result;
   const {copyToClipboard} = useClipboard();
+
+  const commentsData = useQuery({
+    queryKey: ['get-article-comments', article?.slug],
+    queryFn: () => searchComments({post: article._id}),
+  });
 
   const socialMediaLinks: {
     id: number;
@@ -163,6 +181,31 @@ const Page = () => {
       await createBookmarkMutation.mutateAsync({article: articleId});
     }
   };
+
+  const handleSubmitComment = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const content = formData.get('comment') as string;
+    if (!content || !token) return;
+    try {
+      postReview.mutateAsync({
+        post: article._id,
+        content,
+        author: userData?.data?._id as string,
+        token: token as string,
+        type: CommentTypeEnum.Article,
+      });
+      e.currentTarget.reset();
+    } catch (error: any) {
+      toast.error(error.message);
+    }
+  };
+
+  const postReview = useMutation({
+    mutationFn: (input: CreateCommentInput) => createComment(input, token!),
+    onSuccess: () =>
+      queryClient.invalidateQueries({queryKey: ['get-article-comments', article.slug]}),
+  });
 
   useEffect(() => {
     recordVisitStatisticsMutation.mutateAsync({article: article._id});
@@ -359,7 +402,67 @@ const Page = () => {
         </div>
       ) : null}
 
-      {/* <h3
+      <h3
+        className={css({
+          textStyle: 'headline3',
+          color: 'text.primary',
+          mb: '6',
+        })}
+      >
+        Reviews
+      </h3>
+
+      {userData?.data?._id ? (
+        <form
+          onSubmit={handleSubmitComment}
+          className={css({
+            display: 'flex',
+            flexDir: 'column',
+            alignItems: 'start',
+            gap: '4',
+          })}
+          action=''
+        >
+          <textarea
+            id='comment'
+            name='comment'
+            className={css({
+              p: '4',
+              border: '1px solid token(colors.gray3)',
+              rounded: 'md',
+              w: 'full',
+              resize: 'none',
+              _focusVisible: {
+                outline: 'none',
+                border: '1px solid token(colors.primary)',
+              },
+            })}
+            placeholder='Write a comment ...'
+            rows={8}
+          />
+
+          <Button
+            type='submit'
+            visual='contained'
+            className={css({
+              color: 'text.invert',
+              w: 'max-content',
+              px: 4,
+              py: 3,
+              bg: 'primary',
+              borderRadius: 0,
+            })}
+          >
+            Post Review
+          </Button>
+        </form>
+      ) : (
+        <p>Login to write a comment</p>
+      )}
+
+      {commentsData.data?.results?.map(comment => (
+        <Review key={comment._id} comment={comment} />
+      )) /* <h3
         className={css({
           textStyle: 'headline3',
           color: 'text.primary',
