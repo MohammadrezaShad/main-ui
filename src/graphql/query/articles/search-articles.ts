@@ -1,7 +1,8 @@
-import {gqlFetch} from '@/services/fetch';
+import {getCookie} from 'cookies-next';
 
 import {CookieName} from '@/constants';
-import {getCookie} from 'cookies-next';
+import {gqlFetch} from '@/services/fetch';
+
 import {ArticleType, SearchArticleInput} from '../../generated/types';
 
 export async function searchArticles(input: SearchArticleInput): Promise<ArticleType> {
@@ -15,6 +16,7 @@ export async function searchArticles(input: SearchArticleInput): Promise<Article
           totalCount
           success
           results {
+            isShowcase
             _id
             publishDate
             updatedAt

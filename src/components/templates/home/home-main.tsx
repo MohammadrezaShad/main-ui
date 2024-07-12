@@ -35,8 +35,13 @@ export default function HomeMain() {
     queryFn: ({pageParam}) => searchArticles({status: StatusType.Publish, count: 18, page}),
     placeholderData: keepPreviousData,
   }) as any;
+  const recentArticlesData = useQuery({
+    queryKey: ['recent-articles', 1],
+    queryFn: () => searchArticles({status: StatusType.Publish, count: 3}),
+  }) as any;
 
   const articles = data?.article.searchArticles.results;
+  const recentArticles = recentArticlesData.data?.article.searchArticles.results;
 
   const res = useQuery({
     queryKey: ['search-categories-home'],
@@ -184,9 +189,9 @@ export default function HomeMain() {
         </HeroWrapper>
       </Hero>
       <Container className={css({mt: '8'})}>
-        <RecentArticles posts={articles?.slice(0, 3)} />
+        <RecentArticles posts={recentArticles} />
         <Divider label='Keep Reading' />
-        <Articles articles={articles?.slice(3)} />
+        <Articles articles={articles} />
 
         <div
           className={css({

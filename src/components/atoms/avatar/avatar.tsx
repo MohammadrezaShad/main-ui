@@ -2,7 +2,7 @@ import {css} from '@styled/css';
 import {grid} from '@styled/patterns';
 import Image from 'next/image';
 
-import ProfileCircle from '@/assets/vectors/icon-user.svg';
+import {IconUser} from '@/assets';
 
 interface Props {
   src?: string;
@@ -44,11 +44,11 @@ const Avatar = ({src, size = 64, alt = ''}: Props) => {
         bg: 'gray1',
       })}
     >
-      <ProfileCircle
+      <IconUser
         className={css({
           rounded: 'full',
-          width: `${size * (2 / 3)}px`,
-          height: `${size * (2 / 3)}px`,
+          w: `${Math.floor(size * (2 / 3))}px`,
+          h: `${Math.floor(size * (2 / 3))}px`,
           '& path': {
             fill: 'gray6',
           },

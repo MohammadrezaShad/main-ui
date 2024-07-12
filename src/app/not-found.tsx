@@ -31,9 +31,9 @@ export default async function NotFound() {
           style={{backgroundImage: `url(${notFoundImage.src})`}}
           className={css({
             height: 'calc(100vh - 164px)',
-            backgroundSize: 'contain',
+            backgroundSize: '100%',
             backgroundRepeat: 'no-repeat',
-            backgroundPosition: 'bottom',
+            backgroundPosition: '100% 0',
             position: 'relative',
             mdDown: {
               backgroundSize: 'cover',

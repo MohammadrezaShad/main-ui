@@ -10,8 +10,13 @@ export default async function Home() {
   noStore();
   const queryClient = getQueryClient();
   await queryClient.prefetchQuery({
+    queryKey: ['recent-articles', 1],
+    queryFn: () => searchArticles({status: StatusType.Publish, count: 3}),
+  });
+  await queryClient.prefetchQuery({
     queryKey: ['search-articles-home', 1],
-    queryFn: () => searchArticles({status: StatusType.Publish, count: 18, page: 1}),
+    queryFn: () =>
+      searchArticles({status: StatusType.Publish, count: 12, page: 1, isShowcase: true}),
   });
   await queryClient.prefetchQuery({
     queryKey: ['search-categories-home'],

@@ -2,8 +2,20 @@ import {css} from '@styled/css';
 
 import {IconComment, IconHeart, IconReport} from '@/assets';
 import {Avatar} from '@/components';
+import type {CommentType, UserOutputType} from '@/graphql';
+import {formatDate} from '@/utils/format-date';
 
-const Review = ({children}: {children?: React.ReactNode}) => (
+const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
+
+function getAuthorName(author: UserOutputType) {
+  if (!author) return 'Unknow Author';
+  if (author.displayName) return author.displayName;
+  if (author.firstName && author.lastName) return `${author.firstName} ${author.lastName}`;
+  if (author.username) return author.username;
+  return 'Unknow Author';
+}
+
+const Review = ({children, comment}: {children?: React.ReactNode; comment: CommentType}) => (
   <div
     className={css({
       display: 'flex',
@@ -14,7 +26,14 @@ const Review = ({children}: {children?: React.ReactNode}) => (
       },
     })}
   >
-    <Avatar size={48} />
+    <Avatar
+      size={48}
+      src={
+        comment.createUser?.avatar?.filename
+          ? `${IMAGE_STORAGE_URL}/${comment.createUser?.avatar?.filename}-${comment.createUser?.avatar?._id}`
+          : undefined
+      }
+    />
     <div
       className={css({
         display: 'flex',
@@ -34,7 +53,7 @@ const Review = ({children}: {children?: React.ReactNode}) => (
             color: 'text.primary',
           })}
         >
-          Sergio Aquinna
+          {getAuthorName(comment.createUser!)}
         </div>
         <time
           className={css({
@@ -55,7 +74,7 @@ const Review = ({children}: {children?: React.ReactNode}) => (
             },
           })}
         >
-          8:41 AM
+          {formatDate(comment.updatedAt)}
         </time>
       </div>
 
@@ -66,10 +85,7 @@ const Review = ({children}: {children?: React.ReactNode}) => (
           mb: '4',
         })}
       >
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-        labore et dolore magna aliqua. Viverra justo nec ultrices dui sapien eget. Suspendisse in
-        est ante in nibh mauris. Facilisis sed odio morbi quis commodo. Egestas maecenas pharetra
-        convallis posuere morbi leo.{' '}
+        {comment.content}
       </p>
 
       <ul

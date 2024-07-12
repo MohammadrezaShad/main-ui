@@ -61,6 +61,7 @@ export type ArticleInputType = {
   faqs?: InputMaybe<Array<FaqInputType>>;
   hasPdf?: InputMaybe<Scalars['Boolean']['input']>;
   images?: InputMaybe<Array<ImageInputType>>;
+  isShowcase?: InputMaybe<Scalars['Boolean']['input']>;
   publishDate?: InputMaybe<Scalars['DateTime']['input']>;
   readingDuration?: InputMaybe<Scalars['Int']['input']>;
   reports?: InputMaybe<Array<Scalars['String']['input']>>;
@@ -163,6 +164,7 @@ export type ArticleType = {
   hasPdf?: Maybe<Scalars['Boolean']['output']>;
   images?: Maybe<Array<ImageType>>;
   isBookmark: Scalars['Boolean']['output'];
+  isShowcase?: Maybe<Scalars['Boolean']['output']>;
   isUserFavorite: Scalars['Boolean']['output'];
   likeCount: Scalars['Int']['output'];
   publishDate?: Maybe<Scalars['DateTime']['output']>;
@@ -575,6 +577,7 @@ export type CreateArticleInput = {
   faqs?: InputMaybe<Array<FaqInputType>>;
   hasPdf?: InputMaybe<Scalars['Boolean']['input']>;
   images?: InputMaybe<Array<Scalars['String']['input']>>;
+  isShowcase?: InputMaybe<Scalars['Boolean']['input']>;
   publishDate?: InputMaybe<Scalars['DateTime']['input']>;
   readingDuration?: InputMaybe<Scalars['Int']['input']>;
   reports?: InputMaybe<Array<Scalars['String']['input']>>;
@@ -1682,6 +1685,7 @@ export type SearchArticleInput = {
   count?: InputMaybe<Scalars['Int']['input']>;
   hasPdf?: InputMaybe<Scalars['Boolean']['input']>;
   isPublishing?: InputMaybe<Scalars['Boolean']['input']>;
+  isShowcase?: InputMaybe<Scalars['Boolean']['input']>;
   page?: InputMaybe<Scalars['Int']['input']>;
   showMyPosts?: InputMaybe<Scalars['Boolean']['input']>;
   sortType?: InputMaybe<ArticleSortType>;
@@ -2125,6 +2129,7 @@ export type UpdateArticleInput = {
   hasPdf?: InputMaybe<Scalars['Boolean']['input']>;
   id: Scalars['String']['input'];
   images?: InputMaybe<Array<Scalars['String']['input']>>;
+  isShowcase?: InputMaybe<Scalars['Boolean']['input']>;
   publishDate?: InputMaybe<Scalars['DateTime']['input']>;
   readingDuration?: InputMaybe<Scalars['Int']['input']>;
   reports?: InputMaybe<Array<Scalars['String']['input']>>;
