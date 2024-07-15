@@ -39,6 +39,9 @@ const Slider = ({slides, hasPdf = false}: Props) => (
             position: 'relative',
             h: 'full',
             w: 'full',
+            mdDown: {
+              flexDir: 'column',
+            },
           })}
         >
           {slide.thumbnail ? (
@@ -55,6 +58,11 @@ const Slider = ({slides, hasPdf = false}: Props) => (
                 objectFit: 'cover',
                 position: 'absolute',
                 inset: 0,
+                mdDown: {
+                  position: 'relative',
+                  w: 'full',
+                  h: 'auto',
+                },
               })}
             />
           ) : null}
@@ -79,6 +87,11 @@ const Slider = ({slides, hasPdf = false}: Props) => (
               gradientFrom: '#00000000',
               gradientVia: '#00000000',
               gradientTo: '#000000',
+              mdDown: {
+                justifyContent: 'start',
+                position: 'relative',
+                gradientTo: '#00000000',
+              },
             })}
           >
             <Box zIndex='50' mb='1'>
@@ -89,6 +102,9 @@ const Slider = ({slides, hasPdf = false}: Props) => (
                 zIndex: '50',
                 textStyle: 'h1',
                 color: 'text.invert',
+                mdDown: {
+                  color: 'text.primary',
+                },
               })}
             >
               {slide.title}
@@ -99,6 +115,9 @@ const Slider = ({slides, hasPdf = false}: Props) => (
                 textStyle: 'subtitle1',
                 color: 'text.invert',
                 lineClamp: '2',
+                mdDown: {
+                  color: 'text.primary',
+                },
               })}
             >
               {slide.excerpt}
@@ -115,6 +134,11 @@ const Slider = ({slides, hasPdf = false}: Props) => (
                   lineHeight: '[18.38px]',
                   display: 'inline-block',
                   h: '10',
+                  mdDown: {
+                    border: '1px solid token(colors.text.primary)',
+                    color: 'text.primary',
+                    mb: '4',
+                  },
                 })}
               >
                 Read more ...
