@@ -507,7 +507,7 @@ td {
 }
 
 .article h2 {
-  display: block;
+  display: flex;
   font-size: 1.5em;
   margin-block-start: 0.83em;
   margin-block-end: 0.83em;
@@ -515,6 +515,22 @@ td {
   margin-inline-end: 0px;
   font-weight: bold;
   unicode-bidi: isolate;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+}
+
+@media screen and (max-width: 768px) {
+ .article h2 {
+    flex-direction: column;
+    align-items: start;
+    gap: 8px;
+  }
+  
+}
+
+.article h2 > star-rating {
+  order: 1;
 }
 
 .article h3 {

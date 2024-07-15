@@ -1,5 +1,7 @@
 'use client';
 
+import {useEffect} from 'react';
+import {toast} from 'react-toastify';
 import {Observable} from '@legendapp/state';
 import {useObservable} from '@legendapp/state/react';
 import {css} from '@styled/css';
@@ -9,8 +11,6 @@ import {setCookie} from 'cookies-next';
 import {useFormik} from 'formik';
 import Link from 'next/link';
 import {useRouter} from 'next/navigation';
-import {useEffect} from 'react';
-import {toast} from 'react-toastify';
 import * as Yup from 'yup';
 
 import {IconClose} from '@/assets';
@@ -42,6 +42,7 @@ export default function Login({
     validationSchema: schema,
     onSubmit: async ({email, password}) => {
       await mutateAsync();
+      queryClient.clear();
     },
   });
   const {errors, touched, values, handleChange, handleSubmit} = formik;
