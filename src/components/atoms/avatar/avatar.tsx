@@ -45,6 +45,10 @@ const Avatar = ({src, size = 64, alt = ''}: Props) => {
       })}
     >
       <IconUser
+        style={{
+          width: `${Math.floor(size * (2 / 3))}px`,
+          height: `${Math.floor(size * (2 / 3))}px`,
+        }}
         className={css({
           rounded: 'full',
           w: `${Math.floor(size * (2 / 3))}px`,

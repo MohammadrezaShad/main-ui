@@ -211,6 +211,10 @@ const Page = () => {
     recordVisitStatisticsMutation.mutateAsync({article: article._id});
   }, []);
 
+  useEffect(() => {
+    import('../../star-rating');
+  }, []);
+
   return (
     <div
       className={css({

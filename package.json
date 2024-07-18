@@ -8,7 +8,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "generate": "graphql-codegen --config graphql.config.yml"
+    "generate": "graphql-codegen --config graphql.config.yml",
+    "build:components": "tsc src/components/star-rating.ts --outDir public",
+    "watch:components": "tsc --watch src/components/star-rating.ts --outDir public"
   },
   "dependencies": {
     "@legendapp/state": "^2.1.12",
