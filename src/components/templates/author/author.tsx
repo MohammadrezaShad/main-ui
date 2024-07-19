@@ -4,6 +4,10 @@
 
 import {useEffect, useState} from 'react';
 import {toast} from 'react-toastify';
+import {useObservable} from '@legendapp/state/react';
+import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
+import {DatePicker} from '@mui/x-date-pickers/DatePicker';
+import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
 import {css} from '@styled/css';
 import {Box, Flex} from '@styled/jsx';
 import {flex} from '@styled/patterns';
@@ -20,7 +24,12 @@ import {Modal} from '@/components/atoms/modal';
 import {CookieName} from '@/constants';
 import {
   ArticleType,
+  createIsi,
+  type CreateIsiInput,
+  deleteIsi,
+  type DeleteIsiInput,
   findUserById,
+  type IsiType,
   searchArticlesByAuthorId,
   searchIsi,
   updateUser,
@@ -30,6 +39,8 @@ import {
 import {getUser} from '@/graphql/query/users/get-user';
 
 import {Actions, Cards, Chips, Container, Tab, Tabs, Wrapper} from './author.styled';
+import EditModal from './edit-modal';
+import ISITable from './isiTable';
 
 const ADMIN_PANEL_URL = process.env.NEXT_PUBLIC_ADMIN_PANEL_URL;
 const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
@@ -40,6 +51,13 @@ const schema = Yup.object().shape({
   contact: Yup.string().min(3),
   expertise: Yup.string().min(3),
   description: Yup.string().min(3),
+});
+
+const isiSchema = Yup.object().shape({
+  title: Yup.string().required().min(3),
+  doi: Yup.string().required().min(8),
+  journal: Yup.string().required().min(8),
+  year: Yup.string().required().min(3).max(30),
 });
 
 const socialMediaLinks: {
@@ -60,8 +78,23 @@ enum ETabs {
   JOURNALS = 'journals',
   CV = 'CV',
 }
+interface IsiColumn {
+  title: string;
+  value: keyof IsiType;
+  width?: string | undefined;
+}
 
+const INITIAL_COLUMNS: IsiColumn[] = [
+  {title: 'Title', value: 'title'},
+  {title: 'Date', value: 'year', width: '150px'},
+];
 export default function Author() {
+  const [isEdit, setIsEdit] = useState<IsiType | undefined>(undefined);
+  const [isNewIsiOpen, setIsNewIsiOpen] = useState(false);
+  const isDelete$ = useObservable<{isOpen: boolean; entityId: string}>({
+    isOpen: false,
+    entityId: '',
+  });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [articles, setArticles] = useState<ArticleType[]>([]);
   const token = getCookie(CookieName.AUTH_TOKEN)!;
@@ -106,6 +139,59 @@ export default function Author() {
   const {mutateAsync} = useMutation({
     mutationFn: (args: UpdateUserInput) => updateUser(args, token),
   });
+
+  const createIsiMutation = useMutation({
+    mutationFn: (args: CreateIsiInput) => createIsi(args, token),
+  });
+
+  const isiFormik = useFormik({
+    initialValues: {
+      title: '',
+      doi: '',
+      journal: '',
+      year: null,
+    } as any,
+    validationSchema: isiSchema,
+    onSubmit: async () => {
+      try {
+        const _response = await createIsiMutation.mutateAsync({
+          ...isiFormik.values,
+          year: parseInt(isiFormik.values.year?.format('YYYY') || '0', 10),
+        });
+        if (_response.success) {
+          queryClient.clear();
+          toast.success('ISI record created successfully');
+          setTimeout(() => {
+            setIsNewIsiOpen(false);
+            isiFormik.resetForm();
+          }, 1000);
+        } else {
+          toast.error('An error occured');
+        }
+      } catch (error: Error | any) {
+        toast.error(error.message);
+      }
+    },
+  });
+
+  const deleteIsiMutation = useMutation({
+    mutationFn: (args: DeleteIsiInput) => deleteIsi(args, token),
+  });
+
+  const handleISIDelete = async () => {
+    try {
+      const _response = await deleteIsiMutation.mutateAsync({id: isDelete$.get().entityId});
+      if (_response.success) {
+        isiQuery.refetch();
+        isDelete$?.isOpen.set(false);
+        isDelete$?.entityId.set(undefined);
+      } else {
+        toast.error('An error occured');
+      }
+    } catch (error: any) {
+      toast.error(error.message);
+    }
+  };
 
   const formik = useFormik({
     initialValues: {
@@ -186,7 +272,9 @@ export default function Author() {
               <Avatar
                 size={128}
                 src={
-                  `${IMAGE_STORAGE_URL}/${user?.avatar?.filename}-${user?.avatar?._id}` ?? undefined
+                  user?.avatar?._id
+                    ? `${IMAGE_STORAGE_URL}/${user?.avatar?.filename}-${user?.avatar?._id}`
+                    : undefined
                 }
               />
             </Box>
@@ -447,7 +535,21 @@ export default function Author() {
       {/** RELATED TO ISI ARTICLES AND JOURNALS */}
       {selectedTab === ETabs.JOURNALS ? (
         user?._id === currenUserId ? (
-          <span />
+          <div className={css({position: 'relative'})}>
+            <Button
+              onClick={() => setIsNewIsiOpen(true)}
+              type='button'
+              className={css({position: 'absolute', right: 0, marginTop: '3px'})}
+            >
+              New ISI
+            </Button>
+            <ISITable
+              columns={INITIAL_COLUMNS}
+              data={isiQuery.data?.results as IsiType[]}
+              onEdit={(isi: IsiType) => setIsEdit(isi)}
+              deleteEntity$={isDelete$}
+            />
+          </div>
         ) : (
           <Cards>
             {isiQuery?.data?.results?.map(isi => (
@@ -541,6 +643,107 @@ export default function Author() {
           src={`${ADMIN_PANEL_URL}/create-article`}
           allowFullScreen
         />
+      </Modal>
+
+      <Modal isOpen$={isDelete$.isOpen.use()} onClose={() => isDelete$.isOpen.set(false)}>
+        <Box bg='white' padding='16px' borderRadius='16px'>
+          <h3 className={css({mt: '2'})}>Are you sure you want to delete this ISI record?</h3>
+          <Box display='flex' gap={2} mt={7}>
+            <Button visual='contained' onClick={handleISIDelete} color='danger'>
+              Yes
+            </Button>
+            <Button visual='contained' onClick={() => isDelete$.isOpen.set(false)}>
+              No
+            </Button>
+          </Box>
+        </Box>
+      </Modal>
+
+      <Modal isOpen$={isNewIsiOpen} onClose={() => setIsNewIsiOpen(false)}>
+        <form
+          onSubmit={isiFormik.handleSubmit}
+          className={css({
+            w: '[50vw]',
+            mdDown: {
+              w: '[90vw]',
+            },
+          })}
+          style={{
+            marginBottom: '32px',
+            backgroundColor: 'white',
+            padding: 16,
+            borderRadius: 16,
+          }}
+        >
+          <Box width='100%' mt='25px'>
+            <TextField
+              label='Title'
+              type='title'
+              name='title'
+              value={isiFormik.values.title}
+              onChange={isiFormik.handleChange}
+              id='title'
+              required
+            />
+          </Box>
+          <Box width='100%' mt='25px'>
+            <TextField
+              label='DOI'
+              type='doi'
+              name='doi'
+              value={isiFormik.values.doi}
+              onChange={isiFormik.handleChange}
+              id='doi'
+              required
+            />
+          </Box>
+
+          <Box width='100%' mt='25px'>
+            <TextField
+              label='Journal'
+              type='journal'
+              name='journal'
+              value={isiFormik.values.journal}
+              onChange={isiFormik.handleChange}
+              id='journal'
+              required
+            />
+          </Box>
+          <Box mt='25px'>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                label='Year'
+                sx={{width: '100%'}}
+                name='year'
+                onChange={(value: any) => {
+                  if (value.isValid()) {
+                    isiFormik.setFieldValue('year', value, false);
+                  } else {
+                    console.log('error');
+                  }
+                }}
+                value={isiFormik.values.year}
+                openTo='year'
+              />
+            </LocalizationProvider>
+            {isiFormik.touched.journal && isiFormik.errors.journal && <span>Error</span>}
+          </Box>
+          <Button className={css({mt: '24px'})} type='submit'>
+            Save
+          </Button>
+          <Button
+            visual='outlined'
+            onClick={() => setIsNewIsiOpen(false)}
+            className={css({mt: '24px', ml: '24px'})}
+            type='button'
+          >
+            Cancel
+          </Button>
+        </form>
+      </Modal>
+
+      <Modal isOpen$={!!isEdit} onClose={() => setIsEdit(undefined)}>
+        {!!isEdit && <EditModal isi={isEdit} onClose={() => setIsEdit(undefined)} token={token} />}
       </Modal>
     </Container>
   );

@@ -1,13 +1,10 @@
-import {
-  type IsiMutation,
-  type UpdateIsiInput,
-} from "@/graphql/generated/types";
-import { gqlFetch } from "@/services/fetch";
+import {type IsiMutation, type UpdateIsiInput} from '@/graphql/generated/types';
+import {gqlFetch} from '@/services/fetch';
 
 export async function updateIsi(
   input: UpdateIsiInput,
-  token: string
-): Promise<IsiMutation["updateIsi"]> {
+  token: string,
+): Promise<IsiMutation['updateIsi']> {
   const res = await gqlFetch({
     url: process.env.NEXT_PUBLIC_API as string,
     query: `mutation UpdateIsi($input: UpdateIsiInput!) {
@@ -17,11 +14,11 @@ export async function updateIsi(
           }
         }
       }`,
-    variables: { input },
-    headers: { Authorization: `Bearer ${token}` },
+    variables: {input},
+    headers: {Authorization: `Bearer ${token}`},
   });
   if (!res.ok) {
-    throw new Error("Failed to fetch data");
+    throw new Error('Failed to fetch data');
   }
   const response = await res.json();
   if (response.errors?.[0]?.message) {

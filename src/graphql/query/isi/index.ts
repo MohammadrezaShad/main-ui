@@ -1,1 +1,1 @@
-export * from "./search-isi";
+export * from './search-isi';
