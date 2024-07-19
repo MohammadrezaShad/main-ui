@@ -657,6 +657,26 @@ export type CreateGraphicalQuizOutput = {
   success: Scalars['Boolean']['output'];
 };
 
+export type CreateIsiByAdminInput = {
+  author?: InputMaybe<Scalars['String']['input']>;
+  doi?: InputMaybe<Scalars['String']['input']>;
+  journal?: InputMaybe<Scalars['String']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  year?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type CreateIsiInput = {
+  doi?: InputMaybe<Scalars['String']['input']>;
+  journal?: InputMaybe<Scalars['String']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  year?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type CreateIsiOutput = {
+  __typename?: 'CreateIsiOutput';
+  success: Scalars['Boolean']['output'];
+};
+
 export type CreateLikeInput = {
   post: Scalars['String']['input'];
   type: LikeTypeEnum;
@@ -693,6 +713,16 @@ export type CreateQuizOutput = {
   success: Scalars['Boolean']['output'];
 };
 
+export type CreateSeoHomepageInput = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type CreateSeoHomepageOutput = {
+  __typename?: 'CreateSeoHomepageOutput';
+  success: Scalars['Boolean']['output'];
+};
+
 export type CreateSeoSettingInput = {
   createUser?: InputMaybe<UserOutputInputType>;
   general?: InputMaybe<SeoGeneralSettingInputType>;
@@ -726,6 +756,7 @@ export type CreateTagOutput = {
 
 export type CreateUserByCeo = {
   coins?: InputMaybe<Scalars['Int']['input']>;
+  contact?: InputMaybe<Scalars['String']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
   displayName?: InputMaybe<Scalars['String']['input']>;
   education?: InputMaybe<Scalars['String']['input']>;
@@ -824,6 +855,15 @@ export type DeleteImagesInput = {
   ids: Array<Scalars['String']['input']>;
 };
 
+export type DeleteIsiInput = {
+  id: Scalars['String']['input'];
+};
+
+export type DeleteIsiOutput = {
+  __typename?: 'DeleteIsiOutput';
+  success: Scalars['Boolean']['output'];
+};
+
 export type DeleteLikeByUserInput = {
   post: Scalars['String']['input'];
   type: LikeTypeEnum;
@@ -857,6 +897,15 @@ export type DeleteQuizInput = {
 
 export type DeleteQuizOutput = {
   __typename?: 'DeleteQuizOutput';
+  success: Scalars['Boolean']['output'];
+};
+
+export type DeleteSeoHomepageInput = {
+  id: Scalars['String']['input'];
+};
+
+export type DeleteSeoHomepageOutput = {
+  __typename?: 'DeleteSeoHomepageOutput';
   success: Scalars['Boolean']['output'];
 };
 
@@ -1056,6 +1105,16 @@ export type FindGraphicalQuizInput = {
 export type FindGraphicalQuizOutput = {
   __typename?: 'FindGraphicalQuizOutput';
   result?: Maybe<GraphicalQuizType>;
+  success: Scalars['Boolean']['output'];
+};
+
+export type FindIsiInput = {
+  id: Scalars['String']['input'];
+};
+
+export type FindIsiOutput = {
+  __typename?: 'FindIsiOutput';
+  result?: Maybe<IsiType>;
   success: Scalars['Boolean']['output'];
 };
 
@@ -1381,6 +1440,57 @@ export type IsValidAndVerifiedAccountOutput = {
   success: Scalars['Boolean']['output'];
 };
 
+export type IsiMutation = {
+  __typename?: 'IsiMutation';
+  createIsi: CreateIsiOutput;
+  createIsiByAdmin: CreateIsiOutput;
+  deleteIsi: DeleteIsiOutput;
+  updateIsi: UpdateIsiOutput;
+};
+
+export type IsiMutationCreateIsiArgs = {
+  input: CreateIsiInput;
+};
+
+export type IsiMutationCreateIsiByAdminArgs = {
+  input: CreateIsiByAdminInput;
+};
+
+export type IsiMutationDeleteIsiArgs = {
+  input: DeleteIsiInput;
+};
+
+export type IsiMutationUpdateIsiArgs = {
+  input: UpdateIsiInput;
+};
+
+export type IsiQuery = {
+  __typename?: 'IsiQuery';
+  findIsiById: FindIsiOutput;
+  searchIsi: SearchIsiOutput;
+};
+
+export type IsiQueryFindIsiByIdArgs = {
+  input: FindIsiInput;
+};
+
+export type IsiQuerySearchIsiArgs = {
+  input: SearchIsiInput;
+};
+
+export type IsiType = {
+  __typename?: 'IsiType';
+  _id: Scalars['String']['output'];
+  author: UserOutputType;
+  createUser: UserOutputType;
+  createdAt?: Maybe<Scalars['DateTime']['output']>;
+  doi?: Maybe<Scalars['String']['output']>;
+  journal?: Maybe<Scalars['String']['output']>;
+  title?: Maybe<Scalars['String']['output']>;
+  updatedAt?: Maybe<Scalars['DateTime']['output']>;
+  year?: Maybe<Scalars['Int']['output']>;
+};
+
 export type LikeMutation = {
   __typename?: 'LikeMutation';
   bulkDeleteLikes: DeleteLikeOutput;
@@ -1467,9 +1577,11 @@ export type Mutation = {
   file: FileMutation;
   graphicalQuiz: GraphicalQuizMutation;
   image: ImageMutation;
+  isi: IsiMutation;
   like: LikeMutation;
   question: QuestionMutation;
   quiz: QuizMutation;
+  seoHomepage: SeoHomepageMutation;
   seoSetting: SeoSettingMutation;
   tag: TagMutation;
   users: UserMutation;
@@ -1516,9 +1628,11 @@ export type Query = {
   file: FileQuery;
   graphicalQuiz: GraphicalQuizQuery;
   image: ImageQuery;
+  isi: IsiQuery;
   like: LikeQuery;
   question: QuestionQuery;
   quiz: QuizQuery;
+  seoHomepage: SeoHomepageQuery;
   seoSetting: SeoSettingQuery;
   tag: TagQuery;
   users: UserQuery;
@@ -1783,6 +1897,20 @@ export type SearchImagesOutput = {
   totalPages?: Maybe<Scalars['Int']['output']>;
 };
 
+export type SearchIsiInput = {
+  author?: InputMaybe<Scalars['String']['input']>;
+  count?: InputMaybe<Scalars['Int']['input']>;
+  page?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type SearchIsiOutput = {
+  __typename?: 'SearchIsiOutput';
+  results?: Maybe<Array<IsiType>>;
+  success: Scalars['Boolean']['output'];
+  totalCount?: Maybe<Scalars['Int']['output']>;
+  totalPages?: Maybe<Scalars['Int']['output']>;
+};
+
 export type SearchLikeInput = {
   count?: InputMaybe<Scalars['Int']['input']>;
   page?: InputMaybe<Scalars['Int']['input']>;
@@ -1821,6 +1949,21 @@ export type SearchQuizInput = {
 export type SearchQuizOutput = {
   __typename?: 'SearchQuizOutput';
   results?: Maybe<Array<QuizType>>;
+  success: Scalars['Boolean']['output'];
+  totalCount?: Maybe<Scalars['Int']['output']>;
+  totalPages?: Maybe<Scalars['Int']['output']>;
+};
+
+export type SearchSeoHomepageInput = {
+  count?: InputMaybe<Scalars['Int']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  page?: InputMaybe<Scalars['Int']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type SearchSeoHomepageOutput = {
+  __typename?: 'SearchSeoHomepageOutput';
+  results?: Maybe<Array<SeoHomepageType>>;
   success: Scalars['Boolean']['output'];
   totalCount?: Maybe<Scalars['Int']['output']>;
   totalPages?: Maybe<Scalars['Int']['output']>;
@@ -1923,6 +2066,43 @@ export type SeoGeneralSettingType = {
   title?: Maybe<Scalars['String']['output']>;
 };
 
+export type SeoHomepageMutation = {
+  __typename?: 'SeoHomepageMutation';
+  createSeoHomepage: CreateSeoHomepageOutput;
+  deleteSeoHomepage: DeleteSeoHomepageOutput;
+  updateSeoHomepage: UpdateSeoHomepageOutput;
+};
+
+export type SeoHomepageMutationCreateSeoHomepageArgs = {
+  input: CreateSeoHomepageInput;
+};
+
+export type SeoHomepageMutationDeleteSeoHomepageArgs = {
+  input: DeleteSeoHomepageInput;
+};
+
+export type SeoHomepageMutationUpdateSeoHomepageArgs = {
+  input: UpdateSeoHomepageInput;
+};
+
+export type SeoHomepageQuery = {
+  __typename?: 'SeoHomepageQuery';
+  searchHomepages: SearchSeoHomepageOutput;
+};
+
+export type SeoHomepageQuerySearchHomepagesArgs = {
+  input: SearchSeoHomepageInput;
+};
+
+export type SeoHomepageType = {
+  __typename?: 'SeoHomepageType';
+  _id: Scalars['String']['output'];
+  createdAt?: Maybe<Scalars['DateTime']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  title?: Maybe<Scalars['String']['output']>;
+  updatedAt?: Maybe<Scalars['DateTime']['output']>;
+};
+
 export type SeoSettingInput = {
   general?: InputMaybe<SeoGeneralSettingInputType>;
   score?: InputMaybe<Scalars['Float']['input']>;
@@ -2008,6 +2188,8 @@ export type SigninOutput = {
 
 export type SignupInputType = {
   coins?: InputMaybe<Scalars['Int']['input']>;
+  contact?: InputMaybe<Scalars['String']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
   displayName?: InputMaybe<Scalars['String']['input']>;
   education?: InputMaybe<Scalars['String']['input']>;
   email?: InputMaybe<Scalars['String']['input']>;
@@ -2214,6 +2396,19 @@ export type UpdateImageOutput = {
   success: Scalars['Boolean']['output'];
 };
 
+export type UpdateIsiInput = {
+  doi?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['String']['input'];
+  journal?: InputMaybe<Scalars['String']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  year?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type UpdateIsiOutput = {
+  __typename?: 'UpdateIsiOutput';
+  success: Scalars['Boolean']['output'];
+};
+
 export type UpdateLikeInput = {
   id: Scalars['String']['input'];
   post?: InputMaybe<Scalars['String']['input']>;
@@ -2253,6 +2448,17 @@ export type UpdateQuizOutput = {
   success: Scalars['Boolean']['output'];
 };
 
+export type UpdateSeoHomepageInput = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['String']['input'];
+  title?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type UpdateSeoHomepageOutput = {
+  __typename?: 'UpdateSeoHomepageOutput';
+  success: Scalars['Boolean']['output'];
+};
+
 export type UpdateSeoSettingInput = {
   createUser?: InputMaybe<UserOutputInputType>;
   general?: InputMaybe<SeoGeneralSettingInputType>;
@@ -2288,6 +2494,7 @@ export type UpdateTagOutput = {
 
 export type UpdateUserByCeo = {
   coins?: InputMaybe<Scalars['Int']['input']>;
+  contact?: InputMaybe<Scalars['String']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
   displayName?: InputMaybe<Scalars['String']['input']>;
   education?: InputMaybe<Scalars['String']['input']>;
@@ -2317,6 +2524,8 @@ export type UpdateUserByCeo = {
 
 export type UpdateUserInput = {
   coins?: InputMaybe<Scalars['Int']['input']>;
+  contact?: InputMaybe<Scalars['String']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
   displayName?: InputMaybe<Scalars['String']['input']>;
   education?: InputMaybe<Scalars['String']['input']>;
   email?: InputMaybe<Scalars['String']['input']>;
@@ -2367,6 +2576,7 @@ export type User = {
   avatar?: Maybe<ImageType>;
   avatarStatus?: Maybe<UserAvatarStatusEnum>;
   coins?: Maybe<Scalars['Int']['output']>;
+  contact?: Maybe<Scalars['String']['output']>;
   createdAt?: Maybe<Scalars['DateTime']['output']>;
   description?: Maybe<Scalars['String']['output']>;
   displayName?: Maybe<Scalars['String']['output']>;
@@ -2443,6 +2653,7 @@ export type UserOutputInputType = {
   avatar?: InputMaybe<ImageInputType>;
   avatarStatus?: InputMaybe<UserAvatarStatusEnum>;
   coins?: InputMaybe<Scalars['Int']['input']>;
+  contact?: InputMaybe<Scalars['String']['input']>;
   createdAt?: InputMaybe<Scalars['String']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
   displayName?: InputMaybe<Scalars['String']['input']>;
@@ -2480,6 +2691,7 @@ export type UserOutputType = {
   avatarStatus?: Maybe<UserAvatarStatusEnum>;
   coins?: Maybe<Scalars['Int']['output']>;
   commentsCount: Scalars['Int']['output'];
+  contact?: Maybe<Scalars['String']['output']>;
   createdAt?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
   displayName?: Maybe<Scalars['String']['output']>;
@@ -2495,6 +2707,7 @@ export type UserOutputType = {
   instagram?: Maybe<Scalars['String']['output']>;
   isCreatedWithSocialMedia?: Maybe<Scalars['Boolean']['output']>;
   isVerified: Scalars['Boolean']['output'];
+  isiLinks?: Maybe<IsiType>;
   lastName?: Maybe<Scalars['String']['output']>;
   linkedin?: Maybe<Scalars['String']['output']>;
   nickname?: Maybe<Scalars['String']['output']>;
