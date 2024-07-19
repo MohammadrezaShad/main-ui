@@ -399,7 +399,7 @@ export default function Quizzes() {
               },
             })}
           >
-            You need to pay 100 coins to start the quiz
+            Are you sure you want to start this quiz?
           </h1>
           <div
             className={css({
@@ -435,7 +435,7 @@ export default function Quizzes() {
               })}
               aria-label='Pay'
             >
-              Pay
+              Yes
             </button>
             <button
               type='button'

@@ -1,7 +1,6 @@
 'use client';
 
 import {useEffect, useState} from 'react';
-import {toast} from 'react-toastify';
 import {useObservable} from '@legendapp/state/react';
 import {css} from '@styled/css';
 import {useInfiniteQuery} from '@tanstack/react-query';
@@ -13,7 +12,7 @@ import {bgMaze2, coin, IconClose} from '@/assets';
 import {QuizCard} from '@/components';
 import {Modal} from '@/components/atoms/modal';
 import {CookieName} from '@/constants';
-import {findQuizById, payAndFindNormal, QuizType, searchQuizzes} from '@/graphql';
+import {findQuizById, QuizType, searchQuizzes} from '@/graphql';
 import {Paths} from '@/utils';
 
 export default function NormalQuizzes() {
@@ -42,14 +41,14 @@ export default function NormalQuizzes() {
 
   const startQuiz = async (id: string) => {
     const token = getCookie(CookieName.AUTH_TOKEN);
-    try {
-      const response = await payAndFindNormal({id}, token);
-      if (response.success && token) {
-        router.push(`${Paths.Quiz.getPath()}/normal/${response.result?._id}`);
-      }
-    } catch (error: Error | any) {
-      toast.error(error.message);
-    }
+    // try {
+    //   const response = await payAndFindNormal({id}, token);
+    //   if (response.success && token) {
+    router.push(`${Paths.Quiz.getPath()}/normal/${id}`);
+    //   }
+    // } catch (error: Error | any) {
+    //   toast.error(error.message);
+    // }
   };
 
   useEffect(() => {
@@ -216,6 +215,7 @@ export default function NormalQuizzes() {
                 overflow: 'hidden',
                 flexShrink: '0',
                 mdDown: {w: '32', h: '32'},
+                display: 'none',
               })}
             />
             <button
@@ -245,7 +245,7 @@ export default function NormalQuizzes() {
               },
             })}
           >
-            You need to pay {targetQuiz$.use()?.price} coins to start the quiz
+            Are you sure you want to start this quiz?
           </h1>
           <div
             className={css({
@@ -282,7 +282,7 @@ export default function NormalQuizzes() {
               })}
               aria-label='Pay'
             >
-              Pay
+              Yes
             </button>
             <button
               type='button'

@@ -1,7 +1,6 @@
 'use client';
 
 import {useEffect, useState} from 'react';
-import {toast} from 'react-toastify';
 import {useObservable} from '@legendapp/state/react';
 import {css} from '@styled/css';
 import {useInfiniteQuery} from '@tanstack/react-query';
@@ -13,12 +12,7 @@ import {bgMaze, coin, IconClose} from '@/assets';
 import {Modal} from '@/components/atoms/modal';
 import {QuizCard} from '@/components/molecules';
 import {CookieName} from '@/constants';
-import {
-  findGraphicalQuizById,
-  GraphicalQuizType,
-  payAndFindGraphical,
-  searchGraphicalQuizzes,
-} from '@/graphql';
+import {findGraphicalQuizById, GraphicalQuizType, searchGraphicalQuizzes} from '@/graphql';
 import {Paths} from '@/utils';
 
 import {
@@ -58,14 +52,14 @@ export default function GraphicalQuizzes() {
   };
 
   const startQuiz = async (id: string) => {
-    try {
-      const response = await payAndFindGraphical({id}, token);
-      if (response.success && token) {
-        router.push(`${Paths.Quiz.getPath()}/graphical/${response.result?._id}`);
-      }
-    } catch (error: Error | any) {
-      toast.error(error.message);
-    }
+    // try {
+    //   const response = await payAndFindGraphical({id}, token);
+    //   if (response.success && token) {
+    router.push(`${Paths.Quiz.getPath()}/graphical/${id}`);
+    //   }
+    // } catch (error: Error | any) {
+    //   toast.error(error.message);
+    // }
   };
 
   const renderContent = () => {
@@ -162,6 +156,7 @@ export default function GraphicalQuizzes() {
                 overflow: 'hidden',
                 flexShrink: '0',
                 mdDown: {w: '32', h: '32'},
+                display: 'none',
               })}
             />
             <button
@@ -191,7 +186,7 @@ export default function GraphicalQuizzes() {
               },
             })}
           >
-            You need to pay {targetQuiz$.use()?.price} coins to start the quiz
+            Are you sure you want to start this quiz?
           </h1>
           <div
             className={css({
@@ -228,7 +223,7 @@ export default function GraphicalQuizzes() {
               })}
               aria-label='Pay'
             >
-              Pay
+              Yes
             </button>
             <button
               type='button'
