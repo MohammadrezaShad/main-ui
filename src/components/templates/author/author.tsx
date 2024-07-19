@@ -1,25 +1,46 @@
+/* eslint-disable no-nested-ternary */
+
 'use client';
 
 import {useEffect, useState} from 'react';
+import {toast} from 'react-toastify';
 import {css} from '@styled/css';
 import {Box, Flex} from '@styled/jsx';
 import {flex} from '@styled/patterns';
-import {useInfiniteQuery, useQuery} from '@tanstack/react-query';
+import {useInfiniteQuery, useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
 import {getCookie} from 'cookies-next';
+import {useFormik} from 'formik';
 import moment from 'moment';
 import {useParams, useRouter} from 'next/navigation';
+import * as Yup from 'yup';
 
 import {IconFacebook, IconInstagram, IconLinkedIn, IconNotify, IconRG, IconTwitter} from '@/assets';
-import {Avatar, Button, Card, Chip, SmallCard, SocialMediaLinks} from '@/components';
+import {Avatar, Button, Card, Chip, SmallCard, SocialMediaLinks, TextField} from '@/components';
 import {Modal} from '@/components/atoms/modal';
 import {CookieName} from '@/constants';
-import {ArticleType, findUserById, searchArticlesByAuthorId, searchIsi, User} from '@/graphql';
+import {
+  ArticleType,
+  findUserById,
+  searchArticlesByAuthorId,
+  searchIsi,
+  updateUser,
+  type UpdateUserInput,
+  User,
+} from '@/graphql';
 import {getUser} from '@/graphql/query/users/get-user';
 
 import {Actions, Cards, Chips, Container, Tab, Tabs, Wrapper} from './author.styled';
 
 const ADMIN_PANEL_URL = process.env.NEXT_PUBLIC_ADMIN_PANEL_URL;
 const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
+
+const schema = Yup.object().shape({
+  email: Yup.string().email(),
+  education: Yup.string().min(3),
+  contact: Yup.string().min(3),
+  expertise: Yup.string().min(3),
+  description: Yup.string().min(3),
+});
 
 const socialMediaLinks: {
   id: number;
@@ -45,6 +66,7 @@ export default function Author() {
   const [articles, setArticles] = useState<ArticleType[]>([]);
   const token = getCookie(CookieName.AUTH_TOKEN)!;
   const [selectedTab, setSelectedTab] = useState<string>(ETabs.ARTICLES);
+  const queryClient = useQueryClient();
   const params = useParams();
   const {data} = useQuery({
     queryKey: ['get-user', params.authorId as string],
@@ -68,7 +90,7 @@ export default function Author() {
       return undefined;
     },
   }) as any;
-  const user: User = data.users!.findUserById;
+  const user: User = data?.users!.findUserById;
   const currenUserId = currentUser.data?._id;
   const router = useRouter();
 
@@ -80,6 +102,35 @@ export default function Author() {
   const handleClickNewArticle = () => {
     setIsModalOpen(true);
   };
+
+  const {mutateAsync} = useMutation({
+    mutationFn: (args: UpdateUserInput) => updateUser(args, token),
+  });
+
+  const formik = useFormik({
+    initialValues: {
+      email: user?.email || '',
+      education: user?.education || '',
+      contact: user?.contact || '',
+      expertise: user?.expertise || '',
+      description: user?.description || '',
+    },
+    validationSchema: schema,
+    onSubmit: async () => {
+      try {
+        const _response = await mutateAsync({...values});
+        if (_response.success) {
+          queryClient.clear();
+          toast.success('CV updated successfully');
+        } else {
+          toast.error('An eror occured');
+        }
+      } catch (error: Error | any) {
+        toast.error(error.message);
+      }
+    },
+  });
+  const {errors, touched, values, handleChange, isSubmitting, handleSubmit} = formik;
 
   useEffect(() => {
     if (response.data) {
@@ -135,7 +186,7 @@ export default function Author() {
               <Avatar
                 size={128}
                 src={
-                  `${IMAGE_STORAGE_URL}/${user.avatar?.filename}-${user.avatar?._id}` ?? undefined
+                  `${IMAGE_STORAGE_URL}/${user?.avatar?.filename}-${user?.avatar?._id}` ?? undefined
                 }
               />
             </Box>
@@ -168,7 +219,7 @@ export default function Author() {
                     color: 'text.primary',
                   })}
                 >
-                  {user.displayName}
+                  {user?.displayName}
                 </h1>
                 <p
                   className={css({
@@ -176,7 +227,7 @@ export default function Author() {
                     color: 'gray4',
                   })}
                 >
-                  {user.email}
+                  {user?.email}
                 </p>
               </div>
 
@@ -190,7 +241,7 @@ export default function Author() {
                   {/** TODO: INSERT BIO */}
                 </p>
                 <Chips>
-                  <Chip text={user.role} type='success' />
+                  <Chip text={user?.role} type='success' />
                   {/* <Chip text='Since: October 2018' type='simple' /> */}
                 </Chips>
               </div>
@@ -395,20 +446,81 @@ export default function Author() {
 
       {/** RELATED TO ISI ARTICLES AND JOURNALS */}
       {selectedTab === ETabs.JOURNALS ? (
-        <Cards>
-          {isiQuery?.data?.results?.map(isi => (
-            <Card key={isi._id} articleLink={isi.doi as string} title={isi.title as string} />
-          ))}
-        </Cards>
+        user?._id === currenUserId ? (
+          <span />
+        ) : (
+          <Cards>
+            {isiQuery?.data?.results?.map(isi => (
+              <Card key={isi._id} articleLink={isi.doi as string} title={isi.title as string} />
+            ))}
+          </Cards>
+        )
       ) : null}
 
       {selectedTab === ETabs.CV ? (
-        <Flex flexDir='column' padding={4} gap={2}>
-          <span>Education: {user.education}</span>
-          <span>Contact: {user.contact}</span>
-          <span>Expertise: {user.expertise}</span>
-          <span>Description: {user.description}</span>
-        </Flex>
+        user?._id === currenUserId ? (
+          <form onSubmit={handleSubmit}>
+            <Box width='100%' mt='25px'>
+              <TextField
+                label='Email'
+                type='email'
+                name='email'
+                value={values.email}
+                onChange={handleChange}
+                id='email'
+              />
+            </Box>
+
+            <Box width='100%' mt='25px'>
+              <TextField
+                label='Education'
+                type='text'
+                name='education'
+                value={values.education}
+                onChange={handleChange}
+                id='education'
+              />
+            </Box>
+            <Box mt='25px'>
+              <TextField
+                label='Contact'
+                type='text'
+                name='contact'
+                value={values.contact}
+                onChange={handleChange}
+                id='contact'
+              />
+            </Box>
+            <Box mt='25px'>
+              <TextField
+                label='Expertise'
+                type='text'
+                name='expertise'
+                value={values.expertise}
+                onChange={handleChange}
+                id='expertise'
+              />
+            </Box>
+            <Box my='25px'>
+              <TextField
+                label='Description'
+                type='text'
+                name='description'
+                value={values.description}
+                onChange={handleChange}
+                id='description'
+              />
+            </Box>
+            <Button type='submit'>Save changes</Button>
+          </form>
+        ) : (
+          <Flex flexDir='column' padding={4} gap={2}>
+            <span>Education: {user?.education}</span>
+            <span>Contact: {user?.contact}</span>
+            <span>Expertise: {user?.expertise}</span>
+            <span>Description: {user?.description}</span>
+          </Flex>
+        )
       ) : null}
       <Modal
         isOpen$={isModalOpen}
