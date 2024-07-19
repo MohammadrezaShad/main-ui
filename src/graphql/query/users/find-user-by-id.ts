@@ -1,7 +1,8 @@
+import {getCookie} from 'cookies-next';
+
 import {CookieName} from '@/constants';
 import {FindUserInput, UserQuery} from '@/graphql/generated/types';
 import {gqlFetch} from '@/services/fetch';
-import {getCookie} from 'cookies-next';
 
 export async function findUserById(
   input: FindUserInput,
@@ -13,6 +14,10 @@ export async function findUserById(
     query: `query FindUserById($input: FindUserInput!) {
       users {
         findUserById(input: $input) {
+          education
+          expertise
+          description
+          contact
           _id
           articlesWrittenCount
           articlesWrittenSavedCount

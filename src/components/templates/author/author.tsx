@@ -2,7 +2,7 @@
 
 import {useEffect, useState} from 'react';
 import {css} from '@styled/css';
-import {Box} from '@styled/jsx';
+import {Box, Flex} from '@styled/jsx';
 import {flex} from '@styled/patterns';
 import {useInfiniteQuery, useQuery} from '@tanstack/react-query';
 import {getCookie} from 'cookies-next';
@@ -13,7 +13,7 @@ import {IconFacebook, IconInstagram, IconLinkedIn, IconNotify, IconRG, IconTwitt
 import {Avatar, Button, Card, Chip, SmallCard, SocialMediaLinks} from '@/components';
 import {Modal} from '@/components/atoms/modal';
 import {CookieName} from '@/constants';
-import {ArticleType, findUserById, searchArticlesByAuthorId, User} from '@/graphql';
+import {ArticleType, findUserById, searchArticlesByAuthorId, searchIsi, User} from '@/graphql';
 import {getUser} from '@/graphql/query/users/get-user';
 
 import {Actions, Cards, Chips, Container, Tab, Tabs, Wrapper} from './author.styled';
@@ -71,6 +71,11 @@ export default function Author() {
   const user: User = data.users!.findUserById;
   const currenUserId = currentUser.data?._id;
   const router = useRouter();
+
+  const isiQuery = useQuery({
+    queryKey: ['get-isi', params.authorId],
+    queryFn: () => searchIsi({author: params.authorId as string}),
+  });
 
   const handleClickNewArticle = () => {
     setIsModalOpen(true);
@@ -366,35 +371,44 @@ export default function Author() {
               />
             ))}
           </Cards>
+
+          {response.hasNextPage ? (
+            <Box mt='12' display='flex' justifyContent='center'>
+              <Button
+                onClick={() => response.fetchNextPage()}
+                visual='contained'
+                className={css({
+                  color: 'text.invert',
+                  w: 'max-content',
+                  px: 4,
+                  py: 3,
+                  hideBelow: 'md',
+                  bg: 'primary',
+                })}
+              >
+                Load More
+              </Button>
+            </Box>
+          ) : null}
         </>
       ) : null}
 
       {/** RELATED TO ISI ARTICLES AND JOURNALS */}
-      {/* {selectedTab === ETabs.JOURNALS ? <Cards>
-        <Card articleLink='' title='Lorem ipsum dolor sit amet consectetur' />
-        <Card articleLink='' title='Lorem ipsum dolor sit amet consectetur' />
-        <Card articleLink='' title='Lorem ipsum dolor sit amet consectetur' />
-        <Card articleLink='' title='Lorem ipsum dolor sit amet consectetur' />
-        <Card articleLink='' title='Lorem ipsum dolor sit amet consectetur' />
-      </Cards> : null */}
+      {selectedTab === ETabs.JOURNALS ? (
+        <Cards>
+          {isiQuery?.data?.results?.map(isi => (
+            <Card key={isi._id} articleLink={isi.doi as string} title={isi.title as string} />
+          ))}
+        </Cards>
+      ) : null}
 
-      {response.hasNextPage ? (
-        <Box mt='12' display='flex' justifyContent='center'>
-          <Button
-            onClick={() => response.fetchNextPage()}
-            visual='contained'
-            className={css({
-              color: 'text.invert',
-              w: 'max-content',
-              px: 4,
-              py: 3,
-              hideBelow: 'md',
-              bg: 'primary',
-            })}
-          >
-            Load More
-          </Button>
-        </Box>
+      {selectedTab === ETabs.CV ? (
+        <Flex flexDir='column' padding={4} gap={2}>
+          <span>Education: {user.education}</span>
+          <span>Contact: {user.contact}</span>
+          <span>Expertise: {user.expertise}</span>
+          <span>Description: {user.description}</span>
+        </Flex>
       ) : null}
       <Modal
         isOpen$={isModalOpen}
