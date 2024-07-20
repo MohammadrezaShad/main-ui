@@ -7,8 +7,17 @@ export const Container = styled('footer', {
     backgroundColor: 'backgroundSecondary',
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center',
     hideBelow: 'md',
+  },
+  variants: {
+    _center: {
+      true: {
+        alignItems: 'center',
+      },
+      false: {
+        alignItems: 'start',
+      },
+    },
   },
 });
 
