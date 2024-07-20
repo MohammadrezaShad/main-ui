@@ -32,8 +32,13 @@ const socialMediaLinks: {
   {id: 3, icon: IconFacebook, action: '', type: 'link'},
 ];
 
-const Footer = () => (
-  <Container>
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const Footer = ({title, description}: Props) => (
+  <Container _center={!title && !description}>
     <Logo />
     <span
       className={css({
@@ -45,6 +50,34 @@ const Footer = () => (
     >
       @ {new Date().getFullYear()} Waterlyst Inc. All rights reserved.
     </span>
+    {title && (
+      <h1
+        className={css({
+          fontWeight: 500,
+          fontSize: '16px',
+          lineHeight: '[18.38px]',
+          color: '#333333',
+          mb: '2',
+        })}
+      >
+        {title}
+      </h1>
+    )}
+    {description && (
+      <p
+        className={css({
+          fontWeight: 400,
+          fontSize: '16px',
+          lineHeight: '[18.38px]',
+          color: '#6E7072',
+          pb: '6',
+          mb: '6',
+          borderBottom: '1px solid token(colors.gray3)',
+        })}
+      >
+        {description}
+      </p>
+    )}
     <Wrap className={css({justifyContent: 'space-between', w: 'full'})}>
       <SocialMediaLinks links={socialMediaLinks} />
       <FooterNavbar items={navbarItems} />

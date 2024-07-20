@@ -5,7 +5,7 @@ import {cookies} from 'next/headers';
 import {Footer, Header} from '@/components';
 import MobileNavbar from '@/components/organisms/mobile-navbar/mobile-navbar';
 import {CookieName} from '@/constants';
-import {getUser} from '@/graphql';
+import {getUser, searchHomepages} from '@/graphql';
 
 export const dynamic = 'force-dynamic';
 
@@ -14,6 +14,8 @@ export default async function Template({children}: {children: React.ReactNode}) 
   const authToken = cookieStore.get(CookieName.AUTH_TOKEN)?.value || '';
 
   const data = await getUser(authToken);
+
+  const homepageSeo = await searchHomepages({});
 
   return (
     <>
@@ -49,7 +51,10 @@ export default async function Template({children}: {children: React.ReactNode}) 
           </div>
         </div>
       </div>
-      <Footer />
+      <Footer
+        description={homepageSeo.results?.[0].description || undefined}
+        title={homepageSeo.results?.[0].title || undefined}
+      />
       <div
         className={css({
           hideFrom: 'md',
