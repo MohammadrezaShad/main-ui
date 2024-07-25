@@ -10,6 +10,8 @@ const Breadcrumbs = ({links}: Props) => (
     <ol
       className={css({
         display: 'inline-flex',
+        flexWrap: 'wrap',
+        gap: '2',
         alignItems: 'center',
         mr: '1',
         ml: '1',
