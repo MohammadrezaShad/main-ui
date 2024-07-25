@@ -1,19 +1,19 @@
 'use client';
 
+import {useEffect, useState} from 'react';
 import {css} from '@styled/css';
 import {Box} from '@styled/jsx';
 import {keepPreviousData, useQuery} from '@tanstack/react-query';
-import {useEffect, useState} from 'react';
 
 import {IconChevronLeft, IconChevronRight} from '@/assets';
 import {Articles, Divider, RecentArticles} from '@/components';
 import {Slider} from '@/components/organisms/slider';
+import {ArticleType, searchArticles, StatusType} from '@/graphql';
 
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 
-import {ArticleType, StatusType, searchArticles} from '@/graphql';
 import {Pagination} from './articles.styled';
 
 const Page = ({hasPdf}: {hasPdf: boolean}) => {
@@ -59,7 +59,7 @@ const Page = ({hasPdf}: {hasPdf: boolean}) => {
         })}
       >
         <Pagination
-          nextLabel={<IconChevronRight />}
+          nextLabel={<IconChevronRight className={css({w: '6', h: '6'})} />}
           onPageChange={current => setPage(current.selected + 1)}
           pageRangeDisplayed={3}
           marginPagesDisplayed={2}
