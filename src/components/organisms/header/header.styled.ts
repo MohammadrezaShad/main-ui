@@ -17,6 +17,7 @@ export const Container = styled('header', {
     transition: 'all 0.2s',
     position: 'sticky',
     top: 0,
+    zIndex: '50',
   },
 });
 
