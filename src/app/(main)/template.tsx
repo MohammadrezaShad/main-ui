@@ -52,8 +52,8 @@ export default async function Template({children}: {children: React.ReactNode}) 
         </div>
       </div>
       <Footer
-        description={homepageSeo.results?.[0]?.description || undefined}
-        title={homepageSeo.results?.[0]?.title || undefined}
+        description={homepageSeo?.results?.[0]?.description || undefined}
+        title={homepageSeo?.results?.[0]?.title || undefined}
       />
       <div
         className={css({

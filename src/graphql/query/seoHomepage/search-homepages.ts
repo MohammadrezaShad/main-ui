@@ -28,5 +28,5 @@ export async function searchHomepages(
     throw new Error('Failed to fetch data');
   }
   const response = await res.json();
-  return response.data.seoHomepage.searchHomepages;
+  return response?.data?.seoHomepage?.searchHomepages;
 }
