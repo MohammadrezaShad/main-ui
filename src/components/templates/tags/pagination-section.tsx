@@ -29,7 +29,7 @@ const PaginationSection: FC<PaginationSectionProps> = ({
       })}
     >
       <Pagination
-        nextLabel={<IconChevronRight />}
+        nextLabel={<IconChevronRight className={css({w: '6', h: '6'})} />}
         onPageChange={onPageChange}
         pageRangeDisplayed={3}
         marginPagesDisplayed={2}

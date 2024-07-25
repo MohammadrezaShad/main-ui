@@ -1,17 +1,17 @@
 'use client';
 
+import { css } from '@styled/css';
+import { Box } from '@styled/jsx';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
+import { useSearchParams } from 'next/navigation';
 import Select from 'react-select';
-import {css} from '@styled/css';
-import {Box} from '@styled/jsx';
-import {keepPreviousData, useQuery} from '@tanstack/react-query';
-import {useSearchParams} from 'next/navigation';
 
-import {hero, IconChevronLeft, IconChevronRight, IconSearch} from '@/assets';
-import {Articles, Divider, RecentArticles} from '@/components';
-import {CategoryType, searchArticles, searchCategories, StatusType} from '@/graphql';
-import {useUpdateSearchParam} from '@/hooks';
+import { hero, IconChevronLeft, IconChevronRight, IconSearch } from '@/assets';
+import { Articles, Divider, RecentArticles } from '@/components';
+import { CategoryType, searchArticles, searchCategories, StatusType } from '@/graphql';
+import { useUpdateSearchParam } from '@/hooks';
 
-import {Pagination} from '../articles/articles.styled';
+import { Pagination } from '../articles/articles.styled';
 import {
   Container,
   Content,
@@ -201,7 +201,7 @@ export default function HomeMain() {
           })}
         >
           <Pagination
-            nextLabel={<IconChevronRight />}
+            nextLabel={<IconChevronRight className={css({w: '6', h: '6'})} />}
             onPageChange={current => updateSearchParams('page', String(current.selected + 1))}
             pageRangeDisplayed={3}
             marginPagesDisplayed={2}

@@ -79,7 +79,7 @@ const Page = ({hasPdf = false}: {hasPdf?: boolean}) => {
             })}
           >
             <Pagination
-              nextLabel={<IconChevronRight />}
+              nextLabel={<IconChevronRight className={css({w: '6', h: '6'})} />}
               onPageChange={current => setPage(current.selected + 1)}
               pageRangeDisplayed={3}
               marginPagesDisplayed={2}

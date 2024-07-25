@@ -179,6 +179,8 @@ export default function MobileNavbar({userData}: Props) {
           >
             <IconHome
               className={css({
+                w: '6',
+                h: '6',
                 fill: pathname === '/' ? 'primary' : 'gray4',
               })}
             />
