@@ -27,7 +27,7 @@ export default function Header({userData}: HeaderProps) {
   const user = userData;
 
   return (
-    <Container>
+    <Container id='main-nav-header'>
       <Wrap>
         <Logo />
       </Wrap>

@@ -30,6 +30,9 @@ const Slider = ({slides, hasPdf = false}: Props) => (
       w: 'full',
       h: '540px',
       maxW: '960px',
+      mdDown: {
+        h: 'max',
+      },
     })}
   >
     {slides.map((slide, index) => (
@@ -41,6 +44,7 @@ const Slider = ({slides, hasPdf = false}: Props) => (
             w: 'full',
             mdDown: {
               flexDir: 'column',
+              h: 'max',
             },
           })}
         >
@@ -67,20 +71,15 @@ const Slider = ({slides, hasPdf = false}: Props) => (
             />
           ) : null}
           <Box
-            className={flex({
+            className={css({
+              display: 'flex',
               justifyContent: 'end',
               h: 'full',
               w: 'full',
               position: 'absolute',
               inset: 0,
-              py: {
-                base: '8',
-                mdDown: '6',
-              },
-              px: {
-                base: '16',
-                mdDown: '6',
-              },
+              py: '8',
+              px: '16',
               flexDir: 'column',
               zIndex: '50',
               bgGradient: 'to-b',
@@ -91,6 +90,9 @@ const Slider = ({slides, hasPdf = false}: Props) => (
                 justifyContent: 'start',
                 position: 'relative',
                 gradientTo: '#00000000',
+                h: 'max',
+                py: '6',
+                px: '6',
               },
             })}
           >
@@ -117,6 +119,7 @@ const Slider = ({slides, hasPdf = false}: Props) => (
                 lineClamp: '2',
                 mdDown: {
                   color: 'text.primary',
+                  display: 'none',
                 },
               })}
             >

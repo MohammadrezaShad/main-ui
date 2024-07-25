@@ -16,6 +16,7 @@ export async function searchArticles(input: SearchArticleInput): Promise<Article
           totalCount
           success
           results {
+            order
             isShowcase
             _id
             publishDate

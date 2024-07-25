@@ -12,6 +12,8 @@ import {searchActionSchema} from '@/utils';
 
 import '@/styles/globals.css';
 
+import TemplateContainer from './template-container';
+
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 const ubuntu = Ubuntu({
@@ -42,12 +44,12 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
       <body className={ubuntu.className}>
         <JsonLdScript id='website' data={searchActionSchema} />
         <MainProviders theme={theme?.value as ThemeType}>
-          <main>
+          <TemplateContainer>
             <div className='root'>
               {children}
               <FacebookPixel />
             </div>
-          </main>
+          </TemplateContainer>
           <ToastContainer />
         </MainProviders>
       </body>
