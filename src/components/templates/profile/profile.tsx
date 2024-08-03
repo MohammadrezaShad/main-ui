@@ -2,8 +2,11 @@
 
 import {css} from '@styled/css';
 import {flex} from '@styled/patterns';
+import {keepPreviousData, useQuery} from '@tanstack/react-query';
+import {getCookie} from 'cookies-next';
 import moment from 'moment';
 import Image from 'next/image';
+import Link from 'next/link';
 import {useRouter, useSearchParams} from 'next/navigation';
 
 import {IconArrowRight, IconChevronLeft, IconChevronRight, IconInfo} from '@/assets';
@@ -11,9 +14,7 @@ import {Spinner} from '@/components';
 import {CookieName} from '@/constants';
 import {getUserVisits} from '@/graphql';
 import {useUpdateSearchParam} from '@/hooks';
-import {keepPreviousData, useQuery} from '@tanstack/react-query';
-import {getCookie} from 'cookies-next';
-import Link from 'next/link';
+
 import {Pagination} from '../articles/articles.styled';
 
 const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
@@ -222,7 +223,7 @@ export default function Profile() {
               })}
             >
               <Pagination
-                nextLabel={<IconChevronRight />}
+                nextLabel={<IconChevronRight className={css({w: '6', h: '6'})} />}
                 onPageChange={current => updateSearchParams('page', String(current.selected + 1))}
                 pageRangeDisplayed={3}
                 marginPagesDisplayed={2}

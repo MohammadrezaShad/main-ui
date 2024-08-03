@@ -201,7 +201,7 @@ export default function HomeMain() {
           })}
         >
           <Pagination
-            nextLabel={<IconChevronRight />}
+            nextLabel={<IconChevronRight className={css({w: '6', h: '6'})} />}
             onPageChange={current => updateSearchParams('page', String(current.selected + 1))}
             pageRangeDisplayed={3}
             marginPagesDisplayed={2}

@@ -7,7 +7,7 @@ export const Container = styled('div', {
     flexDir: 'column',
     w: '[304px]',
     h: '[362px]',
-    mdDown: {ml: '0', w: 'full'},
+    mdDown: {ml: '0', w: 'full', h: 'max'},
   },
 });
 

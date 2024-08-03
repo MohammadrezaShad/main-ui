@@ -2,15 +2,16 @@
 
 import {css} from '@styled/css';
 import {flex} from '@styled/patterns';
+import {keepPreviousData, useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
+import {getCookie} from 'cookies-next';
 import {useRouter, useSearchParams} from 'next/navigation';
 
 import {IconArrowRight, IconChevronLeft, IconChevronRight, IconInfo} from '@/assets';
 import {Spinner} from '@/components';
 import {CookieName} from '@/constants';
-import {DeleteOneArticleBookmarkInput, deleteBookmark, getUserBookmarkedArticles} from '@/graphql';
+import {deleteBookmark, DeleteOneArticleBookmarkInput, getUserBookmarkedArticles} from '@/graphql';
 import {useUpdateSearchParam} from '@/hooks';
-import {keepPreviousData, useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
-import {getCookie} from 'cookies-next';
+
 import {Pagination} from '../articles/articles.styled';
 import BookmarkItem from './bookmark-item';
 import {Bookmarks, Container, PageTitle, Tab, Tabs, Wrapper} from './collections.styled';
@@ -110,7 +111,7 @@ export default function CollectionsView() {
               })}
             >
               <Pagination
-                nextLabel={<IconChevronRight />}
+                nextLabel={<IconChevronRight className={css({w: '6', h: '6'})} />}
                 onPageChange={current => updateSearchParams('page', String(current.selected + 1))}
                 pageRangeDisplayed={3}
                 marginPagesDisplayed={2}

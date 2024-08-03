@@ -83,7 +83,7 @@ const Page = async ({params}: {params: {articleId: string}}) => {
       className={css({
         display: 'flex',
         flexDir: 'column',
-        rowGap: 8,
+        // rowGap: 8,
         mx: 'auto',
         maxWidth: '960px',
         p: {lgDown: 4},

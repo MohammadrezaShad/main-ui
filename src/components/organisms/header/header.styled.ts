@@ -14,6 +14,10 @@ export const Container = styled('header', {
     },
     h: 20,
     borderBottom: '1px solid token(colors.gray3)',
+    transition: 'all 0.2s',
+    position: 'sticky',
+    top: 0,
+    zIndex: '50',
   },
 });
 

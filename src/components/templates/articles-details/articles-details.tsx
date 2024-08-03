@@ -4,7 +4,7 @@
 
 'use client';
 
-import {useEffect} from 'react';
+import {useCallback, useEffect} from 'react';
 import {toast} from 'react-toastify';
 import {css} from '@styled/css';
 import {Box} from '@styled/jsx';
@@ -19,6 +19,7 @@ import {IconEmail, IconFacebook, IconInstagram, IconLink, IconLinkedin, IconX} f
 import {
   ArticleBody,
   ArticleInfo,
+  Breadcrumbs,
   Button,
   PostDate,
   PrimarySubtitle,
@@ -214,6 +215,26 @@ const Page = () => {
       queryClient.invalidateQueries({queryKey: ['get-article-comments', article.slug]}),
   });
 
+  const getBreadcrumbs = useCallback(() => {
+    const links = [
+      {
+        title: article.hasPdf ? 'PDF Articles' : 'Articles',
+        href: article.hasPdf ? '/pdf-articles' : '/articles',
+      },
+    ];
+    if (article?.categories?.[0]) {
+      links.push({
+        title: article?.categories?.[0]?.title,
+        href: `${article.hasPdf ? '/pdf-articles' : '/articles'}/categories/${article?.categories?.[0]?._id}/articles`,
+      });
+    }
+    links.push({
+      title: article.title,
+      href: `${article.hasPdf ? '/pdf-articles' : '/articles'}/${article.slug}`,
+    });
+    return links;
+  }, [params.articleId]);
+
   useEffect(() => {
     recordVisitStatisticsMutation.mutateAsync({article: article._id});
   }, []);
@@ -223,339 +244,343 @@ const Page = () => {
   }, []);
 
   return (
-    <div
-      className={css({
-        pt: '12',
-      })}
-    >
-      <PostDate date={formattedDate} />
-
+    <>
+      <Box mt={4}>
+        <Breadcrumbs links={getBreadcrumbs()} />
+      </Box>
       <div
         className={css({
-          display: 'flex',
-          flexDir: 'column',
-          gap: 4,
-          mb: '4',
-          mt: '3',
+          pt: '12',
         })}
       >
-        <PrimaryTitle title={article.title} />
-        {article.excerpt ? <PrimarySubtitle text={article.excerpt} /> : null}
-      </div>
-      <article
-        className={flex({
-          flexDir: 'column',
-          textStyle: 'body',
-          color: 'text.primary',
-        })}
-      >
-        <Box
-          className={flex({
-            justifyContent: 'space-between',
-            alignItems: {
-              base: 'center',
-              mdDown: 'start',
-            },
-            order: {
-              mdDown: 2,
-            },
-            mb: '8',
+        <PostDate date={formattedDate} />
+
+        <div
+          className={css({
+            display: 'flex',
+            flexDir: 'column',
+            gap: 4,
+            mb: '4',
+            mt: '3',
           })}
         >
-          <ArticleInfo
-            articleId={article._id}
-            author={article.author as UserOutputType}
-            readingDuration={article.readingDuration}
-            handleToggleBookmark={handleToggleBookmark}
-            isBookmark={article.isBookmark}
-          />
-
-          <Box className={css({hideBelow: 'md'})}>
-            <SocialMediaLinks links={socialMediaLinks} />
-          </Box>
-        </Box>
-
-        {article.thumbnail ? (
-          <Image
-            unoptimized
-            alt={article.title ?? ''}
-            src={`${IMAGE_STORAGE_URL}/${article.thumbnail?.filename}-${article.thumbnail?._id}`}
-            width={960}
-            height={540}
-            className={css({
-              width: 'full',
-              maxW: '[960px]',
-              mx: 'auto',
-              height: 'auto',
-              objectFit: 'cover',
-              mb: '8',
-              order: {
-                mdDown: 1,
-              },
-            })}
-          />
-        ) : null}
-
-        {articlePdfDownloadUrl ? (
+          <PrimaryTitle title={article.title} />
+          {article.excerpt ? <PrimarySubtitle text={article.excerpt} /> : null}
+        </div>
+        <article
+          className={flex({
+            flexDir: 'column',
+            textStyle: 'body',
+            color: 'text.primary',
+          })}
+        >
           <Box
             className={flex({
+              justifyContent: 'space-between',
               alignItems: {
                 base: 'center',
                 mdDown: 'start',
               },
-              justifyContent: 'space-between',
-              p: '6',
-              backgroundColor: 'gray1',
-              mb: '6',
               order: {
-                mdDown: 3,
+                mdDown: 2,
               },
-              flexDirection: {mdDown: 'column'},
-              gap: {mdDown: '4'},
+              mb: '8',
+            })}
+          >
+            <ArticleInfo
+              articleId={article._id}
+              author={article.author as UserOutputType}
+              readingDuration={article.readingDuration}
+              handleToggleBookmark={handleToggleBookmark}
+              isBookmark={article.isBookmark}
+            />
+
+            <Box className={css({hideBelow: 'md'})}>
+              <SocialMediaLinks links={socialMediaLinks} />
+            </Box>
+          </Box>
+
+          {article.thumbnail ? (
+            <Image
+              unoptimized
+              alt={article.title ?? ''}
+              src={`${IMAGE_STORAGE_URL}/${article.thumbnail?.filename}-${article.thumbnail?._id}`}
+              width={960}
+              height={540}
+              className={css({
+                width: 'full',
+                maxW: '[960px]',
+                mx: 'auto',
+                height: 'auto',
+                objectFit: 'cover',
+                mb: '8',
+                order: {
+                  mdDown: 1,
+                },
+              })}
+            />
+          ) : null}
+
+          {articlePdfDownloadUrl ? (
+            <Box
+              className={flex({
+                alignItems: {
+                  base: 'center',
+                  mdDown: 'start',
+                },
+                justifyContent: 'space-between',
+                p: '6',
+                backgroundColor: 'gray1',
+                mb: '6',
+                order: {
+                  mdDown: 3,
+                },
+                flexDirection: {mdDown: 'column'},
+                gap: {mdDown: '4'},
+              })}
+            >
+              <div
+                className={css({
+                  textStyle: 'h4',
+                  color: 'text.primary',
+                })}
+              >
+                Download or read the full article as a PDF
+              </div>
+              <Box
+                className={css({
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4',
+                  mdDown: {
+                    w: 'full',
+                    justifyContent: 'space-between',
+                  },
+                })}
+              >
+                <Link
+                  target='_blank'
+                  href={articlePdfDownloadUrl}
+                  className={css({
+                    '& span': {color: 'gray4'},
+                    w: 'max-content',
+                    px: 4,
+                    py: 3,
+                    border: '1px solid token(colors.gray3)',
+                  })}
+                >
+                  <span>Read File</span>
+                </Link>
+
+                <Link
+                  download
+                  target='_blank'
+                  href={articlePdfDownloadUrl}
+                  className={css({
+                    '& span': {color: 'white'},
+                    w: 'max-content',
+                    px: 4,
+                    py: 3,
+                    border: '1px solid token(colors.gray3)',
+                    bgColor: 'primary',
+                  })}
+                >
+                  <span>Download PDF</span>
+                </Link>
+              </Box>
+            </Box>
+          ) : null}
+
+          <ArticleBody
+            className={css({
+              order: {
+                mdDown: 4,
+              },
+              '& img': {
+                mx: 'auto',
+                my: '1',
+                w: 'full',
+                h: 'auto',
+              },
+              '& h2': {
+                textAlign: 'unset !important',
+              },
+            })}
+            content={article.content}
+          />
+        </article>
+        {article.tags && article.tags.length > 0 ? <Tags tags={article.tags} /> : null}
+        <Box className={css({hideFrom: 'md', mb: '8'})}>
+          <SocialMediaLinks links={socialMediaLinks} />
+        </Box>
+        {article.faqs && article.faqs.length > 0 ? <Questions faqs={article.faqs} /> : null}
+        {article.quiz && token ? (
+          <Link
+            className={css({
+              backgroundColor: 'primary',
+              borderRadius: 4,
+              w: 'max-content',
+              textStyle: 'lg',
+              display: 'block',
+              mt: '4',
+              p: '4',
+              color: 'text.invert',
+              _hover: {
+                bg: 'primary.dark',
+              },
+            })}
+            target='_blank'
+            href={`${Paths.Quiz.getPath()}/normal/${article?.quiz?._id}`}
+          >
+            Participation in &quot;{article?.quiz?.title}&quot; quiz
+          </Link>
+        ) : article.quiz ? (
+          <div
+            className={css({
+              backgroundColor: 'primary',
+              borderRadius: 4,
+              w: 'max-content',
+              textStyle: 'lg',
+              display: 'block',
+              mt: '4',
+              p: '4',
+              color: 'text.invert',
+              _hover: {
+                bg: 'primary.dark',
+              },
+              cursor: 'pointer',
+            })}
+            onClick={() => isLoginOpen$.set(true)}
+          >
+            Participation in &quot;{article?.quiz?.title}&quot; quiz
+          </div>
+        ) : null}
+        {article.graphicalQuiz && token ? (
+          <Link
+            className={css({
+              backgroundColor: 'primary',
+              borderRadius: 4,
+              w: 'max-content',
+              textStyle: 'lg',
+              display: 'block',
+              mt: '4',
+              p: '4',
+              color: 'text.invert',
+              _hover: {
+                bg: 'primary.dark',
+              },
+            })}
+            target='_blank'
+            href={`${Paths.Quiz.getPath()}/graphical/${article?.quiz?._id}`}
+          >
+            Participation in &quot;{article?.graphicalQuiz?.title}&quot; quiz
+          </Link>
+        ) : article.graphicalQuiz ? (
+          <div
+            className={css({
+              backgroundColor: 'primary',
+              borderRadius: 4,
+              w: 'max-content',
+              textStyle: 'lg',
+              display: 'block',
+              mt: '4',
+              p: '4',
+              color: 'text.invert',
+              _hover: {
+                bg: 'primary.dark',
+              },
+              cursor: 'pointer',
+            })}
+            onClick={() => isLoginOpen$.set(true)}
+          >
+            Participation in &quot;{article?.graphicalQuiz?.title}&quot; quiz
+          </div>
+        ) : null}
+        {article.author && <UserInfo author={article.author} />}
+
+        {relatedArticles.length > 0 ? (
+          <div
+            className={css({
+              pb: '8',
+              borderBottom: '1px solid token(colors.gray3)',
+              mb: '10',
             })}
           >
             <div
               className={css({
-                textStyle: 'h4',
+                textStyle: 'headline3',
                 color: 'text.primary',
+                mb: '6',
               })}
             >
-              Download or read the full article as a PDF
+              Related Articles
             </div>
-            <Box
-              className={css({
-                display: 'flex',
-                alignItems: 'center',
-                gap: '4',
-                mdDown: {
-                  w: 'full',
-                  justifyContent: 'space-between',
-                },
-              })}
-            >
-              <Link
-                target='_blank'
-                href={articlePdfDownloadUrl}
-                className={css({
-                  '& span': {color: 'gray4'},
-                  w: 'max-content',
-                  px: 4,
-                  py: 3,
-                  border: '1px solid token(colors.gray3)',
-                })}
-              >
-                <span>Read File</span>
-              </Link>
 
-              <Link
-                download
-                target='_blank'
-                href={articlePdfDownloadUrl}
-                className={css({
-                  '& span': {color: 'white'},
-                  w: 'max-content',
-                  px: 4,
-                  py: 3,
-                  border: '1px solid token(colors.gray3)',
-                  bgColor: 'primary',
-                })}
-              >
-                <span>Download PDF</span>
-              </Link>
-            </Box>
-          </Box>
+            <RecentArticles posts={relatedArticles} />
+          </div>
         ) : null}
 
-        <ArticleBody
+        <h3
           className={css({
-            order: {
-              mdDown: 4,
-            },
-            '& img': {
-              mx: 'auto',
-              my: '1',
-              w: 'full',
-              h: 'auto',
-            },
-            '& h2': {
-              textAlign: 'unset !important',
-            },
+            textStyle: 'headline3',
+            color: 'text.primary',
+            mb: '6',
           })}
-          content={article.content}
-        />
-      </article>
-      {article.tags && article.tags.length > 0 ? <Tags tags={article.tags} /> : null}
-      <Box className={css({hideFrom: 'md', mb: '8'})}>
-        <SocialMediaLinks links={socialMediaLinks} />
-      </Box>
-      {article.faqs && article.faqs.length > 0 ? <Questions faqs={article.faqs} /> : null}
-      {article.quiz && token ? (
-        <Link
-          className={css({
-            backgroundColor: 'primary',
-            borderRadius: 4,
-            w: 'max-content',
-            textStyle: 'lg',
-            display: 'block',
-            mt: '4',
-            p: '4',
-            color: 'text.invert',
-            _hover: {
-              bg: 'primary.dark',
-            },
-          })}
-          target='_blank'
-          href={`${Paths.Quiz.getPath()}/normal/${article?.quiz?._id}`}
         >
-          Participation in &quot;{article?.quiz?.title}&quot; quiz
-        </Link>
-      ) : article.quiz ? (
-        <div
-          className={css({
-            backgroundColor: 'primary',
-            borderRadius: 4,
-            w: 'max-content',
-            textStyle: 'lg',
-            display: 'block',
-            mt: '4',
-            p: '4',
-            color: 'text.invert',
-            _hover: {
-              bg: 'primary.dark',
-            },
-            cursor: 'pointer',
-          })}
-          onClick={() => isLoginOpen$.set(true)}
-        >
-          Participation in &quot;{article?.quiz?.title}&quot; quiz
-        </div>
-      ) : null}
-      {article.graphicalQuiz && token ? (
-        <Link
-          className={css({
-            backgroundColor: 'primary',
-            borderRadius: 4,
-            w: 'max-content',
-            textStyle: 'lg',
-            display: 'block',
-            mt: '4',
-            p: '4',
-            color: 'text.invert',
-            _hover: {
-              bg: 'primary.dark',
-            },
-          })}
-          target='_blank'
-          href={`${Paths.Quiz.getPath()}/graphical/${article?.quiz?._id}`}
-        >
-          Participation in &quot;{article?.graphicalQuiz?.title}&quot; quiz
-        </Link>
-      ) : article.graphicalQuiz ? (
-        <div
-          className={css({
-            backgroundColor: 'primary',
-            borderRadius: 4,
-            w: 'max-content',
-            textStyle: 'lg',
-            display: 'block',
-            mt: '4',
-            p: '4',
-            color: 'text.invert',
-            _hover: {
-              bg: 'primary.dark',
-            },
-            cursor: 'pointer',
-          })}
-          onClick={() => isLoginOpen$.set(true)}
-        >
-          Participation in &quot;{article?.graphicalQuiz?.title}&quot; quiz
-        </div>
-      ) : null}
-      {article.author && <UserInfo author={article.author} />}
+          Reviews
+        </h3>
 
-      {relatedArticles.length > 0 ? (
-        <div
-          className={css({
-            pb: '8',
-            borderBottom: '1px solid token(colors.gray3)',
-            mb: '10',
-          })}
-        >
-          <div
+        {userData?.data?._id ? (
+          <form
+            onSubmit={handleSubmitComment}
             className={css({
-              textStyle: 'headline3',
-              color: 'text.primary',
-              mb: '6',
+              display: 'flex',
+              flexDir: 'column',
+              alignItems: 'start',
+              gap: '4',
             })}
+            action=''
           >
-            Related Articles
-          </div>
+            <textarea
+              id='comment'
+              name='comment'
+              className={css({
+                p: '4',
+                border: '1px solid token(colors.gray3)',
+                rounded: 'md',
+                w: 'full',
+                resize: 'none',
+                _focusVisible: {
+                  outline: 'none',
+                  border: '1px solid token(colors.primary)',
+                },
+              })}
+              placeholder='Write a comment ...'
+              rows={8}
+            />
 
-          <RecentArticles posts={relatedArticles} />
-        </div>
-      ) : null}
+            <Button
+              type='submit'
+              visual='contained'
+              className={css({
+                color: 'text.invert',
+                w: 'max-content',
+                px: 4,
+                py: 3,
+                bg: 'primary',
+                borderRadius: 0,
+              })}
+            >
+              Post Review
+            </Button>
+          </form>
+        ) : (
+          <p>Login to write a comment</p>
+        )}
 
-      <h3
-        className={css({
-          textStyle: 'headline3',
-          color: 'text.primary',
-          mb: '6',
-        })}
-      >
-        Reviews
-      </h3>
-
-      {userData?.data?._id ? (
-        <form
-          onSubmit={handleSubmitComment}
-          className={css({
-            display: 'flex',
-            flexDir: 'column',
-            alignItems: 'start',
-            gap: '4',
-          })}
-          action=''
-        >
-          <textarea
-            id='comment'
-            name='comment'
-            className={css({
-              p: '4',
-              border: '1px solid token(colors.gray3)',
-              rounded: 'md',
-              w: 'full',
-              resize: 'none',
-              _focusVisible: {
-                outline: 'none',
-                border: '1px solid token(colors.primary)',
-              },
-            })}
-            placeholder='Write a comment ...'
-            rows={8}
-          />
-
-          <Button
-            type='submit'
-            visual='contained'
-            className={css({
-              color: 'text.invert',
-              w: 'max-content',
-              px: 4,
-              py: 3,
-              bg: 'primary',
-              borderRadius: 0,
-            })}
-          >
-            Post Review
-          </Button>
-        </form>
-      ) : (
-        <p>Login to write a comment</p>
-      )}
-
-      {commentsData.data?.results?.map(comment => (
-        <Review key={comment._id} comment={comment} />
-      )) /* <h3
+        {commentsData.data?.results?.map(comment => (
+          <Review key={comment._id} comment={comment} />
+        )) /* <h3
         className={css({
           textStyle: 'headline3',
           color: 'text.primary',
@@ -582,7 +607,8 @@ const Page = () => {
           </button>
         </Review>
       </Review> */}
-    </div>
+      </div>
+    </>
   );
 };
 
