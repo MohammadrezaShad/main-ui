@@ -79,3 +79,36 @@ export const QuizThumbnail = styled(Image, {
     },
   },
 });
+
+export const QuizImage = styled('div', {
+  base: {
+    display: 'flex',
+    flexDir: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    p: '11',
+    mt: {
+      base: '10',
+      mdDown: '4',
+    },
+    rounded: 'full',
+    px: {
+      mdDown: '5',
+    },
+    backgroundColor: 'gray1',
+    position: 'relative',
+    aspectRatio: 1,
+    w: {
+      base: '160px',
+      mdDown: '200px',
+    },
+    mx: 'auto',
+  },
+  variants: {
+    _hidden: {
+      true: {
+        display: 'none',
+      },
+    },
+  },
+});

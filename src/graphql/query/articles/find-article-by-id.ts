@@ -25,7 +25,15 @@ export async function findArticleById(
               updatedAt
               width
             }
+            _id   
+            quiz{
             _id
+            title
+            }
+            graphicalQuiz{
+            _id
+            title
+            }
             author {
               _id
               avatar {

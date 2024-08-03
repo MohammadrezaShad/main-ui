@@ -30,6 +30,14 @@ export async function findArticleByName(
             updatedAt
             isBookmark
             _id
+            quiz{
+            _id
+            title
+            }
+            graphicalQuiz{
+            _id
+            title
+            }
             author {
               _id
               avatar {

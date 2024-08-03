@@ -180,6 +180,8 @@ export type ArticleType = {
   updateUser?: Maybe<UserOutputType>;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
   visitsCount: Scalars['Int']['output'];
+  quiz?: Maybe<QuizType>;
+  graphicalQuiz?: Maybe<GraphicalQuizType>;
 };
 
 export type AuthMutation = {

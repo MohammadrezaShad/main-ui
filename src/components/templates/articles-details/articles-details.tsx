@@ -1,3 +1,7 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable no-nested-ternary */
+
 'use client';
 
 import {useEffect} from 'react';
@@ -27,6 +31,7 @@ import {
   UserInfo,
 } from '@/components';
 import {CookieName} from '@/constants';
+import {useAuthContext} from '@/contexts';
 import {
   addBookmark,
   ArticleType,
@@ -44,6 +49,7 @@ import {
   UserOutputType,
 } from '@/graphql';
 import useClipboard from '@/hooks/use-clipboard';
+import {Paths} from '@/utils';
 
 const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
@@ -51,6 +57,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 const Page = () => {
   const queryClient = useQueryClient();
   const token = getCookie(CookieName.AUTH_TOKEN);
+  const {isLoginOpen$} = useAuthContext();
 
   const userData = useQuery({
     queryKey: ['get-profile'],
@@ -382,6 +389,88 @@ const Page = () => {
         <SocialMediaLinks links={socialMediaLinks} />
       </Box>
       {article.faqs && article.faqs.length > 0 ? <Questions faqs={article.faqs} /> : null}
+      {article.quiz && token ? (
+        <Link
+          className={css({
+            backgroundColor: 'primary',
+            borderRadius: 4,
+            w: 'max-content',
+            textStyle: 'lg',
+            display: 'block',
+            mt: '4',
+            p: '4',
+            color: 'text.invert',
+            _hover: {
+              bg: 'primary.dark',
+            },
+          })}
+          target='_blank'
+          href={`${Paths.Quiz.getPath()}/normal/${article?.quiz?._id}`}
+        >
+          Participation in &quot;{article?.quiz?.title}&quot; quiz
+        </Link>
+      ) : article.quiz ? (
+        <div
+          className={css({
+            backgroundColor: 'primary',
+            borderRadius: 4,
+            w: 'max-content',
+            textStyle: 'lg',
+            display: 'block',
+            mt: '4',
+            p: '4',
+            color: 'text.invert',
+            _hover: {
+              bg: 'primary.dark',
+            },
+            cursor: 'pointer',
+          })}
+          onClick={() => isLoginOpen$.set(true)}
+        >
+          Participation in &quot;{article?.quiz?.title}&quot; quiz
+        </div>
+      ) : null}
+      {article.graphicalQuiz && token ? (
+        <Link
+          className={css({
+            backgroundColor: 'primary',
+            borderRadius: 4,
+            w: 'max-content',
+            textStyle: 'lg',
+            display: 'block',
+            mt: '4',
+            p: '4',
+            color: 'text.invert',
+            _hover: {
+              bg: 'primary.dark',
+            },
+          })}
+          target='_blank'
+          href={`${Paths.Quiz.getPath()}/graphical/${article?.quiz?._id}`}
+        >
+          Participation in &quot;{article?.graphicalQuiz?.title}&quot; quiz
+        </Link>
+      ) : article.graphicalQuiz ? (
+        <div
+          className={css({
+            backgroundColor: 'primary',
+            borderRadius: 4,
+            w: 'max-content',
+            textStyle: 'lg',
+            display: 'block',
+            mt: '4',
+            p: '4',
+            color: 'text.invert',
+            _hover: {
+              bg: 'primary.dark',
+            },
+            cursor: 'pointer',
+          })}
+          onClick={() => isLoginOpen$.set(true)}
+        >
+          Participation in &quot;{article?.graphicalQuiz?.title}&quot; quiz
+        </div>
+      ) : null}
       {article.author && <UserInfo author={article.author} />}
 
       {relatedArticles.length > 0 ? (
