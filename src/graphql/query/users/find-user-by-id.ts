@@ -53,6 +53,12 @@ export async function findUserById(
           username
           visitedArticlesCount
           website
+          facebook
+          instagram
+          twitter
+          linkedin
+          telegram
+          whatsApp
         }
       }
     }`,

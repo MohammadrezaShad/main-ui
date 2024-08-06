@@ -1,6 +1,6 @@
+import React from 'react';
 import {css, cx} from '@styled/css';
 import Link from 'next/link';
-import React from 'react';
 
 interface SocialMediaLinkProps {
   icon: React.ComponentType<{className: string}>;
@@ -59,9 +59,11 @@ const SocialMediaLinks: React.FC<SocialMediaLinksProps> = ({links, classNames}) 
       classNames,
     )}
   >
-    {links.map(link => (
-      <SocialMediaLink key={link.id} {...link} />
-    ))}
+    {links
+      .filter(link => link.action !== '' && link.action !== null && link.action !== undefined)
+      .map(link => (
+        <SocialMediaLink key={link.id} {...link} />
+      ))}
   </ul>
 );
 

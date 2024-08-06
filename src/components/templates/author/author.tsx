@@ -15,10 +15,18 @@ import {useInfiniteQuery, useMutation, useQuery, useQueryClient} from '@tanstack
 import {getCookie} from 'cookies-next';
 import {useFormik} from 'formik';
 import moment from 'moment';
-import {useParams, useRouter} from 'next/navigation';
+import {useParams} from 'next/navigation';
 import * as Yup from 'yup';
 
-import {IconFacebook, IconInstagram, IconLinkedIn, IconNotify, IconRG, IconTwitter} from '@/assets';
+import {
+  IconFacebook,
+  IconInstagram,
+  IconLinkedIn,
+  IconNotify,
+  IconTelegram,
+  IconTwitter,
+  IconWhatsapp,
+} from '@/assets';
 import {Avatar, Button, Card, Chip, SmallCard, SocialMediaLinks, TextField} from '@/components';
 import {Modal} from '@/components/atoms/modal';
 import {CookieName} from '@/constants';
@@ -59,19 +67,6 @@ const isiSchema = Yup.object().shape({
   journal: Yup.string().required().min(8),
   year: Yup.string().required().min(3).max(30),
 });
-
-const socialMediaLinks: {
-  id: number;
-  icon: any;
-  action: any;
-  type: 'button' | 'link';
-}[] = [
-  {id: 1, icon: IconTwitter, action: '', type: 'link'},
-  {id: 2, icon: IconLinkedIn, action: '', type: 'link'},
-  {id: 3, icon: IconFacebook, action: '', type: 'link'},
-  {id: 4, icon: IconRG, action: '', type: 'link'},
-  {id: 5, icon: IconInstagram, action: '', type: 'link'},
-];
 
 enum ETabs {
   ARTICLES = 'articles',
@@ -125,7 +120,20 @@ export default function Author() {
   }) as any;
   const user: User = data?.users!.findUserById;
   const currenUserId = currentUser.data?._id;
-  const router = useRouter();
+
+  const socialMediaLinks: {
+    id: number;
+    icon: any;
+    action: any;
+    type: 'button' | 'link';
+  }[] = [
+    {id: 1, icon: IconTwitter, action: user?.twitter, type: 'link'},
+    {id: 2, icon: IconLinkedIn, action: user?.linkedin, type: 'link'},
+    {id: 3, icon: IconFacebook, action: user?.facebook, type: 'link'},
+    {id: 4, icon: IconTelegram, action: user?.telegram, type: 'link'},
+    {id: 5, icon: IconInstagram, action: user?.instagram, type: 'link'},
+    {id: 65, icon: IconWhatsapp, action: user?.whatsApp, type: 'link'},
+  ];
 
   const isiQuery = useQuery({
     queryKey: ['get-isi', params.authorId],

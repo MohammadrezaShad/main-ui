@@ -55,6 +55,13 @@ export async function findArticleByName(
               firstName
               lastName
               username
+              website
+              facebook
+              instagram
+              twitter
+              linkedin
+              telegram
+              whatsApp
             }
             categories {
               _id
