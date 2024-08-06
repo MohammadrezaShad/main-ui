@@ -48,8 +48,17 @@ export class StarRating extends HTMLElement {
 
     const filledStarSvg = `<svg width="18" height="20" viewBox="0 0 18 20" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M9.61026 0.21C9.25026 -0.07 8.75029 -0.07 8.39029 0.21C6.49029 1.66 0.880276 6.39 0.910276 11.9C0.910276 16.36 4.54028 20 9.01028 20C13.4803 20 17.1103 16.37 17.1103 11.91C17.1203 6.48 11.5003 1.67 9.61026 0.21Z" fill="#44BAEB"/>
-</svg>
-`;
+</svg>`;
+
+    const halfStarSvg = `<svg width="18" height="20" viewBox="0 0 18 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M9.61026 0.21C9.25026 -0.07 8.75029 -0.07 8.39029 0.21C6.49029 1.66 0.880276 6.39 0.910276 11.9C0.910276 16.36 4.54028 20 9.01028 20C13.4803 20 17.1103 16.37 17.1103 11.91C17.1203 6.48 11.5003 1.67 9.61026 0.21Z" fill="url(#halfGradient)"  stroke="#44BAEB" stroke-width="1px" />
+<defs>
+  <linearGradient id="halfGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+    <stop offset="50%" style="stop-color: #44BAEB; stop-opacity: 1" />
+    <stop offset="50%" style="stop-color: transparent; stop-opacity: 1" />
+  </linearGradient>
+</defs>
+</svg>`;
 
     this.shadowRoot.innerHTML = `
           <style>
@@ -87,7 +96,15 @@ export class StarRating extends HTMLElement {
       for (let i = 1; i <= this.totalStars; i += 1) {
         const star = document.createElement('span');
         star.classList.add('star');
-        star.innerHTML = i <= this.rating ? filledStarSvg : emptyStarSvg;
+
+        if (i <= this.rating) {
+          star.innerHTML = filledStarSvg;
+        } else if (i > this.rating && i - this.rating < 1) {
+          star.innerHTML = halfStarSvg;
+        } else {
+          star.innerHTML = emptyStarSvg;
+        }
+
         if (!this.readonly) star.addEventListener('click', () => this.setRating(i));
         this.stars.push(star);
         starsContainer.appendChild(star);
