@@ -6,3 +6,4 @@ export * from './get-user-bookmarked-articles';
 export * from './search-articles';
 export * from './search-articles-by-author-id';
 export * from './search-articles-by-category';
+export * from './share-to-social-netwroks';

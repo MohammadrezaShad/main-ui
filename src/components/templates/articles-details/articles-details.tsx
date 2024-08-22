@@ -296,7 +296,7 @@ const Page = () => {
             />
 
             <Box className={css({hideBelow: 'md'})}>
-              <SocialMediaLinks links={socialMediaLinks} />
+              <SocialMediaLinks articleId={article?._id as string} links={socialMediaLinks} />
             </Box>
           </Box>
 
@@ -411,7 +411,7 @@ const Page = () => {
         </article>
         {article.tags && article.tags.length > 0 ? <Tags tags={article.tags} /> : null}
         <Box className={css({hideFrom: 'md', mb: '8'})}>
-          <SocialMediaLinks links={socialMediaLinks} />
+          <SocialMediaLinks articleId={article?._id as string} links={socialMediaLinks} />
         </Box>
         {article.faqs && article.faqs.length > 0 ? <Questions faqs={article.faqs} /> : null}
         {article.quiz && token ? (
