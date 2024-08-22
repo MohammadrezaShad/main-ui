@@ -59,11 +59,13 @@ export type ArticleInputType = {
   createUser?: InputMaybe<UserOutputInputType>;
   excerpt?: InputMaybe<Scalars['String']['input']>;
   faqs?: InputMaybe<Array<FaqInputType>>;
+  graphicalQuiz?: InputMaybe<GraphicalQuizInputType>;
   hasPdf?: InputMaybe<Scalars['Boolean']['input']>;
   images?: InputMaybe<Array<ImageInputType>>;
   isShowcase?: InputMaybe<Scalars['Boolean']['input']>;
   order?: InputMaybe<Scalars['Int']['input']>;
   publishDate?: InputMaybe<Scalars['DateTime']['input']>;
+  quiz?: InputMaybe<QuizInputType>;
   readingDuration?: InputMaybe<Scalars['Int']['input']>;
   reports?: InputMaybe<Array<Scalars['String']['input']>>;
   slug: Scalars['String']['input'];
@@ -108,6 +110,7 @@ export type ArticleQuery = {
   getUserArticles: GetUserArticlesOutput;
   getUserBookmarkedArticles: GetUserArticlesOutput;
   searchArticles: SearchArticleOutput;
+  shareToSocialNetworks: ShareArticleOutput;
 };
 
 export type ArticleQueryFindArticleByIdArgs = {
@@ -142,6 +145,10 @@ export type ArticleQuerySearchArticlesArgs = {
   input: SearchArticleInput;
 };
 
+export type ArticleQueryShareToSocialNetworksArgs = {
+  input: ShareArticleInput;
+};
+
 export enum ArticleSortType {
   AscendingOrder = 'ASCENDING_ORDER',
   DescendingOrder = 'DESCENDING_ORDER',
@@ -164,6 +171,7 @@ export type ArticleType = {
   engagementCount: Scalars['Int']['output'];
   excerpt?: Maybe<Scalars['String']['output']>;
   faqs?: Maybe<Array<FaqType>>;
+  graphicalQuiz?: Maybe<GraphicalQuizType>;
   hasPdf?: Maybe<Scalars['Boolean']['output']>;
   images?: Maybe<Array<ImageType>>;
   isBookmark: Scalars['Boolean']['output'];
@@ -172,6 +180,7 @@ export type ArticleType = {
   likeCount: Scalars['Int']['output'];
   order?: Maybe<Scalars['Int']['output']>;
   publishDate?: Maybe<Scalars['DateTime']['output']>;
+  quiz?: Maybe<QuizType>;
   readingDuration?: Maybe<Scalars['Int']['output']>;
   reports?: Maybe<Array<Scalars['String']['output']>>;
   savedCount: Scalars['Int']['output'];
@@ -184,8 +193,6 @@ export type ArticleType = {
   updateUser?: Maybe<UserOutputType>;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
   visitsCount: Scalars['Int']['output'];
-  quiz?: Maybe<QuizType>;
-  graphicalQuiz?: Maybe<GraphicalQuizType>;
 };
 
 export type AuthMutation = {
@@ -581,11 +588,13 @@ export type CreateArticleInput = {
   content: Scalars['String']['input'];
   excerpt?: InputMaybe<Scalars['String']['input']>;
   faqs?: InputMaybe<Array<FaqInputType>>;
+  graphicalQuiz?: InputMaybe<Scalars['String']['input']>;
   hasPdf?: InputMaybe<Scalars['Boolean']['input']>;
   images?: InputMaybe<Array<Scalars['String']['input']>>;
   isShowcase?: InputMaybe<Scalars['Boolean']['input']>;
   order?: InputMaybe<Scalars['Int']['input']>;
   publishDate?: InputMaybe<Scalars['DateTime']['input']>;
+  quiz?: InputMaybe<Scalars['String']['input']>;
   readingDuration?: InputMaybe<Scalars['Int']['input']>;
   reports?: InputMaybe<Array<Scalars['String']['input']>>;
   seoSetting?: InputMaybe<SeoSettingInput>;
@@ -1309,6 +1318,19 @@ export type GoogleTokenInput = {
   token: Scalars['String']['input'];
 };
 
+export type GraphicalQuizInputType = {
+  category?: InputMaybe<CategoryInputType>;
+  createUser?: InputMaybe<UserOutputInputType>;
+  duration?: InputMaybe<Scalars['Int']['input']>;
+  image?: InputMaybe<ImageInputType>;
+  price?: InputMaybe<Scalars['Int']['input']>;
+  quizPoints: Array<QuizPointsInputType>;
+  reward?: InputMaybe<Scalars['Int']['input']>;
+  thumbnail?: InputMaybe<ImageInputType>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  updateUser?: InputMaybe<UserOutputInputType>;
+};
+
 export type GraphicalQuizMutation = {
   __typename?: 'GraphicalQuizMutation';
   createGraphicalQuiz: CreateGraphicalQuizOutput;
@@ -1379,6 +1401,7 @@ export type GraphicalQuizType = {
 export type ImageInputType = {
   alt?: InputMaybe<Scalars['String']['input']>;
   filename: Scalars['String']['input'];
+  format?: InputMaybe<Scalars['String']['input']>;
   height: Scalars['Float']['input'];
   preview: Scalars['String']['input'];
   width: Scalars['Float']['input'];
@@ -1429,6 +1452,7 @@ export type ImageType = {
   alt?: Maybe<Scalars['String']['output']>;
   createdAt?: Maybe<Scalars['DateTime']['output']>;
   filename: Scalars['String']['output'];
+  format?: Maybe<Scalars['String']['output']>;
   height: Scalars['Float']['output'];
   preview: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
@@ -1646,6 +1670,14 @@ export type Query = {
   visitStatistics: VisitStatisticsQuery;
 };
 
+export type QuestionInputType = {
+  categories?: InputMaybe<Array<CategoryInputType>>;
+  createUser?: InputMaybe<UserOutputInputType>;
+  options: Array<OptionInputType>;
+  question: Scalars['String']['input'];
+  updateUser?: InputMaybe<UserOutputInputType>;
+};
+
 export type QuestionMutation = {
   __typename?: 'QuestionMutation';
   createQuestion: CreateQuestionOutput;
@@ -1696,6 +1728,18 @@ export type QuestionType = {
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
 };
 
+export type QuizInputType = {
+  category?: InputMaybe<CategoryInputType>;
+  createUser?: InputMaybe<UserOutputInputType>;
+  duration?: InputMaybe<Scalars['Int']['input']>;
+  price?: InputMaybe<Scalars['Int']['input']>;
+  questions: Array<QuestionInputType>;
+  reward?: InputMaybe<Scalars['Int']['input']>;
+  thumbnail?: InputMaybe<ImageInputType>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  updateUser?: InputMaybe<UserOutputInputType>;
+};
+
 export type QuizMutation = {
   __typename?: 'QuizMutation';
   createQuiz: CreateQuizOutput;
@@ -1726,12 +1770,14 @@ export type QuizMutationUpdateQuizArgs = {
 };
 
 export type QuizPointsInputType = {
+  color?: InputMaybe<Scalars['String']['input']>;
   point: PointInputType;
   quiz: Scalars['String']['input'];
 };
 
 export type QuizPointsType = {
   __typename?: 'QuizPointsType';
+  color?: Maybe<Scalars['String']['output']>;
   point: PointType;
   quiz: Scalars['String']['output'];
   quizObject?: Maybe<QuizType>;
@@ -1880,6 +1926,7 @@ export type SearchGraphicalQuizInput = {
   categories?: InputMaybe<Array<Scalars['String']['input']>>;
   count?: InputMaybe<Scalars['Int']['input']>;
   page?: InputMaybe<Scalars['Int']['input']>;
+  text?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type SearchGraphicalQuizOutput = {
@@ -1951,6 +1998,7 @@ export type SearchQuizInput = {
   categories?: InputMaybe<Array<Scalars['String']['input']>>;
   count?: InputMaybe<Scalars['Int']['input']>;
   page?: InputMaybe<Scalars['Int']['input']>;
+  text?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type SearchQuizOutput = {
@@ -2181,6 +2229,15 @@ export type SeoSettingType = {
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
 };
 
+export type ShareArticleInput = {
+  id: Scalars['String']['input'];
+};
+
+export type ShareArticleOutput = {
+  __typename?: 'ShareArticleOutput';
+  success: Scalars['Boolean']['output'];
+};
+
 export type SigninInput = {
   email?: InputMaybe<Scalars['String']['input']>;
   password?: InputMaybe<Scalars['String']['input']>;
@@ -2321,12 +2378,14 @@ export type UpdateArticleInput = {
   content?: InputMaybe<Scalars['String']['input']>;
   excerpt?: InputMaybe<Scalars['String']['input']>;
   faqs?: InputMaybe<Array<FaqInputType>>;
+  graphicalQuiz?: InputMaybe<Scalars['String']['input']>;
   hasPdf?: InputMaybe<Scalars['Boolean']['input']>;
   id: Scalars['String']['input'];
   images?: InputMaybe<Array<Scalars['String']['input']>>;
   isShowcase?: InputMaybe<Scalars['Boolean']['input']>;
   order?: InputMaybe<Scalars['Int']['input']>;
   publishDate?: InputMaybe<Scalars['DateTime']['input']>;
+  quiz?: InputMaybe<Scalars['String']['input']>;
   readingDuration?: InputMaybe<Scalars['Int']['input']>;
   reports?: InputMaybe<Array<Scalars['String']['input']>>;
   seoSetting?: InputMaybe<SeoSettingInput>;

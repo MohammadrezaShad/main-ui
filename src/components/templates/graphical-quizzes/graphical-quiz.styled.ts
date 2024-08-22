@@ -59,8 +59,9 @@ export const CardList = styled('div', {
   base: {
     display: 'grid',
     gridTemplateColumns: 3,
-    gap: '5',
+    gap: '3',
     mdDown: {gridTemplateColumns: 1, gap: '0'},
+    alignItems: 'stretch',
   },
 });
 

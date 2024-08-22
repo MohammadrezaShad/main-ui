@@ -9,15 +9,7 @@ import {IconWater} from '@/assets';
 import {CookieName} from '@/constants';
 import {GraphicalQuizType, QuizType} from '@/graphql';
 
-import {
-  Button,
-  Container,
-  ContentWrapper,
-  QuestionCount,
-  QuizImage,
-  Title,
-  Wrapper,
-} from './quiz-card.styled';
+import {Button, Container, ContentWrapper, QuestionCount, Title, Wrapper} from './quiz-card.styled';
 
 const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
 
@@ -62,7 +54,16 @@ const QuizCard = ({quiz, getQuizInfo}: {quiz: QuizType | GraphicalQuizType; getQ
             })}
           />
         ) : (
-          <QuizImage _hidden={false}>
+          <div
+            className={css({
+              w: 'full',
+              aspectRatio: '1.33',
+              objectFit: 'cover',
+              mdDown: {aspectRatio: 'square', w: '[112px]', h: '[112px]'},
+              position: 'relative',
+              bgColor: 'gray1',
+            })}
+          >
             <IconWater
               className={css({
                 w: '6',
@@ -82,7 +83,7 @@ const QuizCard = ({quiz, getQuizInfo}: {quiz: QuizType | GraphicalQuizType; getQ
                 transform: 'translate(-50%, -50%)',
               })}
             />
-          </QuizImage>
+          </div>
         )}
         <ContentWrapper>
           <QuestionCount>{renderQuestionCount()}</QuestionCount>

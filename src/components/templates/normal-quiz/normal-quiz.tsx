@@ -387,9 +387,8 @@ const QuizOptions = ({
   >
     <div
       className={css({
-        display: 'grid',
-        gridTemplateColumns: 'repeat(3, 1fr)',
-        gridTemplateRows: 'repeat(2, 1fr)',
+        display: 'flex',
+        flexDir: 'column',
         flexGrow: '1',
         mt: '4',
         fontSize: 'base',
@@ -400,88 +399,130 @@ const QuizOptions = ({
         mdDown: {mt: '1', gridTemplateRows: 'repeat(4, 1fr)'},
       })}
     >
-      {options[0] && (
-        <label
-          htmlFor={`option1-${questionId}`}
-          className={css({
-            gridArea: '1 / 1 / 2 / 2',
-            display: 'flex',
-            gap: '6',
-            mt: '4',
-            ml: '-4',
-          })}
-        >
-          <RadioButton
-            id={`option1-${questionId}`}
-            name={`id-${questionId}`}
-            onClick={() => handleClick(questionId, options[0].answer)}
-            checked={answers[currentIndex]?.answer === options[0].answer}
-          />
-          <div className={css({mt: 'auto', mb: 'auto'})}>{options[0].answer}</div>
-        </label>
-      )}
-      {options[1] && (
-        <label
-          htmlFor={`option2-${questionId}`}
-          className={css({
-            gridArea: '2 / 1 / 3 / 2',
-            display: 'flex',
-            gap: '6',
-            mt: '4',
-            ml: '-4',
-          })}
-        >
-          <RadioButton
-            id={`option2-${questionId}`}
-            name={`id-${questionId}`}
-            onClick={() => handleClick(questionId, options[1].answer)}
-            checked={answers[currentIndex]?.answer === options[1].answer}
-          />
-          <div className={css({mt: 'auto', mb: 'auto'})}>{options[1].answer}</div>
-        </label>
-      )}
-      {options[2] && (
-        <label
-          htmlFor={`option3-${questionId}`}
-          className={css({
-            gridArea: '1 / 2 / 2 / 3',
-            mdDown: {gridArea: '3 / 1 / 4 / 2'},
-            display: 'flex',
-            gap: '6',
-            mt: '4',
-            ml: '-4',
-          })}
-        >
-          <RadioButton
-            id={`option3-${questionId}`}
-            name={`id-${questionId}`}
-            onClick={() => handleClick(questionId, options[2].answer)}
-            checked={answers[currentIndex]?.answer === options[2].answer}
-          />
-          <div className={css({mt: 'auto', mb: 'auto'})}>{options[2].answer}</div>
-        </label>
-      )}
-      {options[3] && (
-        <label
-          htmlFor={`option4-${questionId}`}
-          className={css({
-            gridArea: '2 / 2 / 3 / 3',
-            mdDown: {gridArea: '4 / 1 / 5 / 2'},
-            display: 'flex',
-            gap: '6',
-            mt: '4',
-            ml: '-4',
-          })}
-        >
-          <RadioButton
-            id={`option4-${questionId}`}
-            name={`id-${questionId}`}
-            onClick={() => handleClick(questionId, options[3].answer)}
-            checked={answers[currentIndex]?.answer === options[3].answer}
-          />
-          <div className={css({mt: 'auto', mb: 'auto'})}>{options[3].answer}</div>
-        </label>
-      )}
+      <div
+        className={css({
+          display: 'flex',
+          alignItems: 'start',
+          mdDown: {
+            flexDir: 'column',
+          },
+          gap: '4',
+          w: 'full',
+        })}
+      >
+        {options[0] && (
+          <label
+            htmlFor={`option1-${questionId}`}
+            className={css({
+              w: '1/2',
+              display: 'flex',
+              mdDown: {
+                w: 'full',
+              },
+              gap: '6',
+              mt: '4',
+              ml: '-4',
+            })}
+          >
+            <RadioButton
+              id={`option1-${questionId}`}
+              name={`id-${questionId}`}
+              onClick={() => handleClick(questionId, options[0].answer)}
+              checked={answers[currentIndex]?.answer === options[0].answer}
+            />
+            <div className={css({mb: 'auto', whiteSpace: 'normal', textAlign: 'start'})}>
+              A: {options[0].answer}
+            </div>
+          </label>
+        )}
+        {options[1] && (
+          <label
+            htmlFor={`option2-${questionId}`}
+            className={css({
+              w: '1/2',
+              display: 'flex',
+              mdDown: {
+                w: 'full',
+              },
+              gap: '6',
+              mt: '4',
+              ml: '-4',
+            })}
+          >
+            <RadioButton
+              id={`option2-${questionId}`}
+              name={`id-${questionId}`}
+              onClick={() => handleClick(questionId, options[1].answer)}
+              checked={answers[currentIndex]?.answer === options[1].answer}
+            />
+            <div className={css({mb: 'auto', whiteSpace: 'normal', textAlign: 'start'})}>
+              B: {options[1].answer}
+            </div>
+          </label>
+        )}
+      </div>
+      <div
+        className={css({
+          display: 'flex',
+          alignItems: 'start',
+          mdDown: {
+            flexDir: 'column',
+          },
+          gap: '4',
+          w: 'full',
+        })}
+      >
+        {options[2] && (
+          <label
+            htmlFor={`option3-${questionId}`}
+            className={css({
+              w: '1/2',
+              display: 'flex',
+              mdDown: {
+                w: 'full',
+              },
+              gap: '6',
+              mt: '4',
+              ml: '-4',
+            })}
+          >
+            <RadioButton
+              id={`option3-${questionId}`}
+              name={`id-${questionId}`}
+              onClick={() => handleClick(questionId, options[2].answer)}
+              checked={answers[currentIndex]?.answer === options[2].answer}
+            />
+            <div className={css({mb: 'auto', whiteSpace: 'normal', textAlign: 'start'})}>
+              C: {options[2].answer}
+            </div>
+          </label>
+        )}
+        {options[3] && (
+          <label
+            htmlFor={`option4-${questionId}`}
+            className={css({
+              w: '1/2',
+              display: 'flex',
+              mdDown: {
+                w: 'full',
+              },
+              gap: '6',
+              mt: '4',
+              ml: '-4',
+            })}
+          >
+            <RadioButton
+              id={`option4-${questionId}`}
+              name={`id-${questionId}`}
+              onClick={() => handleClick(questionId, options[3].answer)}
+              checked={answers[currentIndex]?.answer === options[3].answer}
+            />
+            <div className={css({mb: 'auto', whiteSpace: 'normal', textAlign: 'start'})}>
+              D: {options[3].answer}
+            </div>
+          </label>
+        )}
+      </div>
     </div>
   </div>
 );
