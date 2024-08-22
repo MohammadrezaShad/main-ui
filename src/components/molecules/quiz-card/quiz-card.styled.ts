@@ -6,7 +6,7 @@ export const Container = styled('div', {
     display: 'flex',
     flexDir: 'column',
     w: '[304px]',
-    h: '[362px]',
+    // h: '[362px]',
     mdDown: {ml: '0', w: 'full', h: 'max'},
   },
 });
@@ -52,6 +52,7 @@ export const Title = styled('div', {
     lineHeight: 'base',
     fontWeight: 'medium',
     color: 'text.primary',
+    h: '[48px]',
   },
 });
 
