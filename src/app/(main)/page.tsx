@@ -13,8 +13,9 @@ export default async function Home() {
     queryKey: ['recent-articles', 1],
     queryFn: () => searchArticles({status: StatusType.Publish, count: 3}),
   });
-  await queryClient.prefetchQuery({
-    queryKey: ['search-articles-home', 1],
+
+  await queryClient.prefetchInfiniteQuery({
+    queryKey: ['showcase-articles'],
     queryFn: () =>
       searchArticles({
         status: StatusType.Publish,
@@ -23,6 +24,7 @@ export default async function Home() {
         isShowcase: true,
         sortType: ArticleSortType.AscendingOrder,
       }),
+    initialPageParam: 1,
   });
   await queryClient.prefetchQuery({
     queryKey: ['search-categories-home'],
