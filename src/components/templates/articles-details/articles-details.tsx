@@ -417,83 +417,139 @@ const Page = () => {
         {article.quiz && token ? (
           <Link
             className={css({
-              backgroundColor: 'primary',
               borderRadius: 4,
               w: 'max-content',
+              border: '1px solid token(colors.gray3)',
               textStyle: 'lg',
               display: 'block',
               mt: '4',
-              p: '4',
-              color: 'text.invert',
-              _hover: {
-                bg: 'primary.dark',
-              },
+              overflow: 'hidden',
             })}
             target='_blank'
             href={`${Paths.Quiz.getPath()}/normal/${article?.quiz?._id}`}
           >
-            Participation in &quot;{article?.quiz?.title}&quot; quiz
+            <Image
+              alt={article?.quiz?.title || ''}
+              unoptimized
+              width={548}
+              height={548}
+              src={`${IMAGE_STORAGE_URL}/${article?.quiz?.thumbnail?.filename}-${article?.quiz?.thumbnail?._id}`}
+            />
+            <p
+              className={css({
+                p: '4',
+                backgroundColor: 'primary',
+                color: 'text.invert',
+                _hover: {
+                  bg: 'primary.dark',
+                },
+              })}
+            >
+              Take a quiz in &quot;{article?.quiz?.title}&quot;
+            </p>
           </Link>
         ) : article.quiz ? (
           <div
             className={css({
-              backgroundColor: 'primary',
               borderRadius: 4,
               w: 'max-content',
+              border: '1px solid token(colors.gray3)',
               textStyle: 'lg',
               display: 'block',
               mt: '4',
-              p: '4',
-              color: 'text.invert',
-              _hover: {
-                bg: 'primary.dark',
-              },
+              overflow: 'hidden',
               cursor: 'pointer',
             })}
             onClick={() => isLoginOpen$.set(true)}
           >
-            Participation in &quot;{article?.quiz?.title}&quot; quiz
+            <Image
+              alt={article?.quiz?.title || ''}
+              unoptimized
+              width={548}
+              height={548}
+              src={`${IMAGE_STORAGE_URL}/${article?.quiz?.thumbnail?.filename}-${article?.quiz?.thumbnail?._id}`}
+            />
+            <p
+              className={css({
+                p: '4',
+                backgroundColor: 'primary',
+                color: 'text.invert',
+                _hover: {
+                  bg: 'primary.dark',
+                },
+              })}
+            >
+              Take a quiz in &quot;{article?.quiz?.title}&quot;
+            </p>
           </div>
         ) : null}
         {article.graphicalQuiz && token ? (
           <Link
             className={css({
-              backgroundColor: 'primary',
               borderRadius: 4,
               w: 'max-content',
+              border: '1px solid token(colors.gray3)',
               textStyle: 'lg',
               display: 'block',
               mt: '4',
-              p: '4',
-              color: 'text.invert',
-              _hover: {
-                bg: 'primary.dark',
-              },
+              overflow: 'hidden',
             })}
             target='_blank'
             href={`${Paths.Quiz.getPath()}/graphical/${article?.quiz?._id}`}
           >
-            Participation in &quot;{article?.graphicalQuiz?.title}&quot; quiz
+            <Image
+              alt={article?.quiz?.title || ''}
+              unoptimized
+              width={548}
+              height={548}
+              src={`${IMAGE_STORAGE_URL}/${article?.quiz?.thumbnail?.filename}-${article?.quiz?.thumbnail?._id}`}
+            />
+            <p
+              className={css({
+                p: '4',
+                backgroundColor: 'primary',
+                color: 'text.invert',
+                _hover: {
+                  bg: 'primary.dark',
+                },
+              })}
+            >
+              Take a quiz in &quot;{article?.quiz?.title}&quot;
+            </p>
           </Link>
         ) : article.graphicalQuiz ? (
           <div
             className={css({
-              backgroundColor: 'primary',
               borderRadius: 4,
               w: 'max-content',
+              border: '1px solid token(colors.gray3)',
               textStyle: 'lg',
               display: 'block',
               mt: '4',
-              p: '4',
-              color: 'text.invert',
-              _hover: {
-                bg: 'primary.dark',
-              },
+              overflow: 'hidden',
               cursor: 'pointer',
             })}
             onClick={() => isLoginOpen$.set(true)}
           >
-            Participation in &quot;{article?.graphicalQuiz?.title}&quot; quiz
+            <Image
+              alt={article?.quiz?.title || ''}
+              unoptimized
+              width={548}
+              height={548}
+              src={`${IMAGE_STORAGE_URL}/${article?.quiz?.thumbnail?.filename}-${article?.quiz?.thumbnail?._id}`}
+            />
+            <p
+              className={css({
+                p: '4',
+                backgroundColor: 'primary',
+                color: 'text.invert',
+                _hover: {
+                  bg: 'primary.dark',
+                },
+              })}
+            >
+              Take a quiz in &quot;{article?.quiz?.title}&quot;
+            </p>
           </div>
         ) : null}
         {article.author && <UserInfo author={article.author} />}

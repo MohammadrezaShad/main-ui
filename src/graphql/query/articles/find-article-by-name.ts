@@ -30,13 +30,46 @@ export async function findArticleByName(
             updatedAt
             isBookmark
             _id
-            quiz{
-            _id
-            title
+            quiz {
+              _id
+              title
+              thumbnail {
+                _id
+                alt
+                createdAt
+                filename
+                format
+                height
+                preview
+                updatedAt
+                width
+              }
             }
-            graphicalQuiz{
-            _id
-            title
+            graphicalQuiz {
+              _id
+              category {
+                _id
+                title
+                slug
+              }
+              createdAt
+              duration
+              price
+              reward
+              thumbnail {
+                _id
+                alt
+                createdAt
+                filename
+                format
+                height
+                preview
+                updatedAt
+                width
+              }
+              title
+              updatedAt
+              youEarned
             }
             author {
               _id
