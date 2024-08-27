@@ -21,22 +21,50 @@ import {Pagination} from './articles.styled';
 const Page = ({hasPdf = false}: {hasPdf?: boolean}) => {
   const [page, setPage] = useState(1);
   const params = useParams();
-  const READMORE_PAGE_COUNT = 1;
-  const {data} = useQuery({
-    queryKey: ['search-cs', params.categoryId],
+  const SHOWCASE_COUNT = 6;
+  const READMORE_PAGE_COUNT = 18;
+  const {data, isFetching} = useQuery({
+    queryKey: ['search-cs', params.categoryId, page],
     queryFn: () =>
-      searchArticleByCategory({categories: [params.categoryId as string], count: 12, page, hasPdf}),
+      searchArticleByCategory({
+        categories: [params.categoryId as string],
+        count: READMORE_PAGE_COUNT,
+        page,
+        hasPdf,
+      }),
     placeholderData: keepPreviousData,
   }) as any;
+  const recentArticlesData = useQuery({
+    queryKey: ['recent-article-cats', 1],
+    queryFn: () =>
+      searchArticleByCategory({
+        categories: [params.categoryId as string],
+        count: SHOWCASE_COUNT,
+        page: 1,
+        hasPdf,
+      }),
+  }) as any;
 
-  if (!data) throw new Error('No data found from search catagories query');
+  const articles: Array<ArticleType> = data?.article?.searchArticles.results || [];
+  const recentArticles: Array<ArticleType> =
+    recentArticlesData?.data?.article?.searchArticles.results || [];
+  const {totalPages, totalCount: rawTotalCount} = data?.article?.searchArticles || {
+    totalPages: 0,
+    totalCount: 0,
+  };
+  const totalCount =
+    page === 1 && rawTotalCount != null ? rawTotalCount - SHOWCASE_COUNT : rawTotalCount ?? 0;
 
-  const articles: Array<ArticleType> = data.article!.searchArticles.results;
-  const {totalPages} = data.article!.searchArticles;
-  const totalCount: number = data.article!.searchArticles.totalCount - 9;
+  const startResult =
+    page === 1
+      ? (page - 1) * READMORE_PAGE_COUNT + 1
+      : (page - 1) * READMORE_PAGE_COUNT + 1 - SHOWCASE_COUNT;
+  const endResult =
+    page === 1
+      ? page * READMORE_PAGE_COUNT - SHOWCASE_COUNT
+      : Math.min(page * READMORE_PAGE_COUNT, totalCount - SHOWCASE_COUNT);
 
-  const startResult = (+page - 1) * READMORE_PAGE_COUNT + 1;
-  const endResult = Math.min(+page * READMORE_PAGE_COUNT, totalCount || 0);
+  if (isFetching) return <div>Loading...</div>;
 
   if (articles.length < 1)
     return (
@@ -61,13 +89,16 @@ const Page = ({hasPdf = false}: {hasPdf?: boolean}) => {
   return (
     <>
       <Box className={css({mx: {mdDown: '-4'}})}>
-        <Slider slides={articles.slice(0, 3)} hasPdf={hasPdf} />
+        <Slider slides={recentArticles.slice(0, 3)} hasPdf={hasPdf} />
       </Box>
-      <RecentArticles posts={articles.slice(3, 6)} hasPdf={hasPdf} />
-      {articles.length > 6 ? (
+      <RecentArticles posts={recentArticles.slice(3)} hasPdf={hasPdf} />
+      {articles.length ? (
         <>
           <Divider label='Keep Reading' />
-          <Articles articles={articles.slice(6)} hasPdf={hasPdf} />
+          <Articles
+            articles={page === 1 ? articles.slice(SHOWCASE_COUNT) : articles}
+            hasPdf={hasPdf}
+          />
         </>
       ) : null}
       {totalCount > 0 && (
@@ -80,7 +111,7 @@ const Page = ({hasPdf = false}: {hasPdf?: boolean}) => {
           >
             <Pagination
               nextLabel={<IconChevronRight className={css({w: '6', h: '6'})} />}
-              onPageChange={current => setPage(current.selected + 1)}
+              onPageChange={data => setPage(data.selected + 1)}
               pageRangeDisplayed={3}
               marginPagesDisplayed={2}
               pageCount={totalPages}
@@ -107,12 +138,12 @@ const Page = ({hasPdf = false}: {hasPdf?: boolean}) => {
               textAlign: 'center',
             })}
           >
-            Showing {startResult}-{endResult} of {totalCount || 0}
+            Showing {startResult}-{endResult} of{' '}
+            {page === 1 ? totalCount : totalCount - SHOWCASE_COUNT}
           </span>
         </>
       )}
     </>
   );
 };
-
 export default Page;

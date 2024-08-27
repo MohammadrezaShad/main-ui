@@ -22,9 +22,14 @@ export async function generateStaticParams(): Promise<any> {
 const Page = async ({params}: {params: {categoryId: string}}) => {
   const queryClient = getQueryClient();
   await queryClient.prefetchQuery({
+    queryKey: ['recent-article-cats', 1],
+    queryFn: () =>
+      searchArticleByCategory({categories: [params.categoryId], count: 6, page: 1, hasPdf: false}),
+  });
+  await queryClient.prefetchQuery({
     queryKey: ['search-cs', params.categoryId],
     queryFn: () =>
-      searchArticleByCategory({categories: [params.categoryId], count: 12, page: 1, hasPdf: false}),
+      searchArticleByCategory({categories: [params.categoryId], count: 18, page: 1, hasPdf: false}),
   });
   const dehydratedState = dehydrate(queryClient);
 
