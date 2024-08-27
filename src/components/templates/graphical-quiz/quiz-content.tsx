@@ -1,9 +1,10 @@
+/* eslint-disable no-nested-ternary */
 import {css} from '@styled/css';
 import Image from 'next/image';
 import Link from 'next/link';
 
 import {IconCheck} from '@/assets';
-import {ImageType, PointType, QuizType} from '@/graphql';
+import {ImageType, QuizPointsType, QuizType} from '@/graphql';
 
 import QuizEndButton from './end-quiz-button';
 import QuizQuestions from './quiz-questions';
@@ -12,7 +13,7 @@ const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
 
 interface Props {
   title: string;
-  areas: PointType[];
+  areas: QuizPointsType[];
   completedQuizzesIds: string[];
   currentQuizIndex: number;
   currentIndex: number;
@@ -49,6 +50,7 @@ const QuizContent = ({
   image,
   currentQuiz,
 }: Props) => {
+  console.log('🚀 ~ areas:', areas);
   const generateIcon = (index: number) => {
     if (completedQuizzesIds[index])
       return (
@@ -128,7 +130,7 @@ const QuizContent = ({
         />
         <map name='image-map'>
           {areas.map(area => (
-            <area alt='' key={crypto.randomUUID()} {...area} />
+            <area alt='' key={crypto.randomUUID()} {...area.point} />
           ))}
         </map>
         {areas.map((area, index) => {
@@ -136,8 +138,8 @@ const QuizContent = ({
           const width = window.innerWidth > 0 ? window.innerWidth : screen.width;
           const imageWidth = width > 768 ? 960 : 375;
           const imageHeight = width > 768 ? 540 : 282;
-          const x = ((area.x - 5) / imageWidth) * 100;
-          const y = ((area.y - 5) / imageHeight) * 100;
+          const x = ((area.point.x - 5) / imageWidth) * 100;
+          const y = ((area.point.y - 5) / imageHeight) * 100;
           return (
             <div
               style={{left: `${x}%`, top: `${y}%`}}
@@ -178,10 +180,10 @@ const QuizContent = ({
                     style={blueBorderStyle}
                   />
                   <div
+                    style={{backgroundColor: area.color || 'white'}}
                     className={css({
                       pos: 'absolute',
                       inset: '1',
-                      bgColor: 'white',
                       rounded: 'full',
                     })}
                   />

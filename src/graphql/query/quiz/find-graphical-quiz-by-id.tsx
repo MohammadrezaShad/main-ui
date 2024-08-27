@@ -58,6 +58,7 @@ export async function findGraphicalQuizById(
             }
             price
             quizPoints {
+              color
               point {
                 x
                 y
