@@ -9,7 +9,8 @@ import {useInfiniteQuery, useQuery} from '@tanstack/react-query';
 import {hero, IconSearch} from '@/assets';
 import {Articles, Divider, RecentArticles} from '@/components';
 import {
-  type ArticleType,
+  ArticleSortType,
+  ArticleType,
   CategoryType,
   searchArticles,
   searchCategories,
@@ -32,9 +33,15 @@ const cities = [{id: 1, value: 'amsterdam', label: 'Amsterdam'}];
 
 export default function HomeMain() {
   const {data, fetchNextPage, hasNextPage} = useInfiniteQuery({
-    queryKey: ['search-articles-home'],
+    queryKey: ['showcase-articles'],
     queryFn: ({pageParam}) =>
-      searchArticles({status: StatusType.Publish, count: 15, page: pageParam}),
+      searchArticles({
+        status: StatusType.Publish,
+        count: 12,
+        page: pageParam,
+        isShowcase: true,
+        sortType: ArticleSortType.AscendingOrder,
+      }),
     initialPageParam: 1,
     getNextPageParam: (lastPage: any, allPages, lastPagParam, allPagesParam) => {
       const totalPages = lastPage?.article?.searchArticles?.totalPages;
@@ -51,7 +58,7 @@ export default function HomeMain() {
   }) as any;
 
   const [articles, setArticles] = useState<ArticleType[]>(
-    data?.pages[0].article.searchArticles.results,
+    data.pages[0].article.searchArticles.results,
   );
   const recentArticles = recentArticlesData.data?.article.searchArticles.results;
 
