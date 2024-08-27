@@ -15,7 +15,7 @@ import {
   findGraphicalQuizById,
   findQuizByPoint,
   ImageType,
-  PointInputType,
+  QuizPointsType,
   QuizType,
 } from '@/graphql';
 
@@ -186,7 +186,7 @@ const WaterSavingQuiz = () => {
           handleClickBack={handleClickBack}
           handleClickNext={handleClickNext}
           answers={answers}
-          areas={quiz?.quizPoints.map(quizPoint => quizPoint.point) as PointInputType[]}
+          areas={quiz?.quizPoints as QuizPointsType[]}
           currentQuizIndex={currentQuizIndex}
           completedQuizzesIds={completedQuizzesIds}
           gainedCoins={gainedCoins}
