@@ -1,6 +1,7 @@
-import {coin} from '@/assets';
 import {css} from '@styled/css';
 import Image from 'next/image';
+
+import {coin} from '@/assets';
 
 const QuizEndButton = ({
   correctAnswers,
@@ -11,7 +12,7 @@ const QuizEndButton = ({
   correctAnswers: number;
   wrongAnswers: number;
   gainedCoins: number;
-  handleGoToNextQuiz: (z: number) => void;
+  handleGoToNextQuiz: (reward: number) => void;
 }) => (
   <div
     className={css({

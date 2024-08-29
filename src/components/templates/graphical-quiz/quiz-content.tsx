@@ -1,4 +1,5 @@
 /* eslint-disable no-nested-ternary */
+import {SetStateAction} from 'react';
 import {css} from '@styled/css';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -15,7 +16,7 @@ interface Props {
   title: string;
   areas: QuizPointsType[];
   completedQuizzesIds: string[];
-  currentQuizIndex: number;
+  currentQuizIndex: number | null;
   currentIndex: number;
   currentQuestionIndex: number;
   quizzes: QuizType[];
@@ -26,9 +27,10 @@ interface Props {
   correctAnswers: number;
   wrongAnswers: number;
   gainedCoins: number;
-  handleGoToNextQuiz: any;
+  handleGoToNextQuiz: (reward: number) => void;
   image: ImageType;
   currentQuiz: QuizType;
+  setCurrentQuizIndex: React.Dispatch<SetStateAction<number | null>>;
 }
 
 const QuizContent = ({
@@ -49,8 +51,8 @@ const QuizContent = ({
   handleGoToNextQuiz,
   image,
   currentQuiz,
+  setCurrentQuizIndex,
 }: Props) => {
-  console.log('🚀 ~ areas:', areas);
   const generateIcon = (index: number) => {
     if (completedQuizzesIds[index])
       return (
@@ -66,14 +68,14 @@ const QuizContent = ({
     if (currentQuizIndex === index)
       return (
         <span className={css({color: 'primary', zIndex: '10'})}>
-          {currentIndex + 1}/{currentQuiz.questions.length}
+          {currentIndex + 1}/{currentQuiz?.questions.length}
         </span>
       );
     return index + 1;
   };
 
   const blueBorderStyle = {
-    background: `conic-gradient(#44BAEB ${(currentIndex / currentQuiz.questions.length) * 100}%, #EBEBEB ${(currentIndex / currentQuiz.questions.length) * 100}%)`,
+    background: `conic-gradient(#44BAEB ${(currentIndex / currentQuiz?.questions.length) * 100}%, #EBEBEB ${(currentIndex / currentQuiz?.questions.length) * 100}%)`,
   };
 
   return (
@@ -141,7 +143,9 @@ const QuizContent = ({
           const x = ((area.point.x - 5) / imageWidth) * 100;
           const y = ((area.point.y - 5) / imageHeight) * 100;
           return (
-            <div
+            <button
+              type='button'
+              onClick={() => (currentQuestionIndex ? null : setCurrentQuizIndex(index))}
               style={{left: `${x}%`, top: `${y}%`}}
               key={crypto.randomUUID()}
               className={css({
@@ -167,6 +171,7 @@ const QuizContent = ({
                 mdDown: {
                   display: 'none',
                 },
+                cursor: currentIndex ? 'default' : 'pointer',
               })}
             >
               {currentQuizIndex === index && !completedQuizzesIds[index] && (
@@ -190,11 +195,11 @@ const QuizContent = ({
                 </>
               )}
               {generateIcon(index)}
-            </div>
+            </button>
           );
         })}
       </div>
-      {currentQuizIndex + 1 > quizzes.length ? (
+      {(currentQuizIndex || 0) + 1 > quizzes.length ? (
         <Link
           href='/quizzes/graphical'
           className={css({
@@ -220,7 +225,7 @@ const QuizContent = ({
         </Link>
       ) : currentQuestionIndex + 1 <= currentQuiz?.questions.length ? (
         <QuizQuestions
-          questions={currentQuiz.questions ?? []}
+          questions={currentQuiz?.questions ?? []}
           onSetAnswer={handleSetAnswer}
           currentIndex={currentQuestionIndex}
           onBack={handleClickBack}
@@ -228,14 +233,14 @@ const QuizContent = ({
           answers={answers}
           quiz={currentQuiz}
         />
-      ) : (
+      ) : completedQuizzesIds.length ? (
         <QuizEndButton
           correctAnswers={correctAnswers}
           wrongAnswers={wrongAnswers}
           gainedCoins={gainedCoins}
           handleGoToNextQuiz={handleGoToNextQuiz}
         />
-      )}
+      ) : null}
     </>
   );
 };
