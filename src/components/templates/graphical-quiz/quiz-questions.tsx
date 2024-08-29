@@ -28,6 +28,7 @@ const QuizQuestions = ({
   quiz: QuizType;
 }) => (
   <div
+    id='quiz-questions-container'
     className={css({
       pt: '9',
       pb: '9',
@@ -145,6 +146,9 @@ const QuizQuestions = ({
           alignItems: 'center',
           justifyContent: 'flex-end',
           gap: '4',
+          mdDown: {
+            mt: '4',
+          },
         })}
       >
         <button

@@ -18,6 +18,7 @@ import {
   QuizPointsType,
   QuizType,
 } from '@/graphql';
+import {isSmallScreen} from '@/utils';
 
 import QuizContent from './quiz-content';
 import QuizReward from './quiz-reward';
@@ -45,7 +46,9 @@ const WaterSavingQuiz = () => {
   const quiz = data?.result;
   const quizzes = data?.result?.quizPoints.map(quiz => quiz.quizObject);
 
-  const [currentQuizIndex, setCurrentQuizIndex] = useState(0);
+  const [currentQuizIndex, setCurrentQuizIndex] = useState<number | null>(() =>
+    isSmallScreen() ? 0 : null,
+  );
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [completedQuizzesIds, setCompletedQuizzesIds] = useState<string[]>([]);
 
@@ -88,7 +91,8 @@ const WaterSavingQuiz = () => {
     setTotalGainedCoins(prev => prev + userGainedCoins);
     setAnswers([]);
     setCurrentQuestionIndex(0);
-    setCurrentQuizIndex(prev => prev + 1);
+    // eslint-disable-next-line no-nested-ternary
+    setCurrentQuizIndex(prev => (isSmallScreen() ? (prev !== null ? prev + 1 : 0) : null));
   };
 
   const handleClick = async () => {
@@ -118,7 +122,7 @@ const WaterSavingQuiz = () => {
 
   useEffect(() => {
     (async () => {
-      if (data?.result) {
+      if (data?.result && currentQuizIndex !== null && currentQuizIndex >= 0) {
         const currentQuizId = params.quizId as string;
         const currentQuizPoints = data.result.quizPoints[currentQuizIndex].point;
         try {
@@ -133,8 +137,16 @@ const WaterSavingQuiz = () => {
           setIsLoading(false);
         }
       }
+      if (currentQuizIndex === null) setIsLoading(false);
     })();
   }, [currentQuizIndex]);
+
+  useEffect(() => {
+    const quizQuestionsContainer = document.querySelector('#quiz-questions-container');
+    if (quizQuestionsContainer) {
+      quizQuestionsContainer.scrollIntoView({behavior: 'smooth'});
+    }
+  }, [currentQuiz]);
 
   if (isLoading)
     return (
@@ -164,6 +176,7 @@ const WaterSavingQuiz = () => {
           flex: '1',
           mdDown: {
             justifyContent: 'center',
+            mb: '6',
           },
         })}
       >
@@ -197,6 +210,7 @@ const WaterSavingQuiz = () => {
           quizzes={quizzes as QuizType[]}
           title={quiz?.title as string}
           image={quiz?.image as ImageType}
+          setCurrentQuizIndex={setCurrentQuizIndex}
         />
       </div>
       <div

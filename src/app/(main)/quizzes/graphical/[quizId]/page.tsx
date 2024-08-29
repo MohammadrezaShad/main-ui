@@ -1,12 +1,12 @@
-import {GraphicalQuizView} from '@/components';
 import {css} from '@styled/css';
 import {dehydrate} from '@tanstack/react-query';
+import {cookies} from 'next/headers';
 
+import {GraphicalQuizView} from '@/components';
 import {CookieName} from '@/constants';
 import {findGraphicalQuizById} from '@/graphql';
 import {getQueryClient} from '@/helpers';
 import {Hydrate} from '@/providers';
-import {cookies} from 'next/headers';
 
 const Page = async ({params}: {params: {quizId: string}}) => {
   const cookieStore = cookies();
