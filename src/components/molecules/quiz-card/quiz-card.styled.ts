@@ -5,7 +5,7 @@ export const Container = styled('div', {
   base: {
     display: 'flex',
     flexDir: 'column',
-    w: '[304px]',
+    w: 'full',
     // h: '[362px]',
     mdDown: {ml: '0', w: 'full', h: 'max'},
   },

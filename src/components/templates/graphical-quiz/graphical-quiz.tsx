@@ -46,9 +46,7 @@ const WaterSavingQuiz = () => {
   const quiz = data?.result;
   const quizzes = data?.result?.quizPoints.map(quiz => quiz.quizObject);
 
-  const [currentQuizIndex, setCurrentQuizIndex] = useState<number | null>(() =>
-    isSmallScreen() ? 0 : null,
-  );
+  const [currentQuizIndex, setCurrentQuizIndex] = useState<number | null>(0);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [completedQuizzesIds, setCompletedQuizzesIds] = useState<string[]>([]);
 

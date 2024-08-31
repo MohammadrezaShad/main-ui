@@ -2,20 +2,12 @@ import {css} from '@styled/css';
 import {dehydrate} from '@tanstack/react-query';
 
 import {QuizzesView} from '@/components';
-import {getBestUsers, getTopQuizzes, getTotalCount, getTotalGraphicalCount} from '@/graphql';
+import {getBestUsers, getTopQuizzes} from '@/graphql';
 import {getQueryClient} from '@/helpers';
 import {Hydrate} from '@/providers';
 
 const Page = async () => {
   const queryClient = getQueryClient();
-  await queryClient.prefetchQuery({
-    queryKey: ['get-normal-quiz-count'],
-    queryFn: () => getTotalCount(),
-  });
-  await queryClient.prefetchQuery({
-    queryKey: ['get-graphical-quiz-count'],
-    queryFn: () => getTotalGraphicalCount(),
-  });
   await queryClient.prefetchQuery({
     queryKey: ['get-top-quizzes'],
     queryFn: () => getTopQuizzes(),
