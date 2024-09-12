@@ -1,7 +1,6 @@
 import {css} from '@styled/css';
-import Image from 'next/image';
 
-import {coin} from '@/assets';
+import {IconDrop} from '@/assets';
 
 interface Props {
   gainedCoins: number;
@@ -33,20 +32,10 @@ const QuizReward = ({gainedCoins}: Props) => (
         w: 'full',
       })}
     >
-      <Image
-        unoptimized
-        width={32}
-        height={32}
-        src={coin}
-        alt=''
+      <IconDrop
         className={css({
           w: '8',
           h: '8',
-          aspectRatio: 'square',
-          objectFit: 'contain',
-          objectPosition: 'center',
-          overflow: 'hidden',
-          flexShrink: '0',
         })}
       />
       <div className={css({display: 'flex', flexDir: 'column', flex: '1'})}>

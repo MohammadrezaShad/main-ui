@@ -4,10 +4,9 @@ import {useObservable} from '@legendapp/state/react';
 import {css} from '@styled/css';
 import {useQuery} from '@tanstack/react-query';
 import {getCookie} from 'cookies-next';
-import Image from 'next/image';
 import Link from 'next/link';
 
-import {coin, IconClose} from '@/assets';
+import {IconClose, IconDrop} from '@/assets';
 import {QuizCard, TopUserCard} from '@/components';
 import {Modal} from '@/components/atoms/modal';
 import {CookieName} from '@/constants';
@@ -355,21 +354,14 @@ export default function Quizzes() {
               justifyContent: {base: 'space-between', mdDown: 'center'},
             })}
           >
-            <Image
-              unoptimized
-              width={128}
-              height={128}
-              src={coin}
-              alt=''
+            <IconDrop
               className={css({
                 w: '16',
                 h: '16',
-                aspectRatio: 'square',
-                objectFit: 'contain',
-                objectPosition: 'center',
-                overflow: 'hidden',
-                flexShrink: '0',
-                mdDown: {w: '32', h: '32'},
+                mdDown: {
+                  h: '32',
+                  w: '32',
+                },
               })}
             />
             <button

@@ -448,7 +448,7 @@ const Page = () => {
               Take a quiz in &quot;{article?.quiz?.title}&quot;
             </p>
           </Link>
-        ) : article.quiz ? (
+        ) : article.quiz && !token ? (
           <div
             className={css({
               borderRadius: 4,
@@ -495,14 +495,14 @@ const Page = () => {
               overflow: 'hidden',
             })}
             target='_blank'
-            href={`${Paths.Quiz.getPath()}/graphical/${article?.quiz?._id}`}
+            href={`${Paths.Quiz.getPath()}/graphical/${article?.graphicalQuiz?._id}`}
           >
             <Image
-              alt={article?.quiz?.title || ''}
+              alt={article?.graphicalQuiz?.title || ''}
               unoptimized
               width={548}
               height={548}
-              src={`${IMAGE_STORAGE_URL}/${article?.quiz?.thumbnail?.filename}-${article?.quiz?.thumbnail?._id}`}
+              src={`${IMAGE_STORAGE_URL}/${article?.graphicalQuiz?.thumbnail?.filename}-${article?.graphicalQuiz?.thumbnail?._id}`}
             />
             <p
               className={css({
@@ -514,10 +514,11 @@ const Page = () => {
                 },
               })}
             >
-              Take a quiz in &quot;{article?.quiz?.title}&quot;
+              Take a quiz in &quot;{article?.graphicalQuiz?.title}&quot;
             </p>
           </Link>
-        ) : article.graphicalQuiz ? (
+        ) : null}
+        {article.graphicalQuiz && !token ? (
           <div
             className={css({
               borderRadius: 4,
@@ -532,11 +533,11 @@ const Page = () => {
             onClick={() => isLoginOpen$.set(true)}
           >
             <Image
-              alt={article?.quiz?.title || ''}
+              alt={article?.graphicalQuiz?.title || ''}
               unoptimized
               width={548}
               height={548}
-              src={`${IMAGE_STORAGE_URL}/${article?.quiz?.thumbnail?.filename}-${article?.quiz?.thumbnail?._id}`}
+              src={`${IMAGE_STORAGE_URL}/${article?.graphicalQuiz?.thumbnail?.filename}-${article?.graphicalQuiz?.thumbnail?._id}`}
             />
             <p
               className={css({
@@ -548,7 +549,7 @@ const Page = () => {
                 },
               })}
             >
-              Take a quiz in &quot;{article?.quiz?.title}&quot;
+              Take a quiz in &quot;{article?.graphicalQuiz?.title}&quot;
             </p>
           </div>
         ) : null}
@@ -634,35 +635,7 @@ const Page = () => {
           <p>Login to write a comment</p>
         )}
 
-        {commentsData.data?.results?.map(comment => (
-          <Review key={comment._id} comment={comment} />
-        )) /* <h3
-        className={css({
-          textStyle: 'headline3',
-          color: 'text.primary',
-        })}
-      >
-        Reviews
-      </h3>
-
-      <Review />
-      <Review>
-        <Review>
-          <button
-            type='button'
-            className={css({
-              color: 'primary',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 1,
-              mt: '4',
-            })}
-          >
-            More Comments
-            <IconChevronDown fill='#44BAEB' />
-          </button>
-        </Review>
-      </Review> */}
+        {commentsData.data?.results?.map(comment => <Review key={comment._id} comment={comment} />)}
       </div>
     </>
   );

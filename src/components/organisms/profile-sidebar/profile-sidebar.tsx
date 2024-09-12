@@ -4,10 +4,9 @@ import {css} from '@styled/css';
 import {flex} from '@styled/patterns';
 import {useQuery, useQueryClient} from '@tanstack/react-query';
 import {deleteCookie, getCookie} from 'cookies-next';
-import Image from 'next/image';
 import {useRouter} from 'next/navigation';
 
-import {coin, IconLogout} from '@/assets';
+import {IconDrop, IconLogout} from '@/assets';
 import {Avatar} from '@/components';
 import {CookieName} from '@/constants';
 import {getUser} from '@/graphql';
@@ -100,18 +99,10 @@ const ProfileSidebar = () => {
             gap: '3',
           })}
         >
-          <Image
-            unoptimized
-            width={32}
-            height={32}
-            src={coin}
-            alt=''
+          <IconDrop
             className={css({
-              aspectRatio: 'square',
-              objectFit: 'contain',
-              objectPosition: 'center',
-              overflow: 'hidden',
-              flexShrink: '0',
+              w: '8',
+              h: '8',
             })}
           />
           <p
@@ -121,7 +112,7 @@ const ProfileSidebar = () => {
               textAlign: 'center',
             })}
           >
-            Coins
+            Drops
           </p>
         </div>
         <h1

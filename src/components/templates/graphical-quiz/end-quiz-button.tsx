@@ -1,7 +1,6 @@
 import {css} from '@styled/css';
-import Image from 'next/image';
 
-import {coin} from '@/assets';
+import {IconDrop} from '@/assets';
 
 const QuizEndButton = ({
   correctAnswers,
@@ -26,21 +25,14 @@ const QuizEndButton = ({
       mt: '4',
     })}
   >
-    <Image
-      unoptimized
-      width={128}
-      height={128}
-      src={coin}
-      alt=''
+    <IconDrop
       className={css({
         w: '16',
         h: '16',
-        aspectRatio: 'square',
-        objectFit: 'contain',
-        objectPosition: 'center',
-        overflow: 'hidden',
-        flexShrink: '0',
-        mdDown: {w: '32', h: '32'},
+        mdDown: {
+          w: '8',
+          h: '8',
+        },
       })}
     />
     <div

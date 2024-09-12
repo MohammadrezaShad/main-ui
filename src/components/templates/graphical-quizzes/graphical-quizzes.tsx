@@ -5,10 +5,9 @@ import {useObservable} from '@legendapp/state/react';
 import {css} from '@styled/css';
 import {useInfiniteQuery} from '@tanstack/react-query';
 import {getCookie} from 'cookies-next';
-import Image from 'next/image';
 import {useRouter} from 'next/navigation';
 
-import {bgMaze, coin, IconClose} from '@/assets';
+import {bgMaze, IconClose, IconDrop} from '@/assets';
 import {Modal} from '@/components/atoms/modal';
 import {QuizCard} from '@/components/molecules';
 import {CookieName} from '@/constants';
@@ -141,22 +140,14 @@ export default function GraphicalQuizzes() {
               justifyContent: {base: 'space-between', mdDown: 'center'},
             })}
           >
-            <Image
-              unoptimized
-              width={128}
-              height={128}
-              src={coin}
-              alt=''
+            <IconDrop
               className={css({
                 w: '16',
                 h: '16',
-                aspectRatio: 'square',
-                objectFit: 'contain',
-                objectPosition: 'center',
-                overflow: 'hidden',
-                flexShrink: '0',
-                mdDown: {w: '32', h: '32'},
-                display: 'none',
+                mdDown: {
+                  w: '8',
+                  h: '8',
+                },
               })}
             />
             <button
