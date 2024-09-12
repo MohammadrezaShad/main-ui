@@ -7,6 +7,7 @@ const Tag = ({text, href}: {text: string; href: string}) => (
       padding: '3px 4px',
       bg: 'gray2',
       borderRadius: '4px',
+      whiteSpace: 'nowrap',
     })}
   >
     <Link href={href}>

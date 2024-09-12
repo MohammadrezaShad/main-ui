@@ -8,6 +8,7 @@ const Tags = ({tags}: {tags: TagType[]}) => (
     className={css({
       display: 'flex',
       alignItems: 'center',
+      flexWrap: 'wrap',
       gap: 4,
       my: {
         base: '12',
