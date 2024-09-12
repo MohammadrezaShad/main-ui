@@ -5,12 +5,11 @@ import {toast} from 'react-toastify';
 import {css} from '@styled/css';
 import {useMutation, useQuery} from '@tanstack/react-query';
 import {getCookie} from 'cookies-next';
-import Image from 'next/image';
 import Link from 'next/link';
 import {useParams} from 'next/navigation';
 import {Maybe} from 'yup';
 
-import {coin, IconCheck} from '@/assets';
+import {IconCheck, IconDrop} from '@/assets';
 import RadioButton from '@/components/atoms/radio-button/radio-button';
 import {CookieName} from '@/constants';
 import {endQuiz, EndQuizInput, findQuizById, OptionType, QuestionType, QuizType} from '@/graphql';
@@ -179,20 +178,10 @@ const QuizHeader = ({
           },
         })}
       >
-        <Image
-          unoptimized
-          width={32}
-          height={32}
-          src={coin}
-          alt=''
+        <IconDrop
           className={css({
             w: '8',
             h: '8',
-            aspectRatio: 'square',
-            objectFit: 'contain',
-            objectPosition: 'center',
-            overflow: 'hidden',
-            flexShrink: '0',
           })}
         />
         <div className={css({display: 'flex', flexDir: 'column', flex: '1'})}>
@@ -550,21 +539,14 @@ const QuizEndButton = ({
       mt: '4',
     })}
   >
-    <Image
-      unoptimized
-      width={128}
-      height={128}
-      src={coin}
-      alt=''
+    <IconDrop
       className={css({
         w: '16',
         h: '16',
-        aspectRatio: 'square',
-        objectFit: 'contain',
-        objectPosition: 'center',
-        overflow: 'hidden',
-        flexShrink: '0',
-        mdDown: {w: '32', h: '32'},
+        mdDown: {
+          h: '32',
+          w: '32',
+        },
       })}
     />
     <div

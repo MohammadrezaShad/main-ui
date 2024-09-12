@@ -1,6 +1,6 @@
-import {coin} from '@/assets';
 import {css} from '@styled/css';
-import Image from 'next/image';
+
+import {IconDrop} from '@/assets';
 
 interface Props {
   prices: number[];
@@ -21,20 +21,10 @@ const QuizSummary = ({prices, titles}: Props) => (
         w: 'full',
       })}
     >
-      <Image
-        unoptimized
-        width={32}
-        height={32}
-        src={coin}
-        alt=''
+      <IconDrop
         className={css({
           w: '8',
           h: '8',
-          aspectRatio: 'square',
-          objectFit: 'contain',
-          objectPosition: 'center',
-          overflow: 'hidden',
-          flexShrink: '0',
         })}
       />
       <div className={css({display: 'flex', flexDir: 'column', flex: '1'})}>

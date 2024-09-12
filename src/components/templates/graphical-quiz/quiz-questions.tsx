@@ -1,7 +1,6 @@
 import {css} from '@styled/css';
-import Image from 'next/image';
 
-import {coin, IconCheck} from '@/assets';
+import {IconCheck, IconDrop} from '@/assets';
 import RadioButton from '@/components/atoms/radio-button/radio-button';
 import {OptionType, QuestionType, QuizType} from '@/graphql';
 
@@ -97,20 +96,10 @@ const QuizQuestions = ({
             h: '[56px]',
           })}
         >
-          <Image
-            unoptimized
-            width={32}
-            height={32}
-            src={coin}
-            alt=''
+          <IconDrop
             className={css({
               w: '8',
               h: '8',
-              aspectRatio: 'square',
-              objectFit: 'contain',
-              objectPosition: 'center',
-              overflow: 'hidden',
-              flexShrink: '0',
             })}
           />
           <div className={css({display: 'flex', flexDir: 'column', flex: '1'})}>

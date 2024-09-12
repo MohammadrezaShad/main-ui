@@ -98,3 +98,4 @@ export {default as IconInstagram} from './Icon_instagram.svg';
 export {default as IconTelegram} from './Icon_telegram.svg';
 export {default as IconWhatsapp} from './Icon_whatsapp.svg';
 export {default as IconLinkedin} from './linkedin-icon.svg';
+export {default as IconDrop} from './icon-drop-full.svg';
