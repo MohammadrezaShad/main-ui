@@ -67,11 +67,11 @@ const QuizContent = ({
       );
     if (currentQuizIndex === index)
       return (
-        <span className={css({color: 'primary', zIndex: '10'})}>
+        <span className={css({color: '#FFF', zIndex: '10'})}>
           {currentIndex + 1}/{currentQuiz?.questions.length}
         </span>
       );
-    return index + 1;
+    return <span className={css({color: '#FFF', zIndex: '10'})}>{index + 1}</span>;
   };
 
   const blueBorderStyle = {
@@ -160,9 +160,8 @@ const QuizContent = ({
                 borderRadius: '50%',
                 bgGradient: 'to-b',
                 gradientFrom:
-                  completedQuizzesIds[index] || currentQuizIndex === index ? 'white' : '#B8EAFF',
-                gradientTo:
-                  completedQuizzesIds[index] || currentQuizIndex === index ? 'white' : '#62C2CE',
+                  completedQuizzesIds[index] || currentQuizIndex === index ? 'white' : '',
+                gradientTo: completedQuizzesIds[index] || currentQuizIndex === index ? 'white' : '',
                 color: currentQuizIndex === index ? 'transparent' : 'white',
                 zIndex: '50', // Ensure it's above the image
                 display: 'flex',
@@ -174,21 +173,23 @@ const QuizContent = ({
                 cursor: currentIndex ? 'default' : 'pointer',
               })}
             >
-              {currentQuizIndex === index && !completedQuizzesIds[index] && (
+              {!completedQuizzesIds[index] && (
                 <>
-                  <div
-                    className={css({
-                      pos: 'absolute',
-                      inset: '0',
-                      rounded: 'full',
-                    })}
-                    style={blueBorderStyle}
-                  />
+                  {currentQuizIndex === index && (
+                    <div
+                      className={css({
+                        pos: 'absolute',
+                        inset: '0',
+                        rounded: 'full',
+                      })}
+                      style={blueBorderStyle}
+                    />
+                  )}
                   <div
                     style={{backgroundColor: area.color || 'white'}}
                     className={css({
                       pos: 'absolute',
-                      inset: '1',
+                      inset: currentQuizIndex === index ? '1' : '0',
                       rounded: 'full',
                     })}
                   />
