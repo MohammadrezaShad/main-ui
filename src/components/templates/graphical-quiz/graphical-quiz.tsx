@@ -1,6 +1,6 @@
 'use client';
 
-import {useEffect, useState} from 'react';
+import {useEffect, useMemo, useState} from 'react';
 import {toast} from 'react-toastify';
 import {css} from '@styled/css';
 import {useMutation, useQuery} from '@tanstack/react-query';
@@ -38,13 +38,16 @@ const WaterSavingQuiz = () => {
   const [gainedCoins, setGainedCoins] = useState(0);
   const [totalGainedCoins, setTotalGainedCoins] = useState(0);
   const [answers, setAnswers] = useState<Answer[]>([]);
-  const [currentQuiz, setCurrentQuiz] = useState<QuizType>();
+  const [currentQuiz, setCurrentQuiz] = useState<QuizType | null>(null);
   const {data} = useQuery({
     queryKey: ['find-graphical-quiz-by-id', params.quizId],
     queryFn: () => findGraphicalQuizById({id: params.quizId as string}, token),
   });
-  const quiz = data?.result;
-  const quizzes = data?.result?.quizPoints.map(quiz => quiz.quizObject);
+  const quiz = useMemo(() => data?.result, [data]);
+  const quizzes = useMemo(
+    () => data?.result?.quizPoints.map(quiz => quiz.quizObject),
+    [data?.result?.quizPoints],
+  );
 
   const [currentQuizIndex, setCurrentQuizIndex] = useState<number | null>(0);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -65,8 +68,7 @@ const WaterSavingQuiz = () => {
     }
     if (currentQuestionIndex + 1 === currentQuiz.questions.length) {
       handleClick();
-    }
-    setCurrentQuestionIndex(prev => prev + 1);
+    } else setCurrentQuestionIndex(prev => prev + 1);
   };
 
   const handleClickBack = () => {
@@ -103,6 +105,7 @@ const WaterSavingQuiz = () => {
         });
         if (data?.success) {
           setCompletedQuizzesIds(prev => [...prev, currentQuiz._id]);
+          setCurrentQuiz(null);
           setCorrectAnswers(data.correctAnswerCount);
           setWrongAnswers(data.wrongAnswerCount);
           setGainedCoins(data.gainedCoins);
@@ -129,6 +132,8 @@ const WaterSavingQuiz = () => {
             token,
           );
           setCurrentQuiz(response.result as QuizType);
+          setCurrentQuestionIndex(0);
+          setAnswers([]);
         } catch (error: Error | any) {
           toast.error(error.message);
         } finally {

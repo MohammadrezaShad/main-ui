@@ -54,7 +54,7 @@ const QuizContent = ({
   setCurrentQuizIndex,
 }: Props) => {
   const generateIcon = (index: number) => {
-    if (completedQuizzesIds[index])
+    if (completedQuizzesIds.includes(quizzes[index]._id))
       return (
         <IconCheck
           className={css({
@@ -149,7 +149,7 @@ const QuizContent = ({
               style={{left: `${x}%`, top: `${y}%`}}
               key={crypto.randomUUID()}
               className={css({
-                border: completedQuizzesIds[index]
+                border: completedQuizzesIds.includes(quizzes[index]._id)
                   ? '4px solid token(colors.success)'
                   : currentQuizIndex === index
                     ? 'none'
@@ -160,10 +160,15 @@ const QuizContent = ({
                 borderRadius: '50%',
                 bgGradient: 'to-b',
                 gradientFrom:
-                  completedQuizzesIds[index] || currentQuizIndex === index ? 'white' : '',
-                gradientTo: completedQuizzesIds[index] || currentQuizIndex === index ? 'white' : '',
+                  completedQuizzesIds.includes(quizzes[index]._id) || currentQuizIndex === index
+                    ? 'white'
+                    : '',
+                gradientTo:
+                  completedQuizzesIds.includes(quizzes[index]._id) || currentQuizIndex === index
+                    ? 'white'
+                    : '',
                 color: currentQuizIndex === index ? 'transparent' : 'white',
-                zIndex: '50', // Ensure it's above the image
+                zIndex: '10',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -173,7 +178,7 @@ const QuizContent = ({
                 cursor: currentIndex ? 'default' : 'pointer',
               })}
             >
-              {!completedQuizzesIds[index] && (
+              {!completedQuizzesIds.includes(quizzes[index]._id) && (
                 <>
                   {currentQuizIndex === index && (
                     <div
@@ -200,7 +205,7 @@ const QuizContent = ({
           );
         })}
       </div>
-      {(currentQuizIndex || 0) + 1 > quizzes.length ? (
+      {completedQuizzesIds.length === quizzes.length ? (
         <Link
           href='/quizzes/graphical'
           className={css({
@@ -234,7 +239,7 @@ const QuizContent = ({
           answers={answers}
           quiz={currentQuiz}
         />
-      ) : completedQuizzesIds.length ? (
+      ) : currentQuestionIndex ? (
         <QuizEndButton
           correctAnswers={correctAnswers}
           wrongAnswers={wrongAnswers}
