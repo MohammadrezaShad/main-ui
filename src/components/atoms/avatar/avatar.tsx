@@ -25,6 +25,7 @@ const Avatar = ({src, size = 64, alt = ''}: Props) => {
           objectFit: 'cover',
           width: `${size}px`,
           height: `${size}px`,
+          aspectRatio: 'square',
         })}
       />
     );
