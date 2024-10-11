@@ -25,7 +25,6 @@ const Page = ({hasPdf = false}: {hasPdf?: boolean}) => {
   const SHOWCASE_COUNT = 6;
   const READMORE_PAGE_COUNT = 18;
   const page = parseInt(searchParams.get('page') ?? '1', 10);
-  console.log('🚀 ~ Page ~ page:', page);
   const {data, isFetching} = useQuery({
     queryKey: ['search-cs', params.categoryId, page],
     queryFn: () =>
