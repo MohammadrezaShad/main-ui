@@ -1,3 +1,4 @@
+import {css} from '@styled/css';
 import {Box} from '@styled/jsx';
 
 import {IconCalendar, IconLocation, IconStar} from '@/assets';
@@ -43,19 +44,19 @@ const CorporateCard = ({
       <Box mt='4'>
         <Ratings>
           <Star bgColor='primary'>
-            <IconStar />
+            <IconStar className={css({w: '4', h: '4'})} />
           </Star>
           <Star bgColor='primary'>
-            <IconStar />
+            <IconStar className={css({w: '4', h: '4'})} />
           </Star>
           <Star bgColor='primary'>
-            <IconStar />
+            <IconStar className={css({w: '4', h: '4'})} />
           </Star>
           <Star bg='gray3'>
-            <IconStar />
+            <IconStar className={css({w: '4', h: '4'})} />
           </Star>
           <Star bg='gray3'>
-            <IconStar />
+            <IconStar className={css({w: '4', h: '4'})} />
           </Star>
         </Ratings>
       </Box>
