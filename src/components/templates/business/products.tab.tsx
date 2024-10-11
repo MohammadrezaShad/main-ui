@@ -1,8 +1,9 @@
-import { css } from '@styled/css';
-import { useState } from 'react';
+import {useState} from 'react';
+import {css} from '@styled/css';
 
-import { IconChevronLeft, IconChevronRight } from '@/assets';
-import { Pagination } from '../articles/articles.styled';
+import {IconChevronLeft, IconChevronRight} from '@/assets';
+
+import {Pagination} from '../articles/articles.styled';
 import CategorySelect from './category-select';
 import ProductCard from './product-card';
 
@@ -89,7 +90,7 @@ const Products: React.FC = () => {
           gridTemplateColumns: 'repeat(3, 1fr)',
           gap: '4',
           mt: '4',
-          mb: '8'
+          mb: '8',
         })}
       >
         {filteredProducts.map(product => (
@@ -108,28 +109,27 @@ const Products: React.FC = () => {
         ))}
       </div>
       <Pagination
-          nextLabel={<IconChevronRight className={css({w: '6', h: '6'})} />}
-          onPageChange={current => {}}
-          pageRangeDisplayed={3}
-          marginPagesDisplayed={2}
-          pageCount={12}
-          previousLabel={<IconChevronLeft />}
-          pageClassName='page-item'
-          pageLinkClassName='page-link'
-          previousClassName='page-item'
-          previousLinkClassName='page-link'
-          nextClassName='page-item'
-          nextLinkClassName='page-link'
-          breakLabel='...'
-          breakClassName='page-item'
-          breakLinkClassName='page-link'
-          containerClassName='pagination'
-          activeClassName='active'
-          renderOnZeroPageCount={null}
-        />
+        nextLabel={<IconChevronRight className={css({w: '6', h: '6'})} />}
+        onPageChange={current => {}}
+        pageRangeDisplayed={3}
+        marginPagesDisplayed={2}
+        pageCount={12}
+        previousLabel={<IconChevronLeft />}
+        pageClassName='page-item'
+        pageLinkClassName='page-link'
+        previousClassName='page-item'
+        previousLinkClassName='page-link'
+        nextClassName='page-item'
+        nextLinkClassName='page-link'
+        breakLabel='...'
+        breakClassName='page-item'
+        breakLinkClassName='page-link'
+        containerClassName='pagination'
+        activeClassName='active'
+        renderOnZeroPageCount={null}
+      />
     </div>
   );
 };
 
-export { Products };
-
+export {Products};

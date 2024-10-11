@@ -3,10 +3,12 @@
 import {useState} from 'react';
 import {css, cx} from '@styled/css';
 import {Box} from '@styled/jsx';
+import Image from 'next/image';
 
 import {IconStar} from '@/assets';
 import {Ratings, Star} from '@/components/molecules/corporate-card/corporate-card.styled';
 
+import {Gallery} from './gallery.tab';
 import {InfoBox} from './info-box';
 import {Overview} from './overview.tab';
 import {Products} from './products.tab';
@@ -19,12 +21,7 @@ const TabContent = ({activeTab}: {activeTab: string}) => {
     return <Products />;
   }
   if (activeTab === 'gallery') {
-    return (
-      <div>
-        <h2 className={css({textStyle: 'headline3', color: '#333333'})}>Gallery</h2>
-        <p>Images will be displayed here.</p>
-      </div>
-    );
+    return <Gallery />;
   }
 
   return null;
@@ -35,7 +32,6 @@ const BusinessPage = () => {
 
   return (
     <div className={css({width: '100%'})}>
-      {/* Full-Width Header */}
       <div
         style={{
           backgroundImage: `url(https://s3-alpha-sig.figma.com/img/20e4/1998/433828fd4fdc7ef5f872d45ea6d0fc42?Expires=1729468800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=c~vX4iWfrjyvAZyQBcjYeU2Io7zu7U0HDd6Q-FKd4lsUc8vb7pppl1totYwc3CrLSAlZp9vgmGGT5HD3ReavCOGPGvwzsW6RrbQgTIFbE6vJqIL29A9xkxrH3gfTPtIQt2a93xkCiRxUSS4txgoLgOyCGXBWp-V6FY4GsDt7NiCnhPDCZTdc13xIDdiWTbEMmkrysRl~dULpzoyWQkXEcUdIkG65zerL-xBtmWWPvDDB0n4RRLd4lxnaiR3kABtZuAfxtQVo95j1b3CC8ChoxG18dwtoh4X2oocC~10OleOh5CJeLsYeytEbKlQT-uqzCPSdq~WAHsKdqIzzNxp64w__)`,
@@ -55,7 +51,6 @@ const BusinessPage = () => {
         <div
           className={css({display: 'flex', justifyContent: 'space-between', alignItems: 'center'})}
         >
-          {/* Rating */}
           <Box mt='4' className={css({position: 'absolute', top: '70%', left: '[227px]'})}>
             <Ratings>
               <Star bgColor='primary'>
@@ -75,18 +70,19 @@ const BusinessPage = () => {
               </Star>
             </Ratings>
           </Box>
-          {/* Business Info (Full Width) */}
           <div
             className={css({
               display: 'flex',
               alignItems: 'end',
               pos: 'absolute',
               bottom: '-50%',
-              //   transform: 'translateY(-50%)',
               ps: '[43px]',
             })}
           >
-            <img
+            <Image
+              unoptimized
+              width={160}
+              height={160}
               src='https://s3-alpha-sig.figma.com/img/85f8/0ab6/b2cd80dc71814cae334ccd4d16e967d6?Expires=1729468800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=PN5D~-i88VCL9CkSazZEKadN1Dat5oXGVGVwBmZlK6AGLtaD2nJuZ65lqoA3lgxwVRpBtw~9AueCURIJKI88zJV2y6HqunVO49aHRLR6SNXI2hR3HmNGcz5m6m9QadsZm4f2dybxhQX0~~mp2-s4rfOMOmdMWcNFGEQivV2X36HqAd8D2Nhlwuz8tByq-0ahwlqr77M3hkvzhpoi22n1sY84HG9l7G5ksWNU1iKimYZrOiKVRQLFCD3QnDuPIWAF0ZQwZgMF1rR3dMozpQEg1lBw1FJzq3FYsB9xteY1NHztYQwyjPR1AhwBa~QVaQZqUFTzEBgUh8fL6hft5GNhEA__'
               alt='Business Avatar'
               className={css({borderRadius: '50%', width: '160px', height: '160px', mr: '6'})}
@@ -103,7 +99,6 @@ const BusinessPage = () => {
         </div>
       </div>
 
-      {/* Main Content Area */}
       <div
         className={css({
           display: 'flex',
@@ -113,9 +108,7 @@ const BusinessPage = () => {
           px: '4',
         })}
       >
-        {/* Tabs and Content */}
         <div className={css({flex: '3'})}>
-          {/* Tabs */}
           <div
             className={css({display: 'flex', gap: '6', borderBottom: '1px solid #E3E3E3', mb: '6'})}
           >
@@ -163,7 +156,6 @@ const BusinessPage = () => {
             </button>
           </div>
 
-          {/* Tab Content */}
           <TabContent activeTab={activeTab} />
         </div>
 
