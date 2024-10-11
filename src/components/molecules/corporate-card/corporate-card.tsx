@@ -44,19 +44,19 @@ const CorporateCard = ({
       <Box mt='4'>
         <Ratings>
           <Star bgColor='primary'>
-            <IconStar className={css({w: '4', h: '4'})} />
+            <IconStar className={css({w: '4', h: '4', color: 'white'})} />
           </Star>
           <Star bgColor='primary'>
-            <IconStar className={css({w: '4', h: '4'})} />
+            <IconStar className={css({w: '4', h: '4', color: 'white'})} />
           </Star>
           <Star bgColor='primary'>
-            <IconStar className={css({w: '4', h: '4'})} />
+            <IconStar className={css({w: '4', h: '4', color: 'white'})} />
           </Star>
           <Star bg='gray3'>
-            <IconStar className={css({w: '4', h: '4'})} />
+            <IconStar className={css({w: '4', h: '4', color: 'white'})} />
           </Star>
           <Star bg='gray3'>
-            <IconStar className={css({w: '4', h: '4'})} />
+            <IconStar className={css({w: '4', h: '4', color: 'white'})} />
           </Star>
         </Ratings>
       </Box>

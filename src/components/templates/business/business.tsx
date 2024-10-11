@@ -9,18 +9,14 @@ import {Ratings, Star} from '@/components/molecules/corporate-card/corporate-car
 
 import {InfoBox} from './info-box';
 import {Overview} from './overview.tab';
+import {Products} from './products.tab';
 
 const TabContent = ({activeTab}: {activeTab: string}) => {
   if (activeTab === 'overview') {
     return <Overview />;
   }
   if (activeTab === 'products') {
-    return (
-      <div>
-        <h2 className={css({textStyle: 'headline3', color: '#333333'})}>Products</h2>
-        <p>Product details and listings will go here.</p>
-      </div>
-    );
+    return <Products />;
   }
   if (activeTab === 'gallery') {
     return (
@@ -63,19 +59,19 @@ const BusinessPage = () => {
           <Box mt='4' className={css({position: 'absolute', top: '70%', left: '[227px]'})}>
             <Ratings>
               <Star bgColor='primary'>
-                <IconStar className={css({w: '4', h: '4'})} />
+                <IconStar className={css({w: '4', h: '4', color: 'white'})} />
               </Star>
               <Star bgColor='primary'>
-                <IconStar className={css({w: '4', h: '4'})} />
+                <IconStar className={css({w: '4', h: '4', color: 'white'})} />
               </Star>
               <Star bgColor='primary'>
-                <IconStar className={css({w: '4', h: '4'})} />
+                <IconStar className={css({w: '4', h: '4', color: 'white'})} />
               </Star>
               <Star bg='gray3'>
-                <IconStar className={css({w: '4', h: '4'})} />
+                <IconStar className={css({w: '4', h: '4', color: 'white'})} />
               </Star>
               <Star bg='gray3'>
-                <IconStar className={css({w: '4', h: '4'})} />
+                <IconStar className={css({w: '4', h: '4', color: 'white'})} />
               </Star>
             </Ratings>
           </Box>
