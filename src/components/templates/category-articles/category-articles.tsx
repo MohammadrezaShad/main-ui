@@ -1,16 +1,16 @@
 'use client';
 
-import {useState} from 'react';
 import {css} from '@styled/css';
 import {Box} from '@styled/jsx';
 import {keepPreviousData, useQuery} from '@tanstack/react-query';
-import {useParams} from 'next/navigation';
+import {useParams, useSearchParams} from 'next/navigation';
 
 import {IconChevronLeft, IconChevronRight} from '@/assets';
 import {Articles, Divider, RecentArticles} from '@/components';
 import {Slider} from '@/components/organisms/slider';
 import {searchArticleByCategory} from '@/graphql';
 import {ArticleType} from '@/graphql/generated/types';
+import {useUpdateSearchParam} from '@/hooks';
 
 import 'swiper/css';
 import 'swiper/css/navigation';
@@ -19,10 +19,13 @@ import 'swiper/css/pagination';
 import {Pagination} from './articles.styled';
 
 const Page = ({hasPdf = false}: {hasPdf?: boolean}) => {
-  const [page, setPage] = useState(1);
   const params = useParams();
+  const updateSearchParams = useUpdateSearchParam();
+  const searchParams = useSearchParams();
   const SHOWCASE_COUNT = 6;
   const READMORE_PAGE_COUNT = 18;
+  const page = parseInt(searchParams.get('page') ?? '1', 10);
+  console.log('🚀 ~ Page ~ page:', page);
   const {data, isFetching} = useQuery({
     queryKey: ['search-cs', params.categoryId, page],
     queryFn: () =>
@@ -110,8 +113,9 @@ const Page = ({hasPdf = false}: {hasPdf?: boolean}) => {
             })}
           >
             <Pagination
+              forcePage={page - 1}
               nextLabel={<IconChevronRight className={css({w: '6', h: '6'})} />}
-              onPageChange={data => setPage(data.selected + 1)}
+              onPageChange={current => updateSearchParams('page', String(current.selected + 1))}
               pageRangeDisplayed={3}
               marginPagesDisplayed={2}
               pageCount={totalPages}

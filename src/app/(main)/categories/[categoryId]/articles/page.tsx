@@ -19,11 +19,17 @@ export async function generateStaticParams(): Promise<any> {
   }));
 }
 
-const Page = async ({params}: {params: {categoryId: string}}) => {
+interface Props {
+  params: {categoryId: string};
+  searchParams: {page: string};
+}
+
+const Page = async ({params, searchParams}: Props) => {
+  const page = parseInt(searchParams.page || '1', 10);
   const queryClient = getQueryClient();
   await queryClient.prefetchQuery({
-    queryKey: ['search-cs', params.categoryId],
-    queryFn: () => searchArticleByCategory({categories: [params.categoryId], count: 5, page: 1}),
+    queryKey: ['search-cs', params.categoryId, page],
+    queryFn: () => searchArticleByCategory({categories: [params.categoryId], count: 5, page}),
   });
   const dehydratedState = dehydrate(queryClient);
 

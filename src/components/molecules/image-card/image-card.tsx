@@ -1,4 +1,4 @@
-import {css} from '@styled/css';
+import {css, cx} from '@styled/css';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -14,12 +14,20 @@ interface Props {
   date: string;
   title: string;
   articleLink: string;
+  className?: string;
 }
 
-const ImageCard = ({imageUrl, date, title, aspectRatio = 'square', articleLink}: Props) => (
+const ImageCard = ({
+  imageUrl,
+  date,
+  title,
+  aspectRatio = 'square',
+  articleLink,
+  className,
+}: Props) => (
   <>
     <Container
-      className={css({hideBelow: 'md'})}
+      className={cx(css({hideBelow: 'md'}), className)}
       style={{backgroundImage: `url(${imageUrl})`}}
       _aspectRatio={aspectRatio}
     >
