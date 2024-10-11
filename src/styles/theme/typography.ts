@@ -5,6 +5,7 @@ const fontWeight = {
   light: '300',
   regular: '400',
   bold: '500',
+  semibold: '600',
   bolder: '700',
 };
 
@@ -75,6 +76,14 @@ export const textStyles = defineTextStyles({
     value: getText({
       fontWeight: fontWeight.bold,
       fontSize: '20px',
+    }),
+  },
+  headline6: {
+    description: '',
+    value: getText({
+      fontWeight: fontWeight.semibold,
+      fontSize: '16px',
+      lineHeight: '18.38px',
     }),
   },
   subtitle1: {
