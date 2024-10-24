@@ -72,21 +72,18 @@ const BusinessPage = () => {
         >
           <Box mt='4' className={css({position: 'absolute', top: '70%', left: '[227px]'})}>
             <Ratings>
-              <Star bgColor='primary'>
-                <IconStar className={css({w: '4', h: '4', color: 'white'})} />
-              </Star>
-              <Star bgColor='primary'>
-                <IconStar className={css({w: '4', h: '4', color: 'white'})} />
-              </Star>
-              <Star bgColor='primary'>
-                <IconStar className={css({w: '4', h: '4', color: 'white'})} />
-              </Star>
-              <Star bg='gray3'>
-                <IconStar className={css({w: '4', h: '4', color: 'white'})} />
-              </Star>
-              <Star bg='gray3'>
-                <IconStar className={css({w: '4', h: '4', color: 'white'})} />
-              </Star>
+              {[...Array(5)].map((_, index) => (
+                // eslint-disable-next-line react/no-array-index-key
+                <Star key={index} bgColor={index < (company?.rate || 0) ? 'primary' : 'gray3'}>
+                  <IconStar
+                    className={css({
+                      w: '4',
+                      h: '4',
+                      color: 'white',
+                    })}
+                  />
+                </Star>
+              ))}
             </Ratings>
           </Box>
           <div
@@ -111,15 +108,15 @@ const BusinessPage = () => {
                 {company?.title}
               </h1>
               <p className={css({textStyle: 'body', color: '#333333'})}>
-                {company?.city}, {company?.country}{' '}
+                {company?.city}, {company?.country}
                 <span className={css({mx: '2', color: '#E3E3E3'})}>|</span>{' '}
-                <div className={css({display: 'flex', alignItems: 'center', gap: 2})}>
+                <span className={css({display: 'inline-flex', alignItems: 'center', gap: 2})}>
                   {company?.categories?.map(category => (
                     <Link key={category._id} href={`/categories/${category._id}`}>
                       {category.slug}
                     </Link>
                   ))}
-                </div>
+                </span>
               </p>
             </div>
           </div>

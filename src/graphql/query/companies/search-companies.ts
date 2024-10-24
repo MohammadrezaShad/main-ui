@@ -7,13 +7,13 @@ import {CompanyQuery, SearchCompanyInput} from '../../generated/types';
 
 export async function searchCompanies(
   input: SearchCompanyInput,
-): Promise<CompanyQuery['searchCompaniess']> {
+): Promise<CompanyQuery['searchCompanies']> {
   const clientId = getCookie(CookieName.CLIENT_ID) as string;
   const res = await gqlFetch({
     url: process.env.NEXT_PUBLIC_API as string,
-    query: `query SearchCompaniess($input: SearchCompanyInput!) {
+    query: `query SearchCompanies($input: SearchCompanyInput!) {
   company {
-    searchCompaniess(input: $input) {
+    searchCompanies(input: $input) {
       totalPages
       totalCount
       success
@@ -169,5 +169,5 @@ export async function searchCompanies(
   // if (response.errors?.[0]?.message) {
   //   throw new Error(response.errors?.[0]?.message);
   // }
-  return response.data.company.searchCompaniess;
+  return response.data.company.searchCompanies;
 }

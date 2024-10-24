@@ -98,7 +98,7 @@ function InfoBox({company}: Props) {
           listStyle: 'none',
         })}
       >
-        {company?.worktimes.map(workTime => (
+        {company?.worktimes?.map(workTime => (
           <li
             key={workTime.day}
             className={css({
