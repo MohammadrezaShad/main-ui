@@ -1,10 +1,12 @@
 'use client';
 
+import {toast} from 'react-toastify';
 import {css} from '@styled/css';
 import {Box} from '@styled/jsx';
 import {flex} from '@styled/patterns';
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
 import {getCookie} from 'cookies-next';
+import {FormikValues, useFormik} from 'formik';
 import {useRouter} from 'next/navigation';
 
 import {IconArrowRight} from '@/assets';
@@ -13,8 +15,6 @@ import RadioButton from '@/components/atoms/radio-button/radio-button';
 import {CookieName} from '@/constants';
 import {GenderEnum, updateUser} from '@/graphql';
 import {getUser} from '@/graphql/query/users/get-user';
-import {FormikValues, useFormik} from 'formik';
-import {toast} from 'react-toastify';
 
 export default function Settings() {
   const authToken = getCookie(CookieName.AUTH_TOKEN)!;
@@ -33,6 +33,12 @@ export default function Settings() {
       nickname: data?.nickname,
       hometown: data?.hometown,
       website: data?.website,
+      facebook: data?.facebook || '',
+      twitter: data?.twitter || '',
+      instagram: data?.instagram || '',
+      whatsApp: data?.whatsApp || '',
+      telegram: data?.telegram || '',
+      linkedin: data?.linkedin || '',
     },
     // validationSchema: schema,
     onSubmit: async (values: FormikValues) => {
@@ -241,6 +247,54 @@ export default function Settings() {
                 label='My Blog or Website'
                 value={values.website}
                 onChange={handleChange}
+              />
+              <TextField
+                label='Facebook'
+                type='text'
+                name='facebook'
+                value={values.facebook}
+                onChange={handleChange}
+                id='facebook'
+              />
+              <TextField
+                label='Twitter'
+                type='text'
+                name='twitter'
+                value={values.twitter}
+                onChange={handleChange}
+                id='twitter'
+              />
+              <TextField
+                label='Instagram'
+                type='text'
+                name='instagram'
+                value={values.instagram}
+                onChange={handleChange}
+                id='instagram'
+              />
+              <TextField
+                label='WhatsApp'
+                type='text'
+                name='whatsApp'
+                value={values.whatsApp}
+                onChange={handleChange}
+                id='whatsApp'
+              />
+              <TextField
+                label='Telegram'
+                type='text'
+                name='telegram'
+                value={values.telegram}
+                onChange={handleChange}
+                id='telegram'
+              />
+              <TextField
+                label='Linkedin'
+                type='text'
+                name='linkedin'
+                value={values.linkedin}
+                onChange={handleChange}
+                id='linkedin'
               />
             </Box>
             <div

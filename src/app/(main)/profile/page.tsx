@@ -1,14 +1,14 @@
+import {css} from '@styled/css';
+import {flex} from '@styled/patterns';
+import {dehydrate} from '@tanstack/react-query';
 import {Metadata} from 'next';
+import {cookies} from 'next/headers';
 
 import {ProfileDetails, ProfileSidebar, ProfileView} from '@/components';
 import {CookieName} from '@/constants';
 import {getUser} from '@/graphql/query/users/get-user';
 import {getQueryClient} from '@/helpers';
 import {Hydrate} from '@/providers';
-import {css} from '@styled/css';
-import {flex} from '@styled/patterns';
-import {dehydrate} from '@tanstack/react-query';
-import {cookies} from 'next/headers';
 
 export const metadata: Metadata = {
   robots: {
