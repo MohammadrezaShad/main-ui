@@ -1,27 +1,52 @@
-import {getCookie} from 'cookies-next';
-
-import {CookieName} from '@/constants';
-import {AuthMutation, UpdateUserInput} from '@/graphql/generated/types';
+import {AuthMutation, Scalars, UpdateUserInput} from '@/graphql/generated/types';
 import {gqlFetch} from '@/services/fetch';
 
 export async function updateUser(
   input: UpdateUserInput,
-  accessToken: string,
+  token: string,
+  avatar?: Scalars['Upload']['input'],
 ): Promise<AuthMutation['updateUser']> {
-  const clientId = getCookie(CookieName.CLIENT_ID) as string;
-  const res = await gqlFetch({
-    url: process.env.NEXT_PUBLIC_API as string,
-    query: `mutation UpdateUser($input: UpdateUserInput!) {
+  const formData = new FormData();
+  const query = `mutation UpdateUser($input: UpdateUserInput!, $avatar: Upload) {
       auth {
-        updateUser(input: $input) {
+        updateUser(input: $input, avatar: $avatar) {
           success
           token
         }
       }
-    }`,
-    variables: {input},
-    headers: {Authorization: `Bearer ${accessToken}`, 'client-id': clientId},
-  });
+    }`;
+
+  formData.append(
+    'operations',
+    JSON.stringify({
+      query,
+      variables: {
+        input: {...input},
+        avatar: null,
+      },
+    }),
+  );
+  formData.append('map', JSON.stringify({avatar: ['variables.avatar']}));
+
+  if (avatar) {
+    formData.append('avatar', avatar);
+  }
+  const res = avatar
+    ? await fetch(process.env.NEXT_PUBLIC_API as string, {
+        method: 'POST',
+        headers: {
+          'apollo-require-preflight': 'true',
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      })
+    : await gqlFetch({
+        url: process.env.NEXT_PUBLIC_API as string,
+        query,
+        variables: {input},
+        headers: {Authorization: `Bearer ${token}`},
+      });
+
   if (!res.ok) {
     throw new Error('Failed to fetch data');
   }
@@ -29,5 +54,5 @@ export async function updateUser(
   if (response.errors?.[0]?.message) {
     throw new Error(response.errors?.[0]?.message);
   }
-  return response.data;
+  return response.data.auth.updateUser;
 }

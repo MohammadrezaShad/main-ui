@@ -35,10 +35,9 @@ const TopUser = ({
       <div className={css({display: 'flex', gap: '4'})}>
         <Avatar
           src={
-            user.avatar
-              ? `${IMAGE_STORAGE_URL}/${user.avatar?.filename}-${user.avatar?._id}`
-              : undefined
+            user.avatar ? `${IMAGE_STORAGE_URL}/${user.avatar?.filename}-${user.avatar?._id}` : ''
           }
+          alt=''
           size={48}
         />
         <div

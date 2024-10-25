@@ -282,8 +282,9 @@ export default function Author() {
                 src={
                   user?.avatar?._id
                     ? `${IMAGE_STORAGE_URL}/${user?.avatar?.filename}-${user?.avatar?._id}`
-                    : undefined
+                    : ''
                 }
+                alt=''
               />
             </Box>
 

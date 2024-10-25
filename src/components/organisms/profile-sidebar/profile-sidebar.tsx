@@ -1,15 +1,17 @@
 'use client';
 
+import {useRef, useState} from 'react';
+import {toast} from 'react-toastify';
 import {css} from '@styled/css';
 import {flex} from '@styled/patterns';
-import {useQuery, useQueryClient} from '@tanstack/react-query';
+import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
 import {deleteCookie, getCookie} from 'cookies-next';
 import {useRouter} from 'next/navigation';
 
 import {IconDrop, IconLogout} from '@/assets';
-import {Avatar} from '@/components';
+import {Avatar, Button} from '@/components';
 import {CookieName} from '@/constants';
-import {getUser} from '@/graphql';
+import {getUser, updateUser} from '@/graphql';
 import {Paths} from '@/utils';
 
 import ProfileNavigation from '../profile-navigation/profile-navigation';
@@ -17,6 +19,8 @@ import ProfileNavigation from '../profile-navigation/profile-navigation';
 const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
 
 const ProfileSidebar = () => {
+  const [coverImage, setCoverImage] = useState<File>();
+  const avatarPreviewRef = useRef<HTMLImageElement>(null);
   const queryClient = useQueryClient();
   const router = useRouter();
   const authToken = getCookie(CookieName.AUTH_TOKEN)!;
@@ -35,6 +39,52 @@ const ProfileSidebar = () => {
     }, 1000);
   };
 
+  const handlePhotoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setCoverImage(file);
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        if (avatarPreviewRef.current?.hasAttribute('src')) {
+          avatarPreviewRef.current.src = e.target?.result as string;
+        } else {
+          avatarPreviewRef.current!.innerHTML = `
+            <img
+              style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;"
+              width={134}
+              height={134}
+              alt={alt}
+              src=${e.target?.result as string}
+            />
+            `;
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const updateUserMutation = useMutation({
+    mutationFn: (avatar: any) => updateUser({}, authToken!, avatar),
+  });
+
+  const handleUpdateAvatar = async () => {
+    try {
+      await updateUserMutation.mutateAsync(coverImage);
+      queryClient.clear();
+      toast.success('Avatar updated successfully');
+      setCoverImage(undefined);
+    } catch (error: Error | any) {
+      toast.error(error.message);
+    }
+  };
+
+  const handleResetAvatar = () => {
+    setCoverImage(undefined);
+    avatarPreviewRef.current!.src = user?.avatar?._id
+      ? `${IMAGE_STORAGE_URL}/${user.avatar?.filename}-${user.avatar?._id}`
+      : '';
+  };
+
   return (
     <div
       className={flex({
@@ -51,14 +101,86 @@ const ProfileSidebar = () => {
         },
       })}
     >
-      <Avatar
-        size={134}
-        src={
-          user?.avatar?._id
-            ? `${IMAGE_STORAGE_URL}/${user.avatar?.filename}-${user.avatar?._id}`
-            : undefined
-        }
-      />
+      <label
+        className={css({
+          cursor: 'pointer',
+          pos: 'relative',
+          rounded: 'full',
+          overflow: 'hidden',
+        })}
+      >
+        <div
+          className={css({
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            pos: 'absolute',
+            inset: 0,
+            bgColor: 'gray1',
+            opacity: 0,
+            _hover: {
+              opacity: 0.5,
+            },
+            transition: 'opacity 0.3s ease',
+            color: 'gray.800',
+          })}
+        >
+          Click to change
+        </div>
+        <input
+          style={{display: 'none', opacity: 0, visibility: 'hidden'}}
+          type='file'
+          accept='image/*'
+          onChange={handlePhotoChange}
+        />
+        <span className={css({srOnly: true})}>Change Profile image</span>
+        <Avatar
+          ref={avatarPreviewRef}
+          size={134}
+          src={
+            user?.avatar?._id
+              ? `${IMAGE_STORAGE_URL}/${user.avatar?.filename}-${user.avatar?._id}`
+              : ''
+          }
+          alt=''
+        />
+      </label>
+      {coverImage ? (
+        <>
+          <Button
+            onClick={handleUpdateAvatar}
+            visual='contained'
+            className={css({
+              color: 'text.invert',
+              w: 'max-content',
+              px: 4,
+              py: 3,
+              bg: 'primary',
+              borderRadius: 0,
+              mt: '4',
+            })}
+            type='button'
+          >
+            Save
+          </Button>
+          <Button
+            onClick={handleResetAvatar}
+            visual='outlined'
+            className={css({
+              color: 'text.primary',
+              w: 'max-content',
+              px: 4,
+              py: 3,
+              bg: 'white',
+              borderRadius: 0,
+              mt: '4',
+            })}
+            type='button'
+          >
+            Reset
+          </Button>
+        </>
+      ) : null}
       <h1
         className={css({
           textStyle: 'headline3',

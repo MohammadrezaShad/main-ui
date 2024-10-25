@@ -136,7 +136,7 @@ const Page = () => {
   }
 
   function handleLinkedInShare() {
-    const linkedInShareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`${BASE_URL}/${article.slug}`)}&title=${encodeURIComponent(article.title)}&summary=${encodeURIComponent(article.excerpt || '')}&source=${encodeURIComponent('Waterlyst.com' || '')}`;
+    const linkedInShareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`${BASE_URL}/${article.slug}`)}&title=${encodeURIComponent(article.title)}&summary=${encodeURIComponent(article.excerpt || '')}&source=${encodeURIComponent(process.env.NEXT_PUBLIC_BASE_URL || '')}`;
 
     window.open(linkedInShareUrl, '_blank', 'noopener,noreferrer');
   }

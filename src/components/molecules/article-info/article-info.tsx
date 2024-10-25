@@ -57,8 +57,9 @@ const ArticleInfo = ({
           src={
             author?.avatar?._id
               ? `${IMAGE_STORAGE_URL}/${author.avatar?.filename}-${author.avatar?._id}`
-              : undefined
+              : ''
           }
+          alt=''
           size={40}
         />
 

@@ -47,6 +47,12 @@ export async function getUser(accessToken: string): Promise<AuthQuery['getUser']
           username
           visitedArticlesCount
           website
+          facebook
+          instagram
+          twitter
+          linkedin
+          telegram
+          whatsApp
         }
       }
     }`,

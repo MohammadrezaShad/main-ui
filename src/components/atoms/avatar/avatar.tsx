@@ -1,3 +1,4 @@
+import React from 'react';
 import {css} from '@styled/css';
 import {grid} from '@styled/patterns';
 import Image from 'next/image';
@@ -7,13 +8,16 @@ import {IconUser} from '@/assets';
 interface Props {
   src?: string;
   size?: number;
-  alt?: string;
 }
 
-const Avatar = ({src, size = 64, alt = ''}: Props) => {
-  if (src) {
+const Avatar = React.forwardRef<
+  React.ElementRef<typeof Image>,
+  React.ComponentPropsWithoutRef<typeof Image> & Props
+>(({src, size = 64, alt = ''}, ref) => {
+  if (src && src.length > 0) {
     return (
       <Image
+        ref={ref}
         unoptimized
         width={size}
         height={size}
@@ -32,6 +36,7 @@ const Avatar = ({src, size = 64, alt = ''}: Props) => {
   }
   return (
     <div
+      ref={ref}
       style={{
         width: size,
         height: size,
@@ -61,6 +66,8 @@ const Avatar = ({src, size = 64, alt = ''}: Props) => {
       />
     </div>
   );
-};
+});
+
+Avatar.displayName = 'Avatar';
 
 export default Avatar;

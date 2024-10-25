@@ -341,6 +341,14 @@ export type BulkDeleteCommentInput = {
   ids: Array<Scalars['String']['input']>;
 };
 
+export type BulkDeleteCompanyCategoryInput = {
+  ids: Array<Scalars['String']['input']>;
+};
+
+export type BulkDeleteCompanyInput = {
+  ids: Array<Scalars['String']['input']>;
+};
+
 export type BulkDeleteGraphicalQuizInput = {
   ids: Array<Scalars['String']['input']>;
 };
@@ -374,6 +382,10 @@ export type BulkFindArticleInput = {
 };
 
 export type BulkFindBookmarkInput = {
+  ids: Array<Scalars['String']['input']>;
+};
+
+export type BulkFindCompanyInput = {
   ids: Array<Scalars['String']['input']>;
 };
 
@@ -567,6 +579,174 @@ export enum CommentTypeEnum {
   Article = 'ARTICLE',
 }
 
+export type CompanyCategoryMutation = {
+  __typename?: 'CompanyCategoryMutation';
+  createCompanyCategory: CreateCompanyCategoryOutput;
+  deleteCategories: DeleteCompanyCategoryOutput;
+  deleteCompanyCategory: DeleteCompanyCategoryOutput;
+  updateCompanyCategory: UpdateCompanyCategoryOutput;
+};
+
+export type CompanyCategoryMutationCreateCompanyCategoryArgs = {
+  input: CreateCompanyCategoryInput;
+};
+
+export type CompanyCategoryMutationDeleteCategoriesArgs = {
+  input: BulkDeleteCompanyCategoryInput;
+};
+
+export type CompanyCategoryMutationDeleteCompanyCategoryArgs = {
+  input: DeleteCompanyCategoryInput;
+};
+
+export type CompanyCategoryMutationUpdateCompanyCategoryArgs = {
+  input: UpdateCompanyCategoryInput;
+};
+
+export type CompanyCategoryQuery = {
+  __typename?: 'CompanyCategoryQuery';
+  findCompanyCategoryById: FindCompanyCategoryOutput;
+  findCompanyCategoryBySlug: FindCompanyCategoryOutput;
+  searchCategories: SearchCompanyCategoryOutput;
+};
+
+export type CompanyCategoryQueryFindCompanyCategoryByIdArgs = {
+  input: FindCompanyCategoryInput;
+};
+
+export type CompanyCategoryQueryFindCompanyCategoryBySlugArgs = {
+  input: FindCompanyCategoryBySlugInput;
+};
+
+export type CompanyCategoryQuerySearchCategoriesArgs = {
+  input: SearchCompanyCategoryInput;
+};
+
+export type CompanyCategoryType = {
+  __typename?: 'CompanyCategoryType';
+  _id: Scalars['String']['output'];
+  createUser?: Maybe<UserOutputType>;
+  createdAt?: Maybe<Scalars['DateTime']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  hasSeoApproval?: Maybe<Scalars['Boolean']['output']>;
+  image?: Maybe<ImageType>;
+  isDescriptionApproved?: Maybe<Scalars['Boolean']['output']>;
+  order?: Maybe<Scalars['Int']['output']>;
+  originalDescription?: Maybe<Scalars['String']['output']>;
+  parent?: Maybe<CompanyCategoryType>;
+  postCount?: Maybe<Scalars['Int']['output']>;
+  seoReviewDate?: Maybe<Scalars['String']['output']>;
+  seoSetting?: Maybe<SeoSettingType>;
+  slug: Scalars['String']['output'];
+  title: Scalars['String']['output'];
+  updateUser?: Maybe<UserOutputType>;
+  updatedAt?: Maybe<Scalars['DateTime']['output']>;
+};
+
+export type CompanyGalleryType = {
+  __typename?: 'CompanyGalleryType';
+  _id: Scalars['String']['output'];
+  company?: Maybe<CompanyType>;
+  createUser?: Maybe<UserOutputType>;
+  createdAt?: Maybe<Scalars['DateTime']['output']>;
+  image?: Maybe<ImageType>;
+  updateUser?: Maybe<UserOutputType>;
+  updatedAt?: Maybe<Scalars['DateTime']['output']>;
+};
+
+export type CompanyMutation = {
+  __typename?: 'CompanyMutation';
+  createCompany: CreateCompanyOutput;
+  deleteCompany: DeleteCompanyOutput;
+  deleteCompanys: DeleteCompanyOutput;
+  giveRating: CreateCompanyRatingOutput;
+  updateCompany: UpdateCompanyOutput;
+  uploadGalleryImages: UploadCompanyGalleryImagesOutput;
+};
+
+export type CompanyMutationCreateCompanyArgs = {
+  input: CreateCompanyInput;
+};
+
+export type CompanyMutationDeleteCompanyArgs = {
+  input: DeleteCompanyInput;
+};
+
+export type CompanyMutationDeleteCompanysArgs = {
+  input: BulkDeleteCompanyInput;
+};
+
+export type CompanyMutationGiveRatingArgs = {
+  input: CreateCompanyRatingInput;
+};
+
+export type CompanyMutationUpdateCompanyArgs = {
+  input: UpdateCompanyInput;
+};
+
+export type CompanyMutationUploadGalleryImagesArgs = {
+  files: Array<Scalars['Upload']['input']>;
+  input: UploadCompanyGalleryImagesInput;
+};
+
+export type CompanyQuery = {
+  __typename?: 'CompanyQuery';
+  findCompanyById: FindCompanyOutput;
+  findCompanyByIds: Array<CompanyType>;
+  findCompanyBySlug: FindCompanyOutput;
+  searchCompanies: SearchCompanyOutput;
+};
+
+export type CompanyQueryFindCompanyByIdArgs = {
+  input: FindCompanyInput;
+};
+
+export type CompanyQueryFindCompanyByIdsArgs = {
+  input: BulkFindCompanyInput;
+};
+
+export type CompanyQueryFindCompanyBySlugArgs = {
+  input: FindCompanyBySlugInput;
+};
+
+export type CompanyQuerySearchCompaniesArgs = {
+  input: SearchCompanyInput;
+};
+
+export enum CompanySortType {
+  Newest = 'NEWEST',
+  Oldest = 'OLDEST',
+}
+
+export type CompanyType = {
+  __typename?: 'CompanyType';
+  _id: Scalars['String']['output'];
+  about?: Maybe<Scalars['String']['output']>;
+  address?: Maybe<Scalars['String']['output']>;
+  callNumber?: Maybe<Scalars['String']['output']>;
+  categories?: Maybe<Array<CompanyCategoryType>>;
+  city?: Maybe<Scalars['String']['output']>;
+  country?: Maybe<Scalars['String']['output']>;
+  cover?: Maybe<ImageType>;
+  createUser?: Maybe<UserOutputType>;
+  createdAt?: Maybe<Scalars['DateTime']['output']>;
+  email?: Maybe<Scalars['String']['output']>;
+  facebook?: Maybe<Scalars['String']['output']>;
+  gallery?: Maybe<Array<CompanyGalleryType>>;
+  instagram?: Maybe<Scalars['String']['output']>;
+  keywords?: Maybe<Array<Scalars['String']['output']>>;
+  profileImage?: Maybe<ImageType>;
+  rate?: Maybe<Scalars['Float']['output']>;
+  registeredDate?: Maybe<Scalars['DateTime']['output']>;
+  slug?: Maybe<Scalars['String']['output']>;
+  title?: Maybe<Scalars['String']['output']>;
+  twitter?: Maybe<Scalars['String']['output']>;
+  updateUser?: Maybe<UserOutputType>;
+  updatedAt?: Maybe<Scalars['DateTime']['output']>;
+  website?: Maybe<Scalars['String']['output']>;
+  worktimes?: Maybe<Array<WorktimeType>>;
+};
+
 export type CoreOutput = {
   __typename?: 'CoreOutput';
   success: Scalars['Boolean']['output'];
@@ -648,6 +828,59 @@ export type CreateCommentInput = {
 
 export type CreateCommentOutput = {
   __typename?: 'CreateCommentOutput';
+  success: Scalars['Boolean']['output'];
+};
+
+export type CreateCompanyCategoryInput = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  hasSeoApproval?: InputMaybe<Scalars['Boolean']['input']>;
+  image?: InputMaybe<Scalars['String']['input']>;
+  isDescriptionApproved?: InputMaybe<Scalars['Boolean']['input']>;
+  order?: InputMaybe<Scalars['Int']['input']>;
+  parent?: InputMaybe<Scalars['String']['input']>;
+  seoSetting?: InputMaybe<SeoSettingInput>;
+  slug: Scalars['String']['input'];
+  title: Scalars['String']['input'];
+};
+
+export type CreateCompanyCategoryOutput = {
+  __typename?: 'CreateCompanyCategoryOutput';
+  success: Scalars['Boolean']['output'];
+};
+
+export type CreateCompanyInput = {
+  about?: InputMaybe<Scalars['String']['input']>;
+  address?: InputMaybe<Scalars['String']['input']>;
+  callNumber?: InputMaybe<Scalars['String']['input']>;
+  categories?: InputMaybe<Array<Scalars['String']['input']>>;
+  city?: InputMaybe<Scalars['String']['input']>;
+  country?: InputMaybe<Scalars['String']['input']>;
+  cover?: InputMaybe<Scalars['String']['input']>;
+  email?: InputMaybe<Scalars['String']['input']>;
+  facebook?: InputMaybe<Scalars['String']['input']>;
+  instagram?: InputMaybe<Scalars['String']['input']>;
+  keywords?: InputMaybe<Array<Scalars['String']['input']>>;
+  profileImage?: InputMaybe<Scalars['String']['input']>;
+  registeredDate?: InputMaybe<Scalars['DateTime']['input']>;
+  slug?: InputMaybe<Scalars['String']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  twitter?: InputMaybe<Scalars['String']['input']>;
+  website?: InputMaybe<Scalars['String']['input']>;
+  worktimes?: InputMaybe<Array<WorktimeInputType>>;
+};
+
+export type CreateCompanyOutput = {
+  __typename?: 'CreateCompanyOutput';
+  success: Scalars['Boolean']['output'];
+};
+
+export type CreateCompanyRatingInput = {
+  company: Scalars['String']['input'];
+  rate: Scalars['Int']['input'];
+};
+
+export type CreateCompanyRatingOutput = {
+  __typename?: 'CreateCompanyRatingOutput';
   success: Scalars['Boolean']['output'];
 };
 
@@ -846,6 +1079,24 @@ export type DeleteCommentInput = {
 
 export type DeleteCommentOutput = {
   __typename?: 'DeleteCommentOutput';
+  success: Scalars['Boolean']['output'];
+};
+
+export type DeleteCompanyCategoryInput = {
+  id: Scalars['String']['input'];
+};
+
+export type DeleteCompanyCategoryOutput = {
+  __typename?: 'DeleteCompanyCategoryOutput';
+  success: Scalars['Boolean']['output'];
+};
+
+export type DeleteCompanyInput = {
+  id: Scalars['String']['input'];
+};
+
+export type DeleteCompanyOutput = {
+  __typename?: 'DeleteCompanyOutput';
   success: Scalars['Boolean']['output'];
 };
 
@@ -1101,6 +1352,35 @@ export type FindCommentInput = {
 export type FindCommentOutput = {
   __typename?: 'FindCommentOutput';
   result?: Maybe<CommentType>;
+  success: Scalars['Boolean']['output'];
+};
+
+export type FindCompanyBySlugInput = {
+  slug: Scalars['String']['input'];
+};
+
+export type FindCompanyCategoryBySlugInput = {
+  parentSlug?: InputMaybe<Scalars['String']['input']>;
+  slug: Scalars['String']['input'];
+};
+
+export type FindCompanyCategoryInput = {
+  id: Scalars['String']['input'];
+};
+
+export type FindCompanyCategoryOutput = {
+  __typename?: 'FindCompanyCategoryOutput';
+  result?: Maybe<CompanyCategoryType>;
+  success: Scalars['Boolean']['output'];
+};
+
+export type FindCompanyInput = {
+  id: Scalars['String']['input'];
+};
+
+export type FindCompanyOutput = {
+  __typename?: 'FindCompanyOutput';
+  result?: Maybe<CompanyType>;
   success: Scalars['Boolean']['output'];
 };
 
@@ -1597,6 +1877,11 @@ export enum LikeTypeEnum {
   Comment = 'COMMENT',
 }
 
+export enum Meridiem {
+  Am = 'AM',
+  Pm = 'PM',
+}
+
 export type Mutation = {
   __typename?: 'Mutation';
   article: ArticleMutation;
@@ -1604,6 +1889,8 @@ export type Mutation = {
   bookmark: BookmarkMutation;
   category: CategoryMutation;
   comment: CommentMutation;
+  company: CompanyMutation;
+  companyCategory: CompanyCategoryMutation;
   engagement: EngagementMutation;
   file: FileMutation;
   graphicalQuiz: GraphicalQuizMutation;
@@ -1655,6 +1942,8 @@ export type Query = {
   bookmark: BookmarkQuery;
   category: CategoryQuery;
   comment: CommentQuery;
+  company: CompanyQuery;
+  companyCategory: CompanyCategoryQuery;
   engagement: EngagementQuery;
   file: FileQuery;
   graphicalQuiz: GraphicalQuizQuery;
@@ -1922,6 +2211,44 @@ export type SearchCommentOutput = {
   totalPages?: Maybe<Scalars['Int']['output']>;
 };
 
+export type SearchCompanyCategoryInput = {
+  count?: InputMaybe<Scalars['Int']['input']>;
+  fromSeoReviewDate?: InputMaybe<Scalars['String']['input']>;
+  hasSeoApproval?: InputMaybe<Scalars['Boolean']['input']>;
+  isSubCompanyCategory?: InputMaybe<Scalars['Boolean']['input']>;
+  page?: InputMaybe<Scalars['Int']['input']>;
+  parent?: InputMaybe<Scalars['String']['input']>;
+  slug?: InputMaybe<Scalars['String']['input']>;
+  sortType?: InputMaybe<SearchSortType>;
+  text?: InputMaybe<Scalars['String']['input']>;
+  toSeoReviewDate?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type SearchCompanyCategoryOutput = {
+  __typename?: 'SearchCompanyCategoryOutput';
+  results?: Maybe<Array<CompanyCategoryType>>;
+  success: Scalars['Boolean']['output'];
+  totalCount?: Maybe<Scalars['Int']['output']>;
+  totalPages?: Maybe<Scalars['Int']['output']>;
+};
+
+export type SearchCompanyInput = {
+  categories?: InputMaybe<Array<Scalars['String']['input']>>;
+  count?: InputMaybe<Scalars['Int']['input']>;
+  page?: InputMaybe<Scalars['Int']['input']>;
+  slug?: InputMaybe<Scalars['String']['input']>;
+  sortType?: InputMaybe<CompanySortType>;
+  title?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type SearchCompanyOutput = {
+  __typename?: 'SearchCompanyOutput';
+  results?: Maybe<Array<CompanyType>>;
+  success: Scalars['Boolean']['output'];
+  totalCount?: Maybe<Scalars['Int']['output']>;
+  totalPages?: Maybe<Scalars['Int']['output']>;
+};
+
 export type SearchGraphicalQuizInput = {
   categories?: InputMaybe<Array<Scalars['String']['input']>>;
   count?: InputMaybe<Scalars['Int']['input']>;
@@ -2097,6 +2424,7 @@ export type SendVerificationCodeOutput = {
 export enum SeoCollectionName {
   Articles = 'ARTICLES',
   Categories = 'CATEGORIES',
+  CompanyCategories = 'COMPANY_CATEGORIES',
   Tags = 'TAGS',
 }
 
@@ -2366,6 +2694,19 @@ export type TagType = {
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
 };
 
+export type TimeInputType = {
+  hour: Scalars['Int']['input'];
+  meridiem: Meridiem;
+  minute: Scalars['Int']['input'];
+};
+
+export type TimeType = {
+  __typename?: 'TimeType';
+  hour: Scalars['Int']['output'];
+  meridiem: Meridiem;
+  minute: Scalars['Int']['output'];
+};
+
 export type TopQuizzesOutput = {
   __typename?: 'TopQuizzesOutput';
   result?: Maybe<Array<QuizType>>;
@@ -2442,6 +2783,51 @@ export type UpdateCommentInput = {
 
 export type UpdateCommentOutput = {
   __typename?: 'UpdateCommentOutput';
+  success: Scalars['Boolean']['output'];
+};
+
+export type UpdateCompanyCategoryInput = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  hasSeoApproval?: InputMaybe<Scalars['Boolean']['input']>;
+  id: Scalars['String']['input'];
+  image?: InputMaybe<Scalars['String']['input']>;
+  isDescriptionApproved?: InputMaybe<Scalars['Boolean']['input']>;
+  order?: InputMaybe<Scalars['Int']['input']>;
+  parent?: InputMaybe<Scalars['String']['input']>;
+  seoSetting?: InputMaybe<SeoSettingInput>;
+  slug?: InputMaybe<Scalars['String']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type UpdateCompanyCategoryOutput = {
+  __typename?: 'UpdateCompanyCategoryOutput';
+  success: Scalars['Boolean']['output'];
+};
+
+export type UpdateCompanyInput = {
+  about?: InputMaybe<Scalars['String']['input']>;
+  address?: InputMaybe<Scalars['String']['input']>;
+  callNumber?: InputMaybe<Scalars['String']['input']>;
+  categories?: InputMaybe<Array<Scalars['String']['input']>>;
+  city?: InputMaybe<Scalars['String']['input']>;
+  country?: InputMaybe<Scalars['String']['input']>;
+  cover?: InputMaybe<Scalars['String']['input']>;
+  email?: InputMaybe<Scalars['String']['input']>;
+  facebook?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['String']['input'];
+  instagram?: InputMaybe<Scalars['String']['input']>;
+  keywords?: InputMaybe<Array<Scalars['String']['input']>>;
+  profileImage?: InputMaybe<Scalars['String']['input']>;
+  registeredDate?: InputMaybe<Scalars['DateTime']['input']>;
+  slug?: InputMaybe<Scalars['String']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  twitter?: InputMaybe<Scalars['String']['input']>;
+  website?: InputMaybe<Scalars['String']['input']>;
+  worktimes?: InputMaybe<Array<WorktimeInputType>>;
+};
+
+export type UpdateCompanyOutput = {
+  __typename?: 'UpdateCompanyOutput';
   success: Scalars['Boolean']['output'];
 };
 
@@ -2624,6 +3010,15 @@ export type UpdateUserInput = {
 
 export type UpdateUserOutput = {
   __typename?: 'UpdateUserOutput';
+  success: Scalars['Boolean']['output'];
+};
+
+export type UploadCompanyGalleryImagesInput = {
+  company: Scalars['String']['input'];
+};
+
+export type UploadCompanyGalleryImagesOutput = {
+  __typename?: 'UploadCompanyGalleryImagesOutput';
   success: Scalars['Boolean']['output'];
 };
 
@@ -2898,4 +3293,29 @@ export type VisitStatisticsType = {
   createdAt?: Maybe<Scalars['DateTime']['output']>;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
   user?: Maybe<UserOutputType>;
+};
+
+export enum Weekday {
+  Friday = 'FRIDAY',
+  Monday = 'MONDAY',
+  Saturday = 'SATURDAY',
+  Sunday = 'SUNDAY',
+  Thursday = 'THURSDAY',
+  Tuesday = 'TUESDAY',
+  Wednesday = 'WEDNESDAY',
+}
+
+export type WorktimeInputType = {
+  day: Weekday;
+  finishTime?: InputMaybe<TimeInputType>;
+  isOpened: Scalars['Boolean']['input'];
+  startTime?: InputMaybe<TimeInputType>;
+};
+
+export type WorktimeType = {
+  __typename?: 'WorktimeType';
+  day: Weekday;
+  finishTime?: Maybe<TimeType>;
+  isOpened: Scalars['Boolean']['output'];
+  startTime?: Maybe<TimeType>;
 };
