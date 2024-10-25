@@ -114,9 +114,11 @@ function InfoBox({company}: Props) {
             </span>
             {workTime.isOpened ? (
               <span className={css({textStyle: 'body2', color: 'text.primary'})}>
-                {workTime.startTime?.hour}:{workTime.startTime?.minute}{' '}
-                {workTime.startTime?.meridiem} - {workTime.finishTime?.hour}:
-                {workTime.finishTime?.minute} {workTime.finishTime?.meridiem}
+                {String(workTime.startTime?.hour).padStart(2, '0')}:
+                {String(workTime.startTime?.minute).padStart(2, '0')} {workTime.startTime?.meridiem}{' '}
+                - {String(workTime.finishTime?.hour).padStart(2, '0')}:
+                {String(workTime.finishTime?.minute).padStart(2, '0')}{' '}
+                {workTime.finishTime?.meridiem}
               </span>
             ) : (
               <span className={css({textStyle: 'body2', color: 'danger'})}>Closed</span>
