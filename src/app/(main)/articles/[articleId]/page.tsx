@@ -31,14 +31,14 @@ export async function generateMetadata({params}: {params: {articleId: string}}):
   }
   const post: ArticleType = data.article.findArticleByName.result;
   return {
-    title: post.seoSetting?.general?.title ?? post.title,
-    description: post.seoSetting?.general?.description ?? post.excerpt,
+    title: post.seoSetting?.general?.title || post.title,
+    description: post.seoSetting?.general?.description || post.excerpt,
     alternates: {
       canonical:
-        post.seoSetting?.general?.canonicalUrl ??
+        post.seoSetting?.general?.canonicalUrl ||
         `${process.env.NEXT_PUBLIC_BASE_URL}/articles/${post.slug}`,
     },
-    keywords: post.seoSetting?.general?.focusKeyword ?? post.tags?.map(tag => tag.title).join(', '),
+    keywords: post.seoSetting?.general?.focusKeyword || post.tags?.map(tag => tag.title).join(', '),
     authors: [{name: post.author ? `${post.author.firstName} ${post.author.lastName}` : 'User'}],
     creator: post.author ? `${post.author.firstName} ${post.author.lastName}` : 'User',
     robots: {
