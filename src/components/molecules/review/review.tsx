@@ -31,8 +31,9 @@ const Review = ({children, comment}: {children?: React.ReactNode; comment: Comme
       src={
         comment.createUser?.avatar?.filename
           ? `${IMAGE_STORAGE_URL}/${comment.createUser?.avatar?.filename}-${comment.createUser?.avatar?._id}`
-          : undefined
+          : ''
       }
+      alt=''
     />
     <div
       className={css({

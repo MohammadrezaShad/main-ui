@@ -36,6 +36,7 @@ const Avatar = React.forwardRef<
   }
   return (
     <div
+      ref={ref}
       style={{
         width: size,
         height: size,

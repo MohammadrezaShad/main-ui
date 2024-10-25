@@ -30,10 +30,10 @@ const UserInfo = ({author}: {author: UserOutputType}) => {
         src={
           author.avatar?._id
             ? `${IMAGE_STORAGE_URL}/${author.avatar?.filename}-${author.avatar?._id}`
-            : undefined
+            : ''
         }
+        alt=''
       />
-
       <div
         className={css({
           display: 'flex',

@@ -78,7 +78,8 @@ export default function Header({userData}: HeaderProps) {
         {user ? (
           <Link className={css({hideFrom: 'md'})} href='/profile'>
             <Avatar
-              src={user?.avatar?._id ? `${IMAGE_STORAGE_URL}/${user.avatar?._id}` : undefined}
+              src={user?.avatar?._id ? `${IMAGE_STORAGE_URL}/${user.avatar?._id}` : ''}
+              alt=''
               size={32}
             />
           </Link>
@@ -88,7 +89,7 @@ export default function Header({userData}: HeaderProps) {
             className={css({hideFrom: 'md'})}
             onClick={() => isLoginOpen$.set(true)}
           >
-            <Avatar size={32} />
+            <Avatar size={32} src='' alt='' />
           </button>
         )}
         <SearchDrawer isOpen$={isOpen$} />

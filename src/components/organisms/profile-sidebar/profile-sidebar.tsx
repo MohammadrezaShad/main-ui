@@ -45,7 +45,19 @@ const ProfileSidebar = () => {
       setCoverImage(file);
       const reader = new FileReader();
       reader.onload = function (e) {
-        avatarPreviewRef.current!.src = e.target?.result as string;
+        if (avatarPreviewRef.current?.hasAttribute('src')) {
+          avatarPreviewRef.current.src = e.target?.result as string;
+        } else {
+          avatarPreviewRef.current!.innerHTML = `
+            <img
+              style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;"
+              width={134}
+              height={134}
+              alt={alt}
+              src=${e.target?.result as string}
+            />
+            `;
+        }
       };
       reader.readAsDataURL(file);
     }
@@ -60,9 +72,17 @@ const ProfileSidebar = () => {
       await updateUserMutation.mutateAsync(coverImage);
       queryClient.clear();
       toast.success('Avatar updated successfully');
+      setCoverImage(undefined);
     } catch (error: Error | any) {
       toast.error(error.message);
     }
+  };
+
+  const handleResetAvatar = () => {
+    setCoverImage(undefined);
+    avatarPreviewRef.current!.src = user?.avatar?._id
+      ? `${IMAGE_STORAGE_URL}/${user.avatar?.filename}-${user.avatar?._id}`
+      : '';
   };
 
   return (
@@ -126,22 +146,40 @@ const ProfileSidebar = () => {
         />
       </label>
       {coverImage ? (
-        <Button
-          onClick={handleUpdateAvatar}
-          visual='contained'
-          className={css({
-            color: 'text.invert',
-            w: 'max-content',
-            px: 4,
-            py: 3,
-            bg: 'primary',
-            borderRadius: 0,
-            mt: '4',
-          })}
-          type='button'
-        >
-          Save
-        </Button>
+        <>
+          <Button
+            onClick={handleUpdateAvatar}
+            visual='contained'
+            className={css({
+              color: 'text.invert',
+              w: 'max-content',
+              px: 4,
+              py: 3,
+              bg: 'primary',
+              borderRadius: 0,
+              mt: '4',
+            })}
+            type='button'
+          >
+            Save
+          </Button>
+          <Button
+            onClick={handleResetAvatar}
+            visual='outlined'
+            className={css({
+              color: 'text.primary',
+              w: 'max-content',
+              px: 4,
+              py: 3,
+              bg: 'white',
+              borderRadius: 0,
+              mt: '4',
+            })}
+            type='button'
+          >
+            Reset
+          </Button>
+        </>
       ) : null}
       <h1
         className={css({

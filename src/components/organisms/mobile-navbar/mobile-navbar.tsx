@@ -66,7 +66,7 @@ export default function MobileNavbar({userData}: Props) {
               })}
             >
               {user?.avatar?._id ? (
-                <Avatar src={`${IMAGE_STORAGE_URL}/${user.avatar?._id}`} size={24} />
+                <Avatar src={`${IMAGE_STORAGE_URL}/${user.avatar?._id}`} size={24} alt='' />
               ) : (
                 <IconProfile
                   className={css({
