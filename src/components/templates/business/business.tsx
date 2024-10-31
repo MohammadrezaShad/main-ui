@@ -31,7 +31,7 @@ const TabContent = ({activeTab, company}: {activeTab: string; company: CompanyTy
     return <Products />;
   }
   if (activeTab === 'gallery') {
-    return <Gallery />;
+    return <Gallery slides={company?.gallery || []} />;
   }
 
   return null;

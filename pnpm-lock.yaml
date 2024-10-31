@@ -89,6 +89,9 @@ importers:
       react-pdf:
         specifier: ^7.7.1
         version: 7.7.1(@types/react@18.2.47)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      react-photo-album:
+        specifier: ^3.0.2
+        version: 3.0.2(@types/react@18.2.47)(react@18.2.0)
       react-popper:
         specifier: ^2.3.0
         version: 2.3.0(@popperjs/core@2.11.8)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
@@ -122,6 +125,9 @@ importers:
       uuid:
         specifier: ^9.0.1
         version: 9.0.1
+      yet-another-react-lightbox:
+        specifier: ^3.21.6
+        version: 3.21.6(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       yup:
         specifier: ^1.4.0
         version: 1.4.0
@@ -4450,6 +4456,16 @@ packages:
       '@types/react':
         optional: true
 
+  react-photo-album@3.0.2:
+    resolution: {integrity: sha512-w3+8i6aj9l1jRfcubgVbAlBGSdtiXcqWdcwZcH4/Bavc+v7X7h+S3TkQ723pvDABjhaaxS168g9ECEBP6xnKrQ==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      '@types/react': '>=18'
+      react: '>=18'
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+
   react-popper@2.3.0:
     resolution: {integrity: sha512-e1hj8lL3uM+sgSR4Lxzn5h1GxBlpa4CQz0XLF8kx4MDrDRWY0Ena4c97PUeSX9i5W3UAfDP0z0FXCTQkoXUl3Q==}
     peerDependencies:
@@ -5275,6 +5291,13 @@ packages:
   yargs@17.7.2:
     resolution: {integrity: sha512-7dSzzRQ++CKnNI/krKnYRV7JKKPUXMEh61soaHKg9mrWEhzFWhFnxPxGl+69cD1Ou63C13NUPCnmIcrvqCuM6w==}
     engines: {node: '>=12'}
+
+  yet-another-react-lightbox@3.21.6:
+    resolution: {integrity: sha512-uKcRmmezsj1Fbj38B6hFOGwbAu94fPr8d5H6I0+1FmcToX56freEGXXXtdA1oRo6036ug+UgrKZzzvsw/MIM/w==}
+    engines: {node: '>=14'}
+    peerDependencies:
+      react: '>=16.8.0'
+      react-dom: '>=16.8.0'
 
   yocto-queue@0.1.0:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
@@ -10445,6 +10468,12 @@ snapshots:
       - encoding
       - supports-color
 
+  react-photo-album@3.0.2(@types/react@18.2.47)(react@18.2.0):
+    dependencies:
+      react: 18.2.0
+    optionalDependencies:
+      '@types/react': 18.2.47
+
   react-popper@2.3.0(@popperjs/core@2.11.8)(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
     dependencies:
       '@popperjs/core': 2.11.8
@@ -11398,6 +11427,11 @@ snapshots:
       string-width: 4.2.3
       y18n: 5.0.8
       yargs-parser: 21.1.1
+
+  yet-another-react-lightbox@3.21.6(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
 
   yocto-queue@0.1.0: {}
 

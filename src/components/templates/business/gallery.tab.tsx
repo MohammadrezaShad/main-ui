@@ -1,41 +1,55 @@
+'use client';
+
+import {useState} from 'react';
+import {Photo, RowsPhotoAlbum} from 'react-photo-album';
 import {css} from '@styled/css';
+import Image from 'next/image';
+import Lightbox from 'yet-another-react-lightbox';
 
-import GalleryPlaceholder from './gallery-placeholder';
+import {CompanyGalleryType} from '@/graphql';
 
-const Gallery: React.FC = () => (
-  <div
-    className={css({
-      display: 'grid',
-      gridTemplateAreas: `
-        "large small-1 small-1"
-        "large small-2 small-3"
-        "small-4 small-5 small-5"
-      `,
-      gridTemplateColumns: '2fr 1fr 1fr',
-      gap: '4',
-      height: '100vh',
-      width: '100%',
-    })}
-  >
-    <div className={css({gridArea: 'large', height: '100%'})}>
-      <GalleryPlaceholder />
-    </div>
-    <div className={css({gridArea: 'small-1', height: '100%'})}>
-      <GalleryPlaceholder />
-    </div>
-    <div className={css({gridArea: 'small-2', height: '100%'})}>
-      <GalleryPlaceholder />
-    </div>
-    <div className={css({gridArea: 'small-3', height: '100%'})}>
-      <GalleryPlaceholder />
-    </div>
-    <div className={css({gridArea: 'small-4', height: '100%'})}>
-      <GalleryPlaceholder />
-    </div>
-    <div className={css({gridArea: 'small-5', height: '100%'})}>
-      <GalleryPlaceholder />
-    </div>
-  </div>
-);
+import 'react-photo-album/rows.css';
+import 'yet-another-react-lightbox/styles.css';
+
+const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
+
+interface Props {
+  slides: CompanyGalleryType[];
+}
+
+const Gallery: React.FC<Props> = ({slides}) => {
+  const photos = slides.map(({image}) => ({
+    src: `${IMAGE_STORAGE_URL}/${image?.filename}-${image?._id}`,
+    width: image?.width,
+    height: image?.height,
+  }));
+  const [index, setIndex] = useState(-1);
+  return (
+    <>
+      <RowsPhotoAlbum
+        targetRowHeight={180}
+        spacing={12}
+        photos={photos as Photo[]}
+        onClick={({index: current}) => setIndex(current)}
+        render={{
+          image: props => (
+            <div className={css({border: '1px solid #eaeaea', rounded: 'lg', p: '2'})}>
+              <Image
+                className={css({w: '80', h: '80', aspectRatio: 'square', objectFit: 'cover'})}
+                unoptimized
+                width={320}
+                height={320}
+                alt=''
+                src={props.src}
+              />
+            </div>
+          ),
+        }}
+      />
+
+      <Lightbox index={index} slides={photos} open={index >= 0} close={() => setIndex(-1)} />
+    </>
+  );
+};
 
 export {Gallery};
