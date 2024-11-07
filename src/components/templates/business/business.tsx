@@ -108,7 +108,7 @@ const BusinessPage = () => {
                 {company?.title}
               </h1>
               <p className={css({textStyle: 'body', color: '#333333'})}>
-                {company?.city}, {company?.country}
+                {company?.city?.name}, {company?.country?.name}
                 <span className={css({mx: '2', color: '#E3E3E3'})}>|</span>{' '}
                 <span className={css({display: 'inline-flex', alignItems: 'center', gap: 2})}>
                   {company?.categories?.map(category => (

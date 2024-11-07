@@ -41,8 +41,31 @@ export async function findCompanyBySlug(
           slug
           title
         }
-        city
-        country
+        city {
+          _id
+          createdAt
+          name
+          parent {
+            _id
+            cca2
+            cca3
+            createdAt
+            name
+            officialName
+            updatedAt
+          }
+          toponymName
+          updatedAt
+        }
+        country {
+          _id
+          cca2
+          cca3
+          createdAt
+          name
+          officialName
+          updatedAt
+        }
         cover {
           _id
           alt

@@ -337,6 +337,10 @@ export type BulkDeleteCategoryInput = {
   ids: Array<Scalars['String']['input']>;
 };
 
+export type BulkDeleteCityInput = {
+  ids: Array<Scalars['String']['input']>;
+};
+
 export type BulkDeleteCommentInput = {
   ids: Array<Scalars['String']['input']>;
 };
@@ -346,6 +350,10 @@ export type BulkDeleteCompanyCategoryInput = {
 };
 
 export type BulkDeleteCompanyInput = {
+  ids: Array<Scalars['String']['input']>;
+};
+
+export type BulkDeleteCountryInput = {
   ids: Array<Scalars['String']['input']>;
 };
 
@@ -480,6 +488,55 @@ export type ChangePasswordInput = {
 export type ChangePasswordOutput = {
   __typename?: 'ChangePasswordOutput';
   success: Scalars['Boolean']['output'];
+};
+
+export type CityMutation = {
+  __typename?: 'CityMutation';
+  createCity: CreateCityOutput;
+  deleteCategories: DeleteCityOutput;
+  deleteCity: DeleteCityOutput;
+  fillCitiesFromApi: CoreOutput;
+  updateCity: UpdateCityOutput;
+};
+
+export type CityMutationCreateCityArgs = {
+  input: CreateCityInput;
+};
+
+export type CityMutationDeleteCategoriesArgs = {
+  input: BulkDeleteCityInput;
+};
+
+export type CityMutationDeleteCityArgs = {
+  input: DeleteCityInput;
+};
+
+export type CityMutationUpdateCityArgs = {
+  input: UpdateCityInput;
+};
+
+export type CityQuery = {
+  __typename?: 'CityQuery';
+  findCityById: FindCityOutput;
+  searchCities: SearchCityOutput;
+};
+
+export type CityQueryFindCityByIdArgs = {
+  input: FindCityInput;
+};
+
+export type CityQuerySearchCitiesArgs = {
+  input: SearchCityInput;
+};
+
+export type CityType = {
+  __typename?: 'CityType';
+  _id: Scalars['String']['output'];
+  createdAt?: Maybe<Scalars['DateTime']['output']>;
+  name: Scalars['String']['output'];
+  parent?: Maybe<CountryType>;
+  toponymName?: Maybe<Scalars['String']['output']>;
+  updatedAt?: Maybe<Scalars['DateTime']['output']>;
 };
 
 export type CommentInputType = {
@@ -725,8 +782,8 @@ export type CompanyType = {
   address?: Maybe<Scalars['String']['output']>;
   callNumber?: Maybe<Scalars['String']['output']>;
   categories?: Maybe<Array<CompanyCategoryType>>;
-  city?: Maybe<Scalars['String']['output']>;
-  country?: Maybe<Scalars['String']['output']>;
+  city?: Maybe<CityType>;
+  country?: Maybe<CountryType>;
   cover?: Maybe<ImageType>;
   createUser?: Maybe<UserOutputType>;
   createdAt?: Maybe<Scalars['DateTime']['output']>;
@@ -750,6 +807,56 @@ export type CompanyType = {
 export type CoreOutput = {
   __typename?: 'CoreOutput';
   success: Scalars['Boolean']['output'];
+};
+
+export type CountryMutation = {
+  __typename?: 'CountryMutation';
+  createCountry: CreateCountryOutput;
+  deleteCategories: DeleteCountryOutput;
+  deleteCountry: DeleteCountryOutput;
+  fillContriesFromApi: CoreOutput;
+  updateCountry: UpdateCountryOutput;
+};
+
+export type CountryMutationCreateCountryArgs = {
+  input: CreateCountryInput;
+};
+
+export type CountryMutationDeleteCategoriesArgs = {
+  input: BulkDeleteCountryInput;
+};
+
+export type CountryMutationDeleteCountryArgs = {
+  input: DeleteCountryInput;
+};
+
+export type CountryMutationUpdateCountryArgs = {
+  input: UpdateCountryInput;
+};
+
+export type CountryQuery = {
+  __typename?: 'CountryQuery';
+  findCountryById: FindCountryOutput;
+  searchCountries: SearchCountryOutput;
+};
+
+export type CountryQueryFindCountryByIdArgs = {
+  input: FindCountryInput;
+};
+
+export type CountryQuerySearchCountriesArgs = {
+  input: SearchCountryInput;
+};
+
+export type CountryType = {
+  __typename?: 'CountryType';
+  _id: Scalars['String']['output'];
+  cca2?: Maybe<Scalars['String']['output']>;
+  cca3?: Maybe<Scalars['String']['output']>;
+  createdAt?: Maybe<Scalars['DateTime']['output']>;
+  name?: Maybe<Scalars['String']['output']>;
+  officialName?: Maybe<Scalars['String']['output']>;
+  updatedAt?: Maybe<Scalars['DateTime']['output']>;
 };
 
 export type CreateAdminCommentInput = {
@@ -813,6 +920,17 @@ export type CreateCategoryInput = {
 
 export type CreateCategoryOutput = {
   __typename?: 'CreateCategoryOutput';
+  success: Scalars['Boolean']['output'];
+};
+
+export type CreateCityInput = {
+  name: Scalars['String']['input'];
+  parent: Scalars['String']['input'];
+  toponymName?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type CreateCityOutput = {
+  __typename?: 'CreateCityOutput';
   success: Scalars['Boolean']['output'];
 };
 
@@ -881,6 +999,18 @@ export type CreateCompanyRatingInput = {
 
 export type CreateCompanyRatingOutput = {
   __typename?: 'CreateCompanyRatingOutput';
+  success: Scalars['Boolean']['output'];
+};
+
+export type CreateCountryInput = {
+  cca2?: InputMaybe<Scalars['String']['input']>;
+  cca3?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  officialName?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type CreateCountryOutput = {
+  __typename?: 'CreateCountryOutput';
   success: Scalars['Boolean']['output'];
 };
 
@@ -1073,6 +1203,15 @@ export type DeleteCategoryOutput = {
   success: Scalars['Boolean']['output'];
 };
 
+export type DeleteCityInput = {
+  id: Scalars['String']['input'];
+};
+
+export type DeleteCityOutput = {
+  __typename?: 'DeleteCityOutput';
+  success: Scalars['Boolean']['output'];
+};
+
 export type DeleteCommentInput = {
   id: Scalars['String']['input'];
 };
@@ -1097,6 +1236,15 @@ export type DeleteCompanyInput = {
 
 export type DeleteCompanyOutput = {
   __typename?: 'DeleteCompanyOutput';
+  success: Scalars['Boolean']['output'];
+};
+
+export type DeleteCountryInput = {
+  id: Scalars['String']['input'];
+};
+
+export type DeleteCountryOutput = {
+  __typename?: 'DeleteCountryOutput';
   success: Scalars['Boolean']['output'];
 };
 
@@ -1345,6 +1493,16 @@ export type FindCategoryOutput = {
   success: Scalars['Boolean']['output'];
 };
 
+export type FindCityInput = {
+  id: Scalars['String']['input'];
+};
+
+export type FindCityOutput = {
+  __typename?: 'FindCityOutput';
+  result?: Maybe<CityType>;
+  success: Scalars['Boolean']['output'];
+};
+
 export type FindCommentInput = {
   id: Scalars['String']['input'];
 };
@@ -1381,6 +1539,16 @@ export type FindCompanyInput = {
 export type FindCompanyOutput = {
   __typename?: 'FindCompanyOutput';
   result?: Maybe<CompanyType>;
+  success: Scalars['Boolean']['output'];
+};
+
+export type FindCountryInput = {
+  id: Scalars['String']['input'];
+};
+
+export type FindCountryOutput = {
+  __typename?: 'FindCountryOutput';
+  result?: Maybe<CountryType>;
   success: Scalars['Boolean']['output'];
 };
 
@@ -1888,9 +2056,11 @@ export type Mutation = {
   auth: AuthMutation;
   bookmark: BookmarkMutation;
   category: CategoryMutation;
+  city: CityMutation;
   comment: CommentMutation;
   company: CompanyMutation;
   companyCategory: CompanyCategoryMutation;
+  country: CountryMutation;
   engagement: EngagementMutation;
   file: FileMutation;
   graphicalQuiz: GraphicalQuizMutation;
@@ -1941,9 +2111,11 @@ export type Query = {
   auth: AuthQuery;
   bookmark: BookmarkQuery;
   category: CategoryQuery;
+  city: CityQuery;
   comment: CommentQuery;
   company: CompanyQuery;
   companyCategory: CompanyCategoryQuery;
+  country: CountryQuery;
   engagement: EngagementQuery;
   file: FileQuery;
   graphicalQuiz: GraphicalQuizQuery;
@@ -2192,6 +2364,21 @@ export type SearchCategoryOutput = {
   totalPages?: Maybe<Scalars['Int']['output']>;
 };
 
+export type SearchCityInput = {
+  count?: InputMaybe<Scalars['Int']['input']>;
+  page?: InputMaybe<Scalars['Int']['input']>;
+  parent?: InputMaybe<Scalars['String']['input']>;
+  text?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type SearchCityOutput = {
+  __typename?: 'SearchCityOutput';
+  results?: Maybe<Array<CityType>>;
+  success: Scalars['Boolean']['output'];
+  totalCount?: Maybe<Scalars['Int']['output']>;
+  totalPages?: Maybe<Scalars['Int']['output']>;
+};
+
 export type SearchCommentInput = {
   approved?: InputMaybe<Scalars['Boolean']['input']>;
   author?: InputMaybe<Scalars['String']['input']>;
@@ -2244,6 +2431,20 @@ export type SearchCompanyInput = {
 export type SearchCompanyOutput = {
   __typename?: 'SearchCompanyOutput';
   results?: Maybe<Array<CompanyType>>;
+  success: Scalars['Boolean']['output'];
+  totalCount?: Maybe<Scalars['Int']['output']>;
+  totalPages?: Maybe<Scalars['Int']['output']>;
+};
+
+export type SearchCountryInput = {
+  count?: InputMaybe<Scalars['Int']['input']>;
+  page?: InputMaybe<Scalars['Int']['input']>;
+  text?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type SearchCountryOutput = {
+  __typename?: 'SearchCountryOutput';
+  results?: Maybe<Array<CountryType>>;
   success: Scalars['Boolean']['output'];
   totalCount?: Maybe<Scalars['Int']['output']>;
   totalPages?: Maybe<Scalars['Int']['output']>;
@@ -2770,6 +2971,18 @@ export type UpdateCategoryOutput = {
   success: Scalars['Boolean']['output'];
 };
 
+export type UpdateCityInput = {
+  id: Scalars['String']['input'];
+  name?: InputMaybe<Scalars['String']['input']>;
+  parent?: InputMaybe<Scalars['String']['input']>;
+  toponymName?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type UpdateCityOutput = {
+  __typename?: 'UpdateCityOutput';
+  success: Scalars['Boolean']['output'];
+};
+
 export type UpdateCommentInput = {
   author?: InputMaybe<Scalars['String']['input']>;
   authorEmail?: InputMaybe<Scalars['String']['input']>;
@@ -2828,6 +3041,19 @@ export type UpdateCompanyInput = {
 
 export type UpdateCompanyOutput = {
   __typename?: 'UpdateCompanyOutput';
+  success: Scalars['Boolean']['output'];
+};
+
+export type UpdateCountryInput = {
+  cca2?: InputMaybe<Scalars['String']['input']>;
+  cca3?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['String']['input'];
+  name?: InputMaybe<Scalars['String']['input']>;
+  officialName?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type UpdateCountryOutput = {
+  __typename?: 'UpdateCountryOutput';
   success: Scalars['Boolean']['output'];
 };
 
