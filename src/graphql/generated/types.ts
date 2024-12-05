@@ -365,6 +365,14 @@ export type BulkDeleteLikeInput = {
   ids: Array<Scalars['String']['input']>;
 };
 
+export type BulkDeleteProductCategoryInput = {
+  ids: Array<Scalars['String']['input']>;
+};
+
+export type BulkDeleteProductInput = {
+  ids: Array<Scalars['String']['input']>;
+};
+
 export type BulkDeleteQuestionInput = {
   ids: Array<Scalars['String']['input']>;
 };
@@ -407,6 +415,23 @@ export type BulkFindSeoSettingInput = {
 
 export type BulkFindTagInput = {
   ids: Array<Scalars['String']['input']>;
+};
+
+export type CategoryAttributeInputType = {
+  icon?: InputMaybe<Scalars['String']['input']>;
+  isRequired?: InputMaybe<Scalars['Boolean']['input']>;
+  name: Scalars['String']['input'];
+  options?: InputMaybe<Array<Scalars['String']['input']>>;
+  type?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type CategoryAttributeType = {
+  __typename?: 'CategoryAttributeType';
+  icon?: Maybe<Scalars['String']['output']>;
+  isRequired?: Maybe<Scalars['Boolean']['output']>;
+  name: Scalars['String']['output'];
+  options?: Maybe<Array<Scalars['String']['output']>>;
+  type?: Maybe<Scalars['String']['output']>;
 };
 
 export type CategoryInputType = {
@@ -792,6 +817,7 @@ export type CompanyType = {
   gallery?: Maybe<Array<CompanyGalleryType>>;
   instagram?: Maybe<Scalars['String']['output']>;
   keywords?: Maybe<Array<Scalars['String']['output']>>;
+  products?: Maybe<Array<ProductType>>;
   profileImage?: Maybe<ImageType>;
   rate?: Maybe<Scalars['Float']['output']>;
   registeredDate?: Maybe<Scalars['DateTime']['output']>;
@@ -1066,6 +1092,57 @@ export type CreateLikeOutput = {
   success: Scalars['Boolean']['output'];
 };
 
+export type CreateProductCategoryInput = {
+  attributes?: InputMaybe<Array<CategoryAttributeInputType>>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  hasSeoApproval?: InputMaybe<Scalars['Boolean']['input']>;
+  image?: InputMaybe<Scalars['String']['input']>;
+  isDescriptionApproved?: InputMaybe<Scalars['Boolean']['input']>;
+  order?: InputMaybe<Scalars['Int']['input']>;
+  parent?: InputMaybe<Scalars['String']['input']>;
+  seoSetting?: InputMaybe<SeoSettingInput>;
+  slug: Scalars['String']['input'];
+  title: Scalars['String']['input'];
+  variationAttributes?: InputMaybe<Array<CategoryAttributeInputType>>;
+};
+
+export type CreateProductCategoryOutput = {
+  __typename?: 'CreateProductCategoryOutput';
+  success: Scalars['Boolean']['output'];
+};
+
+export type CreateProductInput = {
+  about?: InputMaybe<Scalars['String']['input']>;
+  amazon?: InputMaybe<Scalars['String']['input']>;
+  category: Scalars['String']['input'];
+  eBay?: InputMaybe<Scalars['String']['input']>;
+  features?: InputMaybe<Array<ProductAttributeInputType>>;
+  images?: InputMaybe<Array<Scalars['String']['input']>>;
+  isActive?: InputMaybe<Scalars['Boolean']['input']>;
+  keywords?: InputMaybe<Array<Scalars['String']['input']>>;
+  sellerCompany: Scalars['String']['input'];
+  slug?: InputMaybe<Scalars['String']['input']>;
+  thumbnail?: InputMaybe<Scalars['String']['input']>;
+  title: Scalars['String']['input'];
+  variations: Array<ProductVariationInput>;
+  wallmart?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type CreateProductOutput = {
+  __typename?: 'CreateProductOutput';
+  success: Scalars['Boolean']['output'];
+};
+
+export type CreateProductRatingInput = {
+  product: Scalars['String']['input'];
+  rate: Scalars['Int']['input'];
+};
+
+export type CreateProductRatingOutput = {
+  __typename?: 'CreateProductRatingOutput';
+  success: Scalars['Boolean']['output'];
+};
+
 export type CreateQuestionInput = {
   categories?: InputMaybe<Array<Scalars['String']['input']>>;
   options: Array<OptionInputType>;
@@ -1295,6 +1372,24 @@ export type DeleteLikeOutput = {
 
 export type DeleteOneArticleBookmarkInput = {
   articleId: Scalars['String']['input'];
+};
+
+export type DeleteProductCategoryInput = {
+  id: Scalars['String']['input'];
+};
+
+export type DeleteProductCategoryOutput = {
+  __typename?: 'DeleteProductCategoryOutput';
+  success: Scalars['Boolean']['output'];
+};
+
+export type DeleteProductInput = {
+  id: Scalars['String']['input'];
+};
+
+export type DeleteProductOutput = {
+  __typename?: 'DeleteProductOutput';
+  success: Scalars['Boolean']['output'];
 };
 
 export type DeleteQuestionInput = {
@@ -1589,6 +1684,45 @@ export type FindLikeInput = {
 export type FindLikeOutput = {
   __typename?: 'FindLikeOutput';
   result?: Maybe<LikeType>;
+  success: Scalars['Boolean']['output'];
+};
+
+export type FindProductBySlugInput = {
+  slug: Scalars['String']['input'];
+};
+
+export type FindProductCategoryBySlugInput = {
+  parentSlug?: InputMaybe<Scalars['String']['input']>;
+  slug: Scalars['String']['input'];
+};
+
+export type FindProductCategoryInput = {
+  id: Scalars['String']['input'];
+};
+
+export type FindProductCategoryOutput = {
+  __typename?: 'FindProductCategoryOutput';
+  result?: Maybe<ProductCategoryType>;
+  success: Scalars['Boolean']['output'];
+};
+
+export type FindProductInput = {
+  id: Scalars['String']['input'];
+};
+
+export type FindProductOutput = {
+  __typename?: 'FindProductOutput';
+  result?: Maybe<ProductType>;
+  success: Scalars['Boolean']['output'];
+};
+
+export type FindProductVariationInput = {
+  id: Scalars['String']['input'];
+};
+
+export type FindProductVariationOutput = {
+  __typename?: 'FindProductVariationOutput';
+  result?: Maybe<ProductVariationType>;
   success: Scalars['Boolean']['output'];
 };
 
@@ -2067,6 +2201,8 @@ export type Mutation = {
   image: ImageMutation;
   isi: IsiMutation;
   like: LikeMutation;
+  product: ProductMutation;
+  productCategory: ProductCategoryMutation;
   question: QuestionMutation;
   quiz: QuizMutation;
   seoHomepage: SeoHomepageMutation;
@@ -2104,6 +2240,186 @@ export type PointType = {
   y: Scalars['Int']['output'];
 };
 
+export type ProductAttributeInputType = {
+  icon?: InputMaybe<Scalars['String']['input']>;
+  isMainFeature?: InputMaybe<Scalars['Boolean']['input']>;
+  name: Scalars['String']['input'];
+  value: Scalars['String']['input'];
+};
+
+export type ProductAttributeType = {
+  __typename?: 'ProductAttributeType';
+  icon?: Maybe<Scalars['String']['output']>;
+  isMainFeature?: Maybe<Scalars['Boolean']['output']>;
+  name: Scalars['String']['output'];
+  value: Scalars['String']['output'];
+};
+
+export type ProductCategoryMutation = {
+  __typename?: 'ProductCategoryMutation';
+  createProductCategory: CreateProductCategoryOutput;
+  deleteCategories: DeleteProductCategoryOutput;
+  deleteProductCategory: DeleteProductCategoryOutput;
+  updateProductCategory: UpdateProductCategoryOutput;
+};
+
+export type ProductCategoryMutationCreateProductCategoryArgs = {
+  input: CreateProductCategoryInput;
+};
+
+export type ProductCategoryMutationDeleteCategoriesArgs = {
+  input: BulkDeleteProductCategoryInput;
+};
+
+export type ProductCategoryMutationDeleteProductCategoryArgs = {
+  input: DeleteProductCategoryInput;
+};
+
+export type ProductCategoryMutationUpdateProductCategoryArgs = {
+  input: UpdateProductCategoryInput;
+};
+
+export type ProductCategoryQuery = {
+  __typename?: 'ProductCategoryQuery';
+  findProductCategoryById: FindProductCategoryOutput;
+  findProductCategoryBySlug: FindProductCategoryOutput;
+  searchCategories: SearchProductCategoryOutput;
+};
+
+export type ProductCategoryQueryFindProductCategoryByIdArgs = {
+  input: FindProductCategoryInput;
+};
+
+export type ProductCategoryQueryFindProductCategoryBySlugArgs = {
+  input: FindProductCategoryBySlugInput;
+};
+
+export type ProductCategoryQuerySearchCategoriesArgs = {
+  input: SearchProductCategoryInput;
+};
+
+export type ProductCategoryType = {
+  __typename?: 'ProductCategoryType';
+  _id: Scalars['String']['output'];
+  attributes?: Maybe<Array<CategoryAttributeType>>;
+  createUser?: Maybe<UserOutputType>;
+  createdAt?: Maybe<Scalars['DateTime']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  hasSeoApproval?: Maybe<Scalars['Boolean']['output']>;
+  image?: Maybe<ImageType>;
+  isDescriptionApproved?: Maybe<Scalars['Boolean']['output']>;
+  order?: Maybe<Scalars['Int']['output']>;
+  originalDescription?: Maybe<Scalars['String']['output']>;
+  parent?: Maybe<ProductCategoryType>;
+  postCount?: Maybe<Scalars['Int']['output']>;
+  seoReviewDate?: Maybe<Scalars['String']['output']>;
+  seoSetting?: Maybe<SeoSettingType>;
+  slug: Scalars['String']['output'];
+  title: Scalars['String']['output'];
+  updateUser?: Maybe<UserOutputType>;
+  updatedAt?: Maybe<Scalars['DateTime']['output']>;
+  variationAttributes?: Maybe<Array<CategoryAttributeType>>;
+};
+
+export type ProductMutation = {
+  __typename?: 'ProductMutation';
+  createProduct: CreateProductOutput;
+  deleteProduct: DeleteProductOutput;
+  deleteProducts: DeleteProductOutput;
+  giveRating: CreateProductRatingOutput;
+  updateProduct: UpdateProductOutput;
+};
+
+export type ProductMutationCreateProductArgs = {
+  input: CreateProductInput;
+};
+
+export type ProductMutationDeleteProductArgs = {
+  input: DeleteProductInput;
+};
+
+export type ProductMutationDeleteProductsArgs = {
+  input: BulkDeleteProductInput;
+};
+
+export type ProductMutationGiveRatingArgs = {
+  input: CreateProductRatingInput;
+};
+
+export type ProductMutationUpdateProductArgs = {
+  input: UpdateProductInput;
+};
+
+export type ProductQuery = {
+  __typename?: 'ProductQuery';
+  findProductById: FindProductOutput;
+  findProductBySlug: FindProductOutput;
+  findVariationById: FindProductVariationOutput;
+  getSimilarProducts: SimilarProductOutput;
+  searchProducts: SearchProductOutput;
+};
+
+export type ProductQueryFindProductByIdArgs = {
+  input: FindProductInput;
+};
+
+export type ProductQueryFindProductBySlugArgs = {
+  input: FindProductBySlugInput;
+};
+
+export type ProductQueryFindVariationByIdArgs = {
+  input: FindProductVariationInput;
+};
+
+export type ProductQueryGetSimilarProductsArgs = {
+  input: SimilarProductInput;
+};
+
+export type ProductQuerySearchProductsArgs = {
+  input: SearchProductInput;
+};
+
+export type ProductType = {
+  __typename?: 'ProductType';
+  _id: Scalars['String']['output'];
+  about?: Maybe<Scalars['String']['output']>;
+  amazon?: Maybe<Scalars['String']['output']>;
+  category: ProductCategoryType;
+  createdAt?: Maybe<Scalars['DateTime']['output']>;
+  eBay?: Maybe<Scalars['String']['output']>;
+  features?: Maybe<Array<ProductAttributeType>>;
+  images?: Maybe<Array<ImageType>>;
+  isActive?: Maybe<Scalars['Boolean']['output']>;
+  keywords?: Maybe<Array<Scalars['String']['output']>>;
+  rate?: Maybe<Scalars['Float']['output']>;
+  sellerCompany: CompanyType;
+  slug?: Maybe<Scalars['String']['output']>;
+  thumbnail?: Maybe<ImageType>;
+  title: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['DateTime']['output']>;
+  variations?: Maybe<Array<ProductVariationType>>;
+  wallmart?: Maybe<Scalars['String']['output']>;
+};
+
+export type ProductVariationInput = {
+  cost: Scalars['Float']['input'];
+  isAvailable?: InputMaybe<Scalars['Boolean']['input']>;
+  stock: Scalars['Int']['input'];
+  variationAttributes: Array<ProductAttributeInputType>;
+};
+
+export type ProductVariationType = {
+  __typename?: 'ProductVariationType';
+  _id: Scalars['String']['output'];
+  cost: Scalars['Float']['output'];
+  createdAt?: Maybe<Scalars['DateTime']['output']>;
+  isAvailable?: Maybe<Scalars['Boolean']['output']>;
+  product: ProductType;
+  stock: Scalars['Int']['output'];
+  updatedAt?: Maybe<Scalars['DateTime']['output']>;
+  variationAttributes: Array<ProductAttributeType>;
+};
+
 export type Query = {
   __typename?: 'Query';
   activity: ActivityQuery;
@@ -2122,6 +2438,8 @@ export type Query = {
   image: ImageQuery;
   isi: IsiQuery;
   like: LikeQuery;
+  product: ProductQuery;
+  productCategory: ProductCategoryQuery;
   question: QuestionQuery;
   quiz: QuizQuery;
   seoHomepage: SeoHomepageQuery;
@@ -2507,6 +2825,48 @@ export type SearchLikeOutput = {
   totalPages?: Maybe<Scalars['Int']['output']>;
 };
 
+export type SearchProductCategoryInput = {
+  count?: InputMaybe<Scalars['Int']['input']>;
+  fromSeoReviewDate?: InputMaybe<Scalars['String']['input']>;
+  hasSeoApproval?: InputMaybe<Scalars['Boolean']['input']>;
+  isSubProductCategory?: InputMaybe<Scalars['Boolean']['input']>;
+  page?: InputMaybe<Scalars['Int']['input']>;
+  parent?: InputMaybe<Scalars['String']['input']>;
+  slug?: InputMaybe<Scalars['String']['input']>;
+  sortType?: InputMaybe<SearchSortType>;
+  text?: InputMaybe<Scalars['String']['input']>;
+  toSeoReviewDate?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type SearchProductCategoryOutput = {
+  __typename?: 'SearchProductCategoryOutput';
+  results?: Maybe<Array<ProductCategoryType>>;
+  success: Scalars['Boolean']['output'];
+  totalCount?: Maybe<Scalars['Int']['output']>;
+  totalPages?: Maybe<Scalars['Int']['output']>;
+};
+
+export type SearchProductInput = {
+  categories?: InputMaybe<Array<Scalars['String']['input']>>;
+  city?: InputMaybe<Scalars['String']['input']>;
+  count?: InputMaybe<Scalars['Int']['input']>;
+  highPrice?: InputMaybe<Scalars['Int']['input']>;
+  lowPrice?: InputMaybe<Scalars['Int']['input']>;
+  minimumCompanyRating?: InputMaybe<Scalars['Int']['input']>;
+  minimumProductRating?: InputMaybe<Scalars['Int']['input']>;
+  page?: InputMaybe<Scalars['Int']['input']>;
+  slug?: InputMaybe<Scalars['String']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type SearchProductOutput = {
+  __typename?: 'SearchProductOutput';
+  results?: Maybe<Array<ProductType>>;
+  success: Scalars['Boolean']['output'];
+  totalCount?: Maybe<Scalars['Int']['output']>;
+  totalPages?: Maybe<Scalars['Int']['output']>;
+};
+
 export type SearchQuestionInput = {
   categories?: InputMaybe<Array<Scalars['String']['input']>>;
   count?: InputMaybe<Scalars['Int']['input']>;
@@ -2810,6 +3170,20 @@ export type SignupOutput = {
   success: Scalars['Boolean']['output'];
 };
 
+export type SimilarProductInput = {
+  count?: InputMaybe<Scalars['Int']['input']>;
+  page?: InputMaybe<Scalars['Int']['input']>;
+  product: Scalars['String']['input'];
+};
+
+export type SimilarProductOutput = {
+  __typename?: 'SimilarProductOutput';
+  results?: Maybe<Array<ProductType>>;
+  success: Scalars['Boolean']['output'];
+  totalCount?: Maybe<Scalars['Int']['output']>;
+  totalPages?: Maybe<Scalars['Int']['output']>;
+};
+
 export enum StatusType {
   Draft = 'DRAFT',
   Publish = 'PUBLISH',
@@ -3102,6 +3476,49 @@ export type UpdateLikeInput = {
 
 export type UpdateLikeOutput = {
   __typename?: 'UpdateLikeOutput';
+  success: Scalars['Boolean']['output'];
+};
+
+export type UpdateProductCategoryInput = {
+  attributes?: InputMaybe<Array<CategoryAttributeInputType>>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  hasSeoApproval?: InputMaybe<Scalars['Boolean']['input']>;
+  id: Scalars['String']['input'];
+  image?: InputMaybe<Scalars['String']['input']>;
+  isDescriptionApproved?: InputMaybe<Scalars['Boolean']['input']>;
+  order?: InputMaybe<Scalars['Int']['input']>;
+  parent?: InputMaybe<Scalars['String']['input']>;
+  seoSetting?: InputMaybe<SeoSettingInput>;
+  slug?: InputMaybe<Scalars['String']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  variationAttributes?: InputMaybe<Array<CategoryAttributeInputType>>;
+};
+
+export type UpdateProductCategoryOutput = {
+  __typename?: 'UpdateProductCategoryOutput';
+  success: Scalars['Boolean']['output'];
+};
+
+export type UpdateProductInput = {
+  about?: InputMaybe<Scalars['String']['input']>;
+  amazon?: InputMaybe<Scalars['String']['input']>;
+  category?: InputMaybe<Scalars['String']['input']>;
+  eBay?: InputMaybe<Scalars['String']['input']>;
+  features?: InputMaybe<Array<ProductAttributeInputType>>;
+  id: Scalars['String']['input'];
+  images?: InputMaybe<Array<Scalars['String']['input']>>;
+  isActive?: InputMaybe<Scalars['Boolean']['input']>;
+  keywords?: InputMaybe<Array<Scalars['String']['input']>>;
+  sellerCompany?: InputMaybe<Scalars['String']['input']>;
+  slug?: InputMaybe<Scalars['String']['input']>;
+  thumbnail?: InputMaybe<Scalars['String']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  variations?: InputMaybe<Array<ProductVariationInput>>;
+  wallmart?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type UpdateProductOutput = {
+  __typename?: 'UpdateProductOutput';
   success: Scalars['Boolean']['output'];
 };
 

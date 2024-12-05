@@ -17,6 +17,83 @@ export async function findCompanyBySlug(
     findCompanyBySlug(input: $input) {
       success
       result {
+      products {
+          _id
+          about
+          amazon
+          category {
+            _id
+            title
+            slug
+          }
+          createdAt
+          eBay
+          features {
+            icon
+            isMainFeature
+            name
+            value
+          }
+          images {
+            _id
+            alt
+            createdAt
+            filename
+            format
+            height
+            preview
+            updatedAt
+            width
+          }
+          isActive
+          keywords
+          rate
+          sellerCompany {
+            _id
+            website
+            title
+            slug
+            rate
+            callNumber
+            city {
+              _id
+              name
+            }
+            country {
+              _id
+              name
+            }
+          }
+          slug
+          thumbnail {
+            _id
+            alt
+            createdAt
+            filename
+            format
+            height
+            preview
+            updatedAt
+            width
+          }
+          title
+          updatedAt
+          variations {
+            _id
+            cost
+            createdAt
+            isAvailable
+            stock
+            updatedAt
+            variationAttributes {
+              icon
+              isMainFeature
+              name
+              value
+            }
+          }
+          wallmart
+        }
         _id
         about
         address

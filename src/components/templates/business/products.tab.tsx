@@ -2,85 +2,23 @@ import {useState} from 'react';
 import {css} from '@styled/css';
 
 import {IconChevronLeft, IconChevronRight} from '@/assets';
+import {CompanyType} from '@/graphql';
 
 import {Pagination} from '../articles/articles.styled';
 import CategorySelect from './category-select';
 import ProductCard from './product-card';
 
-const Products: React.FC = () => {
+const Products: React.FC<{company: CompanyType}> = ({company}) => {
   const [category, setCategory] = useState('');
 
-  const products = [
-    {
-      title: 'Proteus Water Level/Sump Monitor Sensor',
-      company: 'Ultra Tec Water Treatment LLC',
-      rating: 3.5,
-      waterRating: 7,
-      price: '$99.50',
-      location: 'Dubai, UAE',
-      keywords: ['Keyword', 'Water', 'Sensor'],
-    },
-    {
-      title: 'Proteus Water Level/Sump Monitor Sensor',
-      company: 'Ultra Tec Water Treatment LLC',
-      rating: 3.5,
-      waterRating: 7,
-      price: '$99.50',
-      location: 'Dubai, UAE',
-      keywords: ['Keyword', 'Water', 'Sensor'],
-    },
-    {
-      title: 'Proteus Water Level/Sump Monitor Sensor',
-      company: 'Ultra Tec Water Treatment LLC',
-      rating: 3.5,
-      waterRating: 7,
-      price: '$99.50',
-      location: 'Dubai, UAE',
-      keywords: ['Keyword', 'Water', 'Sensor'],
-    },
-    {
-      title: 'Proteus Water Level/Sump Monitor Sensor',
-      company: 'Ultra Tec Water Treatment LLC',
-      rating: 3.5,
-      waterRating: 7,
-      price: '$99.50',
-      location: 'Dubai, UAE',
-      keywords: ['Keyword', 'Water', 'Sensor'],
-    },
-    {
-      title: 'Proteus Water Level/Sump Monitor Sensor',
-      company: 'Ultra Tec Water Treatment LLC',
-      rating: 3.5,
-      waterRating: 7,
-      price: '$99.50',
-      location: 'Dubai, UAE',
-      keywords: ['Keyword', 'Water', 'Sensor'],
-    },
-    {
-      title: 'Proteus Water Level/Sump Monitor Sensor',
-      company: 'Ultra Tec Water Treatment LLC',
-      rating: 3.5,
-      waterRating: 7,
-      price: '$99.50',
-      location: 'Dubai, UAE',
-      keywords: ['Keyword', 'Water', 'Sensor'],
-    },
-  ];
+  const products = company?.products || [];
 
-  const categories = ['All', 'Water Softeners', 'Sensors'];
+  const categories = ['All'];
+  products.forEach(product => categories.push(product.category.title));
 
   const filteredProducts = products.filter(
-    product => category === 'All' || category === '' || product.keywords.includes(category),
+    product => category === 'All' || category === '' || product?.category?.title === category,
   );
-
-  const handleCallClick = () => {
-    console.log('Call button clicked');
-  };
-
-  const handleWebsiteClick = () => {
-    console.log('Website button clicked');
-  };
-
   return (
     <div className={css({px: '6', py: '4'})}>
       <CategorySelect categories={categories} onChange={setCategory} />
@@ -95,16 +33,18 @@ const Products: React.FC = () => {
       >
         {filteredProducts.map(product => (
           <ProductCard
-            key={`${product.title}-${product.company}`}
+            key={product._id}
+            id={product.slug as string}
             title={product.title}
-            company={product.company}
-            rating={product.rating}
-            waterRating={product.waterRating}
-            price={product.price}
-            location={product.location}
-            keywords={product.keywords}
-            onCallClick={handleCallClick}
-            onWebsiteClick={handleWebsiteClick}
+            thumbnail={product.thumbnail || undefined}
+            company={product.sellerCompany.title || ''}
+            rating={product.sellerCompany.rate || 0}
+            waterRating={product.rate || 0}
+            price={product?.variations?.[0]?.cost?.toString() || ''}
+            location={`${product.sellerCompany.country?.name}, ${product.sellerCompany.city?.name}`}
+            keywords={product.keywords || []}
+            phoneNumber={product.sellerCompany.callNumber || ''}
+            website={product.sellerCompany.website || ''}
           />
         ))}
       </div>
@@ -127,6 +67,9 @@ const Products: React.FC = () => {
         containerClassName='pagination'
         activeClassName='active'
         renderOnZeroPageCount={null}
+        className={css({
+          display: 'none',
+        })}
       />
     </div>
   );

@@ -3,7 +3,7 @@
 import {useState} from 'react';
 import {css, cx} from '@styled/css';
 import {Box} from '@styled/jsx';
-import {useQuery, useQueryClient} from '@tanstack/react-query';
+import {useQuery} from '@tanstack/react-query';
 import {getCookie} from 'cookies-next';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -21,14 +21,13 @@ import {Overview} from './overview.tab';
 import {Products} from './products.tab';
 
 const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 const TabContent = ({activeTab, company}: {activeTab: string; company: CompanyType}) => {
   if (activeTab === 'overview') {
     return <Overview about={company?.about || ''} />;
   }
   if (activeTab === 'products') {
-    return <Products />;
+    return <Products company={company} />;
   }
   if (activeTab === 'gallery') {
     return <Gallery slides={company?.gallery || []} />;
@@ -38,7 +37,6 @@ const TabContent = ({activeTab, company}: {activeTab: string; company: CompanyTy
 };
 
 const BusinessPage = () => {
-  const queryClient = useQueryClient();
   const token = getCookie(CookieName.AUTH_TOKEN);
   const [activeTab, setActiveTab] = useState('overview');
 
