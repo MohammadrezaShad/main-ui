@@ -31,22 +31,25 @@ const Products: React.FC<{company: CompanyType}> = ({company}) => {
           mb: '8',
         })}
       >
-        {filteredProducts.map(product => (
-          <ProductCard
-            key={product._id}
-            id={product.slug as string}
-            title={product.title}
-            thumbnail={product.thumbnail || undefined}
-            company={product.sellerCompany.title || ''}
-            rating={product.sellerCompany.rate || 0}
-            waterRating={product.rate || 0}
-            price={product?.variations?.[0]?.cost?.toString() || ''}
-            location={`${product.sellerCompany.country?.name}, ${product.sellerCompany.city?.name}`}
-            keywords={product.keywords || []}
-            phoneNumber={product.sellerCompany.callNumber || ''}
-            website={product.sellerCompany.website || ''}
-          />
-        ))}
+        {filteredProducts.map(
+          product =>
+            product.isActive && (
+              <ProductCard
+                key={product._id}
+                id={product.slug as string}
+                title={product.title}
+                thumbnail={product.thumbnail || undefined}
+                company={product.sellerCompany.title || ''}
+                rating={product.sellerCompany.rate || 0}
+                waterRating={product.rate || 0}
+                price={product?.variations?.[0]?.cost?.toString() || ''}
+                location={`${product.sellerCompany.country?.name}, ${product.sellerCompany.city?.name}`}
+                keywords={product.keywords || []}
+                phoneNumber={product.sellerCompany.callNumber || ''}
+                website={product.sellerCompany.website || ''}
+              />
+            ),
+        )}
       </div>
       <Pagination
         nextLabel={<IconChevronRight className={css({w: '6', h: '6'})} />}

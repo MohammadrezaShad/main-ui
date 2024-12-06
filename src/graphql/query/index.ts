@@ -4,6 +4,7 @@ export * from './categories';
 export * from './comments';
 export * from './companies';
 export * from './isi';
+export * from './products';
 export * from './quiz';
 export * from './seoHomepage';
 export * from './users';

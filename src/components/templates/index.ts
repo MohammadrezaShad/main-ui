@@ -10,6 +10,7 @@ export * from './home';
 export * from './normal-quiz';
 export * from './normal-quizzes';
 export * from './notifications';
+export * from './products';
 export * from './profile';
 export * from './quizzes';
 export * from './settings';
