@@ -43,7 +43,10 @@ const ProductCard: React.FC<ProductCardProps> = ({
   >
     <div
       style={{
-        backgroundImage: `url(${IMAGE_STORAGE_URL}/${thumbnail?.filename}-${thumbnail?._id})`,
+        backgroundImage: thumbnail
+          ? `url(${IMAGE_STORAGE_URL}/${thumbnail?.filename}-${thumbnail?._id})`
+          : '',
+        backgroundColor: thumbnail ? '' : '#333333',
       }}
       className={css({
         mb: '2',

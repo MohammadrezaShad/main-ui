@@ -184,6 +184,7 @@ const ProductView = () => {
                           ? '1px solid #44BAEB'
                           : 'none',
                       outlineOffset: '2px',
+                      cursor: 'pointer',
                     })}
                   >
                     <input
