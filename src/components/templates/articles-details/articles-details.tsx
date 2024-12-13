@@ -418,7 +418,10 @@ const Page = () => {
           <Link
             className={css({
               borderRadius: 4,
-              w: 'max-content',
+              w: {
+                lg: '33%',
+                md: 'full',
+              },
               border: '1px solid token(colors.gray3)',
               textStyle: 'lg',
               display: 'block',
@@ -437,12 +440,13 @@ const Page = () => {
             />
             <p
               className={css({
-                p: '4',
+                p: '2',
                 backgroundColor: 'primary',
                 color: 'text.invert',
                 _hover: {
                   bg: 'primary.dark',
                 },
+                fontSize: 'sm',
               })}
             >
               Take a quiz in &quot;{article?.quiz?.title}&quot;
@@ -452,7 +456,10 @@ const Page = () => {
           <div
             className={css({
               borderRadius: 4,
-              w: 'max-content',
+              w: {
+                lg: '33%',
+                md: 'full',
+              },
               border: '1px solid token(colors.gray3)',
               textStyle: 'lg',
               display: 'block',
@@ -471,12 +478,13 @@ const Page = () => {
             />
             <p
               className={css({
-                p: '4',
+                p: '2',
                 backgroundColor: 'primary',
                 color: 'text.invert',
                 _hover: {
                   bg: 'primary.dark',
                 },
+                fontSize: 'sm',
               })}
             >
               Take a quiz in &quot;{article?.quiz?.title}&quot;
@@ -487,7 +495,10 @@ const Page = () => {
           <Link
             className={css({
               borderRadius: 4,
-              w: 'max-content',
+              w: {
+                lg: '33%',
+                md: 'full',
+              },
               border: '1px solid token(colors.gray3)',
               textStyle: 'lg',
               display: 'block',
@@ -506,12 +517,13 @@ const Page = () => {
             />
             <p
               className={css({
-                p: '4',
+                p: '2',
                 backgroundColor: 'primary',
                 color: 'text.invert',
                 _hover: {
                   bg: 'primary.dark',
                 },
+                fontSize: 'sm',
               })}
             >
               Take a quiz in &quot;{article?.graphicalQuiz?.title}&quot;
@@ -522,7 +534,10 @@ const Page = () => {
           <div
             className={css({
               borderRadius: 4,
-              w: 'max-content',
+              w: {
+                lg: '33%',
+                md: 'full',
+              },
               border: '1px solid token(colors.gray3)',
               textStyle: 'lg',
               display: 'block',
@@ -541,12 +556,13 @@ const Page = () => {
             />
             <p
               className={css({
-                p: '4',
+                p: '2',
                 backgroundColor: 'primary',
                 color: 'text.invert',
                 _hover: {
                   bg: 'primary.dark',
                 },
+                fontSize: 'sm',
               })}
             >
               Take a quiz in &quot;{article?.graphicalQuiz?.title}&quot;
