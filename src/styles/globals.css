@@ -613,6 +613,7 @@ td {
 
 .article p {
   margin: 1em 0;
+  hyphens: auto;
 }
 
 .article h1 {
