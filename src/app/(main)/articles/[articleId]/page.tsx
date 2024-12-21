@@ -3,11 +3,18 @@ import {dehydrate} from '@tanstack/react-query';
 import {getCookie} from 'cookies-next';
 import type {Metadata} from 'next';
 import {cookies} from 'next/headers';
+import {redirect} from 'next/navigation';
 
 import JsonLdScript from '@/components/shared/json-ld-script';
 import {ArticlesDetails} from '@/components/templates/articles-details';
 import {CookieName} from '@/constants';
-import {ArticleType, findArticleByName, searchArticles, StatusType} from '@/graphql';
+import {
+  ArticleSortType,
+  ArticleType,
+  findArticleByName,
+  searchArticles,
+  StatusType,
+} from '@/graphql';
 import {getQueryClient} from '@/helpers';
 import {Hydrate} from '@/providers';
 import {
@@ -42,18 +49,22 @@ export async function generateMetadata({params}: {params: {articleId: string}}):
     authors: [{name: post.author ? `${post.author.firstName} ${post.author.lastName}` : 'User'}],
     creator: post.author ? `${post.author.firstName} ${post.author.lastName}` : 'User',
     robots: {
-      follow: !post.seoSetting?.general?.nofollow,
-      index: !post.seoSetting?.general?.noindex,
+      follow: post.seoSetting?.general?.nofollow || false,
+      index: post.seoSetting?.general?.noindex || false,
       googleBot: {
-        follow: !post.seoSetting?.general?.nofollow,
-        index: !post.seoSetting?.general?.noindex,
+        follow: post.seoSetting?.general?.nofollow || false,
+        index: !post.seoSetting?.general?.noindex || false,
       },
     },
   };
 }
 
 export async function generateStaticParams(): Promise<any> {
-  const data = (await searchArticles({status: StatusType.Publish, count: 100})) as any;
+  const data = (await searchArticles({
+    status: StatusType.Publish,
+    count: 100,
+    sortType: ArticleSortType.MostVisits,
+  })) as any;
   const articles: Array<ArticleType> = data.article!.searchArticles.results;
   return articles.map(article => ({
     articleId: article.slug,
@@ -69,12 +80,9 @@ const Page = async ({params}: {params: {articleId: string}}) => {
   });
   const dehydratedState = dehydrate(queryClient);
 
-  const data: any = await findArticleByName({slug: params.articleId}, token);
+  const data: any = queryClient.getQueryData(['get-article', params.articleId]);
   if (!data) {
-    return {
-      title: 'Not found',
-      description: 'The page not found',
-    };
+    redirect('/not-found');
   }
   const post: ArticleType = data.article.findArticleByName.result;
 
@@ -83,7 +91,6 @@ const Page = async ({params}: {params: {articleId: string}}) => {
       className={css({
         display: 'flex',
         flexDir: 'column',
-        // rowGap: 8,
         mx: 'auto',
         maxWidth: '960px',
         p: {lgDown: 4},
