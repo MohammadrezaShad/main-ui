@@ -24,7 +24,7 @@ export const HeroWrapper = styled('div', {
   base: {
     display: 'flex',
     flexDirection: 'column',
-    overflow: 'hidden',
+    // overflow: 'hidden',
     position: 'relative',
     height: '275px',
     w: 'full',

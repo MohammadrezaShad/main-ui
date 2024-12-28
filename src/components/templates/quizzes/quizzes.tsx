@@ -375,7 +375,7 @@ export default function Quizzes() {
                 hideBelow: 'md',
               })}
             >
-              <IconClose />
+              <IconClose classname={css({color: '#272727'})} />
             </button>
           </header>
           <h1
