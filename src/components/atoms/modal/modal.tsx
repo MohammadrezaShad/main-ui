@@ -60,7 +60,7 @@ export default function Modal({
               onClick={onClose}
               type='button'
             >
-              <IconClose />
+              <IconClose classname={css({color: '#272727'})} />
             </button>
           )}
           {children}

@@ -1,19 +1,20 @@
 'use client';
 
-import {useState} from 'react';
-import Select from 'react-select';
+import {useEffect, useState} from 'react';
+import AsyncSelect from 'react-select/async';
 import {css} from '@styled/css';
 import {Box} from '@styled/jsx';
 import {flex} from '@styled/patterns';
 import {useQuery} from '@tanstack/react-query';
 import {useSearchParams} from 'next/navigation';
 
-import {IconChevronLeft, IconChevronRight, IconSearch} from '@/assets';
+import {IconChevronLeft, IconChevronRight, IconClose, IconSearch} from '@/assets';
 import {Pagination} from '@/components/templates/articles/articles.styled';
 import ProductCard from '@/components/templates/business/product-card';
-import {searchProducts} from '@/graphql';
+import {findCityById, searchCities, searchProductCategories, searchProducts} from '@/graphql';
 import {useUpdateSearchParam} from '@/hooks';
 
+import Filters from './filters';
 import {
   Cards,
   Content,
@@ -25,25 +26,22 @@ import {
   TitleWrapper,
 } from './home.styled';
 
-const options = [{id: 1, value: '', label: 'Category'}];
-const cities = [{id: 1, value: 'amsterdam', label: 'Amsterdam'}];
-
 export default function ProductsView() {
   const searchParams = useSearchParams();
   const updateSearchParams = useUpdateSearchParam();
-  const [page, setPage] = useState(1);
-  const [categories, setCategories] = useState(searchParams.get('categories') || undefined);
-  const [city, setCity] = useState(searchParams.get('city'));
-  const [minimumCompanyRating, setMinimumCompanyRating] = useState(
-    searchParams.get('minimumCompanyRating') || undefined,
-  );
-  const [minimumProductRating, setMinimumProductRating] = useState(
-    searchParams.get('minimumProductRating') || undefined,
-  );
-  const [lowPrice, setLowPrice] = useState(searchParams.get('lowPrice') || 0);
-  const [highPrice, setHighPrice] = useState(searchParams.get('highPrice') || 0);
+  const page = parseInt(searchParams.get('page') ?? '1', 10);
+  const categories = searchParams.get('categories') || undefined;
+  const city = searchParams.get('city') || undefined;
+  const [cityName, setCityName] = useState<any>();
+  const [categoriesName, setCategoriesName] = useState<any[]>([]);
+  const minimumCompanyRating = searchParams.get('minimumCompanyRating') || undefined;
 
-  const {data} = useQuery({
+  const minimumProductRating = searchParams.get('minimumProductRating') || undefined;
+
+  const lowPrice = searchParams.get('lowPrice') || 0;
+  const highPrice = searchParams.get('highPrice') || 0;
+
+  const {data, refetch} = useQuery({
     queryKey: [
       'search-products',
       page,
@@ -62,10 +60,51 @@ export default function ProductsView() {
         city,
         minimumCompanyRating: minimumCompanyRating ? +minimumCompanyRating : undefined,
         minimumProductRating: minimumProductRating ? +minimumProductRating : undefined,
-        lowPrice: +lowPrice,
+        lowPrice: lowPrice ? +lowPrice : undefined,
         highPrice: highPrice ? +highPrice : undefined,
       }),
   });
+
+  const filterProductCategories = async (inputValue: string) => {
+    const response = await searchProductCategories({
+      page: 1,
+      count: 50,
+      text: inputValue,
+    });
+    return response.results?.map(result => ({
+      id: result._id,
+      value: result._id,
+      label: result.title,
+    }));
+  };
+  const filterCities = async (inputValue: string) => {
+    const response = await searchCities({
+      page: 1,
+      count: 50,
+      text: inputValue,
+    });
+    return response.results?.map(result => ({
+      id: result._id,
+      value: result._id,
+      label: result.name,
+    }));
+  };
+
+  const categoryOptions = (inputValue: string) => filterProductCategories(inputValue);
+  const cityOptions = (inputValue: string) => filterCities(inputValue);
+
+  const getCityTitle = async (_city: string) => {
+    const res = await findCityById({id: _city}).then(res => res.result?.name);
+    return res;
+  };
+
+  useEffect(() => {
+    if (city) {
+      getCityTitle(city).then(res => {
+        setCityName(res);
+      });
+    }
+  }, [city]);
 
   return (
     <>
@@ -82,7 +121,16 @@ export default function ProductsView() {
                 flex={1}
               >
                 <Box p={6} w='1/3'>
-                  <Select
+                  <AsyncSelect
+                    onChange={(val: any) => {
+                      setCategoriesName([val]);
+
+                      const existingCategories = searchParams.get('categories');
+                      const newValue = existingCategories
+                        ? `${existingCategories},${val?.value}`
+                        : val?.value;
+                      updateSearchParams('categories', newValue);
+                    }}
                     components={{
                       IndicatorSeparator: () => null,
                     }}
@@ -93,13 +141,25 @@ export default function ProductsView() {
                         cursor: 'pointer',
                       }),
                     }}
-                    defaultValue={options[0]}
-                    options={options}
+                    cacheOptions
+                    loadOptions={categoryOptions as any}
+                    defaultOptions
                   />
                 </Box>
 
                 <Box p={6} w='1/3'>
-                  <Select
+                  <AsyncSelect
+                    onChange={(val: any) => {
+                      const categoryNames = [...categoriesName];
+                      categoryNames[1] = val;
+                      setCategoriesName(categoryNames);
+
+                      const existingCategories = searchParams.get('categories');
+                      const newValue = existingCategories
+                        ? `${existingCategories},${val?.value}`
+                        : val?.value;
+                      updateSearchParams('categories', newValue);
+                    }}
                     components={{
                       IndicatorSeparator: () => null,
                     }}
@@ -110,12 +170,14 @@ export default function ProductsView() {
                         cursor: 'pointer',
                       }),
                     }}
-                    defaultValue={options[0]}
-                    options={options}
+                    cacheOptions
+                    loadOptions={categoryOptions as any}
+                    defaultOptions
                   />
                 </Box>
                 <Box p={6} w='1/3'>
-                  <Select
+                  <AsyncSelect
+                    onChange={(val: any) => updateSearchParams('city', val?.value)}
                     components={{
                       IndicatorSeparator: () => null,
                     }}
@@ -126,18 +188,86 @@ export default function ProductsView() {
                         cursor: 'pointer',
                       }),
                     }}
-                    defaultValue={cities[0]}
-                    options={cities}
+                    cacheOptions
+                    loadOptions={cityOptions as any}
+                    defaultOptions
                   />
                 </Box>
               </Box>
-              <SearchButton>
+              <SearchButton onClick={() => refetch()}>
                 <IconSearch />
               </SearchButton>
             </SearchContainer>
+            <div
+              className={css({
+                w: 'full',
+                mt: '6',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '6',
+              })}
+            >
+              {city ? (
+                <span
+                  className={css({
+                    bgColor: 'success',
+                    color: 'white',
+                    rounded: 'md',
+                    p: '1',
+                    textStyle: 'captionB',
+                    w: 'fit',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                  })}
+                >
+                  {cityName}
+                  <button type='button' onClick={() => updateSearchParams('city', '')}>
+                    <IconClose classname={css({w: '1', h: '1', ms: '2', color: 'white'})} />
+                  </button>
+                </span>
+              ) : null}
+              {categoriesName
+                ? categoriesName.map((category: any) => (
+                    <span
+                      key={category}
+                      className={css({
+                        bgColor: 'success',
+                        color: 'white',
+                        rounded: 'md',
+                        p: '1',
+                        textStyle: 'captionB',
+                        w: 'fit',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                      })}
+                    >
+                      {category.label}
+                      <button
+                        type='button'
+                        onClick={() => {
+                          const existingCategories =
+                            searchParams.get('categories')?.split(',') || [];
+                          const filteredCategories = existingCategories.filter(
+                            cat => cat !== category.value,
+                          );
+                          const newValue = filteredCategories.join(',');
+                          updateSearchParams('categories', newValue);
+                          setCategoriesName(prevCategories =>
+                            prevCategories.filter(cat => cat.value !== category.value),
+                          );
+                        }}
+                      >
+                        <IconClose classname={css({w: '1', h: '1', ms: '2', color: 'white'})} />
+                      </button>
+                    </span>
+                  ))
+                : null}
+            </div>
           </Content>
         </HeroWrapper>
       </Hero>
+      <Filters />
       <Cards>
         {data?.results?.map(product => (
           <ProductCard
@@ -159,8 +289,9 @@ export default function ProductsView() {
 
       {data?.totalCount && data.totalCount > 6 ? (
         <Pagination
+          forcePage={page - 1}
           nextLabel={<IconChevronRight className={css({w: '6', h: '6'})} />}
-          onPageChange={current => setPage(current.selected + 1)}
+          onPageChange={current => updateSearchParams('page', (current.selected + 1).toString())}
           pageRangeDisplayed={3}
           marginPagesDisplayed={2}
           pageCount={data?.totalPages || 1}

@@ -115,7 +115,7 @@ export default function SignUp({
             cursor: 'pointer',
           })}
         >
-          <IconClose />
+          <IconClose classname={css({color: '#272727'})} />
         </button>
         <Image
           alt=''
