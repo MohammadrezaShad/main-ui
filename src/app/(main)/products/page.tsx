@@ -45,7 +45,7 @@ const Page = async ({searchParams}: Props) => {
         city,
         minimumCompanyRating: minimumCompanyRating ? +minimumCompanyRating : undefined,
         minimumProductRating: minimumProductRating ? +minimumProductRating : undefined,
-        lowPrice: +lowPrice,
+        lowPrice: lowPrice ? +lowPrice : undefined,
         highPrice: highPrice ? +highPrice : undefined,
       }),
   });

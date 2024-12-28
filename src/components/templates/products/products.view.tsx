@@ -14,6 +14,7 @@ import ProductCard from '@/components/templates/business/product-card';
 import {findCityById, searchCities, searchProductCategories, searchProducts} from '@/graphql';
 import {useUpdateSearchParam} from '@/hooks';
 
+import Filters from './filters';
 import {
   Cards,
   Content,
@@ -28,19 +29,17 @@ import {
 export default function ProductsView() {
   const searchParams = useSearchParams();
   const updateSearchParams = useUpdateSearchParam();
-  const [page, setPage] = useState(1);
+  const page = parseInt(searchParams.get('page') ?? '1', 10);
   const categories = searchParams.get('categories') || undefined;
   const city = searchParams.get('city') || undefined;
   const [cityName, setCityName] = useState<any>();
   const [categoriesName, setCategoriesName] = useState<any[]>([]);
-  const [minimumCompanyRating, setMinimumCompanyRating] = useState(
-    searchParams.get('minimumCompanyRating') || undefined,
-  );
-  const [minimumProductRating, setMinimumProductRating] = useState(
-    searchParams.get('minimumProductRating') || undefined,
-  );
-  const [lowPrice, setLowPrice] = useState(searchParams.get('lowPrice') || 0);
-  const [highPrice, setHighPrice] = useState(searchParams.get('highPrice') || 0);
+  const minimumCompanyRating = searchParams.get('minimumCompanyRating') || undefined;
+
+  const minimumProductRating = searchParams.get('minimumProductRating') || undefined;
+
+  const lowPrice = searchParams.get('lowPrice') || 0;
+  const highPrice = searchParams.get('highPrice') || 0;
 
   const {data, refetch} = useQuery({
     queryKey: [
@@ -61,7 +60,7 @@ export default function ProductsView() {
         city,
         minimumCompanyRating: minimumCompanyRating ? +minimumCompanyRating : undefined,
         minimumProductRating: minimumProductRating ? +minimumProductRating : undefined,
-        lowPrice: +lowPrice,
+        lowPrice: lowPrice ? +lowPrice : undefined,
         highPrice: highPrice ? +highPrice : undefined,
       }),
   });
@@ -268,6 +267,7 @@ export default function ProductsView() {
           </Content>
         </HeroWrapper>
       </Hero>
+      <Filters />
       <Cards>
         {data?.results?.map(product => (
           <ProductCard
@@ -289,8 +289,9 @@ export default function ProductsView() {
 
       {data?.totalCount && data.totalCount > 6 ? (
         <Pagination
+          forcePage={page - 1}
           nextLabel={<IconChevronRight className={css({w: '6', h: '6'})} />}
-          onPageChange={current => setPage(current.selected + 1)}
+          onPageChange={current => updateSearchParams('page', (current.selected + 1).toString())}
           pageRangeDisplayed={3}
           marginPagesDisplayed={2}
           pageCount={data?.totalPages || 1}
