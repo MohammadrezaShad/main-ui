@@ -1,9 +1,8 @@
 'use client';
 
 import {useEffect, useState} from 'react';
-import AsyncSelect from 'react-select/async';
 import {css} from '@styled/css';
-import {Box} from '@styled/jsx';
+import {Box, Divider} from '@styled/jsx';
 import {flex} from '@styled/patterns';
 import {useQuery} from '@tanstack/react-query';
 import {useSearchParams} from 'next/navigation';
@@ -14,6 +13,7 @@ import ProductCard from '@/components/templates/business/product-card';
 import {findCityById, searchCities, searchProductCategories, searchProducts} from '@/graphql';
 import {useUpdateSearchParam} from '@/hooks';
 
+import AsyncSelect from './async-select';
 import Filters from './filters';
 import {
   Cards,
@@ -122,74 +122,52 @@ export default function ProductsView() {
               >
                 <Box p={6} w='1/3'>
                   <AsyncSelect
-                    onChange={(val: any) => {
-                      setCategoriesName([val]);
-
+                    loadOptions={categoryOptions as any}
+                    onChange={val => {
+                      setCategoriesName([val.value]);
                       const existingCategories = searchParams.get('categories');
                       const newValue = existingCategories
-                        ? `${existingCategories},${val?.value}`
-                        : val?.value;
+                        ? `${existingCategories},${val.value}`
+                        : val.value;
                       updateSearchParams('categories', newValue);
                     }}
-                    components={{
-                      IndicatorSeparator: () => null,
-                    }}
-                    styles={{
-                      control: (baseStyles: any, state: any) => ({
-                        ...baseStyles,
-                        border: state.isFocused ? '1px solid #6E7072' : 0,
-                        cursor: 'pointer',
-                      }),
-                    }}
-                    cacheOptions
-                    loadOptions={categoryOptions as any}
-                    defaultOptions
+                    placeholder='Select category...'
                   />
                 </Box>
-
+                <Divider
+                  orientation='vertical'
+                  className={css({height: '8', borderColor: '#E3E3E3'})}
+                />
                 <Box p={6} w='1/3'>
                   <AsyncSelect
-                    onChange={(val: any) => {
-                      const categoryNames = [...categoriesName];
-                      categoryNames[1] = val;
-                      setCategoriesName(categoryNames);
-
+                    loadOptions={categoryOptions as any}
+                    onChange={val => {
+                      setCategoriesName([val.value]);
                       const existingCategories = searchParams.get('categories');
                       const newValue = existingCategories
-                        ? `${existingCategories},${val?.value}`
-                        : val?.value;
+                        ? `${existingCategories},${val.value}`
+                        : val.value;
                       updateSearchParams('categories', newValue);
                     }}
-                    components={{
-                      IndicatorSeparator: () => null,
-                    }}
-                    styles={{
-                      control: (baseStyles: any, state: any) => ({
-                        ...baseStyles,
-                        border: state.isFocused ? '1px solid #6E7072' : 0,
-                        cursor: 'pointer',
-                      }),
-                    }}
-                    cacheOptions
-                    loadOptions={categoryOptions as any}
-                    defaultOptions
+                    placeholder='Select category...'
                   />
                 </Box>
+                <Divider
+                  orientation='vertical'
+                  className={css({height: '8', borderColor: '#E3E3E3'})}
+                />
                 <Box p={6} w='1/3'>
                   <AsyncSelect
-                    onChange={(val: any) => updateSearchParams('city', val?.value)}
-                    components={{
-                      IndicatorSeparator: () => null,
-                    }}
-                    styles={{
-                      control: (baseStyles: any, state: any) => ({
-                        ...baseStyles,
-                        border: state.isFocused ? '1px solid #6E7072' : 0,
-                        cursor: 'pointer',
-                      }),
-                    }}
-                    cacheOptions
                     loadOptions={cityOptions as any}
+                    onChange={val => {
+                      setCityName([val.value]);
+                      const existingCategories = searchParams.get('categories');
+                      const newValue = existingCategories
+                        ? `${existingCategories},${val.value}`
+                        : val.value;
+                      updateSearchParams('city', newValue);
+                    }}
+                    placeholder='Select City...'
                     defaultOptions
                   />
                 </Box>
@@ -223,7 +201,7 @@ export default function ProductsView() {
                 >
                   {cityName}
                   <button type='button' onClick={() => updateSearchParams('city', '')}>
-                    <IconClose classname={css({w: '1', h: '1', ms: '2', color: 'white'})} />
+                    <IconClose className={css({ms: '2', fill: 'white', cursor: 'pointer'})} />
                   </button>
                 </span>
               ) : null}
@@ -258,7 +236,7 @@ export default function ProductsView() {
                           );
                         }}
                       >
-                        <IconClose classname={css({w: '1', h: '1', ms: '2', color: 'white'})} />
+                        <IconClose className={css({ms: '2', fill: 'white', cursor: 'pointer'})} />
                       </button>
                     </span>
                   ))

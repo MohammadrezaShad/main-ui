@@ -2,13 +2,16 @@
 
 import {css} from '@styled/css';
 import {flex} from '@styled/patterns';
+import {useQuery} from '@tanstack/react-query';
+import {getCookie} from 'cookies-next';
 import Link from 'next/link';
 import {usePathname} from 'next/navigation';
 
 import {IconDoc, IconHome, IconMenu, IconProfile, IconQuiz} from '@/assets';
 import {Avatar} from '@/components';
+import {CookieName} from '@/constants';
 import {useAuthContext} from '@/contexts';
-import {UserOutputType} from '@/graphql';
+import {getUser, UserOutputType} from '@/graphql';
 
 const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_STORAGE_URL;
 
@@ -16,11 +19,16 @@ interface Props {
   userData: UserOutputType | null;
 }
 
-export default function MobileNavbar({userData}: Props) {
+export default function MobileNavbar() {
   const {isLoginOpen$} = useAuthContext();
   const pathname = usePathname();
+  const token = getCookie(CookieName.AUTH_TOKEN);
   const isActive = (link: string) => pathname.includes(link);
-  const user = userData;
+
+  const {data: user} = useQuery({
+    queryKey: ['user'],
+    queryFn: () => getUser(token as string),
+  });
 
   return (
     <div

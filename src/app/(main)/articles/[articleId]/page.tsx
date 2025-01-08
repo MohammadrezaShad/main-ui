@@ -49,11 +49,11 @@ export async function generateMetadata({params}: {params: {articleId: string}}):
     authors: [{name: post.author ? `${post.author.firstName} ${post.author.lastName}` : 'User'}],
     creator: post.author ? `${post.author.firstName} ${post.author.lastName}` : 'User',
     robots: {
-      follow: post.seoSetting?.general?.nofollow || false,
-      index: post.seoSetting?.general?.noindex || false,
+      follow: post.seoSetting?.general?.nofollow || true,
+      index: post.seoSetting?.general?.noindex || true,
       googleBot: {
-        follow: post.seoSetting?.general?.nofollow || false,
-        index: !post.seoSetting?.general?.noindex || false,
+        follow: post.seoSetting?.general?.nofollow || true,
+        index: !post.seoSetting?.general?.noindex || true,
       },
     },
   };
