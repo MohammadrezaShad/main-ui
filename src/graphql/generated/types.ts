@@ -822,6 +822,7 @@ export type CompanyType = {
   rate?: Maybe<Scalars['Float']['output']>;
   registeredDate?: Maybe<Scalars['DateTime']['output']>;
   slug?: Maybe<Scalars['String']['output']>;
+  status?: Maybe<StatusType>;
   title?: Maybe<Scalars['String']['output']>;
   twitter?: Maybe<Scalars['String']['output']>;
   updateUser?: Maybe<UserOutputType>;
@@ -1007,6 +1008,7 @@ export type CreateCompanyInput = {
   profileImage?: InputMaybe<Scalars['String']['input']>;
   registeredDate?: InputMaybe<Scalars['DateTime']['input']>;
   slug?: InputMaybe<Scalars['String']['input']>;
+  status?: InputMaybe<StatusType>;
   title?: InputMaybe<Scalars['String']['input']>;
   twitter?: InputMaybe<Scalars['String']['input']>;
   website?: InputMaybe<Scalars['String']['input']>;
@@ -1122,6 +1124,7 @@ export type CreateProductInput = {
   keywords?: InputMaybe<Array<Scalars['String']['input']>>;
   sellerCompany: Scalars['String']['input'];
   slug?: InputMaybe<Scalars['String']['input']>;
+  status?: InputMaybe<StatusType>;
   thumbnail?: InputMaybe<Scalars['String']['input']>;
   title: Scalars['String']['input'];
   variations: Array<ProductVariationInput>;
@@ -2394,6 +2397,7 @@ export type ProductType = {
   rate?: Maybe<Scalars['Float']['output']>;
   sellerCompany: CompanyType;
   slug?: Maybe<Scalars['String']['output']>;
+  status?: Maybe<StatusType>;
   thumbnail?: Maybe<ImageType>;
   title: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
@@ -2743,6 +2747,7 @@ export type SearchCompanyInput = {
   page?: InputMaybe<Scalars['Int']['input']>;
   slug?: InputMaybe<Scalars['String']['input']>;
   sortType?: InputMaybe<CompanySortType>;
+  status?: InputMaybe<StatusType>;
   title?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -2856,6 +2861,7 @@ export type SearchProductInput = {
   minimumProductRating?: InputMaybe<Scalars['Int']['input']>;
   page?: InputMaybe<Scalars['Int']['input']>;
   slug?: InputMaybe<Scalars['String']['input']>;
+  status?: InputMaybe<StatusType>;
   title?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -3407,6 +3413,7 @@ export type UpdateCompanyInput = {
   profileImage?: InputMaybe<Scalars['String']['input']>;
   registeredDate?: InputMaybe<Scalars['DateTime']['input']>;
   slug?: InputMaybe<Scalars['String']['input']>;
+  status?: InputMaybe<StatusType>;
   title?: InputMaybe<Scalars['String']['input']>;
   twitter?: InputMaybe<Scalars['String']['input']>;
   website?: InputMaybe<Scalars['String']['input']>;
@@ -3511,6 +3518,7 @@ export type UpdateProductInput = {
   keywords?: InputMaybe<Array<Scalars['String']['input']>>;
   sellerCompany?: InputMaybe<Scalars['String']['input']>;
   slug?: InputMaybe<Scalars['String']['input']>;
+  status?: InputMaybe<StatusType>;
   thumbnail?: InputMaybe<Scalars['String']['input']>;
   title?: InputMaybe<Scalars['String']['input']>;
   variations?: InputMaybe<Array<ProductVariationInput>>;

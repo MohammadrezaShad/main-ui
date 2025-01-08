@@ -7,16 +7,21 @@ import {Footer, Header} from '@/components';
 import MobileNavbar from '@/components/organisms/mobile-navbar/mobile-navbar';
 import {CookieName} from '@/constants';
 import {getUser} from '@/graphql';
+import {getQueryClient} from '@/helpers';
 
 export default async function NotFound() {
   const cookieStore = cookies();
   const authToken = cookieStore.get(CookieName.AUTH_TOKEN)?.value || '';
+  const queryClient = getQueryClient();
 
-  const data = await getUser(authToken);
+  queryClient.prefetchQuery({
+    queryKey: ['user'],
+    queryFn: () => getUser(authToken),
+  });
 
   return (
     <>
-      <Header userData={data} />
+      <Header />
       <div
         className={css({
           bgColor: '#FBC886',
@@ -71,7 +76,7 @@ export default async function NotFound() {
           right: 0,
         })}
       >
-        <MobileNavbar userData={data} />
+        <MobileNavbar />
       </div>
     </>
   );
