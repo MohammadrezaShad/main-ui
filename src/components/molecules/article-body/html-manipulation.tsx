@@ -1,10 +1,12 @@
-/* eslint-disable */
-// @ts-nocheck
+/* eslint-disable @typescript-eslint/no-namespace */
 
-import React, {lazy, Suspense} from 'react';
+'use client';
+
+import React, {lazy, Suspense, useEffect} from 'react';
 import {css} from '@styled/css';
 import parse, {domToReact, HTMLReactParserOptions} from 'html-react-parser';
-import {DomElement} from 'htmlparser2';
+
+import MonacoEditor from './MonacoEditor';
 
 interface HtmlManipulationProps {
   htmlString: string;
@@ -13,7 +15,7 @@ interface HtmlManipulationProps {
 
 const HtmlManipulation: React.FC<HtmlManipulationProps> = ({htmlString, className}) => {
   const getFileExtension = (url: string): string => {
-    const extensionMatch = url.match(/\.([0-9a-z]+)(?:[\?#]|$)/i);
+    const extensionMatch = url.match(/\.([0-9a-z]+)(?:[\\?#]|$)/i);
     return extensionMatch ? extensionMatch[1] : '';
   };
 
@@ -53,10 +55,32 @@ const HtmlManipulation: React.FC<HtmlManipulationProps> = ({htmlString, classNam
   };
 
   const options: HTMLReactParserOptions = {
-    replace: (domNode: DomElement) => {
+    replace: (domNode: any) => {
+      if (domNode.name === 'math-field' && domNode.attribs?.value) {
+        const mathContent = domNode.attribs.value;
+
+        return (
+          <div key={domNode.attribs.value} style={{marginBottom: '20px'}}>
+            <math-field read-only style={{width: '100%', minHeight: '50px'}}>
+              {mathContent}
+            </math-field>
+          </div>
+        );
+      }
+      if (domNode.name === 'pre' && domNode.attribs?.content) {
+        const codeContent = domNode.attribs.content.replace(/"/g, '"');
+        const language = domNode.attribs.language || 'javascript';
+
+        return (
+          <div key={domNode.attribs.content} style={{marginBottom: '20px'}}>
+            <MonacoEditor code={codeContent} language={language} />
+          </div>
+        );
+      }
+
       if (domNode.attribs && domNode.attribs.class === className && domNode.name === 'a') {
         const extension = getFileExtension(domNode.attribs.href);
-        const Component = getComponentByExtension(extension);
+        const Component = getComponentByExtension(extension) as any;
         return (
           <span
             className={css({
@@ -64,7 +88,7 @@ const HtmlManipulation: React.FC<HtmlManipulationProps> = ({htmlString, classNam
               w: 'max-content',
               alignItems: 'center',
               gap: '1',
-              px: '1'
+              px: '1',
             })}
             key={domNode.attribs.href}
           >
@@ -75,12 +99,30 @@ const HtmlManipulation: React.FC<HtmlManipulationProps> = ({htmlString, classNam
           </span>
         );
       }
+
+      return undefined;
     },
   };
 
   const reactElements = parse(htmlString, options);
 
+  useEffect(() => {
+    const loadMathLive = async () => {
+      const {MathfieldElement} = await import('mathlive');
+      MathfieldElement.fontsDirectory = '/fonts/mathlive/';
+    };
+    loadMathLive();
+  }, []);
+
   return <div>{reactElements}</div>;
 };
+
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      'math-field': React.DetailedHTMLProps<React.HTMLAttributes<any>, any>;
+    }
+  }
+}
 
 export default HtmlManipulation;
