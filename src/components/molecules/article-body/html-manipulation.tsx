@@ -1,4 +1,8 @@
-import React, {lazy, Suspense} from 'react';
+/* eslint-disable @typescript-eslint/no-namespace */
+
+'use client';
+
+import React, {lazy, Suspense, useEffect} from 'react';
 import {css} from '@styled/css';
 import parse, {domToReact, HTMLReactParserOptions} from 'html-react-parser';
 
@@ -52,6 +56,17 @@ const HtmlManipulation: React.FC<HtmlManipulationProps> = ({htmlString, classNam
 
   const options: HTMLReactParserOptions = {
     replace: (domNode: any) => {
+      if (domNode.name === 'math-field' && domNode.attribs?.value) {
+        const mathContent = domNode.attribs.value;
+
+        return (
+          <div key={domNode.attribs.value} style={{marginBottom: '20px'}}>
+            <math-field read-only style={{width: '100%', minHeight: '50px'}}>
+              {mathContent}
+            </math-field>
+          </div>
+        );
+      }
       if (domNode.name === 'pre' && domNode.attribs?.content) {
         const codeContent = domNode.attribs.content.replace(/"/g, '"');
         const language = domNode.attribs.language || 'javascript';
@@ -91,7 +106,23 @@ const HtmlManipulation: React.FC<HtmlManipulationProps> = ({htmlString, classNam
 
   const reactElements = parse(htmlString, options);
 
+  useEffect(() => {
+    const loadMathLive = async () => {
+      const {MathfieldElement} = await import('mathlive');
+      MathfieldElement.fontsDirectory = '/fonts/mathlive/';
+    };
+    loadMathLive();
+  }, []);
+
   return <div>{reactElements}</div>;
 };
+
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      'math-field': React.DetailedHTMLProps<React.HTMLAttributes<any>, any>;
+    }
+  }
+}
 
 export default HtmlManipulation;

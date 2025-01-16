@@ -50,6 +50,9 @@ importers:
       htmlparser2:
         specifier: ^9.1.0
         version: 9.1.0
+      mathlive:
+        specifier: ^0.103.0
+        version: 0.103.0
       moment:
         specifier: ^2.30.1
         version: 2.30.1
@@ -917,6 +920,10 @@ packages:
     resolution: {integrity: sha512-AM+kFmAHawpUQv2q9+mcB6jLKxXGjgu/r2EQjEwujgpCdzrST6BJqYw00GRn56/L/Izw5U7ImoLmy00X/r80Pw==}
     bundledDependencies:
       - is-unicode-supported
+
+  '@cortex-js/compute-engine@0.24.1':
+    resolution: {integrity: sha512-B9pLaZFC1vBrL64yR2LQWy2sj1E/+wtwIVokPuPqX8YWXwj9W2AMVyS9pSMN8gEdjpAC50nSmtL6110Rgi7dKA==}
+    engines: {node: '>=16.14.2', npm: '>=8.5.0'}
 
   '@emnapi/runtime@1.1.1':
     resolution: {integrity: sha512-3bfqkzuR1KLx57nZfjr2NLnFOobvyS0aTszaEGCGqmYMVDRaGvgIZbjGSV/MHSSmLgQ/b9JFHQ5xm5WRZYd+XQ==}
@@ -2551,6 +2558,9 @@ packages:
     resolution: {integrity: sha512-gk/Z852D2Wtb//0I+kRFNKKE9dIIVirjoqPoA1wJU+XePVXZfGeBpk45+A1rKO4Q43prqWBNY/MiIeRLbPWUaA==}
     engines: {node: '>=4.0.0'}
 
+  complex.js@2.4.2:
+    resolution: {integrity: sha512-qtx7HRhPGSCBtGiST4/WGHuW+zeaND/6Ld+db6PbrulIB1i2Ev/2UPiqcmpQNPSyfBKraC0EOvOKCB5dGZKt3g==}
+
   concat-map@0.0.1:
     resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
 
@@ -2694,6 +2704,9 @@ packages:
   decamelize@1.2.0:
     resolution: {integrity: sha512-z2S+W9X73hAUUki+N+9Za2lBlun89zigOyGrsax+KUQ6wKW4ZoWpEYBkGhQjwAjjDCkWxhY0VKEhk8wzY7F5cA==}
     engines: {node: '>=0.10.0'}
+
+  decimal.js@10.4.3:
+    resolution: {integrity: sha512-VBBaLc1MgL5XpzgIP7ny5Z6Nx3UrRkIViUkPUdtl9aya5amy3De1gsUUSB1g3+3sExYNjCAsAznmukyxCb1GRA==}
 
   decompress-response@4.2.1:
     resolution: {integrity: sha512-jOSne2qbyE+/r8G1VU+G/82LBs2Fs4LAsTiLSHOCOMZQl2OKZ6i8i4IyHemTe+/yIXOtTcRQMzPcgyhoFlqPkw==}
@@ -3822,6 +3835,10 @@ packages:
   map-cache@0.2.2:
     resolution: {integrity: sha512-8y/eV9QQZCiyn1SprXSrCmqJN0yNRATe+PO8ztwqrvrbdRLA3eYJF0yaR0YayLWkMbsQSKWS9N2gPcGEc4UsZg==}
     engines: {node: '>=0.10.0'}
+
+  mathlive@0.103.0:
+    resolution: {integrity: sha512-gNJDMUOz0WePyDpLO/w1sGkrz0JrMwrT1QoFdGloVjjerWlUeKWn1JGM6XlO5SQ1AqXWemRKvlyVXft+QsxX8w==}
+    engines: {node: '>=16.14.2', npm: '>=8.5.0'}
 
   mdn-data@2.0.14:
     resolution: {integrity: sha512-dn6wd0uw5GsdswPFfsgMp5NSB0/aDe6fK94YJV/AJDYXL6HVLWBsxeq7js7Ad+mU2K9LAlwpk6kN2D5mwCPVow==}
@@ -6173,6 +6190,11 @@ snapshots:
       picocolors: 1.0.0
       sisteransi: 1.0.5
 
+  '@cortex-js/compute-engine@0.24.1':
+    dependencies:
+      complex.js: 2.4.2
+      decimal.js: 10.4.3
+
   '@emnapi/runtime@1.1.1':
     dependencies:
       tslib: 2.6.2
@@ -8343,6 +8365,8 @@ snapshots:
 
   common-tags@1.8.2: {}
 
+  complex.js@2.4.2: {}
+
   concat-map@0.0.1: {}
 
   confusing-browser-globals@1.0.11: {}
@@ -8493,6 +8517,8 @@ snapshots:
       ms: 2.1.2
 
   decamelize@1.2.0: {}
+
+  decimal.js@10.4.3: {}
 
   decompress-response@4.2.1:
     dependencies:
@@ -9822,6 +9848,10 @@ snapshots:
   make-event-props@1.6.2: {}
 
   map-cache@0.2.2: {}
+
+  mathlive@0.103.0:
+    dependencies:
+      '@cortex-js/compute-engine': 0.24.1
 
   mdn-data@2.0.14: {}
 
