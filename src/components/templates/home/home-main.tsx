@@ -1,22 +1,24 @@
 'use client';
 
 import {useEffect, useState} from 'react';
-import Select from 'react-select';
 import {css} from '@styled/css';
-import {Box} from '@styled/jsx';
+import {Box, Divider as StyledDivider} from '@styled/jsx';
+import {flex} from '@styled/patterns';
 import {useInfiniteQuery, useQuery} from '@tanstack/react-query';
+import {useRouter} from 'next/navigation';
 
 import {hero, IconSearch} from '@/assets';
 import {Articles, Divider, RecentArticles} from '@/components';
 import {
   ArticleSortType,
   ArticleType,
-  CategoryType,
   searchArticles,
-  searchCategories,
+  searchCities,
+  searchProductCategories,
   StatusType,
 } from '@/graphql';
 
+import AsyncSelect from '../products/async-select';
 import {
   Container,
   Content,
@@ -29,9 +31,17 @@ import {
   Underline,
 } from './home.styled';
 
-const cities = [{id: 1, value: 'amsterdam', label: 'Amsterdam'}];
+interface CategoryOption {
+  id: string;
+  value: string;
+  label: string;
+}
 
 export default function HomeMain() {
+  const router = useRouter();
+  const [primaryCategory, setPrimaryCategory] = useState<CategoryOption | null>(null);
+  const [secondaryCategory, setSecondaryCategory] = useState<CategoryOption | null>(null);
+  const [selectedLocation, setSelectedLocation] = useState<CategoryOption | null>(null);
   const {data, fetchNextPage, hasNextPage} = useInfiniteQuery({
     queryKey: ['showcase-articles'],
     queryFn: ({pageParam}) =>
@@ -62,17 +72,45 @@ export default function HomeMain() {
   );
   const recentArticles = recentArticlesData.data?.article.searchArticles.results;
 
-  const res = useQuery({
-    queryKey: ['search-categories-home'],
-    queryFn: () => searchCategories({}),
-  }) as any;
+  const handleSearch = () => {
+    const searchParams = new URLSearchParams();
 
-  const categories: Array<CategoryType> = res.data.category!.searchCategories.results;
-  const options = categories.map(category => ({
-    id: category._id,
-    value: category._id,
-    label: category.title,
-  }));
+    const categories = [primaryCategory?.value, secondaryCategory?.value].filter(Boolean).join(',');
+
+    if (categories) searchParams.append('categories', categories);
+    if (selectedLocation?.value) searchParams.append('city', selectedLocation.value);
+
+    const queryString = searchParams.toString();
+    router.push(`/products${queryString ? `?${queryString}` : ''}`);
+  };
+
+  const loadProductCategories = async (searchText: string) => {
+    const response = await searchProductCategories({
+      page: 1,
+      count: 50,
+      text: searchText,
+    });
+
+    return response.results?.map(category => ({
+      id: category._id,
+      value: category._id,
+      label: category.title,
+    }));
+  };
+
+  const loadCities = async (searchText: string) => {
+    const response = await searchCities({
+      page: 1,
+      count: 50,
+      text: searchText,
+    });
+
+    return response.results?.map(city => ({
+      id: city._id,
+      value: city._id,
+      label: city.name,
+    }));
+  };
 
   useEffect(() => {
     if (data) {
@@ -100,103 +138,45 @@ export default function HomeMain() {
             <Underline />
             <SearchContainer>
               <Box
-                className={css({
-                  display: 'flex',
+                className={flex({
                   alignItems: 'center',
-                  mdDown: {
-                    flexDirection: 'column',
-                    gap: 2,
-                  },
-                  py: '7',
                 })}
                 flex={1}
               >
-                <Box
-                  className={css({
-                    width: {
-                      base: '1/3',
-                      mdDown: 'full',
-                    },
-                    bgColor: {
-                      mdDown: 'white',
-                    },
-                    borderRight: '1px solid token(colors.gray3)',
-                    px: '6',
-                  })}
-                >
-                  <Select
-                    components={{
-                      IndicatorSeparator: () => null,
-                    }}
-                    styles={{
-                      control: (baseStyles: any, state: any) => ({
-                        ...baseStyles,
-                        border: state.isFocused ? '1px solid #6E7072' : 0,
-                        cursor: 'pointer',
-                      }),
-                    }}
-                    defaultValue={options[0]}
-                    options={options}
+                <Box p={6} w='1/3'>
+                  <AsyncSelect
+                    loadOptions={loadProductCategories as any}
+                    onChange={setPrimaryCategory}
+                    placeholder='Select category...'
+                    defaultOptions
                   />
                 </Box>
-
-                <Box
-                  className={css({
-                    width: {
-                      base: '1/3',
-                      mdDown: 'full',
-                    },
-                    bgColor: {
-                      mdDown: 'white',
-                    },
-                    borderRight: '1px solid token(colors.gray3)',
-                    px: '6',
-                  })}
-                >
-                  <Select
-                    components={{
-                      IndicatorSeparator: () => null,
-                    }}
-                    styles={{
-                      control: (baseStyles: any, state: any) => ({
-                        ...baseStyles,
-                        border: state.isFocused ? '1px solid #6E7072' : 0,
-                        cursor: 'pointer',
-                      }),
-                    }}
-                    defaultValue={options[0]}
-                    options={options}
+                <StyledDivider
+                  orientation='vertical'
+                  className={css({height: '8', borderColor: '#E3E3E3'})}
+                />
+                <Box p={6} w='1/3'>
+                  <AsyncSelect
+                    loadOptions={loadProductCategories as any}
+                    onChange={setSecondaryCategory}
+                    placeholder='Select category...'
+                    defaultOptions
                   />
                 </Box>
-                <Box
-                  className={css({
-                    width: {
-                      base: '1/3',
-                      mdDown: 'full',
-                    },
-                    bgColor: {
-                      mdDown: 'white',
-                    },
-                    px: '6',
-                  })}
-                >
-                  <Select
-                    components={{
-                      IndicatorSeparator: () => null,
-                    }}
-                    styles={{
-                      control: (baseStyles: any, state: any) => ({
-                        ...baseStyles,
-                        border: state.isFocused ? '1px solid #6E7072' : 0,
-                        cursor: 'pointer',
-                      }),
-                    }}
-                    defaultValue={cities[0]}
-                    options={cities}
+                <StyledDivider
+                  orientation='vertical'
+                  className={css({height: '8', borderColor: '#E3E3E3'})}
+                />
+                <Box p={6} w='1/3'>
+                  <AsyncSelect
+                    loadOptions={loadCities as any}
+                    onChange={setSelectedLocation}
+                    placeholder='Select City...'
+                    defaultOptions
                   />
                 </Box>
               </Box>
-              <SearchButton>
+              <SearchButton onClick={handleSearch}>
                 <IconSearch />
                 <span
                   className={css({

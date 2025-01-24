@@ -10,7 +10,13 @@ import {useSearchParams} from 'next/navigation';
 import {IconChevronLeft, IconChevronRight, IconClose, IconSearch} from '@/assets';
 import {Pagination} from '@/components/templates/articles/articles.styled';
 import ProductCard from '@/components/templates/business/product-card';
-import {findCityById, searchCities, searchProductCategories, searchProducts} from '@/graphql';
+import {
+  findCityById,
+  findProductCategoryById,
+  searchCities,
+  searchProductCategories,
+  searchProducts,
+} from '@/graphql';
 import {useUpdateSearchParam} from '@/hooks';
 
 import AsyncSelect from './async-select';
@@ -104,7 +110,21 @@ export default function ProductsView() {
         setCityName(res);
       });
     }
-  }, [city]);
+    if (categories) {
+      const categoriesArray = categories.split(',');
+      const categoryNames = categoriesArray.map(async category => {
+        const res = await findProductCategoryById({id: category}).then(res => ({
+          id: res?.result?._id,
+          value: res?.result?._id,
+          label: res?.result?.title,
+        }));
+        return res;
+      });
+      Promise.all(categoryNames).then(res => {
+        setCategoriesName(res);
+      });
+    }
+  }, [city, categories]);
 
   return (
     <>
@@ -124,7 +144,7 @@ export default function ProductsView() {
                   <AsyncSelect
                     loadOptions={categoryOptions as any}
                     onChange={val => {
-                      setCategoriesName([val.value]);
+                      setCategoriesName(prev => [...prev, val]);
                       const existingCategories = searchParams.get('categories');
                       const newValue = existingCategories
                         ? `${existingCategories},${val.value}`
@@ -132,6 +152,7 @@ export default function ProductsView() {
                       updateSearchParams('categories', newValue);
                     }}
                     placeholder='Select category...'
+                    defaultOptions
                   />
                 </Box>
                 <Divider
@@ -142,7 +163,7 @@ export default function ProductsView() {
                   <AsyncSelect
                     loadOptions={categoryOptions as any}
                     onChange={val => {
-                      setCategoriesName([val.value]);
+                      setCategoriesName(prev => [...prev, val]);
                       const existingCategories = searchParams.get('categories');
                       const newValue = existingCategories
                         ? `${existingCategories},${val.value}`
@@ -150,6 +171,7 @@ export default function ProductsView() {
                       updateSearchParams('categories', newValue);
                     }}
                     placeholder='Select category...'
+                    defaultOptions
                   />
                 </Box>
                 <Divider
