@@ -133,7 +133,7 @@ const HtmlManipulation: React.FC<HtmlManipulationProps> = ({htmlString, classNam
         const tocTree = getTOCTree(htmlString);
         const handleClick = (id: string) => {
           document
-            .querySelector(`#heading-${id}`)
+            .getElementById(`heading-${id}`)
             ?.scrollIntoView({behavior: 'smooth', block: 'center'});
         };
         return (
