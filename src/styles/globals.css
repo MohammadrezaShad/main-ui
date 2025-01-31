@@ -616,6 +616,25 @@ td {
   hyphens: auto;
 }
 
+
+.article ul[data-type="taskList"] {
+  padding-left: 0;;
+}
+
+.article ul[data-type="taskList"] li {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.article ul[data-type="taskList"] li p {
+  margin: 0;
+}
+
+.article ul[data-type="taskList"] li label {
+  pointer-events: none;
+}
+
 .article h1 {
   display: block;
   font-size: 2em;
@@ -630,9 +649,8 @@ td {
 .article h2 {
   display: flex;
   font-size: 1.5em;
-  margin-block-start: 0.83em;
-  margin-block-end: 1.66em;
-  margin-bottom: 1.66em;
+  margin-block-start: 1.66em;
+  margin-block-end: 0;
   margin-inline-start: 0px;
   margin-inline-end: 0px;
   font-weight: bold;

@@ -14,6 +14,7 @@ import {
   findCityById,
   findProductCategoryById,
   searchCities,
+  searchCountries,
   searchProductCategories,
   searchProducts,
 } from '@/graphql';
@@ -39,6 +40,7 @@ export default function ProductsView() {
   const categories = searchParams.get('categories') || undefined;
   const city = searchParams.get('city') || undefined;
   const [cityName, setCityName] = useState<any>();
+  const [countryName, setCountryName] = useState<{id: string; value: string; label: string}[]>();
   const [categoriesName, setCategoriesName] = useState<any[]>([]);
   const minimumCompanyRating = searchParams.get('minimumCompanyRating') || undefined;
 
@@ -83,8 +85,8 @@ export default function ProductsView() {
       label: result.title,
     }));
   };
-  const filterCities = async (inputValue: string) => {
-    const response = await searchCities({
+  const filterCountries = async (inputValue: string) => {
+    const response = await searchCountries({
       page: 1,
       count: 50,
       text: inputValue,
@@ -95,9 +97,23 @@ export default function ProductsView() {
       label: result.name,
     }));
   };
+  const filterCities = async (inputValue: string, countryId?: string) => {
+    const response = await searchCities({
+      page: 1,
+      count: 50,
+      text: inputValue,
+      parent: countryId || countryName?.[0]?.id || undefined,
+    });
+    return response.results?.map(result => ({
+      id: result._id,
+      value: result._id,
+      label: result.name,
+    }));
+  };
 
   const categoryOptions = (inputValue: string) => filterProductCategories(inputValue);
-  const cityOptions = (inputValue: string) => filterCities(inputValue);
+  const cityOptions = (inputValue: string, country?: string) => filterCities(inputValue, country);
+  const countryOptions = (inputValue: string) => filterCountries(inputValue);
 
   const getCityTitle = async (_city: string) => {
     const res = await findCityById({id: _city}).then(res => res.result?.name);
@@ -144,7 +160,7 @@ export default function ProductsView() {
                   <AsyncSelect
                     loadOptions={categoryOptions as any}
                     onChange={val => {
-                      setCategoriesName(prev => [...prev, val]);
+                      setCategoriesName([val]);
                       const existingCategories = searchParams.get('categories');
                       const newValue = existingCategories
                         ? `${existingCategories},${val.value}`
@@ -161,16 +177,11 @@ export default function ProductsView() {
                 />
                 <Box p={6} w='1/3'>
                   <AsyncSelect
-                    loadOptions={categoryOptions as any}
+                    loadOptions={countryOptions as any}
                     onChange={val => {
-                      setCategoriesName(prev => [...prev, val]);
-                      const existingCategories = searchParams.get('categories');
-                      const newValue = existingCategories
-                        ? `${existingCategories},${val.value}`
-                        : val.value;
-                      updateSearchParams('categories', newValue);
+                      setCountryName([val]);
                     }}
-                    placeholder='Select category...'
+                    placeholder='Select Country...'
                     defaultOptions
                   />
                 </Box>
@@ -180,10 +191,11 @@ export default function ProductsView() {
                 />
                 <Box p={6} w='1/3'>
                   <AsyncSelect
-                    loadOptions={cityOptions as any}
+                    key={countryName?.[0]?.value}
+                    loadOptions={input => cityOptions(input, countryName?.[0]?.value) as any}
                     onChange={val => {
                       setCityName([val.value]);
-                      const existingCategories = searchParams.get('categories');
+                      const existingCategories = searchParams.get('city');
                       const newValue = existingCategories
                         ? `${existingCategories},${val.value}`
                         : val.value;

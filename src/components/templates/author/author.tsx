@@ -27,7 +27,16 @@ import {
   IconTwitter,
   IconWhatsapp,
 } from '@/assets';
-import {Avatar, Button, Card, Chip, SmallCard, SocialMediaLinks, TextField} from '@/components';
+import {
+  Avatar,
+  Button,
+  Card,
+  Chip,
+  SmallCard,
+  SocialMediaLinks,
+  TextArea,
+  TextField,
+} from '@/components';
 import {Modal} from '@/components/atoms/modal';
 import {CookieName} from '@/constants';
 import {
@@ -583,9 +592,9 @@ export default function Author() {
             </Box>
 
             <Box width='100%' mt='25px'>
-              <TextField
+              <TextArea
+                rows={1}
                 label='Education'
-                type='text'
                 name='education'
                 value={values.education}
                 onChange={handleChange}
@@ -593,9 +602,9 @@ export default function Author() {
               />
             </Box>
             <Box mt='25px'>
-              <TextField
+              <TextArea
+                rows={1}
                 label='Contact'
-                type='text'
                 name='contact'
                 value={values.contact}
                 onChange={handleChange}
@@ -603,9 +612,9 @@ export default function Author() {
               />
             </Box>
             <Box mt='25px'>
-              <TextField
+              <TextArea
+                rows={1}
                 label='Expertise'
-                type='text'
                 name='expertise'
                 value={values.expertise}
                 onChange={handleChange}
@@ -613,9 +622,9 @@ export default function Author() {
               />
             </Box>
             <Box my='25px'>
-              <TextField
+              <TextArea
+                rows={1}
                 label='Description'
-                type='text'
                 name='description'
                 value={values.description}
                 onChange={handleChange}
