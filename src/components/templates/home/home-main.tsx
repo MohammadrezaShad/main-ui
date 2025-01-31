@@ -14,6 +14,7 @@ import {
   ArticleType,
   searchArticles,
   searchCities,
+  searchCountries,
   searchProductCategories,
   StatusType,
 } from '@/graphql';
@@ -40,8 +41,14 @@ interface CategoryOption {
 export default function HomeMain() {
   const router = useRouter();
   const [primaryCategory, setPrimaryCategory] = useState<CategoryOption | null>(null);
-  const [secondaryCategory, setSecondaryCategory] = useState<CategoryOption | null>(null);
-  const [selectedLocation, setSelectedLocation] = useState<CategoryOption | null>(null);
+  const [countryName, setCountryName] = useState<{id: string; value: string; label: string} | null>(
+    null,
+  );
+  const [selectedLocation, setSelectedLocation] = useState<{
+    id: string;
+    value: string;
+    label: string;
+  } | null>(null);
   const {data, fetchNextPage, hasNextPage} = useInfiniteQuery({
     queryKey: ['showcase-articles'],
     queryFn: ({pageParam}) =>
@@ -75,7 +82,7 @@ export default function HomeMain() {
   const handleSearch = () => {
     const searchParams = new URLSearchParams();
 
-    const categories = [primaryCategory?.value, secondaryCategory?.value].filter(Boolean).join(',');
+    const categories = primaryCategory?.value;
 
     if (categories) searchParams.append('categories', categories);
     if (selectedLocation?.value) searchParams.append('city', selectedLocation.value);
@@ -98,17 +105,32 @@ export default function HomeMain() {
     }));
   };
 
-  const loadCities = async (searchText: string) => {
+  const loadCities = async (searchText: string, countryId?: string) => {
     const response = await searchCities({
       page: 1,
       count: 50,
       text: searchText,
+      parent: countryId || countryName?.value || undefined,
     });
 
     return response.results?.map(city => ({
       id: city._id,
       value: city._id,
       label: city.name,
+    }));
+  };
+
+  const loadCountries = async (searchText: string) => {
+    const response = await searchCountries({
+      page: 1,
+      count: 50,
+      text: searchText,
+    });
+
+    return response.results?.map(country => ({
+      id: country._id,
+      value: country._id,
+      label: country.name,
     }));
   };
 
@@ -157,9 +179,9 @@ export default function HomeMain() {
                 />
                 <Box p={6} w='1/3'>
                   <AsyncSelect
-                    loadOptions={loadProductCategories as any}
-                    onChange={setSecondaryCategory}
-                    placeholder='Select category...'
+                    loadOptions={loadCountries as any}
+                    onChange={setCountryName}
+                    placeholder='Select country...'
                     defaultOptions
                   />
                 </Box>
@@ -169,7 +191,8 @@ export default function HomeMain() {
                 />
                 <Box p={6} w='1/3'>
                   <AsyncSelect
-                    loadOptions={loadCities as any}
+                    key={countryName?.value}
+                    loadOptions={val => loadCities(val, countryName?.value) as any}
                     onChange={setSelectedLocation}
                     placeholder='Select City...'
                     defaultOptions
