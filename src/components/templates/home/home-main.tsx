@@ -162,10 +162,30 @@ export default function HomeMain() {
               <Box
                 className={flex({
                   alignItems: 'center',
+                  flexDir: {
+                    base: 'row',
+                    mdDown: 'column',
+                  },
                 })}
                 flex={1}
               >
-                <Box p={6} w='1/3'>
+                <Box
+                  p={6}
+                  className={css({
+                    w: {
+                      base: '1/3',
+                      mdDown: '100%',
+                    },
+                    px: {
+                      base: '6',
+                      mdDown: '0',
+                    },
+                    py: {
+                      base: '6',
+                      mdDown: '2',
+                    },
+                  })}
+                >
                   <AsyncSelect
                     loadOptions={loadProductCategories as any}
                     onChange={setPrimaryCategory}
@@ -175,9 +195,31 @@ export default function HomeMain() {
                 </Box>
                 <StyledDivider
                   orientation='vertical'
-                  className={css({height: '8', borderColor: '#E3E3E3'})}
+                  className={css({
+                    height: '8',
+                    borderColor: '#E3E3E3',
+                    mdDown: {
+                      display: 'none',
+                    },
+                  })}
                 />
-                <Box p={6} w='1/3'>
+                <Box
+                  p={6}
+                  className={css({
+                    w: {
+                      base: '1/3',
+                      mdDown: '100%',
+                    },
+                    px: {
+                      base: '6',
+                      mdDown: '0',
+                    },
+                    py: {
+                      base: '6',
+                      mdDown: '2',
+                    },
+                  })}
+                >
                   <AsyncSelect
                     loadOptions={loadCountries as any}
                     onChange={setCountryName}
@@ -187,9 +229,31 @@ export default function HomeMain() {
                 </Box>
                 <StyledDivider
                   orientation='vertical'
-                  className={css({height: '8', borderColor: '#E3E3E3'})}
+                  className={css({
+                    height: '8',
+                    borderColor: '#E3E3E3',
+                    mdDown: {
+                      display: 'none',
+                    },
+                  })}
                 />
-                <Box p={6} w='1/3'>
+                <Box
+                  p={6}
+                  className={css({
+                    w: {
+                      base: '1/3',
+                      mdDown: '100%',
+                    },
+                    px: {
+                      base: '6',
+                      mdDown: '0',
+                    },
+                    py: {
+                      base: '6',
+                      mdDown: '2',
+                    },
+                  })}
+                >
                   <AsyncSelect
                     key={countryName?.value}
                     loadOptions={val => loadCities(val, countryName?.value) as any}

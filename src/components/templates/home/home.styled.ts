@@ -113,7 +113,7 @@ export const SearchButton = styled('button', {
     gap: '2',
     mdDown: {
       aspectRatio: 'auto',
-      py: '5',
+      py: '2',
     },
   },
 });
