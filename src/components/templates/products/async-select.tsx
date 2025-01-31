@@ -119,6 +119,7 @@ const AsyncSelect = ({loadOptions, onChange, defaultOptions, placeholder}: Async
             mt: '1',
             zIndex: '10',
             boxShadow: 'md',
+            maxHeight: '250px',
           })}
         >
           {loading ? (

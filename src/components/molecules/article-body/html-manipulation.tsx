@@ -98,7 +98,7 @@ const HtmlManipulation: React.FC<HtmlManipulationProps> = ({htmlString, classNam
       }
       if (domNode.name === 'pre' && domNode.attribs?.content) {
         const codeContent = domNode.attribs.content.replace(/"/g, '"');
-        const language = domNode.attribs.language || 'javascript';
+        const language = domNode.attribs.language || 'python';
 
         return (
           <div key={domNode.attribs.content} style={{marginBottom: '20px'}}>
