@@ -37,6 +37,7 @@ const PriceRangePopover = () => {
       ref={companyRatingRef}
       className={css({
         position: 'relative',
+        bg: 'white',
       })}
     >
       <button
@@ -73,6 +74,7 @@ const PriceRangePopover = () => {
             h: 'max',
             border: `1px solid #E3E3E3`,
             p: '6',
+            zIndex: '10',
           })}
         >
           <div

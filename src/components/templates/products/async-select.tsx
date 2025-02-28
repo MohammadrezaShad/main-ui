@@ -1,5 +1,6 @@
 import {useEffect, useRef, useState} from 'react';
 import {css} from '@styled/css';
+import {SystemStyleObject} from '@styled/types';
 
 import {IconChevronDown} from '@/assets';
 
@@ -14,9 +15,16 @@ type AsyncSelectProps = {
   onChange: (value: Option) => void;
   placeholder?: string;
   defaultOptions?: boolean;
+  className?: SystemStyleObject;
 };
 
-const AsyncSelect = ({loadOptions, onChange, defaultOptions, placeholder}: AsyncSelectProps) => {
+const AsyncSelect = ({
+  loadOptions,
+  onChange,
+  className,
+  defaultOptions,
+  placeholder,
+}: AsyncSelectProps) => {
   const [inputValue, setInputValue] = useState('');
   const [options, setOptions] = useState<Option[]>([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -79,16 +87,19 @@ const AsyncSelect = ({loadOptions, onChange, defaultOptions, placeholder}: Async
         }}
         onFocus={() => setIsOpen(true)}
         placeholder={placeholder}
-        className={css({
-          width: 'full',
-          p: '2',
-          border: 'none',
-          rounded: 'md',
-          outline: 'none',
-          _focus: {
-            borderColor: 'token(colors.gray.400)',
+        className={css(
+          {
+            width: 'full',
+            p: '2',
+            border: 'none',
+            rounded: 'md',
+            outline: 'none',
+            _focus: {
+              borderColor: 'token(colors.gray.400)',
+            },
           },
-        })}
+          className,
+        )}
       />
 
       <IconChevronDown

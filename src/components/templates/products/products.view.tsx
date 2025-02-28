@@ -153,10 +153,28 @@ export default function ProductsView() {
               <Box
                 className={flex({
                   alignItems: 'center',
+                  flexDir: {
+                    base: 'row',
+                    mdDown: 'column',
+                  },
                 })}
                 flex={1}
               >
-                <Box p={6} w='1/3'>
+                <Box
+                  className={css({
+                    p: {
+                      base: '6',
+                      mdDown: '2',
+                    },
+                    w: {
+                      base: '1/3',
+                      mdDown: 'full',
+                    },
+                    px: {
+                      mdDown: '0 !important',
+                    },
+                  })}
+                >
                   <AsyncSelect
                     loadOptions={categoryOptions as any}
                     onChange={val => {
@@ -169,13 +187,33 @@ export default function ProductsView() {
                     }}
                     placeholder='Select category...'
                     defaultOptions
+                    className={{
+                      h: {
+                        mdDown: '64px',
+                      },
+                    }}
                   />
                 </Box>
                 <Divider
+                  hideBelow='md'
                   orientation='vertical'
                   className={css({height: '8', borderColor: '#E3E3E3'})}
                 />
-                <Box p={6} w='1/3'>
+                <Box
+                  className={css({
+                    p: {
+                      base: '6',
+                      mdDown: '2',
+                    },
+                    w: {
+                      base: '1/3',
+                      mdDown: 'full',
+                    },
+                    px: {
+                      mdDown: '0 !important',
+                    },
+                  })}
+                >
                   <AsyncSelect
                     loadOptions={countryOptions as any}
                     onChange={val => {
@@ -183,13 +221,33 @@ export default function ProductsView() {
                     }}
                     placeholder='Select Country...'
                     defaultOptions
+                    className={{
+                      h: {
+                        mdDown: '64px',
+                      },
+                    }}
                   />
                 </Box>
                 <Divider
+                  hideBelow='md'
                   orientation='vertical'
                   className={css({height: '8', borderColor: '#E3E3E3'})}
                 />
-                <Box p={6} w='1/3'>
+                <Box
+                  className={css({
+                    p: {
+                      base: '6',
+                      mdDown: '2',
+                    },
+                    w: {
+                      base: '1/3',
+                      mdDown: 'full',
+                    },
+                    px: {
+                      mdDown: '0 !important',
+                    },
+                  })}
+                >
                   <AsyncSelect
                     key={countryName?.[0]?.value}
                     loadOptions={input => cityOptions(input, countryName?.[0]?.value) as any}
@@ -203,6 +261,11 @@ export default function ProductsView() {
                     }}
                     placeholder='Select City...'
                     defaultOptions
+                    className={{
+                      h: {
+                        mdDown: '64px',
+                      },
+                    }}
                   />
                 </Box>
               </Box>

@@ -26,7 +26,9 @@ export const HeroWrapper = styled('div', {
     flexDirection: 'column',
     // overflow: 'hidden',
     position: 'relative',
-    height: '275px',
+    height: {
+      mdTo2xl: '275px',
+    },
     w: 'full',
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'cover',
@@ -53,8 +55,14 @@ export const Content = styled('div', {
     maxWidth: '100%',
     flexDirection: 'column',
     zIndex: 20,
-    pt: '[56px]',
-    pb: '[70px]',
+    pt: {
+      base: '[56px]',
+      mdDown: 4,
+    },
+    pb: {
+      base: '[70px]',
+      mdDown: 4,
+    },
   },
 });
 
@@ -68,7 +76,7 @@ export const TitleWrapper = styled('div', {
     mdDown: {
       textStyle: 'h1',
       textAlign: 'center',
-      mt: '16',
+      // mt: '16',
       lineHeight: 1.14,
     },
   },
@@ -90,7 +98,10 @@ export const Underline = styled('div', {
 
 export const SearchContainer = styled('div', {
   base: {
-    shadow: 'lg',
+    shadow: {
+      base: 'lg',
+      mdDown: 'none',
+    },
     bg: 'white',
     display: 'flex',
     mdDown: {
@@ -122,8 +133,14 @@ export const SearchButton = styled('button', {
 export const Cards = styled('div', {
   base: {
     display: 'grid',
-    gridTemplateColumns: '4',
+    gridTemplateColumns: {
+      base: '4',
+      mdDown: '1',
+    },
     gap: '8',
-    px: '6',
+    px: {
+      base: '6',
+      mdDown: 0,
+    },
   },
 });
