@@ -227,6 +227,7 @@ export default function MobileNavbar() {
           className={flex({
             justifyContent: 'center',
             flex: 1,
+            display: 'none',
           })}
         >
           <button

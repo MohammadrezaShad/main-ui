@@ -63,12 +63,34 @@ const BusinessPage = () => {
           backgroundSize: 'cover',
           height: '[160px]',
           pos: 'relative',
+          mdDown: {
+            mb: '[240px]',
+          },
         })}
       >
         <div
-          className={css({display: 'flex', justifyContent: 'space-between', alignItems: 'center'})}
+          className={css({
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            mdDown: {
+              flexDirection: 'column-reverse',
+            },
+          })}
         >
-          <Box mt='4' className={css({position: 'absolute', top: '70%', left: '[227px]'})}>
+          <Box
+            mt='4'
+            className={css({
+              position: 'absolute',
+              top: '70%',
+              left: '[227px]',
+              mdDown: {
+                top: '200%',
+                left: '50% !important',
+                transform: 'translateX(-50%)',
+              },
+            })}
+          >
             <Ratings>
               {[...Array(5)].map((_, index) => (
                 // eslint-disable-next-line react/no-array-index-key
@@ -91,6 +113,13 @@ const BusinessPage = () => {
               pos: 'absolute',
               bottom: '-50%',
               ps: '[43px]',
+              mdDown: {
+                flexDirection: 'column',
+                // pos: 'static',
+                bottom: '-100%',
+                ps: '0',
+                alignItems: 'center',
+              },
             })}
           >
             <Image
@@ -99,15 +128,36 @@ const BusinessPage = () => {
               height={160}
               src={`${IMAGE_STORAGE_URL}/${company?.profileImage?.filename}-${company?.profileImage?._id}`}
               alt='Business Avatar'
-              className={css({borderRadius: '50%', width: '160px', height: '160px', mr: '6'})}
+              className={css({
+                borderRadius: '50%',
+                width: '160px',
+                height: '160px',
+                mr: '6',
+                mdDown: {mr: '0'},
+              })}
             />
             <div>
-              <h1 className={css({textStyle: 'h1', color: '#333333', mt: '[33px]'})}>
+              <h1
+                className={css({
+                  textStyle: 'h1',
+                  color: '#333333',
+                  mt: '[33px]',
+                  mdDown: {
+                    mt: '6',
+                  },
+                })}
+              >
                 {company?.title}
               </h1>
-              <p className={css({textStyle: 'body', color: '#333333'})}>
+              <p
+                className={css({
+                  textStyle: 'body',
+                  color: '#333333',
+                  mdDown: {textAlign: 'center'},
+                })}
+              >
                 {company?.city?.name}, {company?.country?.name}
-                <span className={css({mx: '2', color: '#E3E3E3'})}>|</span>{' '}
+                <span className={css({mx: '2', color: '#E3E3E3', hideBelow: 'md'})}>|</span>
                 <span className={css({display: 'inline-flex', alignItems: 'center', gap: 2})}>
                   {company?.categories?.map(category => (
                     <Link key={category._id} href={`/categories/${category._id}`}>
@@ -128,11 +178,21 @@ const BusinessPage = () => {
           justifyContent: 'space-between',
           gap: '8',
           px: '4',
+          mdDown: {
+            mt: '20',
+            flexDirection: 'column',
+          },
         })}
       >
-        <div className={css({flex: '3'})}>
+        <div className={css({flex: '3', mdDown: {w: 'full'}})}>
           <div
-            className={css({display: 'flex', gap: '6', borderBottom: '1px solid #E3E3E3', mb: '6'})}
+            className={css({
+              display: 'flex',
+              gap: '6',
+              borderBottom: '1px solid #E3E3E3',
+              mb: '6',
+              mdDown: {w: 'full'},
+            })}
           >
             <button
               type='button'
@@ -142,6 +202,9 @@ const BusinessPage = () => {
                   cursor: 'pointer',
                   borderBottom: activeTab === 'overview' ? '2px solid #44BAEB' : 'none',
                   fontWeight: '500',
+                  mdDown: {
+                    w: 'full',
+                  },
                 }),
               )}
               onClick={() => setActiveTab('overview')}
@@ -156,6 +219,9 @@ const BusinessPage = () => {
                   cursor: 'pointer',
                   borderBottom: activeTab === 'products' ? '2px solid #44BAEB' : 'none',
                   fontWeight: '500',
+                  mdDown: {
+                    w: 'full',
+                  },
                 }),
               )}
               onClick={() => setActiveTab('products')}
@@ -170,6 +236,9 @@ const BusinessPage = () => {
                   cursor: 'pointer',
                   borderBottom: activeTab === 'gallery' ? '2px solid #44BAEB' : 'none',
                   fontWeight: '500',
+                  mdDown: {
+                    w: 'full',
+                  },
                 }),
               )}
               onClick={() => setActiveTab('gallery')}

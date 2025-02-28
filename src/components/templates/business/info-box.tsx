@@ -16,7 +16,10 @@ function InfoBox({company}: Props) {
         flex: '1',
         p: '6',
         mt: '8',
-        bgColor: '#F7F7F7',
+        mdDown: {
+          w: 'full',
+          bg: 'gray1',
+        },
       })}
     >
       <Box display='flex' gap={4} mb={6}>

@@ -29,6 +29,9 @@ const Products: React.FC<{company: CompanyType}> = ({company}) => {
           gap: '4',
           mt: '4',
           mb: '8',
+          mdDown: {
+            gridTemplateColumns: '1',
+          },
         })}
       >
         {filteredProducts.map(
