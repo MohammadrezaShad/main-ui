@@ -12,6 +12,7 @@ import {useParams} from 'next/navigation';
 import {FreeMode, Navigation, Thumbs} from 'swiper/modules';
 import {Swiper, SwiperSlide} from 'swiper/react';
 
+import {IconDrop} from '@/assets';
 import {findProductBySlug} from '@/graphql/query/products/find-product-by-slug';
 
 // Import Swiper styles
@@ -20,6 +21,7 @@ import 'swiper/css/free-mode';
 import 'swiper/css/navigation';
 import 'swiper/css/thumbs';
 
+import {MarketplaceSelect} from './market-place-select';
 import RelatedProducts from './related-products';
 import StarRatingComponent from './star-rating';
 
@@ -51,20 +53,39 @@ const ProductView = () => {
 
   return (
     <div className={css({width: '100%', padding: '16px'})}>
+      <p
+        className={css({
+          textStyle: 'body',
+          color: 'gray4',
+        })}
+      >
+        {product?.category?.title}
+      </p>
+      <h1 className={css({textStyle: 'h1', color: '#333333'})}>{product?.title}</h1>
+      <div className={css({hideFrom: 'md', display: 'flex', color: 'gray4', mb: '6'})}>
+        <IconDrop className={css({w: 6, h: 6, mr: '2'})} />
+        <span>{product?.rate ?? 0} / 10</span>
+      </div>
       <div
         className={css({
           w: 'full',
           display: 'flex',
           alignItems: 'stretch',
           gap: '6',
+          flexDirection: {base: 'column', md: 'row'},
         })}
       >
         <div
           className={cx(
             'product',
             css({
-              width: '548px',
-              height: '548px',
+              width: {
+                base: '[548px]',
+                mdDown: 'full',
+              },
+              height: {
+                md: '[548px]',
+              },
               backgroundPosition: 'center',
               backgroundRepeat: 'no-repeat',
               backgroundSize: 'cover',
@@ -83,7 +104,15 @@ const ProductView = () => {
             spaceBetween={10}
             thumbs={{swiper: thumbsSwiper}}
             modules={[FreeMode, Thumbs]}
-            className='mySwiper2'
+            className={cx(
+              'mySwiper2',
+              css({
+                mdDown: {
+                  height: '[343px] !important',
+                  mb: '4',
+                },
+              }),
+            )}
           >
             {product?.images?.map(image => (
               <SwiperSlide key={image._id}>
@@ -96,17 +125,29 @@ const ProductView = () => {
           </Swiper>
           <Swiper
             onSwiper={setThumbsSwiper}
-            spaceBetween={10}
-            slidesPerView={4}
+            spaceBetween={28}
+            slidesPerView={3}
+            breakpoints={{
+              640: {
+                slidesPerView: 4,
+                spaceBetween: 10,
+              },
+            }}
             freeMode
             watchSlidesProgress
             modules={[FreeMode, Navigation, Thumbs]}
             className={cx(
               'mySwiper',
               css({
-                bgGradient: 'to-b',
-                gradientFrom: '#00000000',
-                gradientTo: '#000',
+                md: {
+                  bgGradient: 'to-b',
+                  gradientFrom: '#00000000',
+                  gradientTo: '#000',
+                },
+                mt: {
+                  base: '[-120px]',
+                  mdDown: 0,
+                },
               }),
             )}
           >
@@ -126,12 +167,17 @@ const ProductView = () => {
               className={css({
                 textStyle: 'body',
                 color: 'gray4',
+                hideBelow: 'md',
               })}
             >
               {product?.category?.title}
             </p>
-            <h1 className={css({textStyle: 'h1', color: '#333333'})}>{product?.title}</h1>
-            <StarRatingComponent rating={product?.rate || 0} />
+            <h1 className={css({textStyle: 'h1', color: '#333333', hideBelow: 'md'})}>
+              {product?.title}
+            </h1>
+            <div className={css({hideBelow: 'md'})}>
+              <StarRatingComponent rating={product?.rate || 0} />
+            </div>
             <div
               className={css({
                 h: '1px',
@@ -140,6 +186,49 @@ const ProductView = () => {
                 gradientFrom: '#E3E3E3',
                 gradientTo: '#E3E3E300',
                 my: '4',
+                hideBelow: 'md',
+              })}
+            />
+            <div className={css({hideFrom: 'md'})}>
+              {selectedVariationn?.variationAttributes?.map(
+                attr =>
+                  attr.isMainFeature &&
+                  attr.name !== 'Color' && (
+                    <div
+                      key={attr.name}
+                      className={css({
+                        display: 'grid',
+                        alignItems: 'start',
+                        gap: '4',
+                        mb: '2',
+                        gridTemplateColumns: '2',
+                      })}
+                    >
+                      <Flex gap={2}>
+                        <Image
+                          unoptimized
+                          width={20}
+                          height={20}
+                          src={attr.icon || ''}
+                          alt=''
+                          className={css({w: '5', h: '5', objectFit: 'cover'})}
+                        />
+                        <p className={css({textStyle: 'body', color: '#6E7072'})}>{attr.name}</p>
+                      </Flex>
+                      <p className={css({textStyle: 'body', color: '#333333'})}>{attr.value}</p>
+                    </div>
+                  ),
+              )}
+            </div>
+            <div
+              className={css({
+                h: '1px',
+                w: '226px',
+                bgGradient: 'to-r',
+                gradientFrom: '#E3E3E3',
+                gradientTo: '#E3E3E300',
+                my: '4',
+                hideFrom: 'md',
               })}
             />
             <p className={css({textStyle: 'body', color: '#333333', mb: '14px'})}>Color</p>
@@ -188,7 +277,7 @@ const ProductView = () => {
                 );
               })}
             </div>
-            <div>
+            <div className={css({hideBelow: 'md'})}>
               {selectedVariationn?.variationAttributes?.map(
                 attr =>
                   attr.isMainFeature &&
@@ -222,7 +311,7 @@ const ProductView = () => {
             <p className={css({textStyle: 'h1', color: '#44BAEB', mt: '9', mb: '31px'})}>
               ${selectedVariationn?.cost}
             </p>
-            <Flex gap={4}>
+            <Flex gap={4} hideBelow='md'>
               {product?.amazon ? (
                 <Link
                   href={product.amazon}
@@ -299,6 +388,7 @@ const ProductView = () => {
                 </Link>
               ) : null}
             </Flex>
+            {product ? <MarketplaceSelect product={product} /> : null}
           </div>
         </div>
       </div>
