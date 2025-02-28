@@ -60,9 +60,6 @@ const ProductView = () => {
         })}
       >
         <div
-          style={{
-            backgroundImage: `url(${IMAGE_STORAGE_URL}/${product?.thumbnail?.filename}-${product?.thumbnail?._id})`,
-          }}
           className={cx(
             'product',
             css({
@@ -88,12 +85,6 @@ const ProductView = () => {
             modules={[FreeMode, Thumbs]}
             className='mySwiper2'
           >
-            <SwiperSlide>
-              <img
-                src={`${IMAGE_STORAGE_URL}/${product?.thumbnail?.filename}-${product?.thumbnail?._id}`}
-                alt={product?.title}
-              />
-            </SwiperSlide>
             {product?.images?.map(image => (
               <SwiperSlide key={image._id}>
                 <img
@@ -119,12 +110,6 @@ const ProductView = () => {
               }),
             )}
           >
-            <SwiperSlide>
-              <img
-                src={`${IMAGE_STORAGE_URL}/${product?.thumbnail?.filename}-${product?.thumbnail?._id}`}
-                alt={product?.title}
-              />
-            </SwiperSlide>
             {product?.images?.map(image => (
               <SwiperSlide key={image._id}>
                 <img
@@ -234,7 +219,7 @@ const ProductView = () => {
                   ),
               )}
             </div>
-            <p className={css({textStyle: 'h1', color: '#44BAEB', mt: '9', mb: '77px'})}>
+            <p className={css({textStyle: 'h1', color: '#44BAEB', mt: '9', mb: '31px'})}>
               ${selectedVariationn?.cost}
             </p>
             <Flex gap={4}>

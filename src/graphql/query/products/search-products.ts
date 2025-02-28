@@ -86,7 +86,7 @@ export async function searchProducts(
                 }
               }
             }`,
-    variables: {input: {...input, status: StatusType.Publish, isActive: true}},
+    variables: {input: {...input, status: StatusType.Publish}},
   });
   if (!res.ok) {
     throw new Error('Failed to fetch data');

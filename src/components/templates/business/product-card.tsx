@@ -78,7 +78,14 @@ const ProductCard: React.FC<ProductCardProps> = ({
       ))}
     </div>
     <div className={css({p: '4'})}>
-      <h3 className={css({textStyle: 'headline4', color: 'text.primary', mb: '2'})}>{title}</h3>
+      <Link
+        role='heading'
+        aria-roledescription='product title'
+        href={`/products/${id}`}
+        className={css({textStyle: 'headline4', color: 'text.primary', mb: '2'})}
+      >
+        {title}
+      </Link>
       <div
         className={css({
           display: 'flex',

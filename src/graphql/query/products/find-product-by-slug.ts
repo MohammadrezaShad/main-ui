@@ -1,4 +1,4 @@
-import {FindProductBySlugInput, ProductQuery, StatusType} from '@/graphql/generated/types';
+import {FindProductBySlugInput, ProductQuery} from '@/graphql/generated/types';
 import {gqlFetch} from '@/services/fetch';
 
 export async function findProductBySlug(
@@ -89,7 +89,7 @@ export async function findProductBySlug(
                 }
             }
             }`,
-    variables: {input: {...input, status: StatusType.Publish, isActive: true}},
+    variables: {input},
   });
   if (!res.ok) {
     throw new Error('Failed to fetch data');
