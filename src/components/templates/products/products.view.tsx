@@ -70,6 +70,7 @@ export default function ProductsView() {
         minimumProductRating: minimumProductRating ? +minimumProductRating : undefined,
         lowPrice: lowPrice ? +lowPrice : undefined,
         highPrice: highPrice ? +highPrice : undefined,
+        isActive: true,
       }),
   });
 
@@ -269,7 +270,14 @@ export default function ProductsView() {
                   />
                 </Box>
               </Box>
-              <SearchButton onClick={() => refetch()}>
+              <SearchButton
+                className={css({
+                  mdDown: {
+                    h: '10',
+                  },
+                })}
+                onClick={() => refetch()}
+              >
                 <IconSearch />
               </SearchButton>
             </SearchContainer>

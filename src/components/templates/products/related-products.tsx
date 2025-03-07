@@ -18,7 +18,7 @@ const RelatedProducts = ({productId}: {productId: string}) => {
           autoHeight
           autoplay
           slidesPerView={1.5}
-          centeredSlides
+          centeredSlides={!!data?.results?.length && data?.results?.length <= 1}
           spaceBetween='10'
           pagination={{type: 'bullets', clickable: true}}
           onSwiper={swiper => {}}

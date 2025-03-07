@@ -2856,6 +2856,7 @@ export type SearchProductInput = {
   city?: InputMaybe<Scalars['String']['input']>;
   count?: InputMaybe<Scalars['Int']['input']>;
   highPrice?: InputMaybe<Scalars['Int']['input']>;
+  isActive?: InputMaybe<Scalars['Boolean']['input']>;
   lowPrice?: InputMaybe<Scalars['Int']['input']>;
   minimumCompanyRating?: InputMaybe<Scalars['Int']['input']>;
   minimumProductRating?: InputMaybe<Scalars['Int']['input']>;

@@ -22,7 +22,7 @@ export const MarketplaceSelect = ({product}: Props) => {
   ].filter(item => item.value);
 
   return (
-    <Flex gap={4} mb={6}>
+    <Flex hideFrom='md' gap={4} mb={6}>
       <div className={css({position: 'relative', w: 'full'})}>
         <select
           onChange={e => setSelectedMarketplace(e.target.value)}
