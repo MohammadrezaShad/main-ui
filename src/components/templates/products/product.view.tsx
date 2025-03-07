@@ -468,9 +468,6 @@ const ProductView = () => {
       </ul>
 
       <div className={css({marginTop: '32px'})}>
-        <h3 className={css({textStyle: 'headline3', color: '#333333', marginBottom: '16px'})}>
-          You Might Also Like
-        </h3>
         {product ? (
           <Suspense fallback={<div />}>
             <RelatedProducts productId={product._id} />
