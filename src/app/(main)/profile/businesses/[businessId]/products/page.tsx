@@ -34,7 +34,7 @@ async function Page({params, searchParams}: Props) {
         sellerCompany: params.businessId as string,
         page,
         count: 6,
-        title: searchParams.search ?? '',
+        title: searchParams.search,
       }),
     staleTime: 0,
   });
@@ -90,7 +90,7 @@ async function Page({params, searchParams}: Props) {
         {data?.results?.map(product => (
           <ProductCard
             key={product._id}
-            id={product.slug as string}
+            id={product._id as string}
             title={product.title}
             thumbnail={product.thumbnail || undefined}
             company={product.sellerCompany.title || ''}

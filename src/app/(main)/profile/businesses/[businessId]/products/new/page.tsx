@@ -1,4 +1,4 @@
-import AddProduct from './_components/add-product';
+import AddProduct from '../_components/add-product';
 
 function Page() {
   return <AddProduct />;

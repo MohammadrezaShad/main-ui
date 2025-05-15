@@ -15,8 +15,11 @@ function SearchInput() {
   const [debouncedSearch] = useDebounce(searchValue, 500);
 
   useEffect(() => {
-    updateSearchParams('search', debouncedSearch);
-  }, [debouncedSearch, updateSearchParams]);
+    updateSearchParams({
+      search: debouncedSearch,
+      page: debouncedSearch ? '1' : searchParams.get('page') || '1',
+    });
+  }, [debouncedSearch, searchParams, updateSearchParams]);
   return (
     <div
       className={css({

@@ -77,7 +77,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
       <Link
         role='heading'
         aria-roledescription='product title'
-        href={`/profile/businesses/${businessId}/products/${id}`}
+        href={`/profile/businesses/${businessId}/products/${id}/edit`}
         className={css({textStyle: 'headline4', color: 'text.primary', mb: '2'})}
       >
         {title}

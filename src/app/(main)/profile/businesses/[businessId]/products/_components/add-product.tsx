@@ -6,7 +6,7 @@
 
 'use client';
 
-import {useRef, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {toast} from 'react-toastify';
 import {css, cx} from '@styled/css';
 import {useQueryClient} from '@tanstack/react-query';
@@ -16,7 +16,14 @@ import {useParams, useRouter} from 'next/navigation';
 import slugify from 'slugify';
 
 import {IconArrowRight} from '@/assets';
-import {createProduct, CreateProductInput, ProductType, StatusType, uploadImage} from '@/graphql';
+import {
+  createProduct,
+  CreateProductInput,
+  ProductType,
+  StatusType,
+  updateProduct,
+  uploadImage,
+} from '@/graphql';
 
 const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
 
@@ -24,39 +31,7 @@ interface Props {
   product?: ProductType;
 }
 
-interface ProductInfo {
-  title: string;
-  status: 'DRAFT' | 'PUBLISH';
-  dimensions: string;
-  weight: string;
-  powerSource: string;
-  price: string;
-  currency: string;
-  description: string;
-}
-
-interface Shop {
-  platform: string;
-  url: string;
-}
-
-interface Color {
-  hex: string;
-}
-
-interface Feature {
-  name: string;
-  value: string;
-}
-
-interface ProductImage {
-  path: string;
-  isMain: boolean;
-  name: string;
-  _id?: string;
-}
-
-export default function ProductForm() {
+export default function ProductForm({product}: Props) {
   const params = useParams();
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -64,53 +39,26 @@ export default function ProductForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   // Product information state
   const [productInfo, setProductInfo] = useState({
-    title: 'Proteus Water Level/Sump Monitor Sensor',
-    dimensions: '2.44 x 2.44 x 0.8 inches',
-    weight: '8.4 ounces',
-    powerSource: 'Battery Powered / 2 AAA batteries required. (included)',
-    price: '99.50',
-    currency: 'Dollar',
-    description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Egestas purus viverra accumsan in nisi. Arcu cursus vitae congue mauris rhoncus aenean vel elit scelerisque. In egestas erat imperdiet sed euismod nisi porta lorem mollis. Morbi tristique senectus et netus. Mattis pellentesque id nibh tortor id aliquet lectus proin. Sapien faucibus et molestie ac feugiat sed lectus vestibulum. Ullamcorper velit sed ullamcorper morbi tincidunt ornare massa eget. Dictum varius duis at consectetur lorem. Nisi vitae suscipit tellus mauris a diam maecenas sed enim. Velit ut tortor pretium viverra suspendisse potenti nullam. Et molestie ac feugiat sed lectus. Non nisi est sit amet facilisis magna. Dignissim diam quis enim lobortis scelerisque fermentum. Odio ut enim blandit volutpat maecenas volutpat. Ornare lectus sit amet est placerat in egestas erat. Nisi vitae suscipit tellus mauris a diam maecenas sed.',
+    title: '',
+    description: '',
     status: 'PUBLISH' as 'DRAFT' | 'PUBLISH',
   });
 
   // Keywords state
-  const [keywords, setKeywords] = useState(['Keyword', 'Keyword2', 'Keyword3']);
-  const [newKeyword, setNewKeyword] = useState('');
+  const [keywords, setKeywords] = useState<string[]>([]);
+  const [newKeyword, setNewKeyword] = useState<string>('');
 
   // Online shops state
-  const [shops, setShops] = useState([
-    {platform: 'amazon', url: 'https://www.amazon.com/UltraTecWaterTreatmentLLC/product/645645623'},
-    {platform: 'eBay', url: 'https://www.amazon.com/UltraTecWaterTreatmentLLC/product/645645623'},
-    {platform: 'walmart', url: ''},
-  ]);
-
-  // Colors state
-  const [colors, setColors] = useState([{hex: '#27232B'}, {hex: '#FBC220'}, {hex: '#68744B'}]);
+  const [shops, setShops] = useState<any>([]);
 
   // Features state
-  const [features, setFeatures] = useState([
-    {name: 'Feature Key', value: 'Feature Value'},
-    {name: 'Feature Key', value: 'Feature Value'},
-    {name: '', value: ''},
-  ]);
+  const [features, setFeatures] = useState([{name: '', value: ''}]);
 
   // Images state
   const [images, setImages] = useState<any[]>([]);
 
   // Variations state
-  const [variations, setVariations] = useState([
-    {
-      cost: 99.5,
-      stock: 100,
-      isAvailable: true,
-      variationAttributes: [
-        {name: 'Color', value: '#27232B', icon: '', isMainFeature: false},
-        {name: 'Size', value: 'Medium', icon: '', isMainFeature: false},
-      ],
-    },
-  ]);
+  const [variations, setVariations] = useState<any[]>([]);
 
   // Selected category state (mock data for demonstration)
   const [selectedCategory, setSelectedCategory] = useState<any>('675c9887e4c936f68638899c');
@@ -149,7 +97,7 @@ export default function ProductForm() {
 
   // Handle shop changes
   const handleShopChange = (index: number, field: any, value: any) => {
-    const updatedShops = [...shops];
+    const updatedShops: any = [...shops];
     updatedShops[index] = {...updatedShops[index], [field]: value};
     setShops(updatedShops);
   };
@@ -164,24 +112,7 @@ export default function ProductForm() {
 
   // Remove a shop
   const removeShop = (index: number) => {
-    setShops(shops.filter((_, i) => i !== index));
-  };
-
-  // Handle color changes
-  const handleColorChange = (index: number, value: any) => {
-    const updatedColors = [...colors];
-    updatedColors[index] = {hex: value};
-    setColors(updatedColors);
-  };
-
-  // Add a new color
-  const addColor = () => {
-    setColors([...colors, {hex: ''}]);
-  };
-
-  // Remove a color
-  const removeColor = (index: number) => {
-    setColors(colors.filter((_, i) => i !== index));
+    setShops(shops.filter((_: any, i: number) => i !== index));
   };
 
   // Handle feature changes
@@ -386,7 +317,7 @@ export default function ProductForm() {
       //   return;
       // }
 
-      const validShops = shops.reduce((acc: any, item) => {
+      const validShops = shops.reduce((acc: any, item: any) => {
         // Convert platform name to lowercase for consistency
         const key = item.platform;
         // Only add if URL is not empty
@@ -406,7 +337,7 @@ export default function ProductForm() {
           cost: variation.cost,
           stock: variation.stock,
           isAvailable: variation.isAvailable,
-          variationAttributes: variation.variationAttributes.map(attr => ({
+          variationAttributes: variation.variationAttributes.map((attr: any) => ({
             name: attr.name,
             value: attr.value,
             icon: attr.icon || '',
@@ -429,7 +360,13 @@ export default function ProductForm() {
         ...validShops,
       };
 
-      const response = await createProduct(input);
+      const action = product ? updateProduct : createProduct;
+
+      if (product) {
+        (input as any).id = product._id;
+      }
+
+      const response = await action(input as any);
 
       if (response.success) {
         queryClient.invalidateQueries({queryKey: ['search-business-products']});
@@ -451,9 +388,48 @@ export default function ProductForm() {
   // Get available shop options (those not already selected)
   const getAvailableShops = () => {
     const allShops = ['amazon', 'eBay', 'walmart'];
-    const selectedShops = shops.map(shop => shop.platform);
+    const selectedShops = shops.map((shop: any) => shop.platform);
     return allShops.filter(shop => !selectedShops.includes(shop));
   };
+
+  useEffect(() => {
+    if (product) {
+      setProductInfo({
+        title: product.title,
+        description: product.about || '',
+        status: 'PUBLISH' as 'DRAFT' | 'PUBLISH',
+      });
+      setVariations(product.variations || []);
+      if (product.images)
+        setImages(
+          product.images.map(image => ({
+            path: `${IMAGE_STORAGE_URL}/${image?.filename}-${image?._id}`, // or image.url, adjust as per your API
+            isMain: images.length === 0,
+            name: image.filename,
+            _id: image._id, // store the id for deletion
+          })),
+        );
+      setFeatures(
+        product.features ? [...product.features, {name: '', value: ''}] : [{name: '', value: ''}],
+      );
+      setKeywords(product.keywords || []);
+      setSelectedCategory(product.category._id);
+      setShops([
+        {
+          platform: 'amazon',
+          url: product.amazon || '',
+        },
+        {
+          platform: 'eBay',
+          url: product.eBay || '',
+        },
+        {
+          platform: 'walmart',
+          url: product.wallmart || '',
+        },
+      ]);
+    }
+  }, [product]);
 
   return (
     <div
@@ -659,64 +635,6 @@ export default function ProductForm() {
                   />
                 </div>
               </div>
-
-              {/* Dimensions */}
-              <div className={css({mt: '2', mb: '2'})}>
-                <label
-                  className={css({
-                    display: 'block',
-                    fontSize: 'sm',
-                    lineHeight: 'sm',
-                    color: 'gray.500',
-                  })}
-                >
-                  Dimensions
-                </label>
-                <input
-                  type='text'
-                  name='dimensions'
-                  value={productInfo.dimensions}
-                  onChange={handleInputChange}
-                  className={css({
-                    w: 'full',
-                    p: '2',
-                    borderWidth: '1px',
-                    borderColor: 'gray.300',
-                    h: '12',
-                    rounded: '0',
-                    _focus: {ring: 'none', ringOffset: 'none', shadow: '1'},
-                  })}
-                />
-              </div>
-
-              {/* Weight */}
-              <div className={css({mt: '2', mb: '2'})}>
-                <label
-                  className={css({
-                    display: 'block',
-                    fontSize: 'sm',
-                    lineHeight: 'sm',
-                    color: 'gray.500',
-                  })}
-                >
-                  Weight
-                </label>
-                <input
-                  type='text'
-                  name='weight'
-                  value={productInfo.weight}
-                  onChange={handleInputChange}
-                  className={css({
-                    w: 'full',
-                    p: '2',
-                    borderWidth: '1px',
-                    borderColor: 'gray.300',
-                    h: '12',
-                    rounded: '0',
-                    _focus: {ring: 'none', ringOffset: 'none', shadow: '1'},
-                  })}
-                />
-              </div>
             </div>
 
             {/* About Product */}
@@ -755,7 +673,7 @@ export default function ProductForm() {
                 Online Shops
               </h2>
               <div className={css({mt: '4', mb: '4'})}>
-                {shops.map((shop, index) => (
+                {shops.map((shop: any, index: number) => (
                   <div key={index} className={css({display: 'flex', gap: '2', mb: '6'})}>
                     <select
                       value={shop.platform}
@@ -858,117 +776,6 @@ export default function ProductForm() {
                 </button>
               </div>
             </div>
-
-            {/* Colors */}
-            {/* <div className={css({mt: '6'})}>
-              <h2
-                className={css({fontSize: 'lg', lineHeight: 'lg', fontWeight: 'medium', mb: '4'})}
-              >
-                Colors
-              </h2>
-              <div className={css({mt: '4', mb: '4'})}>
-                {colors.map((color, index) => (
-                  <div
-                    key={index}
-                    className={css({display: 'flex', gap: '2', alignItems: 'center', mb: '6'})}
-                  >
-                    <div
-                      className={css({
-                        w: '10',
-                        h: '10',
-                        borderWidth: '1px',
-                        borderColor: 'gray.300',
-                        rounded: '0',
-                      })}
-                      style={{backgroundColor: color.hex || '#ffffff'}}
-                    />
-                    <div className={css({flex: '1'})}>
-                      <label
-                        className={css({
-                          display: 'block',
-                          fontSize: 'xs',
-                          lineHeight: 'xs',
-                          color: 'gray.500',
-                          mb: '1',
-                        })}
-                      >
-                        Hex
-                      </label>
-                      <input
-                        type='text'
-                        value={color.hex}
-                        onChange={e => handleColorChange(index, e.target.value)}
-                        placeholder='Hex...'
-                        className={css({
-                          w: 'full',
-                          p: '2',
-                          borderWidth: '1px',
-                          borderColor: 'gray.300',
-                          h: '12',
-                          rounded: '0',
-                          _focus: {ring: 'none', ringOffset: 'none', shadow: '1'},
-                        })}
-                      />
-                    </div>
-                    <button
-                      type='button'
-                      onClick={() => removeColor(index)}
-                      className={css({p: '2', color: 'red.500', _hover: {color: 'red.700'}})}
-                    >
-                      <svg
-                        xmlns='http://www.w3.org/2000/svg'
-                        width='20'
-                        height='20'
-                        viewBox='0 0 24 24'
-                        fill='none'
-                        stroke='currentColor'
-                        strokeWidth='2'
-                        strokeLinecap='round'
-                        strokeLinejoin='round'
-                      >
-                        <path d='M3 6h18' />
-                        <path d='M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6' />
-                        <path d='M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2' />
-                      </svg>
-                    </button>
-                  </div>
-                ))}
-                <button
-                  type='button'
-                  onClick={addColor}
-                  className={css({
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    w: 'full',
-                    p: '2',
-                    borderWidth: '1px',
-                    borderColor: 'gray.300',
-                    h: '12',
-                    borderStyle: 'dashed',
-                    rounded: '0',
-                    color: 'gray.500',
-                    _hover: {color: 'gray.700', borderColor: 'gray.400'},
-                  })}
-                >
-                  <svg
-                    xmlns='http://www.w3.org/2000/svg'
-                    width='20'
-                    height='20'
-                    viewBox='0 0 24 24'
-                    fill='none'
-                    stroke='currentColor'
-                    strokeWidth='2'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    className={css({mr: '1'})}
-                  >
-                    <path d='M12 5v14' />
-                    <path d='M5 12h14' />
-                  </svg>
-                </button>
-              </div>
-            </div> */}
           </>
         )}
 
@@ -1070,57 +877,59 @@ export default function ProductForm() {
                   />
                 </div>
 
-                {index === features.length - 1 && feature.name === '' && feature.value === '' ? (
-                  <button
-                    type='button'
-                    onClick={addFeature}
-                    className={css({
-                      p: '2',
-                      color: 'gray.500',
-                      _hover: {color: 'gray.700'},
-                      mt: '6',
-                    })}
+                <button
+                  type='button'
+                  onClick={() => removeFeature(index)}
+                  className={css({p: '2', color: 'red.500', _hover: {color: 'red.700'}, mt: '6'})}
+                >
+                  <svg
+                    xmlns='http://www.w3.org/2000/svg'
+                    width='24'
+                    height='24'
+                    viewBox='0 0 24 24'
+                    fill='none'
+                    stroke='currentColor'
+                    strokeWidth='2'
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
                   >
-                    <svg
-                      xmlns='http://www.w3.org/2000/svg'
-                      width='24'
-                      height='24'
-                      viewBox='0 0 24 24'
-                      fill='none'
-                      stroke='currentColor'
-                      strokeWidth='2'
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                    >
-                      <path d='M12 5v14' />
-                      <path d='M5 12h14' />
-                    </svg>
-                  </button>
-                ) : (
-                  <button
-                    type='button'
-                    onClick={() => removeFeature(index)}
-                    className={css({p: '2', color: 'red.500', _hover: {color: 'red.700'}, mt: '6'})}
-                  >
-                    <svg
-                      xmlns='http://www.w3.org/2000/svg'
-                      width='24'
-                      height='24'
-                      viewBox='0 0 24 24'
-                      fill='none'
-                      stroke='currentColor'
-                      strokeWidth='2'
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                    >
-                      <path d='M3 6h18' />
-                      <path d='M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6' />
-                      <path d='M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2' />
-                    </svg>
-                  </button>
-                )}
+                    <path d='M3 6h18' />
+                    <path d='M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6' />
+                    <path d='M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2' />
+                  </svg>
+                </button>
               </div>
             ))}
+            <button
+              type='button'
+              onClick={addFeature}
+              className={css({
+                p: '2',
+                color: 'gray.500',
+                _hover: {color: 'gray.700'},
+                mt: '6',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '2',
+                cursor: 'pointer',
+              })}
+            >
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                width='24'
+                height='24'
+                viewBox='0 0 24 24'
+                fill='none'
+                stroke='currentColor'
+                strokeWidth='2'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+              >
+                <path d='M12 5v14' />
+                <path d='M5 12h14' />
+              </svg>
+              Add feature
+            </button>
           </div>
         )}
 
@@ -1181,7 +990,7 @@ export default function ProductForm() {
                 >
                   <div className={css({pos: 'relative', h: '48', bgColor: 'gray.100'})}>
                     <Image
-                      src={image.path || '/placeholder.svg'}
+                      src={image.path}
                       alt={`Product image ${index + 1}`}
                       fill
                       style={{objectFit: 'cover'}}
@@ -1501,12 +1310,12 @@ export default function ProductForm() {
                 >
                   {variation.variationAttributes
                     .filter(
-                      attr =>
+                      (attr: any) =>
                         selectedCategory?.variationAttributes?.find(
                           (va: any) => va.name === attr.name,
                         ) || attr.name === 'Color',
                     )
-                    .map((attr, attrIndex) => {
+                    .map((attr: any, attrIndex: number) => {
                       const variationAttrIndex = variation.variationAttributes.indexOf(attr);
                       return (
                         <div key={attrIndex}>
@@ -1637,12 +1446,12 @@ export default function ProductForm() {
 
                   {variation.variationAttributes
                     .filter(
-                      attr =>
+                      (attr: any) =>
                         !selectedCategory?.variationAttributes?.find(
                           (va: any) => va.name === attr.name,
                         ) && attr.name !== 'Color',
                     )
-                    .map((attr, attrIndex) => {
+                    .map((attr: any, attrIndex: number) => {
                       const customAttrIndex = variation.variationAttributes.indexOf(attr);
                       return (
                         <div

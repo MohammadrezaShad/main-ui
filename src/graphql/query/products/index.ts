@@ -1,3 +1,4 @@
+export * from './find-product-by-id';
 export * from './find-product-by-slug';
 export * from './find-product-category-by-id';
 export * from './get-similar-products';
