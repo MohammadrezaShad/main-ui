@@ -1,6 +1,7 @@
 export * from './articles';
 export * from './author';
 export * from './business';
+export * from './businesses';
 export * from './categories';
 export * from './category-articles';
 export * from './collections';

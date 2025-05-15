@@ -1,16 +1,16 @@
+import {PropsWithChildren} from 'react';
+import {css} from '@styled/css';
+import {Box} from '@styled/jsx';
+import {flex} from '@styled/patterns';
+import {dehydrate} from '@tanstack/react-query';
 import {Metadata} from 'next';
+import {cookies} from 'next/headers';
 
 import {ProfileDetails, ProfileSidebar} from '@/components';
 import {CookieName} from '@/constants';
 import {getUser} from '@/graphql/query/users/get-user';
 import {getQueryClient} from '@/helpers';
 import {Hydrate} from '@/providers';
-import {css} from '@styled/css';
-import {Box} from '@styled/jsx';
-import {flex} from '@styled/patterns';
-import {dehydrate} from '@tanstack/react-query';
-import {cookies} from 'next/headers';
-import {PropsWithChildren} from 'react';
 
 export const metadata: Metadata = {
   robots: {

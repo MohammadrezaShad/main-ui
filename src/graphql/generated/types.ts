@@ -817,6 +817,7 @@ export type CompanyType = {
   gallery?: Maybe<Array<CompanyGalleryType>>;
   instagram?: Maybe<Scalars['String']['output']>;
   keywords?: Maybe<Array<Scalars['String']['output']>>;
+  productAndServices?: Maybe<Array<Scalars['String']['output']>>;
   products?: Maybe<Array<ProductType>>;
   profileImage?: Maybe<ImageType>;
   rate?: Maybe<Scalars['Float']['output']>;
@@ -1005,6 +1006,7 @@ export type CreateCompanyInput = {
   facebook?: InputMaybe<Scalars['String']['input']>;
   instagram?: InputMaybe<Scalars['String']['input']>;
   keywords?: InputMaybe<Array<Scalars['String']['input']>>;
+  productAndServices?: InputMaybe<Array<Scalars['String']['input']>>;
   profileImage?: InputMaybe<Scalars['String']['input']>;
   registeredDate?: InputMaybe<Scalars['DateTime']['input']>;
   slug?: InputMaybe<Scalars['String']['input']>;
@@ -2744,6 +2746,7 @@ export type SearchCompanyCategoryOutput = {
 export type SearchCompanyInput = {
   categories?: InputMaybe<Array<Scalars['String']['input']>>;
   count?: InputMaybe<Scalars['Int']['input']>;
+  owner?: InputMaybe<Scalars['String']['input']>;
   page?: InputMaybe<Scalars['Int']['input']>;
   slug?: InputMaybe<Scalars['String']['input']>;
   sortType?: InputMaybe<CompanySortType>;
@@ -2861,6 +2864,7 @@ export type SearchProductInput = {
   minimumCompanyRating?: InputMaybe<Scalars['Int']['input']>;
   minimumProductRating?: InputMaybe<Scalars['Int']['input']>;
   page?: InputMaybe<Scalars['Int']['input']>;
+  sellerCompany?: InputMaybe<Scalars['String']['input']>;
   slug?: InputMaybe<Scalars['String']['input']>;
   status?: InputMaybe<StatusType>;
   title?: InputMaybe<Scalars['String']['input']>;
@@ -3411,6 +3415,7 @@ export type UpdateCompanyInput = {
   id: Scalars['String']['input'];
   instagram?: InputMaybe<Scalars['String']['input']>;
   keywords?: InputMaybe<Array<Scalars['String']['input']>>;
+  productAndServices?: InputMaybe<Array<Scalars['String']['input']>>;
   profileImage?: InputMaybe<Scalars['String']['input']>;
   registeredDate?: InputMaybe<Scalars['DateTime']['input']>;
   slug?: InputMaybe<Scalars['String']['input']>;

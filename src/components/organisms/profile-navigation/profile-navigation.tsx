@@ -4,14 +4,22 @@ import {css} from '@styled/css';
 import Link from 'next/link';
 import {usePathname} from 'next/navigation';
 
-import {IconCollection, IconDashboard, IconNotify, IconProfile, IconSetting} from '@/assets';
+import {
+  IconCollection,
+  IconDashboard,
+  IconHome2,
+  IconNotify,
+  IconProfile,
+  IconSetting,
+} from '@/assets';
 
 const menuItems = [
   {id: 1, title: 'Dashboard', icon: IconDashboard, href: '/activities'},
   {id: 2, title: 'My collections', icon: IconCollection, href: '/collections'},
-  {id: 3, title: 'Notifications', icon: IconNotify, href: '/notifications'},
-  {id: 4, title: 'About you', icon: IconProfile, href: '/about'},
-  {id: 5, title: 'Settings', icon: IconSetting, href: '/settings'},
+  {id: 3, title: 'My companies', icon: IconHome2, href: '/businesses'},
+  {id: 4, title: 'Notifications', icon: IconNotify, href: '/notifications'},
+  {id: 5, title: 'About you', icon: IconProfile, href: '/about'},
+  {id: 6, title: 'Settings', icon: IconSetting, href: '/settings'},
 ];
 
 const ProfileNavigation = () => {

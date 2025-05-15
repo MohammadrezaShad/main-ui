@@ -3,59 +3,33 @@ import {getCookie} from 'cookies-next';
 import {CookieName} from '@/constants';
 import {gqlFetch} from '@/services/fetch';
 
-import {CompanyQuery, SearchCompanyInput} from '../../generated/types';
+import {CompanyQuery, FindCompanyInput} from '../../generated/types';
 
-export async function searchCompanies(
-  input: SearchCompanyInput,
-): Promise<CompanyQuery['searchCompanies']> {
+export async function findCompanyById(
+  input: FindCompanyInput,
+  token?: string,
+): Promise<CompanyQuery['findCompanyById']> {
   const clientId = getCookie(CookieName.CLIENT_ID) as string;
-  const token = getCookie(CookieName.AUTH_TOKEN);
   const res = await gqlFetch({
     url: process.env.NEXT_PUBLIC_API as string,
-    query: `query SearchCompanies($input: SearchCompanyInput!) {
+    query: `query Result($input: FindCompanyInput!) {
   company {
-    searchCompanies(input: $input) {
-      totalPages
-      totalCount
-      success
-      results {
+    findCompanyById(input: $input) {
+      result {
         _id
+        title
         about
         address
         callNumber
         categories {
           _id
-          image {
-            _id
-            alt
-            createdAt
-            filename
-            format
-            height
-            preview
-            updatedAt
-            width
-          }
-          order
-          isDescriptionApproved
-          originalDescription
-          postCount
-          slug
           title
+          slug
         }
         city {
           _id
           createdAt
           name
-          parent {
-            _id
-            cca2
-            cca3
-            createdAt
-            name
-            officialName
-            updatedAt
-          }
           toponymName
           updatedAt
         }
@@ -81,34 +55,11 @@ export async function searchCompanies(
         }
         createUser {
           _id
-          avatar {
-            _id
-            alt
-            createdAt
-            filename
-            format
-            height
-            preview
-            updatedAt
-            width
-          }
-          displayName
-          email
-          firstName
-          username
-          lastName
-          nickname
         }
-        createdAt
         email
         facebook
         gallery {
           _id
-          company {
-            _id
-            slug
-            title
-          }
           createdAt
           image {
             _id
@@ -125,6 +76,45 @@ export async function searchCompanies(
         }
         instagram
         keywords
+        productAndServices
+        products {
+          _id
+          about
+          category {
+            _id
+            title
+            slug
+          }
+          isActive
+          keywords
+          images {
+            _id
+            alt
+            createdAt
+            filename
+            format
+            height
+            preview
+            updatedAt
+            width
+          }
+          slug
+          status
+          thumbnail {
+            _id
+            alt
+            createdAt
+            filename
+            format
+            height
+            preview
+            updatedAt
+            width
+          }
+          title
+          rate
+        }
+        rate
         profileImage {
           _id
           alt
@@ -136,32 +126,9 @@ export async function searchCompanies(
           updatedAt
           width
         }
-        rate
-        registeredDate
         slug
-        title
+        status
         twitter
-        updateUser {
-          _id
-          avatar {
-            _id
-            alt
-            createdAt
-            filename
-            format
-            height
-            preview
-            updatedAt
-            width
-          }
-          displayName
-          email
-          firstName
-          username
-          lastName
-          nickname
-        }
-        updatedAt
         website
         worktimes {
           day
@@ -182,10 +149,7 @@ export async function searchCompanies(
   }
 }`,
     variables: {input},
-    headers: {
-      'client-id': clientId,
-      authorization: token ? `Bearer ${token}` : '',
-    },
+    headers: {Authorization: `Bearer ${token}`, 'client-id': clientId},
   });
   if (!res.ok) {
     throw new Error('Failed to fetch data');
@@ -194,5 +158,5 @@ export async function searchCompanies(
   if (response.errors?.[0]?.message) {
     throw new Error(response.errors?.[0]?.message);
   }
-  return response.data.company.searchCompanies;
+  return response.data.company.findCompanyById;
 }
