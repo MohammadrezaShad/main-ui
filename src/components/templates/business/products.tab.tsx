@@ -43,6 +43,7 @@ const Products: React.FC<{company: CompanyType}> = ({company}) => {
                 title={product.title}
                 thumbnail={product.thumbnail || undefined}
                 company={product.sellerCompany.title || ''}
+                companyId={product.sellerCompany.slug as string}
                 rating={product.sellerCompany.rate || 0}
                 waterRating={product.rate || 0}
                 price={product?.variations?.[0]?.cost?.toString() || ''}

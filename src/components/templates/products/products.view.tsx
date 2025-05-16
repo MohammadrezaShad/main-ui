@@ -36,7 +36,7 @@ import {
 export default function ProductsView() {
   const searchParams = useSearchParams();
   const updateSearchParams = useUpdateSearchParam();
-  const page = parseInt(searchParams.get('page') ?? '1', 10);
+  const page = Number(searchParams.get('page') ?? '1');
   const categories = searchParams.get('categories') || undefined;
   const city = searchParams.get('city') || undefined;
   const [cityName, setCityName] = useState<any>();
@@ -359,6 +359,7 @@ export default function ProductsView() {
             title={product.title}
             thumbnail={product.thumbnail || undefined}
             company={product.sellerCompany.title || ''}
+            companyId={product.sellerCompany.slug as string}
             rating={product.sellerCompany.rate || 0}
             waterRating={product.rate || 0}
             price={product?.variations?.[0]?.cost?.toString() || ''}

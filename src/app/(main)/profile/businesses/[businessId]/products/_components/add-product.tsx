@@ -37,43 +37,32 @@ export default function ProductForm({product}: Props) {
   const queryClient = useQueryClient();
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  // Product information state
   const [productInfo, setProductInfo] = useState({
     title: '',
     description: '',
     status: 'PUBLISH' as 'DRAFT' | 'PUBLISH',
   });
 
-  // Keywords state
   const [keywords, setKeywords] = useState<string[]>([]);
   const [newKeyword, setNewKeyword] = useState<string>('');
 
-  // Online shops state
   const [shops, setShops] = useState<any>([]);
 
-  // Features state
   const [features, setFeatures] = useState([{name: '', value: ''}]);
 
-  // Images state
   const [images, setImages] = useState<any[]>([]);
 
-  // Variations state
   const [variations, setVariations] = useState<any[]>([]);
 
-  // Selected category state (mock data for demonstration)
-  const [selectedCategory, setSelectedCategory] = useState<any>('675c9887e4c936f68638899c');
+  const [selectedCategory, setSelectedCategory] = useState<any>('');
 
-  // Active tab state
   const [activeTab, setActiveTab] = useState('Information');
 
-  // Drag and drop state for features
   const [draggedFeatureIndex, setDraggedFeatureIndex] = useState(null);
   const [dragOverFeatureIndex, setDragOverFeatureIndex] = useState(null);
 
-  // File input ref
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Handle input changes
   const handleInputChange = (e: any) => {
     const {name, value} = e.target;
     setProductInfo({
@@ -82,12 +71,10 @@ export default function ProductForm({product}: Props) {
     });
   };
 
-  // Handle keyword removal
   const removeKeyword = (index: number) => {
     setKeywords(keywords.filter((_, i) => i !== index));
   };
 
-  // Handle adding a new keyword
   const addKeyword = () => {
     if (newKeyword.trim() !== '') {
       setKeywords([...keywords, newKeyword]);
@@ -95,14 +82,12 @@ export default function ProductForm({product}: Props) {
     }
   };
 
-  // Handle shop changes
   const handleShopChange = (index: number, field: any, value: any) => {
     const updatedShops: any = [...shops];
     updatedShops[index] = {...updatedShops[index], [field]: value};
     setShops(updatedShops);
   };
 
-  // Add a new shop
   const addShop = () => {
     const availableShops = getAvailableShops();
     if (availableShops.length > 0) {
@@ -110,40 +95,33 @@ export default function ProductForm({product}: Props) {
     }
   };
 
-  // Remove a shop
   const removeShop = (index: number) => {
     setShops(shops.filter((_: any, i: number) => i !== index));
   };
 
-  // Handle feature changes
   const handleFeatureChange = (index: number, field: any, value: any) => {
     const updatedFeatures = [...features];
     updatedFeatures[index] = {...updatedFeatures[index], [field]: value};
     setFeatures(updatedFeatures);
   };
 
-  // Add a new feature
   const addFeature = () => {
     setFeatures([...features, {name: '', value: ''}]);
   };
 
-  // Remove a feature
   const removeFeature = (index: number) => {
     setFeatures(features.filter((_, i) => i !== index));
   };
 
-  // Handle drag start for features
   const handleFeatureDragStart = (index: any) => {
     setDraggedFeatureIndex(index);
   };
 
-  // Handle drag over for features
   const handleFeatureDragOver = (e: any, index: any) => {
     e.preventDefault();
     setDragOverFeatureIndex(index);
   };
 
-  // Handle drop for features
   const handleFeatureDrop = (e: any) => {
     e.preventDefault();
 
@@ -158,10 +136,8 @@ export default function ProductForm({product}: Props) {
     const updatedFeatures = [...features];
     const draggedFeature = updatedFeatures[draggedFeatureIndex];
 
-    // Remove the dragged item
     updatedFeatures.splice(draggedFeatureIndex, 1);
 
-    // Insert it at the new position
     updatedFeatures.splice(dragOverFeatureIndex, 0, draggedFeature);
 
     setFeatures(updatedFeatures);
@@ -169,33 +145,29 @@ export default function ProductForm({product}: Props) {
     setDragOverFeatureIndex(null);
   };
 
-  // Handle drag end for features
   const handleFeatureDragEnd = () => {
     setDraggedFeatureIndex(null);
     setDragOverFeatureIndex(null);
   };
 
-  // Handle image upload
   const handleImageUpload = () => {
     fileInputRef.current?.click();
   };
 
-  // Handle file selection
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       try {
-        // You may want to show a loading state here
         const uploaded = await uploadImage(file, {alt: file.name});
         const image = uploaded?.image;
         if (image) {
           setImages([
             ...images,
             {
-              path: `${IMAGE_STORAGE_URL}/${image?.filename}-${image?._id}`, // or image.url, adjust as per your API
+              path: `${IMAGE_STORAGE_URL}/${image?.filename}-${image?._id}`,
               isMain: images.length === 0,
               name: image.filename,
-              _id: image._id, // store the id for deletion
+              _id: image._id,
             },
           ]);
         }
@@ -206,7 +178,6 @@ export default function ProductForm({product}: Props) {
     if (e.target) e.target.value = '';
   };
 
-  // Handle setting an image as main
   const handleSetMainImage = (id: number) => {
     const updatedImages = images.map((image, i) => ({
       ...image,
@@ -216,16 +187,12 @@ export default function ProductForm({product}: Props) {
     setImages(updatedImages);
   };
 
-  // Handle image deletion
   const handleDeleteImage = (index: number) => {
     const updatedImages = [...images];
     const wasMain = updatedImages[index].isMain;
 
-    // Remove the image
     updatedImages.splice(index, 1);
 
-    // If the deleted image was the main image and there are other images,
-    // set the first remaining image as main
     if (wasMain && updatedImages.length > 0) {
       updatedImages[0].isMain = true;
     }
@@ -233,26 +200,21 @@ export default function ProductForm({product}: Props) {
     setImages(updatedImages);
   };
 
-  // Handle image duplication
   const handleDuplicateImage = (index: number) => {
     const imageToDuplicate = images[index];
     const newImage = {
       ...imageToDuplicate,
-      isMain: false, // Duplicate is never the main image
+      isMain: false,
     };
 
     setImages([...images, newImage]);
   };
 
-  // Variation functions
   const addVariationAttribute = () => {
-    // Create a new variation with default values and attributes based on the selected category
     const defaultAttributes = [];
 
-    // Add Color attribute by default
     defaultAttributes.push({name: 'Color', value: '#000000', icon: '', isMainFeature: false});
 
-    // Add category-specific attributes
     if (selectedCategory?.variationAttributes) {
       selectedCategory.variationAttributes.forEach((attr: any) => {
         if (attr.options && attr.options.length > 0) {
@@ -291,43 +253,26 @@ export default function ProductForm({product}: Props) {
     setVariations(updatedVariations);
   };
 
-  // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     setError(null);
 
     try {
-      // Validate required fields
       if (!productInfo.title) {
         setError('Please enter a product title');
         setIsSubmitting(false);
         return;
       }
 
-      if (!selectedCategory) {
-        setError('Please select a category');
-        setIsSubmitting(false);
-        return;
-      }
-
-      // if (!variations.length) {
-      //   setError('Please add at least one variation');
-      //   setIsSubmitting(false);
-      //   return;
-      // }
-
       const validShops = shops.reduce((acc: any, item: any) => {
-        // Convert platform name to lowercase for consistency
         const key = item.platform;
-        // Only add if URL is not empty
         if (item.url) {
           acc[key as keyof typeof acc] = item.url;
         }
         return acc;
       }, {});
 
-      // Prepare the input data
       const input: CreateProductInput = {
         title: productInfo.title,
         slug: slugify(productInfo.title, {remove: /[*+~.()'"!:@]/g, lower: true, trim: true}),
@@ -385,7 +330,6 @@ export default function ProductForm({product}: Props) {
     }
   };
 
-  // Get available shop options (those not already selected)
   const getAvailableShops = () => {
     const allShops = ['amazon', 'eBay', 'walmart'];
     const selectedShops = shops.map((shop: any) => shop.platform);
@@ -403,10 +347,10 @@ export default function ProductForm({product}: Props) {
       if (product.images)
         setImages(
           product.images.map(image => ({
-            path: `${IMAGE_STORAGE_URL}/${image?.filename}-${image?._id}`, // or image.url, adjust as per your API
+            path: `${IMAGE_STORAGE_URL}/${image?.filename}-${image?._id}`,
             isMain: images.length === 0,
             name: image.filename,
-            _id: image._id, // store the id for deletion
+            _id: image._id,
           })),
         );
       setFeatures(
@@ -434,12 +378,10 @@ export default function ProductForm({product}: Props) {
   return (
     <div
       className={css({
-        // maxW: '5xl',
         ml: 'auto',
         mr: 'auto',
         bgColor: 'white',
         rounded: '0',
-        // shadow: 'sm',
         w: 'full',
       })}
     >
@@ -495,7 +437,6 @@ export default function ProductForm({product}: Props) {
           <option value='PUBLISH'>Publish</option>
         </select>
       </div>
-      {/* Tabs */}
       <div className={css({display: 'flex', borderBottomWidth: '1px', borderColor: 'gray3'})}>
         {['Information', 'Features', 'Images', 'Variations'].map(tab => (
           <button
@@ -534,7 +475,6 @@ export default function ProductForm({product}: Props) {
                 gap: '6',
               })}
             >
-              {/* Title */}
               <div className={css({mt: '2', mb: '2'})}>
                 <label
                   className={css({
@@ -564,7 +504,6 @@ export default function ProductForm({product}: Props) {
                 />
               </div>
 
-              {/* Keywords */}
               <div className={css({mt: '2', mb: '2'})}>
                 <label
                   className={css({
@@ -637,7 +576,6 @@ export default function ProductForm({product}: Props) {
               </div>
             </div>
 
-            {/* About Product */}
             <div className={css({mt: '2', mb: '2'})}>
               <label
                 className={css({
@@ -665,7 +603,6 @@ export default function ProductForm({product}: Props) {
               />
             </div>
 
-            {/* Online Shops */}
             <div className={css({mt: '6'})}>
               <h2
                 className={css({fontSize: 'lg', lineHeight: 'lg', fontWeight: 'medium', mb: '4'})}
@@ -1626,7 +1563,6 @@ export default function ProductForm({product}: Props) {
           </div>
         )}
 
-        {/* Form Actions */}
         <div className={css({mt: '8', display: 'flex', gap: '2'})}>
           <button
             type='submit'

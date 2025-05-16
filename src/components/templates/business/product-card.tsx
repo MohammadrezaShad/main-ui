@@ -12,6 +12,7 @@ interface ProductCardProps {
   title: string;
   thumbnail?: ImageType;
   company: string;
+  companyId: string;
   rating: number;
   waterRating: number;
   price: string;
@@ -26,6 +27,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   title,
   thumbnail,
   company,
+  companyId,
   rating,
   waterRating,
   price,
@@ -94,7 +96,12 @@ const ProductCard: React.FC<ProductCardProps> = ({
         })}
       >
         <div className={css({display: 'flex', alignItems: 'center', gap: '3'})}>
-          <p className={css({textStyle: 'caption', color: 'text.primary'})}>{company}</p>
+          <Link
+            href={`/business/${companyId}`}
+            className={css({textStyle: 'caption', color: 'text.primary'})}
+          >
+            {company}
+          </Link>
           <div className={css({display: 'flex', alignItems: 'center', gap: '2'})}>
             <IconStar className={css({w: '4', h: '4', color: 'gray4'})} />
             <p className={css({textStyle: 'caption', color: 'text.primary'})}>{rating}/5</p>

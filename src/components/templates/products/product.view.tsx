@@ -172,9 +172,9 @@ const ProductView = () => {
             >
               {product?.category?.title}
             </p>
-            <h1 className={css({textStyle: 'h1', color: '#333333', hideBelow: 'md'})}>
+            <h2 className={css({textStyle: 'h1', color: '#333333', hideBelow: 'md'})}>
               {product?.title}
-            </h1>
+            </h2>
             <div className={css({hideBelow: 'md'})}>
               <StarRatingComponent rating={product?.rate || 0} />
             </div>

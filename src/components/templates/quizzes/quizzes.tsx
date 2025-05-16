@@ -378,7 +378,7 @@ export default function Quizzes() {
               <IconClose classname={css({color: '#272727'})} />
             </button>
           </header>
-          <h1
+          <h2
             className={css({
               mt: '5',
               fontSize: '2xl',
@@ -392,7 +392,7 @@ export default function Quizzes() {
             })}
           >
             Are you sure you want to start this quiz?
-          </h1>
+          </h2>
           <div
             className={css({
               display: 'flex',
