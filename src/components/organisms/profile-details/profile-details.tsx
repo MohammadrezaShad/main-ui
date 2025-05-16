@@ -2,14 +2,14 @@
 
 import {css} from '@styled/css';
 import {flex} from '@styled/patterns';
+import {useQuery, useQueryClient} from '@tanstack/react-query';
+import {getCookie} from 'cookies-next';
 import {useRouter} from 'next/navigation';
 
 import {IconArrowRight} from '@/assets';
 import {Chip} from '@/components';
 import {CookieName} from '@/constants';
 import {getUser} from '@/graphql';
-import {useQuery, useQueryClient} from '@tanstack/react-query';
-import {getCookie} from 'cookies-next';
 
 const tags = ['water crisis', 'TagName', 'TagName254', 'Another tag'];
 

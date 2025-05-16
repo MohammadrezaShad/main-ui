@@ -34,11 +34,11 @@ export default function Sidebar() {
         <div className={css({pos: 'relative', w: '32', h: '32', mb: '4'})}>
           {data?.result?.cover ? (
             <Image
-              src={`${IMAGE_STORAGE_URL}/${data?.result?.cover?.filename}-${data?.result?.cover?._id}`}
+              src={`${IMAGE_STORAGE_URL}/${data?.result?.profileImage?.filename}-${data?.result?.profileImage?._id}`}
               alt='Company Logo'
               width={128}
               height={128}
-              className={css({rounded: 'full', objectFit: 'cover'})}
+              className={css({rounded: 'full', objectFit: 'cover', aspectRatio: 'square'})}
             />
           ) : (
             <div
