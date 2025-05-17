@@ -7,7 +7,7 @@ export async function uploadImage(
   file: Scalars['Upload']['input'],
   input: UploadImageInputType,
 ): Promise<ImageMutation['uploadImage']> {
-  const token = getCookie(CookieName.ACCESS_TOKEN);
+  const token = getCookie(CookieName.AUTH_TOKEN);
   const formData = new FormData();
   const query = `mutation UploadImage($file: Upload!, $input: UploadImageInputType) {
     image {

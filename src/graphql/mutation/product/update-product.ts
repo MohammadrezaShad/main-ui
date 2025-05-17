@@ -7,7 +7,7 @@ import {gqlFetch} from '@/services/fetch';
 export async function updateProduct(
   input: UpdateProductInput,
 ): Promise<ProductMutation['updateProduct']> {
-  const token = getCookie(CookieName.ACCESS_TOKEN);
+  const token = getCookie(CookieName.AUTH_TOKEN);
   const res = await gqlFetch({
     url: process.env.NEXT_PUBLIC_API as string,
     query: `mutation UpdateProduct($input: UpdateProductInput!) {
