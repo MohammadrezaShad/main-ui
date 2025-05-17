@@ -1,17 +1,21 @@
 'use client';
 
+import {useRef} from 'react';
+import {toast} from 'react-toastify';
 import {css} from '@styled/css';
-import {useQuery} from '@tanstack/react-query';
+import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
 import Image from 'next/image';
 import Link from 'next/link';
 import {useParams, usePathname} from 'next/navigation';
 
 import {IconDashboard, IconDoc, IconEdit, IconProduct} from '@/assets';
-import {findCompanyById} from '@/graphql';
+import {findCompanyById, updateCompany, uploadImage} from '@/graphql';
 
 const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
 
 export default function Sidebar() {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const queryClient = useQueryClient();
   const pathname = usePathname();
   const params = useParams();
   const {data} = useQuery({
@@ -19,6 +23,24 @@ export default function Sidebar() {
     queryFn: () => findCompanyById({id: params.businessId as string}),
   });
   const isActive = (link: string) => pathname.includes(link);
+
+  const uploadMutation = useMutation({
+    mutationFn: async (file: File) => {
+      const uploaded = await uploadImage(file, {});
+      const imageId = uploaded?.image?._id;
+      if (!imageId) throw new Error('Upload succeeded but no image ID returned');
+      await updateCompany({id: params.businessId as string, profileImage: imageId});
+      return uploaded;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({queryKey: ['find-business', params.businessId]});
+      toast.success('Business cover image updated successfully');
+    },
+    onError: (error: Error) => {
+      toast.error(`Failed to update business cover`);
+    },
+  });
+
   return (
     <aside
       className={css({
@@ -82,8 +104,28 @@ export default function Sidebar() {
               })}
             />
           )}
+          <input
+            type='file'
+            accept='image/*'
+            ref={fileInputRef}
+            onChange={e => {
+              const file = e.target.files?.[0];
+              if (file) uploadMutation.mutate(file);
+            }}
+            className={css({
+              pos: 'absolute',
+              top: '0',
+              left: '0',
+              w: 'full',
+              h: 'full',
+              opacity: '0',
+              cursor: 'pointer',
+              display: 'none',
+            })}
+          />
           <button
             type='button'
+            onClick={() => fileInputRef.current?.click()}
             className={css({
               pos: 'absolute',
               bottom: '0',
