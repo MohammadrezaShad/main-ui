@@ -257,7 +257,14 @@ export default function BusinessInfoPage({company}: Props) {
         w: 'full',
       })}
     >
-      <div className={css({display: 'flex', borderBottomWidth: '1px', borderColor: 'gray.300'})}>
+      <div
+        className={css({
+          display: 'flex',
+          borderBottomWidth: '1px',
+          borderColor: 'gray.300',
+          mdDown: {w: 'full'},
+        })}
+      >
         {['Information', 'Working Hours', 'Product & Services'].map(tab => (
           <button
             type='button'
@@ -271,6 +278,7 @@ export default function BusinessInfoPage({company}: Props) {
                 fontWeight: 'medium',
                 fontSize: 'sm',
                 lineHeight: 'sm',
+                mdDown: {px: 1, flex: '1'},
               }),
               activeTab === tab
                 ? css({color: 'blue.500', borderBottomWidth: '2px', borderColor: 'blue.500'})
@@ -725,9 +733,26 @@ export default function BusinessInfoPage({company}: Props) {
             {workingHours.map((time, index) => (
               <div
                 key={time.day}
-                className={css({mb: '4', display: 'flex', gap: '2', w: 'full', alignItems: 'end'})}
+                className={css({
+                  mb: '4',
+                  display: 'flex',
+                  gap: '2',
+                  w: 'full',
+                  alignItems: 'end',
+                  mdDown: {
+                    flexDirection: 'column',
+                    alignItems: 'start',
+                  },
+                })}
               >
-                <div className={css({display: 'flex', gap: '2', alignItems: 'end'})}>
+                <div
+                  className={css({
+                    display: 'flex',
+                    gap: '2',
+                    alignItems: 'end',
+                    mdDown: {w: 'full'},
+                  })}
+                >
                   <label
                     className={css({
                       flex: '1',
@@ -771,7 +796,18 @@ export default function BusinessInfoPage({company}: Props) {
                   </div>
                 </div>
                 {time.isOpened && (
-                  <div className={css({display: 'flex', gap: '4', ml: '4', flex: '1'})}>
+                  <div
+                    className={css({
+                      display: 'flex',
+                      gap: '4',
+                      ml: '4',
+                      flex: '1',
+                      mdDown: {
+                        ml: 0,
+                        w: 'full',
+                      },
+                    })}
+                  >
                     <div className={css({w: 'full'})}>
                       <label className={css({display: 'block', mb: '1', fontSize: 'sm'})}>
                         Start Time

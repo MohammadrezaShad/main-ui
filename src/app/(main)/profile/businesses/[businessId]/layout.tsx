@@ -28,7 +28,16 @@ export default async function RootLayout({children, params}: Props) {
   });
   const dehydratedState = dehydrate(queryClient);
   return (
-    <div className={css({display: 'flex', minH: 'screen', bgColor: 'white'})}>
+    <div
+      className={css({
+        display: 'flex',
+        minH: 'screen',
+        bgColor: 'white',
+        mdDown: {
+          flexDirection: 'column',
+        },
+      })}
+    >
       <Hydrate state={dehydratedState}>
         <Sidebar />
         {children}

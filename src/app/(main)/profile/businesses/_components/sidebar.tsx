@@ -28,10 +28,40 @@ export default function Sidebar() {
         p: '6',
         display: 'flex',
         flexDir: 'column',
+        mdDown: {
+          w: 'full',
+          borderRightWidth: '0',
+          px: '2',
+        },
       })}
     >
-      <div className={css({display: 'flex', flexDir: 'column', alignItems: 'center', mb: '8'})}>
-        <div className={css({pos: 'relative', w: '32', h: '32', mb: '4'})}>
+      <div
+        className={css({
+          display: 'flex',
+          flexDir: 'column',
+          alignItems: 'center',
+          mb: '8',
+          mdDown: {
+            flexDir: 'row',
+            alignItems: 'center',
+            gap: '4',
+            mb: '4',
+          },
+        })}
+      >
+        <div
+          className={css({
+            pos: 'relative',
+            w: '32',
+            h: '32',
+            mb: '4',
+            mdDown: {
+              w: '20',
+              h: '20',
+              flexShrink: '0',
+            },
+          })}
+        >
           {data?.result?.cover ? (
             <Image
               src={`${IMAGE_STORAGE_URL}/${data?.result?.profileImage?.filename}-${data?.result?.profileImage?._id}`}
@@ -61,7 +91,7 @@ export default function Sidebar() {
               bgColor: 'white',
               rounded: 'full',
               p: '1',
-              borderWidth: '1px',
+              borderWidth: '1 !importantpx',
               borderColor: 'gray.200',
             })}
           >
@@ -87,16 +117,25 @@ export default function Sidebar() {
             mt: '6',
             w: 'full',
             mr: '-8',
+            mdDown: {
+              display: 'flex',
+              flexDir: 'row',
+              alignItems: 'center',
+              gap: '2',
+            },
           })}
         >
           <li
             className={css({
               display: {
-                // base: item.href === '/about' ? 'none' : 'flex',
                 mdDown: 'block',
               },
               '&:not(:last-of-type)': {
                 borderBottom: '1px solid token(colors.gray3)',
+              },
+              mdDown: {
+                borderWidth: '0 !important',
+                w: 'full',
               },
             })}
           >
@@ -108,6 +147,9 @@ export default function Sidebar() {
                 gap: '3',
                 cursor: 'pointer',
                 py: '4',
+                mdDown: {
+                  gap: '1',
+                },
               })}
             >
               <div>
@@ -128,11 +170,14 @@ export default function Sidebar() {
           <li
             className={css({
               display: {
-                // base: item.href === '/about' ? 'none' : 'flex',
                 mdDown: 'block',
               },
               '&:not(:last-of-type)': {
                 borderBottom: '1px solid token(colors.gray3)',
+              },
+              mdDown: {
+                borderWidth: '0 !important',
+                w: 'full',
               },
             })}
           >
@@ -144,6 +189,9 @@ export default function Sidebar() {
                 gap: '3',
                 cursor: 'pointer',
                 py: '4',
+                mdDown: {
+                  gap: '1',
+                },
               })}
             >
               <div>
@@ -163,11 +211,14 @@ export default function Sidebar() {
           <li
             className={css({
               display: {
-                // base: item.href === '/about' ? 'none' : 'flex',
                 mdDown: 'block',
               },
               '&:not(:last-of-type)': {
                 borderBottom: '1px solid token(colors.gray3)',
+              },
+              mdDown: {
+                borderWidth: '0 !important',
+                w: 'full',
               },
             })}
           >
@@ -179,6 +230,9 @@ export default function Sidebar() {
                 gap: '3',
                 cursor: 'pointer',
                 py: '4',
+                mdDown: {
+                  gap: '1',
+                },
               })}
             >
               <div>
