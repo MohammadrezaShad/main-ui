@@ -22,7 +22,7 @@ const SocialMediaLink: React.FC<SocialMediaLinkProps> = ({icon: Icon, action, ty
           type='button'
           onClick={() => {
             if (articleId) shareToSocialNetworks({id: articleId});
-            router.push(action);
+            window.open(action, '_blank');
           }}
           className={css({
             display: 'grid',

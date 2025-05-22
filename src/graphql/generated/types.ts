@@ -661,6 +661,25 @@ export enum CommentTypeEnum {
   Article = 'ARTICLE',
 }
 
+export type CompanyCallNumberMutation = {
+  __typename?: 'CompanyCallNumberMutation';
+  createCompanyCallNumber: CreateCompanyCallNumberOutput;
+};
+
+export type CompanyCallNumberMutationCreateCompanyCallNumberArgs = {
+  input: CreateCompanyCallNumberInput;
+};
+
+export type CompanyCallNumberType = {
+  __typename?: 'CompanyCallNumberType';
+  _id: Scalars['String']['output'];
+  clientId?: Maybe<Scalars['String']['output']>;
+  company: CompanyType;
+  createdAt?: Maybe<Scalars['DateTime']['output']>;
+  updatedAt?: Maybe<Scalars['DateTime']['output']>;
+  user?: Maybe<UserOutputType>;
+};
+
 export type CompanyCategoryMutation = {
   __typename?: 'CompanyCategoryMutation';
   createCompanyCategory: CreateCompanyCategoryOutput;
@@ -736,6 +755,25 @@ export type CompanyGalleryType = {
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
 };
 
+export type CompanyLocationClickMutation = {
+  __typename?: 'CompanyLocationClickMutation';
+  createCompanyLocationClick: CreateCompanyLocationClickOutput;
+};
+
+export type CompanyLocationClickMutationCreateCompanyLocationClickArgs = {
+  input: CreateCompanyLocationClickInput;
+};
+
+export type CompanyLocationClickType = {
+  __typename?: 'CompanyLocationClickType';
+  _id: Scalars['String']['output'];
+  clientId?: Maybe<Scalars['String']['output']>;
+  company: CompanyType;
+  createdAt?: Maybe<Scalars['DateTime']['output']>;
+  updatedAt?: Maybe<Scalars['DateTime']['output']>;
+  user?: Maybe<UserOutputType>;
+};
+
 export type CompanyMutation = {
   __typename?: 'CompanyMutation';
   createCompany: CreateCompanyOutput;
@@ -776,7 +814,11 @@ export type CompanyQuery = {
   findCompanyById: FindCompanyOutput;
   findCompanyByIds: Array<CompanyType>;
   findCompanyBySlug: FindCompanyOutput;
+  getCompanyCallNumbers: Scalars['Float']['output'];
+  getCompanyLocationClicks: Scalars['Float']['output'];
+  getCompanyRedirects: GetCompanyRedirectsOutput;
   searchCompanies: SearchCompanyOutput;
+  searchCompanyVisitStatistics: SearchCompanyVisitStatisticsOutput;
 };
 
 export type CompanyQueryFindCompanyByIdArgs = {
@@ -791,8 +833,24 @@ export type CompanyQueryFindCompanyBySlugArgs = {
   input: FindCompanyBySlugInput;
 };
 
+export type CompanyQueryGetCompanyCallNumbersArgs = {
+  input: GetCompanyCallNumbersInput;
+};
+
+export type CompanyQueryGetCompanyLocationClicksArgs = {
+  input: GetCompanyLocationClicksInput;
+};
+
+export type CompanyQueryGetCompanyRedirectsArgs = {
+  input: GetCompanyRedirectsInput;
+};
+
 export type CompanyQuerySearchCompaniesArgs = {
   input: SearchCompanyInput;
+};
+
+export type CompanyQuerySearchCompanyVisitStatisticsArgs = {
+  input: SearchCompanyVisitStatisticsInput;
 };
 
 export enum CompanySortType {
@@ -817,6 +875,9 @@ export type CompanyType = {
   gallery?: Maybe<Array<CompanyGalleryType>>;
   instagram?: Maybe<Scalars['String']['output']>;
   keywords?: Maybe<Array<Scalars['String']['output']>>;
+  latitude?: Maybe<Scalars['Float']['output']>;
+  linkdin?: Maybe<Scalars['String']['output']>;
+  longitude?: Maybe<Scalars['Float']['output']>;
   productAndServices?: Maybe<Array<Scalars['String']['output']>>;
   products?: Maybe<Array<ProductType>>;
   profileImage?: Maybe<ImageType>;
@@ -830,6 +891,12 @@ export type CompanyType = {
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
   website?: Maybe<Scalars['String']['output']>;
   worktimes?: Maybe<Array<WorktimeType>>;
+};
+
+export type CompanyVisitStatistics = {
+  __typename?: 'CompanyVisitStatistics';
+  count: Scalars['Int']['output'];
+  createdAt: Scalars['DateTime']['output'];
 };
 
 export type CoreOutput = {
@@ -977,6 +1044,15 @@ export type CreateCommentOutput = {
   success: Scalars['Boolean']['output'];
 };
 
+export type CreateCompanyCallNumberInput = {
+  company: Scalars['String']['input'];
+};
+
+export type CreateCompanyCallNumberOutput = {
+  __typename?: 'CreateCompanyCallNumberOutput';
+  success: Scalars['Boolean']['output'];
+};
+
 export type CreateCompanyCategoryInput = {
   description?: InputMaybe<Scalars['String']['input']>;
   hasSeoApproval?: InputMaybe<Scalars['Boolean']['input']>;
@@ -1006,6 +1082,9 @@ export type CreateCompanyInput = {
   facebook?: InputMaybe<Scalars['String']['input']>;
   instagram?: InputMaybe<Scalars['String']['input']>;
   keywords?: InputMaybe<Array<Scalars['String']['input']>>;
+  latitude?: InputMaybe<Scalars['Float']['input']>;
+  linkdin?: InputMaybe<Scalars['String']['input']>;
+  longitude?: InputMaybe<Scalars['Float']['input']>;
   productAndServices?: InputMaybe<Array<Scalars['String']['input']>>;
   profileImage?: InputMaybe<Scalars['String']['input']>;
   registeredDate?: InputMaybe<Scalars['DateTime']['input']>;
@@ -1015,6 +1094,15 @@ export type CreateCompanyInput = {
   twitter?: InputMaybe<Scalars['String']['input']>;
   website?: InputMaybe<Scalars['String']['input']>;
   worktimes?: InputMaybe<Array<WorktimeInputType>>;
+};
+
+export type CreateCompanyLocationClickInput = {
+  company: Scalars['String']['input'];
+};
+
+export type CreateCompanyLocationClickOutput = {
+  __typename?: 'CreateCompanyLocationClickOutput';
+  success: Scalars['Boolean']['output'];
 };
 
 export type CreateCompanyOutput = {
@@ -1145,6 +1233,27 @@ export type CreateProductRatingInput = {
 
 export type CreateProductRatingOutput = {
   __typename?: 'CreateProductRatingOutput';
+  success: Scalars['Boolean']['output'];
+};
+
+export type CreateProductRedirectInput = {
+  company: Scalars['String']['input'];
+  product: Scalars['String']['input'];
+  type: ProductRedirectTypeEnum;
+};
+
+export type CreateProductRedirectOutput = {
+  __typename?: 'CreateProductRedirectOutput';
+  success: Scalars['Boolean']['output'];
+};
+
+export type CreateProductVisitLogInput = {
+  company: Scalars['String']['input'];
+  product: Scalars['String']['input'];
+};
+
+export type CreateProductVisitLogOutput = {
+  __typename?: 'CreateProductVisitLogOutput';
   success: Scalars['Boolean']['output'];
 };
 
@@ -1866,6 +1975,26 @@ export enum GenderEnum {
   Other = 'OTHER',
 }
 
+export type GetCompanyCallNumbersInput = {
+  company: Scalars['String']['input'];
+};
+
+export type GetCompanyLocationClicksInput = {
+  company: Scalars['String']['input'];
+};
+
+export type GetCompanyRedirectsInput = {
+  company: Scalars['String']['input'];
+};
+
+export type GetCompanyRedirectsOutput = {
+  __typename?: 'GetCompanyRedirectsOutput';
+  amazon: Scalars['Int']['output'];
+  ebay: Scalars['Int']['output'];
+  total: Scalars['Int']['output'];
+  wallmart: Scalars['Int']['output'];
+};
+
 export type GetFileUrlInput = {
   id: Scalars['String']['input'];
 };
@@ -2198,7 +2327,9 @@ export type Mutation = {
   city: CityMutation;
   comment: CommentMutation;
   company: CompanyMutation;
+  companyCallNumber: CompanyCallNumberMutation;
   companyCategory: CompanyCategoryMutation;
+  companyLocationClick: CompanyLocationClickMutation;
   country: CountryMutation;
   engagement: EngagementMutation;
   file: FileMutation;
@@ -2208,6 +2339,8 @@ export type Mutation = {
   like: LikeMutation;
   product: ProductMutation;
   productCategory: ProductCategoryMutation;
+  productRedirect: ProductRedirectMutation;
+  productVisitLog: ProductVisitLogMutation;
   question: QuestionMutation;
   quiz: QuizMutation;
   seoHomepage: SeoHomepageMutation;
@@ -2384,6 +2517,33 @@ export type ProductQuerySearchProductsArgs = {
   input: SearchProductInput;
 };
 
+export type ProductRedirectMutation = {
+  __typename?: 'ProductRedirectMutation';
+  createProductRedirect: CreateProductRedirectOutput;
+};
+
+export type ProductRedirectMutationCreateProductRedirectArgs = {
+  input: CreateProductRedirectInput;
+};
+
+export type ProductRedirectType = {
+  __typename?: 'ProductRedirectType';
+  _id: Scalars['String']['output'];
+  clientId?: Maybe<Scalars['String']['output']>;
+  company: CompanyType;
+  createdAt?: Maybe<Scalars['DateTime']['output']>;
+  product: ProductType;
+  type: ProductRedirectTypeEnum;
+  updatedAt?: Maybe<Scalars['DateTime']['output']>;
+  user?: Maybe<UserOutputType>;
+};
+
+export enum ProductRedirectTypeEnum {
+  Amazon = 'AMAZON',
+  Ebay = 'EBAY',
+  Wallmart = 'WALLMART',
+}
+
 export type ProductType = {
   __typename?: 'ProductType';
   _id: Scalars['String']['output'];
@@ -2397,6 +2557,7 @@ export type ProductType = {
   isActive?: Maybe<Scalars['Boolean']['output']>;
   keywords?: Maybe<Array<Scalars['String']['output']>>;
   rate?: Maybe<Scalars['Float']['output']>;
+  redirect?: Maybe<Scalars['Int']['output']>;
   sellerCompany: CompanyType;
   slug?: Maybe<Scalars['String']['output']>;
   status?: Maybe<StatusType>;
@@ -2404,6 +2565,7 @@ export type ProductType = {
   title: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
   variations?: Maybe<Array<ProductVariationType>>;
+  view?: Maybe<Scalars['Int']['output']>;
   wallmart?: Maybe<Scalars['String']['output']>;
 };
 
@@ -2424,6 +2586,26 @@ export type ProductVariationType = {
   stock: Scalars['Int']['output'];
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
   variationAttributes: Array<ProductAttributeType>;
+};
+
+export type ProductVisitLogMutation = {
+  __typename?: 'ProductVisitLogMutation';
+  createProductVisitLog: CreateProductVisitLogOutput;
+};
+
+export type ProductVisitLogMutationCreateProductVisitLogArgs = {
+  input: CreateProductVisitLogInput;
+};
+
+export type ProductVisitLogType = {
+  __typename?: 'ProductVisitLogType';
+  _id: Scalars['String']['output'];
+  clientId?: Maybe<Scalars['String']['output']>;
+  company: CompanyType;
+  createdAt?: Maybe<Scalars['DateTime']['output']>;
+  product: ProductType;
+  updatedAt?: Maybe<Scalars['DateTime']['output']>;
+  user?: Maybe<UserOutputType>;
 };
 
 export type Query = {
@@ -2757,6 +2939,22 @@ export type SearchCompanyInput = {
 export type SearchCompanyOutput = {
   __typename?: 'SearchCompanyOutput';
   results?: Maybe<Array<CompanyType>>;
+  success: Scalars['Boolean']['output'];
+  totalCount?: Maybe<Scalars['Int']['output']>;
+  totalPages?: Maybe<Scalars['Int']['output']>;
+};
+
+export type SearchCompanyVisitStatisticsInput = {
+  company: Scalars['String']['input'];
+  count?: InputMaybe<Scalars['Int']['input']>;
+  fromCreatedDate?: InputMaybe<Scalars['String']['input']>;
+  page?: InputMaybe<Scalars['Int']['input']>;
+  toCreatedDate?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type SearchCompanyVisitStatisticsOutput = {
+  __typename?: 'SearchCompanyVisitStatisticsOutput';
+  results?: Maybe<Array<CompanyVisitStatistics>>;
   success: Scalars['Boolean']['output'];
   totalCount?: Maybe<Scalars['Int']['output']>;
   totalPages?: Maybe<Scalars['Int']['output']>;
@@ -3415,6 +3613,9 @@ export type UpdateCompanyInput = {
   id: Scalars['String']['input'];
   instagram?: InputMaybe<Scalars['String']['input']>;
   keywords?: InputMaybe<Array<Scalars['String']['input']>>;
+  latitude?: InputMaybe<Scalars['Float']['input']>;
+  linkdin?: InputMaybe<Scalars['String']['input']>;
+  longitude?: InputMaybe<Scalars['Float']['input']>;
   productAndServices?: InputMaybe<Array<Scalars['String']['input']>>;
   profileImage?: InputMaybe<Scalars['String']['input']>;
   registeredDate?: InputMaybe<Scalars['DateTime']['input']>;

@@ -63,7 +63,7 @@ export default function ProductsView() {
     queryFn: () =>
       searchProducts({
         page: +page,
-        count: 6,
+        count: 8,
         categories: categories ? categories.split(',') : undefined,
         city,
         minimumCompanyRating: minimumCompanyRating ? +minimumCompanyRating : undefined,
@@ -371,7 +371,7 @@ export default function ProductsView() {
         ))}
       </Cards>
 
-      {data?.totalCount && data.totalCount > 6 ? (
+      {data?.totalCount && data.totalCount > 8 ? (
         <Pagination
           forcePage={page - 1}
           nextLabel={<IconChevronRight className={css({w: '6', h: '6'})} />}

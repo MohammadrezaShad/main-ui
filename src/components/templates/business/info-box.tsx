@@ -2,7 +2,7 @@ import {css} from '@styled/css';
 import {Box} from '@styled/jsx';
 import Link from 'next/link';
 
-import {IconFacebook, IconInstagram, IconX} from '@/assets';
+import {IconFacebook, IconInstagram, IconLinkedIn, IconX} from '@/assets';
 import {CompanyType} from '@/graphql';
 
 interface Props {
@@ -149,6 +149,13 @@ function InfoBox({company}: Props) {
             <li>
               <Link href={`https://facebook.com/${company?.facebook}`}>
                 <IconFacebook className={css({w: '6', h: '6', color: 'text.primary'})} />
+              </Link>
+            </li>
+          ) : null}
+          {company?.linkdin ? (
+            <li>
+              <Link href={`https://linkedin.com/${company?.linkdin}`}>
+                <IconLinkedIn className={css({w: '6', h: '6', color: 'text.primary'})} />
               </Link>
             </li>
           ) : null}

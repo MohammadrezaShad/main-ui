@@ -41,6 +41,9 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
 
   return (
     <html lang='en' dir='ltr' data-color-mode={theme?.value}>
+      <head>
+        <link rel='icon' href='/favicon.ico' sizes='any' />
+      </head>
       <body className={ubuntu.className}>
         <JsonLdScript id='website' data={searchActionSchema} />
         <MainProviders theme={theme?.value as ThemeType}>

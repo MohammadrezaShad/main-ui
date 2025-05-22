@@ -24,7 +24,7 @@ const Page = ({hasPdf = false}: {hasPdf?: boolean}) => {
   const searchParams = useSearchParams();
   const SHOWCASE_COUNT = 6;
   const READMORE_PAGE_COUNT = 18;
-  const page = parseInt(searchParams.get('page') ?? '1', 10);
+  const page = Number(searchParams.get('page') ?? '1');
   const {data, isFetching} = useQuery({
     queryKey: ['search-cs', params.categoryId, page],
     queryFn: () =>
@@ -37,7 +37,7 @@ const Page = ({hasPdf = false}: {hasPdf?: boolean}) => {
     placeholderData: keepPreviousData,
   }) as any;
   const recentArticlesData = useQuery({
-    queryKey: ['recent-article-cats', 1],
+    queryKey: ['recent-article-cats'],
     queryFn: () =>
       searchArticleByCategory({
         categories: [params.categoryId as string],

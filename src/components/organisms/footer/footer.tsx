@@ -52,7 +52,7 @@ const Footer = ({title, description}: Props) => (
       @ {new Date().getFullYear()} Waterlyst Inc. All rights reserved.
     </span>
     {title && (
-      <h1
+      <p
         className={css({
           fontWeight: 500,
           fontSize: '16px',
@@ -62,7 +62,7 @@ const Footer = ({title, description}: Props) => (
         })}
       >
         {title}
-      </h1>
+      </p>
     )}
     {description && (
       <p

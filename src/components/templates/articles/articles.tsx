@@ -26,7 +26,7 @@ const Page = ({hasPdf}: {hasPdf: boolean}) => {
   }) as any;
 
   const {data, refetch} = useQuery({
-    queryKey: ['search-articles', page],
+    queryKey: ['search-articles'],
     queryFn: () => searchArticles({status: StatusType.Publish, count: 18, page, hasPdf}),
     placeholderData: keepPreviousData,
   }) as any;

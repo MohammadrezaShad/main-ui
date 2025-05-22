@@ -8,8 +8,6 @@ import {Hydrate} from '@/providers';
 
 import {unstable_noStore as noStore} from 'next/cache';
 
-export const dynamic = 'force-dynamic';
-
 const Page = async () => {
   noStore();
   const queryClient = getQueryClient();
@@ -18,7 +16,7 @@ const Page = async () => {
     queryFn: () => searchArticles({status: StatusType.Publish, count: 6, hasPdf: false}),
   });
   await queryClient.prefetchQuery({
-    queryKey: ['search-articles', 1],
+    queryKey: ['search-articles'],
     queryFn: () => searchArticles({status: StatusType.Publish, count: 18, page: 1, hasPdf: false}),
   });
   const dehydratedState = dehydrate(queryClient);

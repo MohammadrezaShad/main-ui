@@ -24,7 +24,7 @@ const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
 
 const TabContent = ({activeTab, company}: {activeTab: string; company: CompanyType}) => {
   if (activeTab === 'overview') {
-    return <Overview about={company?.about || ''} />;
+    return <Overview about={company?.about || ''} services={company?.productAndServices} />;
   }
   if (activeTab === 'products') {
     return <Products company={company} />;
@@ -184,7 +184,7 @@ const BusinessPage = () => {
           },
         })}
       >
-        <div className={css({flex: '3', mdDown: {w: 'full'}})}>
+        <div className={css({flex: '3', p: '8', mdDown: {w: 'full', p: '4'}})}>
           <div
             className={css({
               display: 'flex',

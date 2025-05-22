@@ -40,7 +40,7 @@ const Page = async ({searchParams}: Props) => {
     queryFn: () =>
       searchProducts({
         page: +page,
-        count: 6,
+        count: 8,
         categories: categories ? categories.split(',') : undefined,
         city,
         minimumCompanyRating: minimumCompanyRating ? +minimumCompanyRating : undefined,

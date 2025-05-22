@@ -33,7 +33,7 @@ const Divider = ({label}: {label: string}) => (
         transform: 'translateY(-50%)',
       })}
     />
-    <h1
+    <h2
       className={css({
         px: 8,
         textStyle: {
@@ -53,7 +53,7 @@ const Divider = ({label}: {label: string}) => (
       })}
     >
       {label}
-    </h1>
+    </h2>
   </div>
 );
 

@@ -99,7 +99,7 @@ const Slider = ({slides, hasPdf = false}: Props) => (
             <Box zIndex='50' mb='1'>
               <PostDate date={slide.publishDate} />
             </Box>
-            <h1
+            <p
               className={css({
                 zIndex: '50',
                 textStyle: 'h1',
@@ -110,7 +110,7 @@ const Slider = ({slides, hasPdf = false}: Props) => (
               })}
             >
               {slide.title}
-            </h1>
+            </p>
             <p
               className={css({
                 zIndex: '50',

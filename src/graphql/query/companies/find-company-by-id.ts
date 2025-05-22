@@ -75,6 +75,7 @@ export async function findCompanyById(
           updatedAt
         }
         instagram
+        linkdin
         keywords
         productAndServices
         products {

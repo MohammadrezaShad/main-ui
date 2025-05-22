@@ -96,6 +96,7 @@ export async function findCompanyBySlug(
         }
         _id
         about
+        productAndServices
         address
         callNumber
         categories {
@@ -199,6 +200,7 @@ export async function findCompanyBySlug(
           updatedAt
         }
         instagram
+        linkdin
         keywords
         profileImage {
           _id
