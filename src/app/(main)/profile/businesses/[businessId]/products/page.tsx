@@ -91,6 +91,7 @@ async function Page({params, searchParams}: Props) {
           <ProductCard
             key={product._id}
             id={product._id as string}
+            slug={product.slug as string}
             title={product.title}
             thumbnail={product.thumbnail || undefined}
             company={product.sellerCompany.title || ''}

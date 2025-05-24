@@ -317,7 +317,7 @@ export default function ProductForm({product}: Props) {
       const response = await action(input as any);
 
       if (response.success) {
-        queryClient.invalidateQueries({queryKey: ['search-business-products']});
+        queryClient.invalidateQueries({queryKey: ['search-business-products', 'search-product']});
         toast.success('Product created successfully');
         router.push(`/profile/businesses/${params.businessId}/products`);
       } else {

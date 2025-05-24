@@ -8,6 +8,7 @@ const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
 
 interface ProductCardProps {
   id: string;
+  slug: string;
   title: string;
   thumbnail?: ImageType;
   company: string;
@@ -20,6 +21,7 @@ interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({
   id,
+  slug,
   title,
   thumbnail,
   company,
@@ -97,7 +99,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
             <p className={css({textStyle: 'caption', color: 'text.primary'})}>{rating}/5</p>
           </div>
         </div>
-        <Link href={`/products/${id}`}>
+        <Link href={`/products/${slug}`}>
           <IconChevronRight className={css({w: '6', h: '6', color: 'gray4'})} />
         </Link>
       </div>
