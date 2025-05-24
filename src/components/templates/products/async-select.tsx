@@ -136,7 +136,7 @@ const AsyncSelect = ({
           {loading ? (
             <li className={css({p: '2', textAlign: 'center'})}>Loading...</li>
           ) : (
-            options.map(option => (
+            options?.map(option => (
               <li
                 key={option.id}
                 role='option'

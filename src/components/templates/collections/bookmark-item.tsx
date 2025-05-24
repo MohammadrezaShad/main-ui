@@ -1,7 +1,9 @@
-import {ArticleType} from '@/graphql';
 import {css} from '@styled/css';
 import moment from 'moment';
 import Image from 'next/image';
+
+import {ArticleType} from '@/graphql';
+
 import {Button, Container, Content, Date, TitleLink, Wrapper} from './bookmark-item.styled';
 
 const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;

@@ -1,11 +1,11 @@
-import {css} from '@styled/css';
 import {FC} from 'react';
+import {css} from '@styled/css';
+import moment from 'moment';
+import Image from 'next/image';
 
 import {youtubeLogo} from '@/assets';
 import {Card, SmallCard} from '@/components';
 
-import moment from 'moment';
-import Image from 'next/image';
 import {Cards, Container, Wrapper} from './youtube.styled';
 
 interface YouTubeProps {

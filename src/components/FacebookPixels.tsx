@@ -1,9 +1,10 @@
 'use client';
 
-import * as pixel from '@/lib/fpixels';
+import {useEffect, useState} from 'react';
 import {usePathname} from 'next/navigation';
 import Script from 'next/script';
-import {useEffect, useState} from 'react';
+
+import * as pixel from '@/lib/fpixels';
 
 const FacebookPixel = () => {
   const [loaded, setLoaded] = useState(false);

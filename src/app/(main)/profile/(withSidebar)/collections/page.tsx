@@ -1,10 +1,11 @@
+import {dehydrate} from '@tanstack/react-query';
+import {cookies} from 'next/headers';
+
 import {CollectionsView} from '@/components';
 import {CookieName} from '@/constants';
 import {getUserBookmarkedArticles} from '@/graphql';
 import {getQueryClient} from '@/helpers';
 import {Hydrate} from '@/providers';
-import {dehydrate} from '@tanstack/react-query';
-import {cookies} from 'next/headers';
 
 const Page = async () => {
   const cookieStore = cookies();

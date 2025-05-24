@@ -1,7 +1,8 @@
+import {getCookie} from 'cookies-next';
+
 import {CookieName} from '@/constants';
 import {GraphicalQuizQuery, SearchGraphicalQuizInput} from '@/graphql/generated/types';
 import {gqlFetch} from '@/services/fetch';
-import {getCookie} from 'cookies-next';
 
 export async function searchGraphicalQuizzes(
   input: SearchGraphicalQuizInput,

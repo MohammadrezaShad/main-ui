@@ -1,7 +1,8 @@
+import {getCookie} from 'cookies-next';
+
 import {CookieName} from '@/constants';
 import {FindTagBySlugInput, TagQuery} from '@/graphql/generated/types';
 import {gqlFetch} from '@/services/fetch';
-import {getCookie} from 'cookies-next';
 
 export async function FindTagBySlug(input: FindTagBySlugInput): Promise<TagQuery['findTagBySlug']> {
   const clientId = getCookie(CookieName.CLIENT_ID) as string;

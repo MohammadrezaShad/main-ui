@@ -1,7 +1,8 @@
-import {gqlFetch} from '@/services/fetch';
+import {getCookie} from 'cookies-next';
 
 import {CookieName} from '@/constants';
-import {getCookie} from 'cookies-next';
+import {gqlFetch} from '@/services/fetch';
+
 import {ArticleQuery, SearchArticleInput} from '../../generated/types';
 
 export async function searchArticleByCategory(

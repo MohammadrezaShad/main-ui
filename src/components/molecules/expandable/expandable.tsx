@@ -1,7 +1,7 @@
 'use client';
 
-import {css} from '@styled/css';
 import {useState} from 'react';
+import {css} from '@styled/css';
 
 import {IconAdd, IconMinus} from '@/assets';
 import {FaqType} from '@/graphql/generated/types';

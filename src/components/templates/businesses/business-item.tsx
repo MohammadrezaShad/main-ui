@@ -3,7 +3,7 @@ import Image from 'next/image';
 
 import {CompanyType} from '@/graphql';
 
-import {Button, Container, Content, About, TitleLink, Wrapper} from './business-item.styled';
+import {About, Button, Container, Content, TitleLink, Wrapper} from './business-item.styled';
 
 const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
 

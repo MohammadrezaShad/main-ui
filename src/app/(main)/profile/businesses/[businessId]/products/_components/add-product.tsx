@@ -16,10 +16,13 @@ import {useParams, useRouter} from 'next/navigation';
 import slugify from 'slugify';
 
 import {IconArrowRight} from '@/assets';
+import AsyncSelect from '@/components/templates/products/async-select';
 import {
   createProduct,
   CreateProductInput,
+  ProductCategoryType,
   ProductType,
+  searchProductCategories,
   StatusType,
   updateProduct,
   uploadImage,
@@ -54,7 +57,7 @@ export default function ProductForm({product}: Props) {
 
   const [variations, setVariations] = useState<any[]>([]);
 
-  const [selectedCategory, setSelectedCategory] = useState<any>('');
+  const [selectedCategory, setSelectedCategory] = useState<ProductCategoryType | null>(null);
 
   const [activeTab, setActiveTab] = useState('Information');
 
@@ -276,7 +279,7 @@ export default function ProductForm({product}: Props) {
       const input: CreateProductInput = {
         title: productInfo.title,
         slug: slugify(productInfo.title, {remove: /[*+~.()'"!:@]/g, lower: true, trim: true}),
-        category: selectedCategory,
+        category: selectedCategory?._id,
         sellerCompany: params.businessId as string,
         variations: variations.map(variation => ({
           cost: variation.cost,
@@ -357,7 +360,7 @@ export default function ProductForm({product}: Props) {
         product.features ? [...product.features, {name: '', value: ''}] : [{name: '', value: ''}],
       );
       setKeywords(product.keywords || []);
-      setSelectedCategory(product.category._id);
+      setSelectedCategory(product.category);
       setShops([
         {
           platform: 'amazon',
@@ -502,6 +505,55 @@ export default function ProductForm({product}: Props) {
                     _focus: {ring: 'none', ringOffset: 'none', shadow: '1'},
                   })}
                 />
+              </div>
+
+              <div className={css({mt: '2', mb: '2'})}>
+                <label
+                  className={css({
+                    display: 'block',
+                    fontSize: 'sm',
+                    lineHeight: 'sm',
+                    color: 'gray.500',
+                  })}
+                >
+                  Product Category
+                </label>
+                <div
+                  className={css({
+                    border: '1px solid token(colors.gray.300)',
+                    height: '12',
+                    display: 'flex',
+                    alignItems: 'center',
+                  })}
+                >
+                  <AsyncSelect
+                    loadOptions={async (inputValue: string) => {
+                      const response = await searchProductCategories({
+                        page: 1,
+                        count: 50,
+                        text: inputValue,
+                      });
+                      return response.results?.map(result => ({
+                        id: result._id,
+                        value: result._id,
+                        label: result.title,
+                      })) as any;
+                    }}
+                    onChange={selectedOption => {
+                      setSelectedCategory({
+                        _id: selectedOption?.id,
+                        title: selectedOption?.label,
+                      } as ProductCategoryType);
+                    }}
+                    placeholder={selectedCategory ? selectedCategory.title : 'Select a category...'}
+                    defaultOptions
+                    className={{
+                      h: {
+                        mdDown: '64px',
+                      },
+                    }}
+                  />
+                </div>
               </div>
 
               <div className={css({mt: '2', mb: '2'})}>

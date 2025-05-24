@@ -1,7 +1,8 @@
+import {getCookie} from 'cookies-next';
+
 import {CookieName} from '@/constants';
 import {FindQuizInput, QuizQuery} from '@/graphql/generated/types';
 import {gqlFetch} from '@/services/fetch';
-import {getCookie} from 'cookies-next';
 
 export async function payAndFindNormal(
   input: FindQuizInput,

@@ -1,12 +1,11 @@
 import {css} from '@styled/css';
 import {dehydrate} from '@tanstack/react-query';
+import {unstable_noStore as noStore} from 'next/cache';
 
 import {ArticlesView} from '@/components';
-import {StatusType, searchArticles} from '@/graphql';
+import {searchArticles, StatusType} from '@/graphql';
 import {getQueryClient} from '@/helpers';
 import {Hydrate} from '@/providers';
-
-import {unstable_noStore as noStore} from 'next/cache';
 
 const Page = async () => {
   noStore();

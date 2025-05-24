@@ -1,7 +1,8 @@
+import {getCookie} from 'cookies-next';
+
 import {CookieName} from '@/constants';
 import {BestUserInput, UserQuery} from '@/graphql/generated/types';
 import {gqlFetch} from '@/services/fetch';
-import {getCookie} from 'cookies-next';
 
 export async function getBestUsers(input: BestUserInput): Promise<UserQuery['getBestUsers']> {
   const clientId = getCookie(CookieName.CLIENT_ID) as string;

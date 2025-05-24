@@ -1,9 +1,10 @@
-import {WaterCrisisView} from '@/components';
-import {StatusType, searchArticles} from '@/graphql';
-import {getQueryClient} from '@/helpers';
-import {Hydrate} from '@/providers';
 import {css} from '@styled/css';
 import {dehydrate} from '@tanstack/react-query';
+
+import {WaterCrisisView} from '@/components';
+import {searchArticles, StatusType} from '@/graphql';
+import {getQueryClient} from '@/helpers';
+import {Hydrate} from '@/providers';
 
 const Page = async () => {
   const queryClient = getQueryClient();

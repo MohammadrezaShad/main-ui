@@ -1,15 +1,15 @@
 'use client';
 
+import {FC, useEffect, useState} from 'react';
 import {css} from '@styled/css';
 import {useQuery} from '@tanstack/react-query';
+import moment from 'moment';
 import {useParams} from 'next/navigation';
-import {FC, useEffect, useState} from 'react';
 
 import {Card, SmallCard, Spinner} from '@/components';
 import {FindTagBySlug} from '@/graphql/query/tags';
-
 import {useSearchArticles} from '@/hooks';
-import moment from 'moment';
+
 import PaginationSection from './pagination-section';
 import {Cards, Container, Wrapper} from './tags.styled';
 
