@@ -16,6 +16,8 @@ export async function searchHomepages(
               _id
               createdAt
               description
+              metaDescription
+              metaTitle
               title
               updatedAt
             }
