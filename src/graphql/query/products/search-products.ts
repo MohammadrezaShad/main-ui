@@ -13,6 +13,7 @@ export async function searchProducts(
                   totalCount
                   totalPages
                   results {
+                    status
                     _id
                     about
                     amazon
@@ -51,6 +52,7 @@ export async function searchProducts(
                       rate
                       slug
                       title
+                      status
                       website
                     }
                     slug

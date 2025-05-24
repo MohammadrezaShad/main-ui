@@ -18,6 +18,7 @@ export async function findCompanyBySlug(
       success
       result {
       products {
+          status
           _id
           about
           amazon

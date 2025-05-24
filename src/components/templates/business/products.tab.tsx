@@ -36,7 +36,8 @@ const Products: React.FC<{company: CompanyType}> = ({company}) => {
       >
         {filteredProducts.map(
           product =>
-            product.isActive && (
+            product.isActive &&
+            product.status === 'PUBLISH' && (
               <ProductCard
                 key={product._id}
                 id={product.slug as string}
