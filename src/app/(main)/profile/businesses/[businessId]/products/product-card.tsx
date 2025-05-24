@@ -51,7 +51,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
         bgSize: 'cover',
         display: 'flex',
         alignItems: 'end',
-        flexWrap: 'wrap',
+        overflow: 'hidden',
         gap: '2',
         height: '[170px]',
         p: '2',
@@ -67,6 +67,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
             p: '1',
             textStyle: 'captionB',
             w: 'fit',
+            fontSize: '8px',
           })}
         >
           {keyword}
