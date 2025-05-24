@@ -58,7 +58,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
         display: 'flex',
         alignItems: 'end',
         overflow: 'hidden',
-        gap: '2',
+        gap: '0.5',
         height: '[170px]',
         p: '2',
       })}
