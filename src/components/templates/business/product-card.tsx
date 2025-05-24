@@ -63,7 +63,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
         p: '2',
       })}
     >
-      {keywords.map(keyword => (
+      {keywords?.slice(0, 3)?.map(keyword => (
         <span
           key={keyword}
           className={css({
