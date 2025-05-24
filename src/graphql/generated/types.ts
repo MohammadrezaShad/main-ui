@@ -1285,6 +1285,8 @@ export type CreateQuizOutput = {
 
 export type CreateSeoHomepageInput = {
   description?: InputMaybe<Scalars['String']['input']>;
+  metaDescription?: InputMaybe<Scalars['String']['input']>;
+  metaTitle?: InputMaybe<Scalars['String']['input']>;
   title?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -3109,6 +3111,8 @@ export type SearchQuizOutput = {
 export type SearchSeoHomepageInput = {
   count?: InputMaybe<Scalars['Int']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
+  metaDescription?: InputMaybe<Scalars['String']['input']>;
+  metaTitle?: InputMaybe<Scalars['String']['input']>;
   page?: InputMaybe<Scalars['Int']['input']>;
   title?: InputMaybe<Scalars['String']['input']>;
 };
@@ -3252,6 +3256,8 @@ export type SeoHomepageType = {
   _id: Scalars['String']['output'];
   createdAt?: Maybe<Scalars['DateTime']['output']>;
   description?: Maybe<Scalars['String']['output']>;
+  metaDescription?: Maybe<Scalars['String']['output']>;
+  metaTitle?: Maybe<Scalars['String']['output']>;
   title?: Maybe<Scalars['String']['output']>;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
 };
@@ -3768,6 +3774,8 @@ export type UpdateQuizOutput = {
 export type UpdateSeoHomepageInput = {
   description?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['String']['input'];
+  metaDescription?: InputMaybe<Scalars['String']['input']>;
+  metaTitle?: InputMaybe<Scalars['String']['input']>;
   title?: InputMaybe<Scalars['String']['input']>;
 };
 

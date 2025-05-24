@@ -35,10 +35,12 @@ export const Content = styled('div', {
   },
 });
 
-export const Date = styled('span', {
+export const About = styled('span', {
   base: {
     textStyle: 'caption',
     color: 'gray4',
+    maxHeight: '3em',
+    overflow: 'hidden',
   },
 });
 

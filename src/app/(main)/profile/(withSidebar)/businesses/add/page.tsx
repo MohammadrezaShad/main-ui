@@ -6,56 +6,65 @@
 import {useState} from 'react';
 import {toast} from 'react-toastify';
 import {css, cx} from '@styled/css';
-import {useQuery} from '@tanstack/react-query';
+import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
+import {useRouter} from 'next/navigation';
 
-import {CityType, CompanyType, CountryType, searchCities, searchCountries} from '@/graphql';
-import {StatusType, Weekday, WorktimeType} from '@/graphql/generated/types';
-import {updateCompany} from '@/graphql/mutation/business/update-business';
+import {CityType, CountryType, searchCities, searchCountries} from '@/graphql';
+import {CreateCompanyInput, StatusType, Weekday, WorktimeType} from '@/graphql/generated/types';
+import {createCompany} from '@/graphql/mutation/business/create-business';
 
-interface Props {
-  company: CompanyType;
-}
-
-export default function BusinessInfoPage({company}: Props) {
+export default function AddBusinessPage() {
   const [activeTab, setActiveTab] = useState('Information');
+  const queryClient = useQueryClient();
+  const router = useRouter();
 
-  const [companyInfo, setCompanyInfo] = useState({
-    name: company.title || '',
-    about: company.about || '',
-    email: company.email || '',
-    phone: company.callNumber || '',
-    website: company.website || '',
-    address: company.address || '',
-    status: company.status || 'PUBLISH',
+  const [companyInfo, setCompanyInfo] = useState<CreateCompanyInput>({
+    title: '',
+    about: '',
+    email: '',
+    callNumber: '',
+    website: '',
+    address: '',
+    status: 'PUBLISH' as StatusType,
   });
 
-  const [keywords, setKeywords] = useState<string[]>(company.keywords || []);
+  const [keywords, setKeywords] = useState<string[]>([]);
   const [newKeyword, setNewKeyword] = useState('');
 
   const [socialMedia, setSocialMedia] = useState([
-    {platform: 'Facebook', url: company.facebook || ''},
-    {platform: 'Twitter', url: company.twitter || ''},
-    {platform: 'Instagram', url: company.instagram || ''},
+    {platform: 'Facebook', url: ''},
+    {platform: 'LinkedIn', url: ''},
+    {platform: 'Instagram', url: ''},
   ]);
 
-  const [workingHours, setWorkingHours] = useState<WorktimeType[]>(
-    company.worktimes || [
-      {day: Weekday.Monday, isOpened: false, startTime: null, finishTime: null},
-      {day: Weekday.Tuesday, isOpened: false, startTime: null, finishTime: null},
-      {day: Weekday.Wednesday, isOpened: false, startTime: null, finishTime: null},
-      {day: Weekday.Thursday, isOpened: false, startTime: null, finishTime: null},
-      {day: Weekday.Friday, isOpened: false, startTime: null, finishTime: null},
-      {day: Weekday.Saturday, isOpened: false, startTime: null, finishTime: null},
-      {day: Weekday.Sunday, isOpened: false, startTime: null, finishTime: null},
-    ],
-  );
+  const [workingHours, setWorkingHours] = useState<WorktimeType[]>([
+    {day: Weekday.Monday, isOpened: false, startTime: null, finishTime: null},
+    {day: Weekday.Tuesday, isOpened: false, startTime: null, finishTime: null},
+    {day: Weekday.Wednesday, isOpened: false, startTime: null, finishTime: null},
+    {day: Weekday.Thursday, isOpened: false, startTime: null, finishTime: null},
+    {day: Weekday.Friday, isOpened: false, startTime: null, finishTime: null},
+    {day: Weekday.Saturday, isOpened: false, startTime: null, finishTime: null},
+    {day: Weekday.Sunday, isOpened: false, startTime: null, finishTime: null},
+  ]);
 
-  const [products, setProducts] = useState(company.productAndServices || []);
+  const [products, setProducts] = useState<string[]>([]);
 
   const [countryInputValue, setCountryInputValue] = useState('');
   const [cityInputValue, setCityInputValue] = useState('');
-  const [selectedCountry, setSelectedCountry] = useState<string>(company.country?._id || '');
-  const [selectedCity, setSelectedCity] = useState<string>(company.city?._id || '');
+  const [selectedCountry, setSelectedCountry] = useState<string>('');
+  const [selectedCity, setSelectedCity] = useState<string>('');
+
+  const mutation = useMutation({
+    mutationFn: createCompany,
+    onSuccess: () => {
+      toast.success('Business created successfully');
+      queryClient.invalidateQueries({queryKey: ['get-companies']});
+      router.push('/profile/businesses');
+    },
+    onError: () => {
+      toast.error('Failed to create business');
+    },
+  });
 
   const handleCompanyInfoChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
@@ -154,20 +163,10 @@ export default function BusinessInfoPage({company}: Props) {
     e.preventDefault();
 
     try {
-      const response = await updateCompany({
-        id: company._id,
-        title: companyInfo.name,
-        about: companyInfo.about,
-        email: companyInfo.email,
-        callNumber: companyInfo.phone,
-        website: companyInfo.website,
-        address: companyInfo.address,
+      await mutation.mutateAsync({
+        ...companyInfo,
         keywords,
-        facebook: socialMedia.find(sm => sm.platform === 'Facebook')?.url,
-        twitter: socialMedia.find(sm => sm.platform === 'Twitter')?.url,
-        instagram: socialMedia.find(sm => sm.platform === 'Instagram')?.url,
         productAndServices: products,
-        status: companyInfo.status as StatusType,
         worktimes: workingHours.map(wh => ({
           day: wh.day,
           isOpened: wh.isOpened,
@@ -186,14 +185,12 @@ export default function BusinessInfoPage({company}: Props) {
               }
             : undefined,
         })),
+        facebook: socialMedia.find(sm => sm.platform === 'Facebook')?.url,
+        linkdin: socialMedia.find(sm => sm.platform === 'LinkedIn')?.url,
+        instagram: socialMedia.find(sm => sm.platform === 'Instagram')?.url,
       });
-
-      if (response.success) {
-        toast.success('Company information updated successfully');
-      }
     } catch (error) {
-      console.error('Error updating company:', error);
-      toast.error('Failed to update company information');
+      console.error('Error creating business:', error);
     }
   };
 
@@ -317,8 +314,8 @@ export default function BusinessInfoPage({company}: Props) {
                 </label>
                 <input
                   type='text'
-                  name='name'
-                  value={companyInfo.name}
+                  name='title'
+                  value={companyInfo.title || ''}
                   onChange={handleCompanyInfoChange}
                   className={css({
                     w: 'full',
@@ -346,7 +343,7 @@ export default function BusinessInfoPage({company}: Props) {
                 <input
                   type='text'
                   name='website'
-                  value={companyInfo.website}
+                  value={companyInfo.website || ''}
                   onChange={handleCompanyInfoChange}
                   className={css({
                     w: 'full',
@@ -373,8 +370,8 @@ export default function BusinessInfoPage({company}: Props) {
                 </label>
                 <input
                   type='text'
-                  name='phone'
-                  value={companyInfo.phone}
+                  name='callNumber'
+                  value={companyInfo.callNumber || ''}
                   onChange={handleCompanyInfoChange}
                   className={css({
                     w: 'full',
@@ -402,7 +399,7 @@ export default function BusinessInfoPage({company}: Props) {
                 <input
                   type='email'
                   name='email'
-                  value={companyInfo.email}
+                  value={companyInfo.email || ''}
                   onChange={handleCompanyInfoChange}
                   className={css({
                     w: 'full',
@@ -487,7 +484,7 @@ export default function BusinessInfoPage({company}: Props) {
               <input
                 type='text'
                 name='address'
-                value={companyInfo.address}
+                value={companyInfo.address || ''}
                 onChange={handleCompanyInfoChange}
                 className={css({
                   w: 'full',
@@ -712,7 +709,7 @@ export default function BusinessInfoPage({company}: Props) {
                 </label>
                 <textarea
                   name='about'
-                  value={companyInfo.about}
+                  value={companyInfo.about || ''}
                   onChange={handleCompanyInfoChange}
                   rows={8}
                   className={css({
@@ -733,8 +730,8 @@ export default function BusinessInfoPage({company}: Props) {
               </label>
               <select
                 name='status'
-                value={company.status || ''}
-                onChange={e => handleCompanyInfoChange(e)}
+                value={companyInfo.status || ''}
+                onChange={handleCompanyInfoChange}
                 className={css({
                   w: 'full',
                   p: '2',

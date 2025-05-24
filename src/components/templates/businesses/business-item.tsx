@@ -3,7 +3,7 @@ import Image from 'next/image';
 
 import {CompanyType} from '@/graphql';
 
-import {Button, Container, Content, Date, TitleLink, Wrapper} from './business-item.styled';
+import {Button, Container, Content, About, TitleLink, Wrapper} from './business-item.styled';
 
 const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
 
@@ -45,8 +45,8 @@ const BusinessItem = ({
         />
       )}
       <Content>
-        <Date>{article.about}</Date>
         <TitleLink href={`/profile/businesses/${article._id}`}>{article.title}</TitleLink>
+        <About>{article.about}</About>
         <Button onClick={() => onRemoveBookmark(article._id)} type='button'>
           Remove
         </Button>
