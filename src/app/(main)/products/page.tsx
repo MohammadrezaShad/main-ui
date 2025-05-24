@@ -3,7 +3,7 @@ import {dehydrate} from '@tanstack/react-query';
 import {unstable_noStore as noStore} from 'next/cache';
 
 import {ProductsView} from '@/components';
-import {searchProducts} from '@/graphql';
+import {searchProducts, StatusType} from '@/graphql';
 import {getQueryClient} from '@/helpers';
 import {Hydrate} from '@/providers';
 
@@ -48,6 +48,7 @@ const Page = async ({searchParams}: Props) => {
         lowPrice: lowPrice ? +lowPrice : undefined,
         highPrice: highPrice ? +highPrice : undefined,
         isActive: true,
+        status: 'PUBLISH' as StatusType,
       }),
   });
 

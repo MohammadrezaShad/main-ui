@@ -17,6 +17,7 @@ import {
   searchCountries,
   searchProductCategories,
   searchProducts,
+  StatusType,
 } from '@/graphql';
 import {useUpdateSearchParam} from '@/hooks';
 
@@ -71,6 +72,7 @@ export default function ProductsView() {
         lowPrice: lowPrice ? +lowPrice : undefined,
         highPrice: highPrice ? +highPrice : undefined,
         isActive: true,
+        status: 'PUBLISH' as StatusType,
       }),
   });
 
