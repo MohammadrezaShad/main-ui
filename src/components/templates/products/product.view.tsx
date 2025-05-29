@@ -7,12 +7,13 @@ import {css, cx} from '@styled/css';
 import {Flex} from '@styled/jsx';
 import {useQuery} from '@tanstack/react-query';
 import Image from 'next/image';
-import Link from 'next/link';
 import {useParams} from 'next/navigation';
 import {FreeMode, Navigation, Thumbs} from 'swiper/modules';
 import {Swiper, SwiperSlide} from 'swiper/react';
 
 import {IconDrop} from '@/assets';
+import {Button} from '@/components/atoms';
+import {createProductRedirect, createProductVisitLog, ProductRedirectTypeEnum} from '@/graphql';
 import {findProductBySlug} from '@/graphql/query/products/find-product-by-slug';
 
 // Import Swiper styles
@@ -50,6 +51,29 @@ const ProductView = () => {
       setSelectedVariation(variation);
     }
   }, [selectedColor, product?.variations]);
+
+  const handleProductRedirect = async (
+    companyId: string,
+    productId: string,
+    type: ProductRedirectTypeEnum,
+    url: string,
+  ) => {
+    await createProductRedirect({
+      company: companyId,
+      product: productId,
+      type,
+    });
+    window.open(url, '_blank');
+  };
+
+  useEffect(() => {
+    if (data?.result) {
+      createProductVisitLog({
+        product: data.result._id,
+        company: data.result.sellerCompany._id,
+      });
+    }
+  }, [data?.result]);
 
   return (
     <div className={css({width: '100%', padding: '16px'})}>
@@ -313,15 +337,22 @@ const ProductView = () => {
             </p>
             <Flex gap={4} hideBelow='md'>
               {product?.amazon ? (
-                <Link
-                  href={product.amazon}
+                <Button
+                  type='button'
+                  onClick={() =>
+                    handleProductRedirect(
+                      product.sellerCompany._id,
+                      product._id,
+                      ProductRedirectTypeEnum.Amazon,
+                      product.amazon as string,
+                    )
+                  }
                   className={css({
                     justifyContent: 'center',
                     alignSelf: 'center',
                     pl: '12',
                     pr: '12',
-                    pt: '3',
-                    pb: '3',
+                    py: '6',
                     mt: '4',
                     fontSize: 'base',
                     lineHeight: 'base',
@@ -332,21 +363,29 @@ const ProductView = () => {
                     mdDown: {pl: '5', pr: '5'},
                     cursor: 'pointer',
                     marginTop: '[88px]',
+                    rounded: 0,
                   })}
                 >
                   Buy from Amazon
-                </Link>
+                </Button>
               ) : null}
               {product?.eBay ? (
-                <Link
-                  href={product.eBay}
+                <Button
+                  type='button'
+                  onClick={() =>
+                    handleProductRedirect(
+                      product.sellerCompany._id,
+                      product._id,
+                      ProductRedirectTypeEnum.Ebay,
+                      product.amazon as string,
+                    )
+                  }
                   className={css({
                     justifyContent: 'center',
                     alignSelf: 'center',
                     pl: '12',
                     pr: '12',
-                    pt: '3',
-                    pb: '3',
+                    py: '6',
                     mt: '4',
                     fontSize: 'base',
                     lineHeight: 'base',
@@ -357,21 +396,29 @@ const ProductView = () => {
                     mdDown: {pl: '5', pr: '5'},
                     cursor: 'pointer',
                     marginTop: '[88px]',
+                    rounded: 0,
                   })}
                 >
                   Buy from eBay
-                </Link>
+                </Button>
               ) : null}
               {product?.wallmart ? (
-                <Link
-                  href={product.wallmart}
+                <Button
+                  type='button'
+                  onClick={() =>
+                    handleProductRedirect(
+                      product.sellerCompany._id,
+                      product._id,
+                      ProductRedirectTypeEnum.Wallmart,
+                      product.amazon as string,
+                    )
+                  }
                   className={css({
                     justifyContent: 'center',
                     alignSelf: 'center',
                     pl: '12',
                     pr: '12',
-                    pt: '3',
-                    pb: '3',
+                    py: '6',
                     mt: '4',
                     fontSize: 'base',
                     lineHeight: 'base',
@@ -382,10 +429,11 @@ const ProductView = () => {
                     mdDown: {pl: '5', pr: '5'},
                     cursor: 'pointer',
                     marginTop: '[88px]',
+                    rounded: 0,
                   })}
                 >
                   Buy from Walmart
-                </Link>
+                </Button>
               ) : null}
             </Flex>
             {product ? <MarketplaceSelect product={product} /> : null}

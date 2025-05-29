@@ -15,6 +15,8 @@ export async function searchProducts(
                   results {
                     status
                     _id
+                    view
+                    redirect
                     about
                     amazon
                     category {
@@ -88,7 +90,7 @@ export async function searchProducts(
                 }
               }
             }`,
-    variables: {input: {...input}},
+    variables: {input},
   });
   if (!res.ok) {
     throw new Error('Failed to fetch data');

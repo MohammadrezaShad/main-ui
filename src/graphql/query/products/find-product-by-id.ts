@@ -12,6 +12,8 @@ export async function findProductById(
                     success
                     result {
                       _id
+                      view
+                      redirect
                       about
                       status
                       category {

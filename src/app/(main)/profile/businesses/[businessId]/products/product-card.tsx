@@ -1,7 +1,8 @@
 import {css} from '@styled/css';
+import {Box} from '@styled/jsx';
 import Link from 'next/link';
 
-import {IconChevronRight, IconDrop, IconStar} from '@/assets';
+import {IconChevronRight, IconDrop, IconEyeOpen, IconRedirect, IconStar} from '@/assets';
 import {ImageType} from '@/graphql';
 
 const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
@@ -17,6 +18,8 @@ interface ProductCardProps {
   price: string;
   businessId: string;
   keywords: string[];
+  view: number;
+  redirect: number;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({
@@ -30,6 +33,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
   price,
   businessId,
   keywords,
+  view,
+  redirect,
 }) => (
   <div
     className={css({
@@ -108,6 +113,18 @@ const ProductCard: React.FC<ProductCardProps> = ({
         <p className={css({textStyle: 'body', color: 'gray4'})}>{waterRating}/10</p>
       </div>
       <div className={css({textStyle: 'headline4', color: 'primary'})}>${price}</div>
+
+      <div className={css({w: 'full', h: '1px', bgColor: 'gray3', my: '4'})} />
+      <Box display='flex' gap={4} mt={6}>
+        <div className={css({w: 'full', display: 'flex', alignItems: 'center', gap: '2'})}>
+          <IconEyeOpen className={css({w: '6', h: '6', color: 'gray4'})} />
+          <p className={css({fontSize: 'sm', color: 'gray.600'})}>{view}</p>
+        </div>
+        <div className={css({w: 'full', display: 'flex', alignItems: 'center', gap: '2'})}>
+          <IconRedirect className={css({w: '6', h: '6', color: 'gray4'})} />
+          <p className={css({fontSize: 'sm', color: 'gray.600'})}>{redirect}</p>
+        </div>
+      </Box>
     </div>
   </div>
 );

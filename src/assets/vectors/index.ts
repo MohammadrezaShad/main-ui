@@ -12,6 +12,7 @@ export {default as IconChevronUp} from './icon-chevron-up.svg';
 export {default as IconClose} from './icon-close.svg';
 export {default as IconCollection} from './icon-collection.svg';
 export {default as IconComment} from './Icon-comment.svg';
+export {default as IconRedirect} from './icon-redirect.svg';
 export {default as IconCPause} from './icon-cpause.svg';
 export {default as IconCPlay} from './icon-cplay-video.svg';
 export {default as IconCpu} from './icon-cpu.svg';

@@ -15,7 +15,7 @@ import Link from 'next/link';
 import {useParams, useRouter} from 'next/navigation';
 import slugify from 'slugify';
 
-import {IconArrowRight} from '@/assets';
+import {IconArrowRight, IconEyeOpen, IconRedirect} from '@/assets';
 import AsyncSelect from '@/components/templates/products/async-select';
 import {
   createProduct,
@@ -27,6 +27,7 @@ import {
   updateProduct,
   uploadImage,
 } from '@/graphql';
+import {Box} from '@styled/jsx';
 
 const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
 
@@ -269,7 +270,7 @@ export default function ProductForm({product}: Props) {
       }
 
       const validShops = shops.reduce((acc: any, item: any) => {
-        const key = item.platform;
+        const key = item.platform.toLowerCase() === 'walmart' ? 'wallmart' : item.platform;
         if (item.url) {
           acc[key as keyof typeof acc] = item.url;
         }
@@ -422,23 +423,37 @@ export default function ProductForm({product}: Props) {
             {productInfo.title}
           </h1>
         </div>
-        <select
-          name='status'
-          value={productInfo.status}
-          onChange={handleInputChange}
-          className={css({
-            p: '2',
-            borderWidth: '1px',
-            borderColor: 'gray3',
-            h: '12',
-            rounded: '0',
-            minW: '[121px]',
-            _focus: {ring: 'none', ringOffset: 'none', shadow: '1'},
-          })}
-        >
-          <option value='DRAFT'>Draft</option>
-          <option value='PUBLISH'>Publish</option>
-        </select>
+        <Box display='flex' alignItems='center' gap='2'>
+          {product ? (
+            <Box display='flex' flexDir='column' gap={4}>
+              <div className={css({w: 'full', display: 'flex', alignItems: 'center', gap: '2'})}>
+                <IconEyeOpen className={css({w: '6', h: '6', color: 'gray4'})} />
+                <p className={css({fontSize: 'sm', color: 'gray.600'})}>{product.view}</p>
+              </div>
+              <div className={css({w: 'full', display: 'flex', alignItems: 'center', gap: '2'})}>
+                <IconRedirect className={css({w: '6', h: '6', color: 'gray4'})} />
+                <p className={css({fontSize: 'sm', color: 'gray.600'})}>{product.redirect}</p>
+              </div>
+            </Box>
+          ) : null}
+          <select
+            name='status'
+            value={productInfo.status}
+            onChange={handleInputChange}
+            className={css({
+              p: '2',
+              borderWidth: '1px',
+              borderColor: 'gray3',
+              h: '12',
+              rounded: '0',
+              minW: '[121px]',
+              _focus: {ring: 'none', ringOffset: 'none', shadow: '1'},
+            })}
+          >
+            <option value='DRAFT'>Draft</option>
+            <option value='PUBLISH'>Publish</option>
+          </select>
+        </Box>
       </div>
       <div className={css({display: 'flex', borderBottomWidth: '1px', borderColor: 'gray3'})}>
         {['Information', 'Features', 'Images', 'Variations'].map(tab => (

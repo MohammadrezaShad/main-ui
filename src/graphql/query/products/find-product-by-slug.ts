@@ -12,6 +12,8 @@ export async function findProductBySlug(
                 success
                 result {
                     _id
+                    view
+                    redirect
                     about
                     amazon
                     category {

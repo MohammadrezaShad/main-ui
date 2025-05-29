@@ -100,6 +100,8 @@ async function Page({params, searchParams}: Props) {
             price={product?.variations?.[0]?.cost?.toString() || ''}
             businessId={params.businessId}
             keywords={product.keywords || []}
+            redirect={product.redirect ?? 0}
+            view={product.view ?? 0}
           />
         ))}
       </Cards>
