@@ -24,6 +24,8 @@ export async function getSimilarProducts(
         isActive
         rate
         sellerCompany {
+          latitude
+          longitude
           _id
           callNumber
           city {

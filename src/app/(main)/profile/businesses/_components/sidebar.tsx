@@ -33,7 +33,7 @@ export default function Sidebar() {
       return uploaded;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({queryKey: ['find-business', params.businessId]});
+      queryClient.clear();
       toast.success('Business cover image updated successfully');
     },
     onError: (error: Error) => {

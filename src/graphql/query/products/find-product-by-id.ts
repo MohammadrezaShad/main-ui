@@ -60,6 +60,8 @@ export async function findProductById(
                       keywords
                       rate
                       sellerCompany {
+                        latitude
+                        longitude
                         _id
                         title
                         slug

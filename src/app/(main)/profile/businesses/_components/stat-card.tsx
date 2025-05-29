@@ -2,13 +2,13 @@ import {css} from '@styled/css';
 
 interface StatCardProps {
   title: string;
-  value: string;
+  value: number;
   bgColor: string;
 }
 
 export default function StatCard({title, value, bgColor}: StatCardProps) {
   return (
-    <div className={css({color: 'white', rounded: 'lg', p: '6', bgColor})}>
+    <div className={css({color: 'white', rounded: '0', p: '6', bgColor})}>
       <div
         className={css({display: 'flex', justifyContent: 'space-between', alignItems: 'center'})}
       >

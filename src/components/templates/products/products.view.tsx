@@ -368,7 +368,12 @@ export default function ProductsView() {
             location={`${product.sellerCompany.country?.name}, ${product.sellerCompany.city?.name}`}
             keywords={product.keywords || []}
             phoneNumber={product.sellerCompany.callNumber || ''}
+            sellerCompanyId={product.sellerCompany._id}
             website={product.sellerCompany.website || ''}
+            coords={{
+              lat: product.sellerCompany.latitude,
+              lng: product.sellerCompany.longitude,
+            }}
           />
         ))}
       </Cards>

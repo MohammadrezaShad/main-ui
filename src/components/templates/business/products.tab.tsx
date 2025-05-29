@@ -45,6 +45,7 @@ const Products: React.FC<{company: CompanyType}> = ({company}) => {
                 thumbnail={product.thumbnail || undefined}
                 company={product.sellerCompany.title || ''}
                 companyId={product.sellerCompany.slug as string}
+                sellerCompanyId={product.sellerCompany._id}
                 rating={product.sellerCompany.rate || 0}
                 waterRating={product.rate || 0}
                 price={product?.variations?.[0]?.cost?.toString() || ''}
@@ -52,6 +53,10 @@ const Products: React.FC<{company: CompanyType}> = ({company}) => {
                 keywords={product.keywords || []}
                 phoneNumber={product.sellerCompany.callNumber || ''}
                 website={product.sellerCompany.website || ''}
+                coords={{
+                  lat: product.sellerCompany.latitude,
+                  lng: product.sellerCompany.longitude,
+                }}
               />
             ),
         )}

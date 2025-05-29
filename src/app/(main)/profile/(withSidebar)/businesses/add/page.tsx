@@ -26,6 +26,8 @@ export default function AddBusinessPage() {
     website: '',
     address: '',
     status: 'PUBLISH' as StatusType,
+    latitude: 0,
+    longitude: 0,
   });
 
   const [keywords, setKeywords] = useState<string[]>([]);
@@ -58,7 +60,7 @@ export default function AddBusinessPage() {
     mutationFn: createCompany,
     onSuccess: () => {
       toast.success('Business created successfully');
-      queryClient.invalidateQueries({queryKey: ['get-companies']});
+      queryClient.clear();
       router.push('/profile/businesses');
     },
     onError: () => {
@@ -188,6 +190,8 @@ export default function AddBusinessPage() {
         facebook: socialMedia.find(sm => sm.platform === 'Facebook')?.url,
         linkdin: socialMedia.find(sm => sm.platform === 'LinkedIn')?.url,
         instagram: socialMedia.find(sm => sm.platform === 'Instagram')?.url,
+        latitude: parseFloat(companyInfo.latitude?.toString() || '0'),
+        longitude: parseFloat(companyInfo.longitude?.toString() || '0'),
       });
     } catch (error) {
       console.error('Error creating business:', error);
@@ -413,8 +417,15 @@ export default function AddBusinessPage() {
                 />
               </div>
 
-              <div className={css({mt: '2', mb: '4'})}>
-                <label className={css({display: 'block', mb: '2', fontWeight: 'medium'})}>
+              <div className={css({mt: '2'})}>
+                <label
+                  className={css({
+                    display: 'block',
+                    fontSize: 'sm',
+                    lineHeight: 'sm',
+                    color: 'gray.500',
+                  })}
+                >
                   Country
                 </label>
                 <select
@@ -440,8 +451,15 @@ export default function AddBusinessPage() {
                 </select>
               </div>
 
-              <div className={css({mt: '2', mb: '4'})}>
-                <label className={css({display: 'block', mb: '2', fontWeight: 'medium'})}>
+              <div className={css({mt: '2'})}>
+                <label
+                  className={css({
+                    display: 'block',
+                    fontSize: 'sm',
+                    lineHeight: 'sm',
+                    color: 'gray.500',
+                  })}
+                >
                   City
                 </label>
                 <select
@@ -467,6 +485,63 @@ export default function AddBusinessPage() {
                     </option>
                   ))}
                 </select>
+              </div>
+              <div className={css({mb: '2'})}>
+                <label
+                  className={css({
+                    display: 'block',
+                    fontSize: 'sm',
+                    lineHeight: 'sm',
+                    color: 'gray.500',
+                  })}
+                >
+                  Latitude
+                </label>
+                <input
+                  type='number'
+                  name='latitude'
+                  value={companyInfo.latitude || ''}
+                  onChange={handleCompanyInfoChange}
+                  placeholder='Enter latitude'
+                  className={css({
+                    w: 'full',
+                    p: '2',
+                    borderWidth: '1px',
+                    borderColor: 'gray.300',
+                    rounded: '0',
+                    h: '12',
+                    _focus: {ring: 'none', ringOffset: 'none', shadow: '1'},
+                  })}
+                />
+              </div>
+
+              <div className={css({mb: '2'})}>
+                <label
+                  className={css({
+                    display: 'block',
+                    fontSize: 'sm',
+                    lineHeight: 'sm',
+                    color: 'gray.500',
+                  })}
+                >
+                  Longitude
+                </label>
+                <input
+                  type='number'
+                  name='longitude'
+                  value={companyInfo.longitude || ''}
+                  onChange={handleCompanyInfoChange}
+                  placeholder='Enter longitude'
+                  className={css({
+                    w: 'full',
+                    p: '2',
+                    borderWidth: '1px',
+                    borderColor: 'gray.300',
+                    rounded: '0',
+                    h: '12',
+                    _focus: {ring: 'none', ringOffset: 'none', shadow: '1'},
+                  })}
+                />
               </div>
             </div>
 
@@ -725,7 +800,14 @@ export default function AddBusinessPage() {
             </div>
 
             <div className={css({mt: '2', mb: '4'})}>
-              <label className={css({display: 'block', mb: '2', fontWeight: 'medium'})}>
+              <label
+                className={css({
+                  display: 'block',
+                  fontSize: 'sm',
+                  lineHeight: 'sm',
+                  color: 'gray.500',
+                })}
+              >
                 Status
               </label>
               <select

@@ -2,12 +2,12 @@ import {css} from '@styled/css';
 
 interface PlatformCardProps {
   platform: string;
-  value: string;
+  value: number;
 }
 
 export default function PlatformCard({platform, value}: PlatformCardProps) {
   return (
-    <div className={css({borderWidth: '1px', borderColor: 'gray.200', rounded: 'lg', p: '6'})}>
+    <div className={css({borderWidth: '1px', borderColor: 'gray.200', rounded: '0', p: '6'})}>
       <h3
         className={css({
           fontSize: 'lg',

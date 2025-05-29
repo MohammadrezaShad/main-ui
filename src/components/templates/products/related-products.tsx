@@ -44,12 +44,17 @@ const RelatedProducts = ({productId}: {productId: string}) => {
                 company={product.sellerCompany.title || ''}
                 companyId={product.sellerCompany.slug as string}
                 rating={product.sellerCompany.rate || 0}
+                sellerCompanyId={product.sellerCompany._id}
                 waterRating={product.rate || 0}
                 price={product?.variations?.[0]?.cost?.toString() || ''}
                 location={`${product.sellerCompany.country?.name}, ${product.sellerCompany.city?.name}`}
                 keywords={product.keywords || []}
                 phoneNumber={product.sellerCompany.callNumber || ''}
                 website={product.sellerCompany.website || ''}
+                coords={{
+                  lat: product.sellerCompany.latitude,
+                  lng: product.sellerCompany.longitude,
+                }}
               />
             </SwiperSlide>
           ))}
@@ -78,7 +83,12 @@ const RelatedProducts = ({productId}: {productId: string}) => {
             location={`${product.sellerCompany.country?.name}, ${product.sellerCompany.city?.name}`}
             keywords={product.keywords || []}
             phoneNumber={product.sellerCompany.callNumber || ''}
+            sellerCompanyId={product.sellerCompany._id}
             website={product.sellerCompany.website || ''}
+            coords={{
+              lat: product.sellerCompany.latitude,
+              lng: product.sellerCompany.longitude,
+            }}
           />
         ))}
       </div>

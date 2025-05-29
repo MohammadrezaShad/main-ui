@@ -9,6 +9,7 @@
 import {useEffect, useRef, useState} from 'react';
 import {toast} from 'react-toastify';
 import {css, cx} from '@styled/css';
+import {Box} from '@styled/jsx';
 import {useQueryClient} from '@tanstack/react-query';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -27,7 +28,6 @@ import {
   updateProduct,
   uploadImage,
 } from '@/graphql';
-import {Box} from '@styled/jsx';
 
 const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
 
@@ -318,7 +318,7 @@ export default function ProductForm({product}: Props) {
       const response = await action(input as any);
 
       if (response.success) {
-        queryClient.invalidateQueries({queryKey: ['search-business-products', 'search-product']});
+        queryClient.clear();
         toast.success('Product created successfully');
         router.push(`/profile/businesses/${params.businessId}/products`);
       } else {

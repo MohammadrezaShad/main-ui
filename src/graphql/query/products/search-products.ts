@@ -42,6 +42,8 @@ export async function searchProducts(
                     rate
                     sellerCompany {
                       _id
+                      latitude
+                      longitude
                       callNumber
                       city {
                         _id

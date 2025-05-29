@@ -31,7 +31,6 @@ export default async function RootLayout({children, params}: Props) {
     <div
       className={css({
         display: 'flex',
-        minH: 'screen',
         bgColor: 'white',
         mdDown: {
           flexDirection: 'column',
