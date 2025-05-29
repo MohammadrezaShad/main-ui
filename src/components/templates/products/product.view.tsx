@@ -377,7 +377,7 @@ const ProductView = () => {
                       product.sellerCompany._id,
                       product._id,
                       ProductRedirectTypeEnum.Ebay,
-                      product.amazon as string,
+                      product.eBay as string,
                     )
                   }
                   className={css({
@@ -410,7 +410,7 @@ const ProductView = () => {
                       product.sellerCompany._id,
                       product._id,
                       ProductRedirectTypeEnum.Wallmart,
-                      product.amazon as string,
+                      product.wallmart as string,
                     )
                   }
                   className={css({
