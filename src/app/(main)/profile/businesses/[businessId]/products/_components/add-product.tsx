@@ -45,6 +45,7 @@ export default function ProductForm({product}: Props) {
     title: '',
     description: '',
     status: 'PUBLISH' as 'DRAFT' | 'PUBLISH',
+    slug: '',
   });
 
   const [keywords, setKeywords] = useState<string[]>([]);
@@ -69,10 +70,23 @@ export default function ProductForm({product}: Props) {
 
   const handleInputChange = (e: any) => {
     const {name, value} = e.target;
-    setProductInfo({
-      ...productInfo,
-      [name]: value,
-    });
+    if (name === 'title') {
+      const slug = slugify(value, {
+        remove: /[*+~.()'"!:@]/g,
+        lower: true,
+        trim: true,
+      });
+      setProductInfo({
+        ...productInfo,
+        slug,
+        title: value,
+      });
+    } else {
+      setProductInfo({
+        ...productInfo,
+        [name]: value,
+      });
+    }
   };
 
   const removeKeyword = (index: number) => {
@@ -346,6 +360,7 @@ export default function ProductForm({product}: Props) {
         title: product.title,
         description: product.about || '',
         status: 'PUBLISH' as 'DRAFT' | 'PUBLISH',
+        slug: product.slug || '',
       });
       setVariations(product.variations || []);
       if (product.images)
@@ -509,6 +524,34 @@ export default function ProductForm({product}: Props) {
                   type='text'
                   name='title'
                   value={productInfo.title}
+                  onChange={handleInputChange}
+                  className={css({
+                    w: 'full',
+                    p: '2',
+                    borderWidth: '1px',
+                    borderColor: 'gray.300',
+                    h: '12',
+                    rounded: '0',
+                    _focus: {ring: 'none', ringOffset: 'none', shadow: '1'},
+                  })}
+                />
+              </div>
+              <div className={css({mt: '2', mb: '2'})}>
+                <label
+                  className={css({
+                    display: 'block',
+                    fontSize: 'sm',
+                    lineHeight: 'sm',
+                    color: 'gray.500',
+                  })}
+                  htmlFor='slug'
+                >
+                  Slug
+                </label>
+                <input
+                  type='text'
+                  name='slug'
+                  value={productInfo.slug}
                   onChange={handleInputChange}
                   className={css({
                     w: 'full',

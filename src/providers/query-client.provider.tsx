@@ -8,18 +8,6 @@ type QueryClientProviderProps = {
 };
 
 export default function QueryClientProvider({children}: QueryClientProviderProps) {
-  const [queryClient] = React.useState(
-    () =>
-      new QueryClient({
-        defaultOptions: {
-          queries: {
-            staleTime: Infinity,
-            refetchOnReconnect: false,
-            refetchOnMount: false,
-            retry: 3,
-          },
-        },
-      }),
-  );
+  const [queryClient] = React.useState(() => new QueryClient());
   return <QCProvider client={queryClient}>{children}</QCProvider>;
 }

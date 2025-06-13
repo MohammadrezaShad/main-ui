@@ -1,5 +1,6 @@
 import {css} from '@styled/css';
 import {flex} from '@styled/patterns';
+import {dehydrate} from '@tanstack/react-query';
 import {cookies} from 'next/headers';
 
 import {Footer, Header} from '@/components';
@@ -7,6 +8,7 @@ import MobileNavbar from '@/components/organisms/mobile-navbar/mobile-navbar';
 import {CookieName} from '@/constants';
 import {getUser, searchHomepages} from '@/graphql';
 import {getQueryClient} from '@/helpers';
+import {Hydrate} from '@/providers';
 
 export const dynamic = 'force-dynamic';
 
@@ -20,7 +22,12 @@ export default async function Template({children}: {children: React.ReactNode}) 
     queryFn: () => getUser(authToken),
   });
 
+  queryClient.prefetchQuery({
+    queryKey: ['homepage-seo'],
+    queryFn: () => searchHomepages({}),
+  });
   const homepageSeo = await searchHomepages({});
+  const dehydratedState = dehydrate(queryClient);
 
   return (
     <>
@@ -52,7 +59,7 @@ export default async function Template({children}: {children: React.ReactNode}) 
               rounded: '2xl',
             })}
           >
-            {children}
+            <Hydrate state={dehydratedState}>{children}</Hydrate>
           </div>
         </div>
       </div>

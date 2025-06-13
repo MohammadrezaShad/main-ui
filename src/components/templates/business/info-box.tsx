@@ -46,6 +46,7 @@ function InfoBox({company}: Props) {
         ) : null}
         {company?.website ? (
           <Link
+            rel='dofollow'
             href={company?.website}
             className={css({
               display: 'flex',
@@ -133,28 +134,28 @@ function InfoBox({company}: Props) {
         <ul className={css({display: 'flex', alignItems: 'center', gap: '4'})}>
           {company?.twitter ? (
             <li>
-              <Link href={`https://twitter.com/${company?.twitter}`}>
+              <Link rel='dofollow' target='_blank' href={`${company?.twitter}`}>
                 <IconX className={css({w: '6', h: '6', color: 'text.primary'})} />
               </Link>
             </li>
           ) : null}
           {company?.instagram ? (
             <li>
-              <Link href={`https://instagram.com/${company?.instagram}`}>
+              <Link rel='dofollow' target='_blank' href={`${company?.instagram}`}>
                 <IconInstagram className={css({w: '6', h: '6', color: 'text.primary'})} />
               </Link>
             </li>
           ) : null}
           {company?.facebook ? (
             <li>
-              <Link href={`https://facebook.com/${company?.facebook}`}>
+              <Link rel='dofollow' target='_blank' href={`${company?.facebook}`}>
                 <IconFacebook className={css({w: '6', h: '6', color: 'text.primary'})} />
               </Link>
             </li>
           ) : null}
           {company?.linkdin ? (
             <li>
-              <Link href={`https://linkedin.com/${company?.linkdin}`}>
+              <Link rel='dofollow' target='_blank' href={`${company?.linkdin}`}>
                 <IconLinkedIn className={css({w: '6', h: '6', color: 'text.primary'})} />
               </Link>
             </li>

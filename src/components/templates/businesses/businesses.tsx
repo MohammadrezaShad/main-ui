@@ -28,6 +28,7 @@ export default function BusinessesView() {
   const {data, isLoading} = useQuery({
     queryKey: ['get-companies'],
     queryFn: () => searchCompanies({count: 10, page: 1}),
+    staleTime: 0,
   });
   const router = useRouter();
   const updateSearchParams = useUpdateSearchParam();

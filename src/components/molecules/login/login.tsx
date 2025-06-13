@@ -173,7 +173,7 @@ export default function Login({
           })}
         >
           <span className={css({textStyle: 'caption', color: 'text.primary'})}>
-            By proceeding, you agree to Waterworld’s&nbsp;
+            By proceeding, you agree to WaterLyst’s&nbsp;
           </span>
           <Link href='/' className={css({fontWeight: 'medium', color: 'primary'})}>
             Terms of Use
@@ -181,7 +181,7 @@ export default function Login({
           <span className={css({textStyle: 'caption', color: 'text.primary'})}>
             &nbsp; and
             <br />
-            acknowledge Waterworld’s&nbsp;
+            acknowledge WaterLyst’s&nbsp;
           </span>
           <Link href='/' className={css({fontWeight: 'medium', color: 'primary'})}>
             Privacy Policy

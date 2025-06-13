@@ -25,7 +25,7 @@ interface Props {
 }
 
 const Page = async ({params, searchParams}: Props) => {
-  const page = parseInt(searchParams.page || '1', 10);
+  const page = Number(searchParams.page || '1');
   const queryClient = getQueryClient();
   await queryClient.prefetchQuery({
     queryKey: ['search-cs', params.categoryId, page],

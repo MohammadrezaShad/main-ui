@@ -12,6 +12,7 @@ const SocialMediaLink: React.FC<SocialMediaLinkProps> = ({icon: Icon, action, ty
   <li>
     {type === 'link' ? (
       <Link
+        rel='dofollow'
         target='_blank'
         className={css({
           display: 'grid',

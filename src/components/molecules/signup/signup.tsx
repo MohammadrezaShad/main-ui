@@ -165,7 +165,7 @@ export default function SignUp({
           <span className={css({textStyle: 'caption', color: 'text.primary'})}>
             &nbsp; and
             <br />
-            acknowledge Waterworld’s&nbsp;
+            acknowledge WaterLyst’s&nbsp;
           </span>
           <Link href='/' className={css({fontWeight: 'medium', color: 'primary'})}>
             Privacy Policy

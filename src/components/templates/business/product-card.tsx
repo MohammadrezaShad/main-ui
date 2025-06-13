@@ -176,6 +176,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
             Call
           </Button>
           <Link
+            rel='dofollow'
+            target='_blank'
             href={website}
             className={css({
               display: 'flex',

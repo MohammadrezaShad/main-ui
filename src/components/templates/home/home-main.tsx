@@ -15,6 +15,7 @@ import {
   searchArticles,
   searchCities,
   searchCountries,
+  searchHomepages,
   searchProductCategories,
   StatusType,
 } from '@/graphql';
@@ -39,6 +40,11 @@ interface CategoryOption {
 }
 
 export default function HomeMain() {
+  const seoData = useQuery({
+    queryKey: ['homepage-seo'],
+    queryFn: () => searchHomepages({}),
+  });
+
   const router = useRouter();
   const [primaryCategory, setPrimaryCategory] = useState<CategoryOption | null>(null);
   const [countryName, setCountryName] = useState<{id: string; value: string; label: string} | null>(
@@ -280,6 +286,7 @@ export default function HomeMain() {
         </HeroWrapper>
       </Hero>
       <Container className={css({mt: '8'})}>
+        <h1 className='visually-hidden'>{seoData.data?.results?.[0]?.title}</h1>
         <RecentArticles posts={recentArticles} />
         <Divider label='Keep Reading' />
         <Articles articles={articles} />

@@ -17,6 +17,7 @@ const Page = async ({searchParams}: Props) => {
   await queryClient.prefetchQuery({
     queryKey: ['get-companies'],
     queryFn: () => searchCompanies({count: 10, page}),
+    staleTime: 0,
   });
   const dehydratedState = dehydrate(queryClient);
   return (

@@ -8,9 +8,23 @@ import {toast} from 'react-toastify';
 import {css, cx} from '@styled/css';
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
 import {useRouter} from 'next/navigation';
+import slugify from 'slugify';
 
-import {CityType, CountryType, searchCities, searchCountries} from '@/graphql';
-import {CreateCompanyInput, StatusType, Weekday, WorktimeType} from '@/graphql/generated/types';
+import AsyncSelect from '@/components/templates/products/async-select';
+import {
+  CityType,
+  CountryType,
+  searchCities,
+  searchCompanyCategories,
+  searchCountries,
+} from '@/graphql';
+import {
+  CreateCompanyInput,
+  ProductCategoryType,
+  StatusType,
+  Weekday,
+  WorktimeType,
+} from '@/graphql/generated/types';
 import {createCompany} from '@/graphql/mutation/business/create-business';
 
 export default function AddBusinessPage() {
@@ -37,6 +51,7 @@ export default function AddBusinessPage() {
     {platform: 'Facebook', url: ''},
     {platform: 'LinkedIn', url: ''},
     {platform: 'Instagram', url: ''},
+    {platform: 'Twitter', url: ''},
   ]);
 
   const [workingHours, setWorkingHours] = useState<WorktimeType[]>([
@@ -55,17 +70,26 @@ export default function AddBusinessPage() {
   const [cityInputValue, setCityInputValue] = useState('');
   const [selectedCountry, setSelectedCountry] = useState<string>('');
   const [selectedCity, setSelectedCity] = useState<string>('');
+  const [selectedCategory, setSelectedCategory] = useState<ProductCategoryType | null>(null);
 
   const mutation = useMutation({
     mutationFn: createCompany,
     onSuccess: () => {
       toast.success('Business created successfully');
+      queryClient.removeQueries({queryKey: ['get-companies']});
+      queryClient.invalidateQueries({queryKey: ['get-companies']});
       queryClient.clear();
+      queryClient.refetchQueries({queryKey: ['get-companies']});
       router.push('/profile/businesses');
     },
     onError: () => {
       toast.error('Failed to create business');
     },
+  });
+
+  const categoriesQuery = useQuery({
+    queryKey: ['get-categories'],
+    queryFn: () => searchCompanyCategories({count: 100}),
   });
 
   const handleCompanyInfoChange = (
@@ -190,8 +214,14 @@ export default function AddBusinessPage() {
         facebook: socialMedia.find(sm => sm.platform === 'Facebook')?.url,
         linkdin: socialMedia.find(sm => sm.platform === 'LinkedIn')?.url,
         instagram: socialMedia.find(sm => sm.platform === 'Instagram')?.url,
+        twitter: socialMedia.find(sm => sm.platform === 'Twitter')?.url,
         latitude: parseFloat(companyInfo.latitude?.toString() || '0'),
         longitude: parseFloat(companyInfo.longitude?.toString() || '0'),
+        slug: slugify(companyInfo.title as string, {
+          remove: /[*+~.()'"!:@]/g,
+          lower: true,
+          trim: true,
+        }),
       });
     } catch (error) {
       console.error('Error creating business:', error);
@@ -414,6 +444,53 @@ export default function AddBusinessPage() {
                     h: '12',
                     _focus: {ring: 'none', ringOffset: 'none', shadow: '1'},
                   })}
+                />
+              </div>
+
+              <div
+                className={css({
+                  mt: '2',
+                  '& input': {
+                    h: '12',
+                  },
+                })}
+              >
+                <label
+                  className={css({
+                    display: 'block',
+                    fontSize: 'sm',
+                    lineHeight: 'sm',
+                    color: 'gray.500',
+                  })}
+                >
+                  Category
+                </label>
+                <AsyncSelect
+                  loadOptions={async (inputValue: string) => {
+                    const response = await searchCompanyCategories({
+                      page: 1,
+                      count: 50,
+                      text: inputValue,
+                    });
+                    return response.results?.map(result => ({
+                      id: result._id,
+                      value: result._id,
+                      label: result.title,
+                    })) as any;
+                  }}
+                  onChange={selectedOption => {
+                    setSelectedCategory({
+                      _id: selectedOption?.id,
+                      title: selectedOption?.label,
+                    } as ProductCategoryType);
+                  }}
+                  placeholder={selectedCategory ? selectedCategory.title : 'Select a category...'}
+                  defaultOptions
+                  className={{
+                    border: '1px solid token(colors.gray3)',
+                    height: '48px',
+                    rounded: 'none',
+                  }}
                 />
               </div>
 
@@ -673,8 +750,6 @@ export default function AddBusinessPage() {
                       <option value='Facebook'>Facebook</option>
                       <option value='x.com'>x.com</option>
                       <option value='LinkedIn'>LinkedIn</option>
-                      <option value='YouTube'>YouTube</option>
-                      <option value='TikTok'>TikTok</option>
                     </select>
                     <div className={css({flex: '1'})}>
                       <label
