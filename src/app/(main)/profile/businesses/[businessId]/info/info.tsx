@@ -3,14 +3,24 @@
 
 'use client';
 
-import {useState} from 'react';
-import {toast} from 'react-toastify';
 import {css, cx} from '@styled/css';
-import {useQuery} from '@tanstack/react-query';
+import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
+import Image from 'next/image';
+import {useRef, useState} from 'react';
+import {toast} from 'react-toastify';
 
-import {CityType, CompanyType, CountryType, searchCities, searchCountries} from '@/graphql';
+import {
+  CityType,
+  CompanyType,
+  CountryType,
+  searchCities,
+  searchCountries,
+  uploadImage,
+} from '@/graphql';
 import {StatusType, Weekday, WorktimeType} from '@/graphql/generated/types';
 import {updateCompany} from '@/graphql/mutation/business/update-business';
+
+const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
 
 interface Props {
   company: CompanyType;
@@ -18,15 +28,21 @@ interface Props {
 
 export default function BusinessInfoPage({company}: Props) {
   const [activeTab, setActiveTab] = useState('Information');
+  const queryClient = useQueryClient();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
+  const [coverImagePreview, setCoverImagePreview] = useState<string>('');
+  const [isCoverRemoved, setIsCoverRemoved] = useState(false);
 
   const [companyInfo, setCompanyInfo] = useState({
-    name: company.title || '',
+    title: company.title || '',
     about: company.about || '',
     email: company.email || '',
-    phone: company.callNumber || '',
+    callNumber: company.callNumber || '',
     website: company.website || '',
     address: company.address || '',
-    status: company.status || 'PUBLISH',
+    status: (company.status as StatusType) || 'PUBLISH',
   });
 
   const [keywords, setKeywords] = useState<string[]>(company.keywords || []);
@@ -39,15 +55,17 @@ export default function BusinessInfoPage({company}: Props) {
   ]);
 
   const [workingHours, setWorkingHours] = useState<WorktimeType[]>(
-    company.worktimes || [
-      {day: Weekday.Monday, isOpened: false, startTime: null, finishTime: null},
-      {day: Weekday.Tuesday, isOpened: false, startTime: null, finishTime: null},
-      {day: Weekday.Wednesday, isOpened: false, startTime: null, finishTime: null},
-      {day: Weekday.Thursday, isOpened: false, startTime: null, finishTime: null},
-      {day: Weekday.Friday, isOpened: false, startTime: null, finishTime: null},
-      {day: Weekday.Saturday, isOpened: false, startTime: null, finishTime: null},
-      {day: Weekday.Sunday, isOpened: false, startTime: null, finishTime: null},
-    ],
+    company.worktimes?.length
+      ? company.worktimes
+      : [
+          {day: Weekday.Monday, isOpened: false, startTime: null, finishTime: null},
+          {day: Weekday.Tuesday, isOpened: false, startTime: null, finishTime: null},
+          {day: Weekday.Wednesday, isOpened: false, startTime: null, finishTime: null},
+          {day: Weekday.Thursday, isOpened: false, startTime: null, finishTime: null},
+          {day: Weekday.Friday, isOpened: false, startTime: null, finishTime: null},
+          {day: Weekday.Saturday, isOpened: false, startTime: null, finishTime: null},
+          {day: Weekday.Sunday, isOpened: false, startTime: null, finishTime: null},
+        ],
   );
 
   const [products, setProducts] = useState(company.productAndServices || []);
@@ -57,6 +75,62 @@ export default function BusinessInfoPage({company}: Props) {
   const [selectedCountry, setSelectedCountry] = useState<string>(company.country?._id || '');
   const [selectedCity, setSelectedCity] = useState<string>(company.city?._id || '');
 
+  const mutation = useMutation({
+    mutationFn: async (payload: {newCoverFile: File | null; removeCover: boolean}) => {
+      let coverId: string | null | undefined;
+
+      if (payload.newCoverFile) {
+        const uploaded = await uploadImage(payload.newCoverFile, {});
+        coverId = uploaded?.image?._id;
+      } else if (payload.removeCover) {
+        coverId = null;
+      }
+
+      const updatePayload: any = {
+        id: company._id,
+        ...companyInfo,
+        keywords,
+        facebook: socialMedia.find(sm => sm.platform === 'Facebook')?.url,
+        twitter: socialMedia.find(sm => sm.platform === 'Twitter')?.url,
+        instagram: socialMedia.find(sm => sm.platform === 'Instagram')?.url,
+        productAndServices: products,
+        worktimes: workingHours.map(wh => ({
+          day: wh.day,
+          isOpened: wh.isOpened,
+          startTime: wh.startTime
+            ? {
+                hour: wh.startTime.hour,
+                minute: wh.startTime.minute,
+                meridiem: wh.startTime.meridiem,
+              }
+            : null,
+          finishTime: wh.finishTime
+            ? {
+                hour: wh.finishTime.hour,
+                minute: wh.finishTime.minute,
+                meridiem: wh.finishTime.meridiem,
+              }
+            : null,
+        })),
+        country: selectedCountry,
+        city: selectedCity,
+      };
+
+      if (coverId !== undefined) {
+        updatePayload.cover = coverId;
+      }
+
+      return updateCompany(updatePayload);
+    },
+    onSuccess: () => {
+      toast.success('Company information updated successfully');
+      queryClient.invalidateQueries({queryKey: ['find-business', company._id]});
+    },
+    onError: (error: Error) => {
+      toast.error(`Failed to update company: ${error.message}`);
+    },
+  });
+
   const handleCompanyInfoChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
   ) => {
@@ -65,6 +139,28 @@ export default function BusinessInfoPage({company}: Props) {
       ...companyInfo,
       [name]: value,
     });
+  };
+
+  const handleCoverImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setCoverImageFile(file);
+      setIsCoverRemoved(false);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setCoverImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleRemoveCover = () => {
+    setCoverImageFile(null);
+    setCoverImagePreview('');
+    setIsCoverRemoved(true);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
   };
 
   const removeKeyword = (index: number) => {
@@ -132,10 +228,6 @@ export default function BusinessInfoPage({company}: Props) {
     setWorkingHours(newWorkingHours);
   };
 
-  const removeWorkingHour = (index: number) => {
-    setWorkingHours(workingHours.filter((_, i) => i !== index));
-  };
-
   const handleProductChange = (index: number, value: string) => {
     const updatedProducts = [...products];
     updatedProducts[index] = value;
@@ -152,49 +244,10 @@ export default function BusinessInfoPage({company}: Props) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    try {
-      const response = await updateCompany({
-        id: company._id,
-        title: companyInfo.name,
-        about: companyInfo.about,
-        email: companyInfo.email,
-        callNumber: companyInfo.phone,
-        website: companyInfo.website,
-        address: companyInfo.address,
-        keywords,
-        facebook: socialMedia.find(sm => sm.platform === 'Facebook')?.url,
-        twitter: socialMedia.find(sm => sm.platform === 'Twitter')?.url,
-        instagram: socialMedia.find(sm => sm.platform === 'Instagram')?.url,
-        productAndServices: products,
-        status: companyInfo.status as StatusType,
-        worktimes: workingHours.map(wh => ({
-          day: wh.day,
-          isOpened: wh.isOpened,
-          startTime: wh.startTime
-            ? {
-                hour: wh.startTime.hour,
-                minute: wh.startTime.minute,
-                meridiem: wh.startTime.meridiem,
-              }
-            : undefined,
-          finishTime: wh.finishTime
-            ? {
-                hour: wh.finishTime.hour,
-                minute: wh.finishTime.minute,
-                meridiem: wh.finishTime.meridiem,
-              }
-            : undefined,
-        })),
-      });
-
-      if (response.success) {
-        toast.success('Company information updated successfully');
-      }
-    } catch (error) {
-      console.error('Error updating company:', error);
-      toast.error('Failed to update company information');
-    }
+    mutation.mutate({
+      newCoverFile: coverImageFile,
+      removeCover: isCoverRemoved,
+    });
   };
 
   const countryQuery = useQuery({
@@ -204,26 +257,10 @@ export default function BusinessInfoPage({company}: Props) {
 
   const countries: CountryType[] = countryQuery.data?.results || [];
 
-  const handleCountryInputChange = async (
-    event: React.ChangeEvent<HTMLInputElement>,
-    value: string,
-  ) => {
-    setCountryInputValue(value);
-    await countryQuery.refetch();
-  };
-
   const handleSelectCountry = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const countryId = event.target.value;
     setSelectedCountry(countryId);
-    setCompanyInfo(prev => ({
-      ...prev,
-      country: countryId,
-    }));
     setSelectedCity('');
-    setCompanyInfo(prev => ({
-      ...prev,
-      city: '',
-    }));
   };
 
   const cityQuery = useQuery({
@@ -234,22 +271,16 @@ export default function BusinessInfoPage({company}: Props) {
 
   const cities: CityType[] = cityQuery.data?.results || [];
 
-  const handleCityInputChange = async (
-    event: React.ChangeEvent<HTMLInputElement>,
-    value: string,
-  ) => {
-    setCityInputValue(value);
-    await cityQuery.refetch();
-  };
-
   const handleSelectCity = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const cityId = event.target.value;
     setSelectedCity(cityId);
-    setCompanyInfo(prev => ({
-      ...prev,
-      city: cityId,
-    }));
   };
+
+  const currentCoverUrl =
+    coverImagePreview ||
+    (company.cover && !isCoverRemoved
+      ? `${IMAGE_STORAGE_URL}/${company.cover.filename}-${company.cover._id}`
+      : '');
 
   return (
     <div
@@ -296,6 +327,101 @@ export default function BusinessInfoPage({company}: Props) {
       <form onSubmit={handleSubmit} className={css({p: '6'})}>
         {activeTab === 'Information' && (
           <>
+            <div className={css({mb: 6})}>
+              <label
+                className={css({
+                  display: 'block',
+                  fontSize: 'sm',
+                  lineHeight: 'sm',
+                  color: 'gray.500',
+                  mb: '2',
+                })}
+              >
+                Cover Image
+              </label>
+              <input
+                type='file'
+                accept='image/*'
+                ref={fileInputRef}
+                onChange={handleCoverImageChange}
+                className={css({display: 'none'})}
+              />
+              <div
+                className={css({
+                  w: 'full',
+                  h: '250px',
+                  borderWidth: '1px',
+                  borderColor: 'gray.300',
+                  bgColor: 'gray.50',
+                  pos: 'relative',
+                  overflow: 'hidden',
+                })}
+              >
+                {currentCoverUrl ? (
+                  <Image
+                    src={currentCoverUrl}
+                    alt='Company Cover'
+                    layout='fill'
+                    objectFit='cover'
+                  />
+                ) : (
+                  <div
+                    className={css({
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      w: 'full',
+                      h: 'full',
+                      color: 'gray.400',
+                    })}
+                  >
+                    No cover image
+                  </div>
+                )}
+                <div
+                  className={css({
+                    pos: 'absolute',
+                    bottom: 4,
+                    right: 4,
+                    display: 'flex',
+                    gap: 2,
+                  })}
+                >
+                  <button
+                    type='button'
+                    onClick={() => fileInputRef.current?.click()}
+                    className={css({
+                      bgColor: 'white',
+                      color: 'gray.800',
+                      rounded: 'md',
+                      p: 2,
+                      border: '1px solid token(colors.gray3)',
+                      cursor: 'pointer',
+                      _hover: {bgColor: 'gray.100'},
+                    })}
+                  >
+                    Change
+                  </button>
+                  {currentCoverUrl && (
+                    <button
+                      type='button'
+                      onClick={handleRemoveCover}
+                      className={css({
+                        bgColor: 'red.600',
+                        color: 'white',
+                        rounded: 'md',
+                        p: 2,
+                        cursor: 'pointer',
+                        _hover: {bgColor: 'red.700'},
+                      })}
+                    >
+                      Remove
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+
             <div
               className={css({
                 display: 'grid',
@@ -317,8 +443,8 @@ export default function BusinessInfoPage({company}: Props) {
                 </label>
                 <input
                   type='text'
-                  name='name'
-                  value={companyInfo.name}
+                  name='title'
+                  value={companyInfo.title}
                   onChange={handleCompanyInfoChange}
                   className={css({
                     w: 'full',
@@ -373,8 +499,8 @@ export default function BusinessInfoPage({company}: Props) {
                 </label>
                 <input
                   type='text'
-                  name='phone'
-                  value={companyInfo.phone}
+                  name='callNumber'
+                  value={companyInfo.callNumber}
                   onChange={handleCompanyInfoChange}
                   className={css({
                     w: 'full',
@@ -417,7 +543,15 @@ export default function BusinessInfoPage({company}: Props) {
               </div>
 
               <div className={css({mt: '2', mb: '4'})}>
-                <label className={css({display: 'block', mb: '2', fontWeight: 'medium'})}>
+                <label
+                  className={css({
+                    display: 'block',
+                    mb: '2',
+                    fontSize: 'sm',
+                    lineHeight: 'sm',
+                    color: 'gray.500',
+                  })}
+                >
                   Country
                 </label>
                 <select
@@ -444,7 +578,15 @@ export default function BusinessInfoPage({company}: Props) {
               </div>
 
               <div className={css({mt: '2', mb: '4'})}>
-                <label className={css({display: 'block', mb: '2', fontWeight: 'medium'})}>
+                <label
+                  className={css({
+                    display: 'block',
+                    mb: '2',
+                    fontSize: 'sm',
+                    lineHeight: 'sm',
+                    color: 'gray.500',
+                  })}
+                >
                   City
                 </label>
                 <select
@@ -559,7 +701,7 @@ export default function BusinessInfoPage({company}: Props) {
                       addKeyword();
                     }
                   }}
-                  placeholder='Add keyword...'
+                  placeholder='Type and press enter'
                   className={css({
                     flex: '1',
                     minW: '100px',
@@ -660,36 +802,34 @@ export default function BusinessInfoPage({company}: Props) {
                     </button>
                   </div>
                 ))}
-                {socialMedia.length > 0 && socialMedia[socialMedia.length - 1].url === '' ? (
-                  <div
-                    className={css({
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    })}
+                <div
+                  className={css({
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  })}
+                >
+                  <button
+                    type='button'
+                    onClick={addSocialMedia}
+                    className={css({p: '2', color: 'gray.500', _hover: {color: 'gray.700'}})}
                   >
-                    <button
-                      type='button'
-                      onClick={addSocialMedia}
-                      className={css({p: '2', color: 'gray.500', _hover: {color: 'gray.700'}})}
+                    <svg
+                      xmlns='http://www.w3.org/2000/svg'
+                      width='24'
+                      height='24'
+                      viewBox='0 0 24 24'
+                      fill='none'
+                      stroke='currentColor'
+                      strokeWidth='2'
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
                     >
-                      <svg
-                        xmlns='http://www.w3.org/2000/svg'
-                        width='24'
-                        height='24'
-                        viewBox='0 0 24 24'
-                        fill='none'
-                        stroke='currentColor'
-                        strokeWidth='2'
-                        strokeLinecap='round'
-                        strokeLinejoin='round'
-                      >
-                        <path d='M12 5v14' />
-                        <path d='M5 12h14' />
-                      </svg>
-                    </button>
-                  </div>
-                ) : null}
+                      <path d='M12 5v14' />
+                      <path d='M5 12h14' />
+                    </svg>
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -728,13 +868,21 @@ export default function BusinessInfoPage({company}: Props) {
             </div>
 
             <div className={css({mt: '2', mb: '4'})}>
-              <label className={css({display: 'block', mb: '2', fontWeight: 'medium'})}>
+              <label
+                className={css({
+                  display: 'block',
+                  mb: '2',
+                  fontSize: 'sm',
+                  lineHeight: 'sm',
+                  color: 'gray.500',
+                })}
+              >
                 Status
               </label>
               <select
                 name='status'
-                value={company.status || ''}
-                onChange={e => handleCompanyInfoChange(e)}
+                value={companyInfo.status}
+                onChange={handleCompanyInfoChange}
                 className={css({
                   w: 'full',
                   p: '2',
@@ -1006,6 +1154,7 @@ export default function BusinessInfoPage({company}: Props) {
         <div className={css({mt: '8', display: 'flex', gap: '2'})}>
           <button
             type='submit'
+            disabled={mutation.isPending}
             className={css({
               pl: '6',
               pr: '6',
@@ -1016,9 +1165,10 @@ export default function BusinessInfoPage({company}: Props) {
               rounded: '0',
               _hover: {bgColor: 'blue.600'},
               _focus: {ring: 'none', ringOffset: 'none', shadow: '2'},
+              _disabled: {bgColor: 'gray.400', cursor: 'not-allowed'},
             })}
           >
-            Save Changes
+            {mutation.isPending ? 'Saving...' : 'Save Changes'}
           </button>
           <button
             type='button'

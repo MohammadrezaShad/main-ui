@@ -6,14 +6,14 @@
 
 'use client';
 
-import {useEffect, useRef, useState} from 'react';
-import {toast} from 'react-toastify';
 import {css, cx} from '@styled/css';
 import {Box} from '@styled/jsx';
 import {useQueryClient} from '@tanstack/react-query';
 import Image from 'next/image';
 import Link from 'next/link';
 import {useParams, useRouter} from 'next/navigation';
+import {useEffect, useRef, useState} from 'react';
+import {toast} from 'react-toastify';
 import slugify from 'slugify';
 
 import {IconArrowRight, IconEyeOpen, IconRedirect} from '@/assets';
@@ -332,6 +332,7 @@ export default function ProductForm({product}: Props) {
       const response = await action(input as any);
 
       if (response.success) {
+        await queryClient.invalidateQueries({queryKey: ['search-business-products']});
         queryClient.clear();
         toast.success('Product created successfully');
         router.push(`/profile/businesses/${params.businessId}/products`);
@@ -672,7 +673,7 @@ export default function ProductForm({product}: Props) {
                         addKeyword();
                       }
                     }}
-                    placeholder='Add keyword...'
+                    placeholder='Type and press enter'
                     className={css({
                       flex: '1',
                       minW: '100px',

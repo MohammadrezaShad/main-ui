@@ -25,6 +25,7 @@ function InfoBox({company}: Props) {
       <Box display='flex' gap={4} mb={6}>
         {company?.callNumber ? (
           <Link
+            rel='dofollow'
             href={`tel:${company?.callNumber}`}
             className={css({
               display: 'flex',

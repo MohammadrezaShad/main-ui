@@ -12,6 +12,9 @@ export async function findProductById(
                     success
                     result {
                       _id
+                      amazon
+                      eBay
+                      wallmart
                       view
                       redirect
                       about

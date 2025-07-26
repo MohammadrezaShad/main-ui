@@ -3,11 +3,12 @@
 
 'use client';
 
-import {useState} from 'react';
-import {toast} from 'react-toastify';
 import {css, cx} from '@styled/css';
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
+import Image from 'next/image';
 import {useRouter} from 'next/navigation';
+import {useState} from 'react';
+import {toast} from 'react-toastify';
 import slugify from 'slugify';
 
 import AsyncSelect from '@/components/templates/products/async-select';
@@ -17,6 +18,7 @@ import {
   searchCities,
   searchCompanyCategories,
   searchCountries,
+  uploadImage,
 } from '@/graphql';
 import {
   CreateCompanyInput,
@@ -32,7 +34,14 @@ export default function AddBusinessPage() {
   const queryClient = useQueryClient();
   const router = useRouter();
 
-  const [companyInfo, setCompanyInfo] = useState<CreateCompanyInput>({
+  const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
+  const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
+  const [profileImagePreview, setProfileImagePreview] = useState<string>('');
+  const [coverImagePreview, setCoverImagePreview] = useState<string>('');
+
+  const [companyInfo, setCompanyInfo] = useState<
+    Omit<CreateCompanyInput, 'profileImage' | 'cover'>
+  >({
     title: '',
     about: '',
     email: '',
@@ -73,7 +82,30 @@ export default function AddBusinessPage() {
   const [selectedCategory, setSelectedCategory] = useState<ProductCategoryType | null>(null);
 
   const mutation = useMutation({
-    mutationFn: createCompany,
+    mutationFn: async (data: {
+      companyData: Omit<CreateCompanyInput, 'profileImage' | 'cover'>;
+      profileFile: File | null;
+      coverFile: File | null;
+    }) => {
+      let profileImageId: string | undefined;
+      let coverImageId: string | undefined;
+
+      if (data.profileFile) {
+        const uploadedProfile = await uploadImage(data.profileFile, {});
+        profileImageId = uploadedProfile?.image?._id;
+      }
+
+      if (data.coverFile) {
+        const uploadedCover = await uploadImage(data.coverFile, {});
+        coverImageId = uploadedCover?.image?._id;
+      }
+
+      return createCompany({
+        ...data.companyData,
+        profileImage: profileImageId,
+        cover: coverImageId,
+      });
+    },
     onSuccess: () => {
       toast.success('Business created successfully');
       queryClient.removeQueries({queryKey: ['get-companies']});
@@ -82,8 +114,8 @@ export default function AddBusinessPage() {
       queryClient.refetchQueries({queryKey: ['get-companies']});
       router.push('/profile/businesses');
     },
-    onError: () => {
-      toast.error('Failed to create business');
+    onError: (error: Error) => {
+      toast.error(`Failed to create business: ${error.message}`);
     },
   });
 
@@ -100,6 +132,22 @@ export default function AddBusinessPage() {
       ...companyInfo,
       [name]: value,
     });
+  };
+
+  const handleImageChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    setImageFile: (file: File | null) => void,
+    setPreview: (url: string) => void,
+  ) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setImageFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const removeKeyword = (index: number) => {
@@ -167,10 +215,6 @@ export default function AddBusinessPage() {
     setWorkingHours(newWorkingHours);
   };
 
-  const removeWorkingHour = (index: number) => {
-    setWorkingHours(workingHours.filter((_, i) => i !== index));
-  };
-
   const handleProductChange = (index: number, value: string) => {
     const updatedProducts = [...products];
     updatedProducts[index] = value;
@@ -190,38 +234,42 @@ export default function AddBusinessPage() {
 
     try {
       await mutation.mutateAsync({
-        ...companyInfo,
-        keywords,
-        productAndServices: products,
-        worktimes: workingHours.map(wh => ({
-          day: wh.day,
-          isOpened: wh.isOpened,
-          startTime: wh.startTime
-            ? {
-                hour: wh.startTime.hour,
-                minute: wh.startTime.minute,
-                meridiem: wh.startTime.meridiem,
-              }
-            : undefined,
-          finishTime: wh.finishTime
-            ? {
-                hour: wh.finishTime.hour,
-                minute: wh.finishTime.minute,
-                meridiem: wh.finishTime.meridiem,
-              }
-            : undefined,
-        })),
-        facebook: socialMedia.find(sm => sm.platform === 'Facebook')?.url,
-        linkdin: socialMedia.find(sm => sm.platform === 'LinkedIn')?.url,
-        instagram: socialMedia.find(sm => sm.platform === 'Instagram')?.url,
-        twitter: socialMedia.find(sm => sm.platform === 'Twitter')?.url,
-        latitude: parseFloat(companyInfo.latitude?.toString() || '0'),
-        longitude: parseFloat(companyInfo.longitude?.toString() || '0'),
-        slug: slugify(companyInfo.title as string, {
-          remove: /[*+~.()'"!:@]/g,
-          lower: true,
-          trim: true,
-        }),
+        companyData: {
+          ...companyInfo,
+          keywords,
+          productAndServices: products,
+          worktimes: workingHours.map(wh => ({
+            day: wh.day,
+            isOpened: wh.isOpened,
+            startTime: wh.startTime
+              ? {
+                  hour: wh.startTime.hour,
+                  minute: wh.startTime.minute,
+                  meridiem: wh.startTime.meridiem,
+                }
+              : undefined,
+            finishTime: wh.finishTime
+              ? {
+                  hour: wh.finishTime.hour,
+                  minute: wh.finishTime.minute,
+                  meridiem: wh.finishTime.meridiem,
+                }
+              : undefined,
+          })),
+          facebook: socialMedia.find(sm => sm.platform === 'Facebook')?.url,
+          linkdin: socialMedia.find(sm => sm.platform === 'LinkedIn')?.url,
+          instagram: socialMedia.find(sm => sm.platform === 'Instagram')?.url,
+          twitter: socialMedia.find(sm => sm.platform === 'Twitter')?.url,
+          latitude: parseFloat(companyInfo.latitude?.toString() || '0'),
+          longitude: parseFloat(companyInfo.longitude?.toString() || '0'),
+          slug: slugify(companyInfo.title as string, {
+            remove: /[*+~.()'"!:@]/g,
+            lower: true,
+            trim: true,
+          }),
+        },
+        profileFile: profileImageFile,
+        coverFile: coverImageFile,
       });
     } catch (error) {
       console.error('Error creating business:', error);
@@ -234,14 +282,6 @@ export default function AddBusinessPage() {
   });
 
   const countries: CountryType[] = countryQuery.data?.results || [];
-
-  const handleCountryInputChange = async (
-    event: React.ChangeEvent<HTMLInputElement>,
-    value: string,
-  ) => {
-    setCountryInputValue(value);
-    await countryQuery.refetch();
-  };
 
   const handleSelectCountry = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const countryId = event.target.value;
@@ -264,14 +304,6 @@ export default function AddBusinessPage() {
   });
 
   const cities: CityType[] = cityQuery.data?.results || [];
-
-  const handleCityInputChange = async (
-    event: React.ChangeEvent<HTMLInputElement>,
-    value: string,
-  ) => {
-    setCityInputValue(value);
-    await cityQuery.refetch();
-  };
 
   const handleSelectCity = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const cityId = event.target.value;
@@ -327,6 +359,125 @@ export default function AddBusinessPage() {
       <form onSubmit={handleSubmit} className={css({p: '6'})}>
         {activeTab === 'Information' && (
           <>
+            <div className={css({mt: '2', mb: '4'})}>
+              <label
+                htmlFor='cover-upload'
+                className={css({
+                  display: 'block',
+                  fontSize: 'sm',
+                  lineHeight: 'sm',
+                  color: 'gray.500',
+                  mb: '2',
+                })}
+              >
+                Cover Image
+              </label>
+              <input
+                id='cover-upload'
+                type='file'
+                accept='image/*'
+                onChange={e => handleImageChange(e, setCoverImageFile, setCoverImagePreview)}
+                className={css({display: 'none'})}
+              />
+              <label
+                htmlFor='cover-upload'
+                className={css({
+                  cursor: 'pointer',
+                  display: 'block',
+                  w: 'full',
+                  h: '200px',
+                  borderWidth: '1px',
+                  borderColor: 'gray.300',
+                  bgColor: 'gray.50',
+                  pos: 'relative',
+                  overflow: 'hidden',
+                })}
+              >
+                {coverImagePreview ? (
+                  <Image
+                    src={coverImagePreview}
+                    alt='Cover preview'
+                    layout='fill'
+                    objectFit='cover'
+                  />
+                ) : (
+                  <div
+                    className={css({
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      w: 'full',
+                      h: 'full',
+                      color: 'gray.400',
+                    })}
+                  >
+                    Click to upload cover image
+                  </div>
+                )}
+              </label>
+            </div>
+
+            <div className={css({mt: '2', mb: '4'})}>
+              <label
+                htmlFor='profile-upload'
+                className={css({
+                  display: 'block',
+                  fontSize: 'sm',
+                  lineHeight: 'sm',
+                  color: 'gray.500',
+                  mb: '2',
+                })}
+              >
+                Profile Image
+              </label>
+              <input
+                id='profile-upload'
+                type='file'
+                accept='image/*'
+                onChange={e => handleImageChange(e, setProfileImageFile, setProfileImagePreview)}
+                className={css({display: 'none'})}
+              />
+              <label
+                htmlFor='profile-upload'
+                className={css({
+                  cursor: 'pointer',
+                  display: 'inline-block',
+                  w: '134px',
+                  h: '134px',
+                  borderWidth: '1px',
+                  borderColor: 'gray.300',
+                  bgColor: 'gray.50',
+                  rounded: 'full',
+                  pos: 'relative',
+                  overflow: 'hidden',
+                })}
+              >
+                {profileImagePreview ? (
+                  <Image
+                    src={profileImagePreview}
+                    alt='Profile preview'
+                    layout='fill'
+                    objectFit='cover'
+                  />
+                ) : (
+                  <div
+                    className={css({
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      w: 'full',
+                      h: 'full',
+                      color: 'gray.400',
+                      textAlign: 'center',
+                      p: 2,
+                    })}
+                  >
+                    Click to upload profile
+                  </div>
+                )}
+              </label>
+            </div>
+
             <div
               className={css({
                 display: 'grid',
@@ -708,7 +859,7 @@ export default function AddBusinessPage() {
                       addKeyword();
                     }
                   }}
-                  placeholder='Add keyword...'
+                  placeholder='Type and press enter'
                   className={css({
                     flex: '1',
                     minW: '100px',
@@ -1160,6 +1311,7 @@ export default function AddBusinessPage() {
         <div className={css({mt: '8', display: 'flex', gap: '2'})}>
           <button
             type='submit'
+            disabled={mutation.isPending}
             className={css({
               pl: '6',
               pr: '6',
@@ -1170,9 +1322,10 @@ export default function AddBusinessPage() {
               rounded: '0',
               _hover: {bgColor: 'blue.600'},
               _focus: {ring: 'none', ringOffset: 'none', shadow: '2'},
+              _disabled: {bgColor: 'gray.300', cursor: 'not-allowed'},
             })}
           >
-            Save Changes
+            {mutation.isPending ? 'Saving...' : 'Save Changes'}
           </button>
           <button
             type='button'
