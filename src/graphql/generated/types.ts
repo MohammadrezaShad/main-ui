@@ -1,21 +1,19 @@
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
-export type Exact<T extends {[key: string]: unknown}> = {[K in keyof T]: T[K]};
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {[SubKey in K]?: Maybe<T[SubKey]>};
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {[SubKey in K]: Maybe<T[SubKey]>};
-export type MakeEmpty<T extends {[key: string]: unknown}, K extends keyof T> = {[_ in K]?: never};
-export type Incremental<T> =
-  | T
-  | {[P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never};
+export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
+export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: {input: string; output: string};
-  String: {input: string; output: string};
-  Boolean: {input: boolean; output: boolean};
-  Int: {input: number; output: number};
-  Float: {input: number; output: number};
-  DateTime: {input: any; output: any};
-  Upload: {input: any; output: any};
+  ID: { input: string; output: string; }
+  String: { input: string; output: string; }
+  Boolean: { input: boolean; output: boolean; }
+  Int: { input: number; output: number; }
+  Float: { input: number; output: number; }
+  DateTime: { input: any; output: any; }
+  Upload: { input: any; output: any; }
 };
 
 export enum ActivityModuleType {
@@ -24,7 +22,7 @@ export enum ActivityModuleType {
   Comments = 'COMMENTS',
   Likes = 'LIKES',
   Users = 'USERS',
-  VisitStatistics = 'VISIT_STATISTICS',
+  VisitStatistics = 'VISIT_STATISTICS'
 }
 
 export type ActivityQuery = {
@@ -84,17 +82,21 @@ export type ArticleMutation = {
   updateArticle: UpdateArticleOutput;
 };
 
+
 export type ArticleMutationCreateArticleArgs = {
   input: CreateArticleInput;
 };
+
 
 export type ArticleMutationDeleteArticleArgs = {
   input: DeleteArticleInput;
 };
 
+
 export type ArticleMutationDeleteArticlesArgs = {
   input: BulkDeleteArticleInput;
 };
+
 
 export type ArticleMutationUpdateArticleArgs = {
   input: UpdateArticleInput;
@@ -113,37 +115,46 @@ export type ArticleQuery = {
   shareToSocialNetworks: ShareArticleOutput;
 };
 
+
 export type ArticleQueryFindArticleByIdArgs = {
   input: FindArticleInput;
 };
+
 
 export type ArticleQueryFindArticleByIdsArgs = {
   input: BulkFindArticleInput;
 };
 
+
 export type ArticleQueryFindArticleByNameArgs = {
   input: FindArticleBySlugInput;
 };
+
 
 export type ArticleQueryFindRelatedArticlesArgs = {
   input: FindRelatedArticlesInput;
 };
 
+
 export type ArticleQueryGetArticlePdfByIdArgs = {
   input: DownloadArticleInput;
 };
+
 
 export type ArticleQueryGetUserArticlesArgs = {
   input: GetUserArticlesInput;
 };
 
+
 export type ArticleQueryGetUserBookmarkedArticlesArgs = {
   input: GetUserBookmarkedArticlesInput;
 };
 
+
 export type ArticleQuerySearchArticlesArgs = {
   input: SearchArticleInput;
 };
+
 
 export type ArticleQueryShareToSocialNetworksArgs = {
   input: ShareArticleInput;
@@ -156,7 +167,7 @@ export enum ArticleSortType {
   MostComments = 'MOST_COMMENTS',
   MostSaved = 'MOST_SAVED',
   MostVisits = 'MOST_VISITS',
-  Newest = 'NEWEST',
+  Newest = 'NEWEST'
 }
 
 export type ArticleType = {
@@ -206,27 +217,33 @@ export type AuthMutation = {
   verifyAccount: VerifyAccountOutput;
 };
 
+
 export type AuthMutationForgetPasswordArgs = {
   input: ForgetPasswordInput;
 };
+
 
 export type AuthMutationResetPasswordArgs = {
   input: ChangePasswordInput;
 };
 
+
 export type AuthMutationSendVerificationCodeArgs = {
   input: SendVerificationCodeInput;
 };
+
 
 export type AuthMutationSignupArgs = {
   avatar?: InputMaybe<Scalars['Upload']['input']>;
   input: SignupInputType;
 };
 
+
 export type AuthMutationUpdateUserArgs = {
   avatar?: InputMaybe<Scalars['Upload']['input']>;
   input: UpdateUserInput;
 };
+
 
 export type AuthMutationVerifyAccountArgs = {
   input: VerifyAccountInput;
@@ -240,13 +257,16 @@ export type AuthQuery = {
   signinWithGoogle: SigninOutput;
 };
 
+
 export type AuthQueryIsValidAndVerifiedAccountArgs = {
   input: IsValidAndVerifiedAccountInput;
 };
 
+
 export type AuthQuerySigninArgs = {
   input: SigninInput;
 };
+
 
 export type AuthQuerySigninWithGoogleArgs = {
   input: GoogleTokenInput;
@@ -281,21 +301,26 @@ export type BookmarkMutation = {
   updateBookmark: UpdateBookmarkOutput;
 };
 
+
 export type BookmarkMutationCreateBookmarkArgs = {
   input: CreateBookmarkInput;
 };
+
 
 export type BookmarkMutationDeleteBookmarkArgs = {
   input: DeleteBookmarkInput;
 };
 
+
 export type BookmarkMutationDeleteBookmarksArgs = {
   input: BulkFindBookmarkInput;
 };
 
+
 export type BookmarkMutationDeleteOneBookmarkArgs = {
   input: DeleteOneArticleBookmarkInput;
 };
+
 
 export type BookmarkMutationUpdateBookmarkArgs = {
   input: UpdateBookmarkInput;
@@ -308,13 +333,16 @@ export type BookmarkQuery = {
   searchBookmarks: SearchBookmarkOutput;
 };
 
+
 export type BookmarkQueryFindBookmarkByIdArgs = {
   input: FindBookmarkInput;
 };
 
+
 export type BookmarkQueryFindBookmarkByIdsArgs = {
   input: BulkFindBookmarkInput;
 };
+
 
 export type BookmarkQuerySearchBookmarksArgs = {
   input: SearchBookmarkInput;
@@ -379,6 +407,10 @@ export type BulkDeleteQuestionInput = {
 
 export type BulkDeleteQuizInput = {
   ids: Array<Scalars['String']['input']>;
+};
+
+export type BulkDeleteRedirectsInput = {
+  redirectIds: Array<Scalars['String']['input']>;
 };
 
 export type BulkDeleteSeoSettingInput = {
@@ -447,17 +479,21 @@ export type CategoryMutation = {
   updateCategory: UpdateCategoryOutput;
 };
 
+
 export type CategoryMutationCreateCategoryArgs = {
   input: CreateCategoryInput;
 };
+
 
 export type CategoryMutationDeleteCategoriesArgs = {
   input: BulkDeleteCategoryInput;
 };
 
+
 export type CategoryMutationDeleteCategoryArgs = {
   input: DeleteCategoryInput;
 };
+
 
 export type CategoryMutationUpdateCategoryArgs = {
   input: UpdateCategoryInput;
@@ -470,13 +506,16 @@ export type CategoryQuery = {
   searchCategories: SearchCategoryOutput;
 };
 
+
 export type CategoryQueryFindCategoryByIdArgs = {
   input: FindCategoryInput;
 };
 
+
 export type CategoryQueryFindCategoryBySlugArgs = {
   input: FindCategoryBySlugInput;
 };
+
 
 export type CategoryQuerySearchCategoriesArgs = {
   input: SearchCategoryInput;
@@ -524,17 +563,21 @@ export type CityMutation = {
   updateCity: UpdateCityOutput;
 };
 
+
 export type CityMutationCreateCityArgs = {
   input: CreateCityInput;
 };
+
 
 export type CityMutationDeleteCategoriesArgs = {
   input: BulkDeleteCityInput;
 };
 
+
 export type CityMutationDeleteCityArgs = {
   input: DeleteCityInput;
 };
+
 
 export type CityMutationUpdateCityArgs = {
   input: UpdateCityInput;
@@ -546,9 +589,11 @@ export type CityQuery = {
   searchCities: SearchCityOutput;
 };
 
+
 export type CityQueryFindCityByIdArgs = {
   input: FindCityInput;
 };
+
 
 export type CityQuerySearchCitiesArgs = {
   input: SearchCityInput;
@@ -587,29 +632,36 @@ export type CommentMutation = {
   updateComment: UpdateCommentOutput;
 };
 
+
 export type CommentMutationCreateAdminCommentArgs = {
   input: CreateAdminCommentInput;
 };
+
 
 export type CommentMutationCreateCommentArgs = {
   input: CreateCommentInput;
 };
 
+
 export type CommentMutationDeleteCommentArgs = {
   input: DeleteCommentInput;
 };
+
 
 export type CommentMutationDeleteCommentsArgs = {
   input: BulkDeleteCommentInput;
 };
 
+
 export type CommentMutationEditCommentArgs = {
   input: EditCommentInput;
 };
 
+
 export type CommentMutationRemoveCommentArgs = {
   input: RemoveCommentInput;
 };
+
 
 export type CommentMutationUpdateCommentArgs = {
   input: UpdateCommentInput;
@@ -630,9 +682,11 @@ export type CommentQuery = {
   searchCommentss: SearchCommentOutput;
 };
 
+
 export type CommentQueryFindCommentByIdArgs = {
   input: FindCommentInput;
 };
+
 
 export type CommentQuerySearchCommentssArgs = {
   input: SearchCommentInput;
@@ -658,13 +712,14 @@ export type CommentType = {
 };
 
 export enum CommentTypeEnum {
-  Article = 'ARTICLE',
+  Article = 'ARTICLE'
 }
 
 export type CompanyCallNumberMutation = {
   __typename?: 'CompanyCallNumberMutation';
   createCompanyCallNumber: CreateCompanyCallNumberOutput;
 };
+
 
 export type CompanyCallNumberMutationCreateCompanyCallNumberArgs = {
   input: CreateCompanyCallNumberInput;
@@ -688,17 +743,21 @@ export type CompanyCategoryMutation = {
   updateCompanyCategory: UpdateCompanyCategoryOutput;
 };
 
+
 export type CompanyCategoryMutationCreateCompanyCategoryArgs = {
   input: CreateCompanyCategoryInput;
 };
+
 
 export type CompanyCategoryMutationDeleteCategoriesArgs = {
   input: BulkDeleteCompanyCategoryInput;
 };
 
+
 export type CompanyCategoryMutationDeleteCompanyCategoryArgs = {
   input: DeleteCompanyCategoryInput;
 };
+
 
 export type CompanyCategoryMutationUpdateCompanyCategoryArgs = {
   input: UpdateCompanyCategoryInput;
@@ -711,13 +770,16 @@ export type CompanyCategoryQuery = {
   searchCategories: SearchCompanyCategoryOutput;
 };
 
+
 export type CompanyCategoryQueryFindCompanyCategoryByIdArgs = {
   input: FindCompanyCategoryInput;
 };
 
+
 export type CompanyCategoryQueryFindCompanyCategoryBySlugArgs = {
   input: FindCompanyCategoryBySlugInput;
 };
+
 
 export type CompanyCategoryQuerySearchCategoriesArgs = {
   input: SearchCompanyCategoryInput;
@@ -760,6 +822,7 @@ export type CompanyLocationClickMutation = {
   createCompanyLocationClick: CreateCompanyLocationClickOutput;
 };
 
+
 export type CompanyLocationClickMutationCreateCompanyLocationClickArgs = {
   input: CreateCompanyLocationClickInput;
 };
@@ -784,25 +847,31 @@ export type CompanyMutation = {
   uploadGalleryImages: UploadCompanyGalleryImagesOutput;
 };
 
+
 export type CompanyMutationCreateCompanyArgs = {
   input: CreateCompanyInput;
 };
+
 
 export type CompanyMutationDeleteCompanyArgs = {
   input: DeleteCompanyInput;
 };
 
+
 export type CompanyMutationDeleteCompanysArgs = {
   input: BulkDeleteCompanyInput;
 };
+
 
 export type CompanyMutationGiveRatingArgs = {
   input: CreateCompanyRatingInput;
 };
 
+
 export type CompanyMutationUpdateCompanyArgs = {
   input: UpdateCompanyInput;
 };
+
 
 export type CompanyMutationUploadGalleryImagesArgs = {
   files: Array<Scalars['Upload']['input']>;
@@ -821,33 +890,41 @@ export type CompanyQuery = {
   searchCompanyVisitStatistics: SearchCompanyVisitStatisticsOutput;
 };
 
+
 export type CompanyQueryFindCompanyByIdArgs = {
   input: FindCompanyInput;
 };
+
 
 export type CompanyQueryFindCompanyByIdsArgs = {
   input: BulkFindCompanyInput;
 };
 
+
 export type CompanyQueryFindCompanyBySlugArgs = {
   input: FindCompanyBySlugInput;
 };
+
 
 export type CompanyQueryGetCompanyCallNumbersArgs = {
   input: GetCompanyCallNumbersInput;
 };
 
+
 export type CompanyQueryGetCompanyLocationClicksArgs = {
   input: GetCompanyLocationClicksInput;
 };
+
 
 export type CompanyQueryGetCompanyRedirectsArgs = {
   input: GetCompanyRedirectsInput;
 };
 
+
 export type CompanyQuerySearchCompaniesArgs = {
   input: SearchCompanyInput;
 };
+
 
 export type CompanyQuerySearchCompanyVisitStatisticsArgs = {
   input: SearchCompanyVisitStatisticsInput;
@@ -855,7 +932,7 @@ export type CompanyQuerySearchCompanyVisitStatisticsArgs = {
 
 export enum CompanySortType {
   Newest = 'NEWEST',
-  Oldest = 'OLDEST',
+  Oldest = 'OLDEST'
 }
 
 export type CompanyType = {
@@ -913,17 +990,21 @@ export type CountryMutation = {
   updateCountry: UpdateCountryOutput;
 };
 
+
 export type CountryMutationCreateCountryArgs = {
   input: CreateCountryInput;
 };
+
 
 export type CountryMutationDeleteCategoriesArgs = {
   input: BulkDeleteCountryInput;
 };
 
+
 export type CountryMutationDeleteCountryArgs = {
   input: DeleteCountryInput;
 };
+
 
 export type CountryMutationUpdateCountryArgs = {
   input: UpdateCountryInput;
@@ -935,9 +1016,11 @@ export type CountryQuery = {
   searchCountries: SearchCountryOutput;
 };
 
+
 export type CountryQueryFindCountryByIdArgs = {
   input: FindCountryInput;
 };
+
 
 export type CountryQuerySearchCountriesArgs = {
   input: SearchCountryInput;
@@ -1283,6 +1366,17 @@ export type CreateQuizOutput = {
   success: Scalars['Boolean']['output'];
 };
 
+export type CreateRedirectInput = {
+  newPath: Scalars['String']['input'];
+  oldPath: Scalars['String']['input'];
+  type: RedirectType;
+};
+
+export type CreateRedirectOutput = {
+  __typename?: 'CreateRedirectOutput';
+  success: Scalars['Boolean']['output'];
+};
+
 export type CreateSeoHomepageInput = {
   description?: InputMaybe<Scalars['String']['input']>;
   metaDescription?: InputMaybe<Scalars['String']['input']>;
@@ -1526,6 +1620,15 @@ export type DeleteQuizOutput = {
   success: Scalars['Boolean']['output'];
 };
 
+export type DeleteRedirectInput = {
+  redirectId: Scalars['String']['input'];
+};
+
+export type DeleteRedirectOutput = {
+  __typename?: 'DeleteRedirectOutput';
+  success: Scalars['Boolean']['output'];
+};
+
 export type DeleteSeoHomepageInput = {
   id: Scalars['String']['input'];
 };
@@ -1603,6 +1706,7 @@ export type EngagementMutation = {
   createEngagement: CreateEngagementOutput;
 };
 
+
 export type EngagementMutationCreateEngagementArgs = {
   input: CreateEngagementInput;
 };
@@ -1611,6 +1715,7 @@ export type EngagementQuery = {
   __typename?: 'EngagementQuery';
   findEngagementById: FindEngagementOutput;
 };
+
 
 export type EngagementQueryFindEngagementByIdArgs = {
   input: FindEngagementInput;
@@ -1642,6 +1747,7 @@ export type FileMutation = {
   uploadFile: UploadFileOutput;
 };
 
+
 export type FileMutationUploadFileArgs = {
   file: Scalars['Upload']['input'];
 };
@@ -1650,6 +1756,7 @@ export type FileQuery = {
   __typename?: 'FileQuery';
   getFileUrlById?: Maybe<Scalars['String']['output']>;
 };
+
 
 export type FileQueryGetFileUrlByIdArgs = {
   input: GetFileUrlInput;
@@ -1873,6 +1980,20 @@ export type FindQuizOutput = {
   success: Scalars['Boolean']['output'];
 };
 
+export type FindRedirectByOldPathInput = {
+  oldPath: Scalars['String']['input'];
+};
+
+export type FindRedirectInput = {
+  redirectId: Scalars['String']['input'];
+};
+
+export type FindRedirectOutput = {
+  __typename?: 'FindRedirectOutput';
+  result?: Maybe<RedirectsType>;
+  success: Scalars['Boolean']['output'];
+};
+
 export type FindRelatedArticlesInput = {
   articleId: Scalars['String']['input'];
   count?: InputMaybe<Scalars['Int']['input']>;
@@ -1974,7 +2095,7 @@ export type ForgetPasswordOutput = {
 export enum GenderEnum {
   Female = 'FEMALE',
   Male = 'MALE',
-  Other = 'OTHER',
+  Other = 'OTHER'
 }
 
 export type GetCompanyCallNumbersInput = {
@@ -2057,17 +2178,21 @@ export type GraphicalQuizMutation = {
   updateGraphicalQuiz: UpdateGraphicalQuizOutput;
 };
 
+
 export type GraphicalQuizMutationCreateGraphicalQuizArgs = {
   input: CreateGraphicalQuizInput;
 };
+
 
 export type GraphicalQuizMutationDeleteGraphicalQuizArgs = {
   input: DeleteGraphicalQuizInput;
 };
 
+
 export type GraphicalQuizMutationDeleteGraphicalQuizzesArgs = {
   input: BulkDeleteGraphicalQuizInput;
 };
+
 
 export type GraphicalQuizMutationUpdateGraphicalQuizArgs = {
   input: UpdateGraphicalQuizInput;
@@ -2082,17 +2207,21 @@ export type GraphicalQuizQuery = {
   searchGraphicalQuizzes: SearchGraphicalQuizOutput;
 };
 
+
 export type GraphicalQuizQueryFindGraphicalQuizByIdArgs = {
   input: FindGraphicalQuizInput;
 };
+
 
 export type GraphicalQuizQueryFindQuizByPointArgs = {
   input: FindQuizByPointInput;
 };
 
+
 export type GraphicalQuizQueryPayAndFindArgs = {
   input: FindGraphicalQuizInput;
 };
+
 
 export type GraphicalQuizQuerySearchGraphicalQuizzesArgs = {
   input: SearchGraphicalQuizInput;
@@ -2134,22 +2263,27 @@ export type ImageMutation = {
   uploadImages: CoreOutput;
 };
 
+
 export type ImageMutationDeleteImageArgs = {
   input: DeleteImageInput;
 };
+
 
 export type ImageMutationDeleteImagesArgs = {
   input: DeleteImagesInput;
 };
 
+
 export type ImageMutationUpdateImageArgs = {
   input: UpdateImageInput;
 };
+
 
 export type ImageMutationUploadImageArgs = {
   file: Scalars['Upload']['input'];
   input?: InputMaybe<UploadImageInputType>;
 };
+
 
 export type ImageMutationUploadImagesArgs = {
   files: Array<Scalars['Upload']['input']>;
@@ -2159,6 +2293,7 @@ export type ImageQuery = {
   __typename?: 'ImageQuery';
   searchImage: SearchImagesOutput;
 };
+
 
 export type ImageQuerySearchImageArgs = {
   input: SearchImagesInput;
@@ -2197,17 +2332,21 @@ export type IsiMutation = {
   updateIsi: UpdateIsiOutput;
 };
 
+
 export type IsiMutationCreateIsiArgs = {
   input: CreateIsiInput;
 };
+
 
 export type IsiMutationCreateIsiByAdminArgs = {
   input: CreateIsiByAdminInput;
 };
 
+
 export type IsiMutationDeleteIsiArgs = {
   input: DeleteIsiInput;
 };
+
 
 export type IsiMutationUpdateIsiArgs = {
   input: UpdateIsiInput;
@@ -2219,9 +2358,11 @@ export type IsiQuery = {
   searchIsi: SearchIsiOutput;
 };
 
+
 export type IsiQueryFindIsiByIdArgs = {
   input: FindIsiInput;
 };
+
 
 export type IsiQuerySearchIsiArgs = {
   input: SearchIsiInput;
@@ -2249,21 +2390,26 @@ export type LikeMutation = {
   updateLike: UpdateLikeOutput;
 };
 
+
 export type LikeMutationBulkDeleteLikesArgs = {
   input: BulkDeleteLikeInput;
 };
+
 
 export type LikeMutationCreateLikeArgs = {
   input: CreateLikeInput;
 };
 
+
 export type LikeMutationDeleteLikeArgs = {
   input: DeleteLikeInput;
 };
 
+
 export type LikeMutationDeleteLikeByUserArgs = {
   input: DeleteLikeByUserInput;
 };
+
 
 export type LikeMutationUpdateLikeArgs = {
   input: UpdateLikeInput;
@@ -2287,13 +2433,16 @@ export type LikeQuery = {
   searchPaperFavorite: SearchLikeOutput;
 };
 
+
 export type LikeQueryFindLikeByIdArgs = {
   input: FindLikeInput;
 };
 
+
 export type LikeQueryFindLikeByIdsArgs = {
   input: BulkFindLikeInput;
 };
+
 
 export type LikeQuerySearchPaperFavoriteArgs = {
   input: SearchLikeInput;
@@ -2312,13 +2461,41 @@ export type LikeType = {
 
 export enum LikeTypeEnum {
   Article = 'ARTICLE',
-  Comment = 'COMMENT',
+  Comment = 'COMMENT'
 }
 
 export enum Meridiem {
   Am = 'AM',
-  Pm = 'PM',
+  Pm = 'PM'
 }
+
+export type MutateRedirectResponse = {
+  __typename?: 'MutateRedirectResponse';
+  createRedirect: CreateRedirectOutput;
+  deleteRedirect: DeleteRedirectOutput;
+  deleteRedirects: DeleteRedirectOutput;
+  updateRedirect: UpdateRedirectOutput;
+};
+
+
+export type MutateRedirectResponseCreateRedirectArgs = {
+  input: CreateRedirectInput;
+};
+
+
+export type MutateRedirectResponseDeleteRedirectArgs = {
+  input: DeleteRedirectInput;
+};
+
+
+export type MutateRedirectResponseDeleteRedirectsArgs = {
+  input: BulkDeleteRedirectsInput;
+};
+
+
+export type MutateRedirectResponseUpdateRedirectArgs = {
+  input: UpdateRedirectInput;
+};
 
 export type Mutation = {
   __typename?: 'Mutation';
@@ -2345,6 +2522,7 @@ export type Mutation = {
   productVisitLog: ProductVisitLogMutation;
   question: QuestionMutation;
   quiz: QuizMutation;
+  redirects: MutateRedirectResponse;
   seoHomepage: SeoHomepageMutation;
   seoSetting: SeoSettingMutation;
   tag: TagMutation;
@@ -2355,7 +2533,7 @@ export type Mutation = {
 export enum OperationType {
   Create = 'CREATE',
   Delete = 'DELETE',
-  Update = 'UPDATE',
+  Update = 'UPDATE'
 }
 
 export type OptionInputType = {
@@ -2403,17 +2581,21 @@ export type ProductCategoryMutation = {
   updateProductCategory: UpdateProductCategoryOutput;
 };
 
+
 export type ProductCategoryMutationCreateProductCategoryArgs = {
   input: CreateProductCategoryInput;
 };
+
 
 export type ProductCategoryMutationDeleteCategoriesArgs = {
   input: BulkDeleteProductCategoryInput;
 };
 
+
 export type ProductCategoryMutationDeleteProductCategoryArgs = {
   input: DeleteProductCategoryInput;
 };
+
 
 export type ProductCategoryMutationUpdateProductCategoryArgs = {
   input: UpdateProductCategoryInput;
@@ -2426,13 +2608,16 @@ export type ProductCategoryQuery = {
   searchCategories: SearchProductCategoryOutput;
 };
 
+
 export type ProductCategoryQueryFindProductCategoryByIdArgs = {
   input: FindProductCategoryInput;
 };
 
+
 export type ProductCategoryQueryFindProductCategoryBySlugArgs = {
   input: FindProductCategoryBySlugInput;
 };
+
 
 export type ProductCategoryQuerySearchCategoriesArgs = {
   input: SearchProductCategoryInput;
@@ -2470,21 +2655,26 @@ export type ProductMutation = {
   updateProduct: UpdateProductOutput;
 };
 
+
 export type ProductMutationCreateProductArgs = {
   input: CreateProductInput;
 };
+
 
 export type ProductMutationDeleteProductArgs = {
   input: DeleteProductInput;
 };
 
+
 export type ProductMutationDeleteProductsArgs = {
   input: BulkDeleteProductInput;
 };
 
+
 export type ProductMutationGiveRatingArgs = {
   input: CreateProductRatingInput;
 };
+
 
 export type ProductMutationUpdateProductArgs = {
   input: UpdateProductInput;
@@ -2499,21 +2689,26 @@ export type ProductQuery = {
   searchProducts: SearchProductOutput;
 };
 
+
 export type ProductQueryFindProductByIdArgs = {
   input: FindProductInput;
 };
+
 
 export type ProductQueryFindProductBySlugArgs = {
   input: FindProductBySlugInput;
 };
 
+
 export type ProductQueryFindVariationByIdArgs = {
   input: FindProductVariationInput;
 };
 
+
 export type ProductQueryGetSimilarProductsArgs = {
   input: SimilarProductInput;
 };
+
 
 export type ProductQuerySearchProductsArgs = {
   input: SearchProductInput;
@@ -2523,6 +2718,7 @@ export type ProductRedirectMutation = {
   __typename?: 'ProductRedirectMutation';
   createProductRedirect: CreateProductRedirectOutput;
 };
+
 
 export type ProductRedirectMutationCreateProductRedirectArgs = {
   input: CreateProductRedirectInput;
@@ -2543,7 +2739,7 @@ export type ProductRedirectType = {
 export enum ProductRedirectTypeEnum {
   Amazon = 'AMAZON',
   Ebay = 'EBAY',
-  Wallmart = 'WALLMART',
+  Wallmart = 'WALLMART'
 }
 
 export type ProductType = {
@@ -2595,6 +2791,7 @@ export type ProductVisitLogMutation = {
   createProductVisitLog: CreateProductVisitLogOutput;
 };
 
+
 export type ProductVisitLogMutationCreateProductVisitLogArgs = {
   input: CreateProductVisitLogInput;
 };
@@ -2632,6 +2829,7 @@ export type Query = {
   productCategory: ProductCategoryQuery;
   question: QuestionQuery;
   quiz: QuizQuery;
+  redirects: RedirectResponse;
   seoHomepage: SeoHomepageQuery;
   seoSetting: SeoSettingQuery;
   tag: TagQuery;
@@ -2655,17 +2853,21 @@ export type QuestionMutation = {
   updateQuestion: UpdateQuestionOutput;
 };
 
+
 export type QuestionMutationCreateQuestionArgs = {
   input: CreateQuestionInput;
 };
+
 
 export type QuestionMutationDeleteQuestionArgs = {
   input: DeleteQuestionInput;
 };
 
+
 export type QuestionMutationDeleteQuestionsArgs = {
   input: BulkDeleteQuestionInput;
 };
+
 
 export type QuestionMutationUpdateQuestionArgs = {
   input: UpdateQuestionInput;
@@ -2677,9 +2879,11 @@ export type QuestionQuery = {
   searchQuestions: SearchQuestionOutput;
 };
 
+
 export type QuestionQueryFindQuestionByIdArgs = {
   input: FindQuestionInput;
 };
+
 
 export type QuestionQuerySearchQuestionsArgs = {
   input: SearchQuestionInput;
@@ -2718,21 +2922,26 @@ export type QuizMutation = {
   updateQuiz: UpdateQuizOutput;
 };
 
+
 export type QuizMutationCreateQuizArgs = {
   input: CreateQuizInput;
 };
+
 
 export type QuizMutationDeleteQuizArgs = {
   input: DeleteQuizInput;
 };
 
+
 export type QuizMutationDeleteQuizzesArgs = {
   input: BulkDeleteQuizInput;
 };
 
+
 export type QuizMutationEndQuizArgs = {
   input: EndQuizInput;
 };
+
 
 export type QuizMutationUpdateQuizArgs = {
   input: UpdateQuizInput;
@@ -2761,13 +2970,16 @@ export type QuizQuery = {
   searchQuizzes: SearchQuizOutput;
 };
 
+
 export type QuizQueryFindQuizByIdArgs = {
   input: FindQuizInput;
 };
 
+
 export type QuizQueryPayAndFindArgs = {
   input: FindQuizInput;
 };
+
 
 export type QuizQuerySearchQuizzesArgs = {
   input: SearchQuizInput;
@@ -2790,6 +3002,56 @@ export type QuizType = {
   youEarned: Scalars['Float']['output'];
 };
 
+export type RedirectResponse = {
+  __typename?: 'RedirectResponse';
+  findRedirectById: FindRedirectOutput;
+  findRedirectByOldPath: FindRedirectOutput;
+  searchRedirect: SearchRedirectOutput;
+  searchRedirectByPath: SearchRedirectOutput;
+};
+
+
+export type RedirectResponseFindRedirectByIdArgs = {
+  input: FindRedirectInput;
+};
+
+
+export type RedirectResponseFindRedirectByOldPathArgs = {
+  input: FindRedirectByOldPathInput;
+};
+
+
+export type RedirectResponseSearchRedirectArgs = {
+  input: SearchRedirectInput;
+};
+
+
+export type RedirectResponseSearchRedirectByPathArgs = {
+  input: SearchRedirectByPathInput;
+};
+
+export enum RedirectType {
+  ContentRemoved = 'CONTENT_REMOVED',
+  Detected = 'DETECTED',
+  NotAvailableByRules = 'NOT_AVAILABLE_BY_RULES',
+  PermanentRedirect = 'PERMANENT_REDIRECT',
+  PermanentTransfer = 'PERMANENT_TRANSFER',
+  SeeOther = 'SEE_OTHER',
+  TemporaryVeer = 'TEMPORARY_VEER'
+}
+
+export type RedirectsType = {
+  __typename?: 'RedirectsType';
+  _id: Scalars['String']['output'];
+  createUser?: Maybe<UserOutputType>;
+  createdAt?: Maybe<Scalars['DateTime']['output']>;
+  newPath: Scalars['String']['output'];
+  oldPath: Scalars['String']['output'];
+  type: RedirectType;
+  updateUser?: Maybe<UserOutputType>;
+  updatedAt?: Maybe<Scalars['DateTime']['output']>;
+};
+
 export type RemoveCommentInput = {
   id: Scalars['String']['input'];
 };
@@ -2806,7 +3068,7 @@ export enum Role {
   Secretary = 'Secretary',
   SeoEditor = 'SeoEditor',
   SeoManager = 'SeoManager',
-  User = 'User',
+  User = 'User'
 }
 
 export type RoleOutput = {
@@ -3108,6 +3370,28 @@ export type SearchQuizOutput = {
   totalPages?: Maybe<Scalars['Int']['output']>;
 };
 
+export type SearchRedirectByPathInput = {
+  count?: InputMaybe<Scalars['Int']['input']>;
+  page?: InputMaybe<Scalars['Int']['input']>;
+  path: Scalars['String']['input'];
+};
+
+export type SearchRedirectInput = {
+  count?: InputMaybe<Scalars['Int']['input']>;
+  newPath?: InputMaybe<Scalars['String']['input']>;
+  oldPath?: InputMaybe<Scalars['String']['input']>;
+  page?: InputMaybe<Scalars['Int']['input']>;
+  type?: InputMaybe<RedirectType>;
+};
+
+export type SearchRedirectOutput = {
+  __typename?: 'SearchRedirectOutput';
+  results?: Maybe<Array<RedirectsType>>;
+  success: Scalars['Boolean']['output'];
+  totalCount?: Maybe<Scalars['Int']['output']>;
+  totalPages?: Maybe<Scalars['Int']['output']>;
+};
+
 export type SearchSeoHomepageInput = {
   count?: InputMaybe<Scalars['Int']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
@@ -3129,7 +3413,7 @@ export enum SearchSortType {
   AscendingOrder = 'ASCENDING_ORDER',
   DescendingOrder = 'DESCENDING_ORDER',
   Newest = 'NEWEST',
-  PostCount = 'POST_COUNT',
+  PostCount = 'POST_COUNT'
 }
 
 export type SearchTagInput = {
@@ -3199,7 +3483,7 @@ export enum SeoCollectionName {
   Articles = 'ARTICLES',
   Categories = 'CATEGORIES',
   CompanyCategories = 'COMPANY_CATEGORIES',
-  Tags = 'TAGS',
+  Tags = 'TAGS'
 }
 
 export type SeoGeneralSettingInputType = {
@@ -3230,13 +3514,16 @@ export type SeoHomepageMutation = {
   updateSeoHomepage: UpdateSeoHomepageOutput;
 };
 
+
 export type SeoHomepageMutationCreateSeoHomepageArgs = {
   input: CreateSeoHomepageInput;
 };
 
+
 export type SeoHomepageMutationDeleteSeoHomepageArgs = {
   input: DeleteSeoHomepageInput;
 };
+
 
 export type SeoHomepageMutationUpdateSeoHomepageArgs = {
   input: UpdateSeoHomepageInput;
@@ -3246,6 +3533,7 @@ export type SeoHomepageQuery = {
   __typename?: 'SeoHomepageQuery';
   searchHomepages: SearchSeoHomepageOutput;
 };
+
 
 export type SeoHomepageQuerySearchHomepagesArgs = {
   input: SearchSeoHomepageInput;
@@ -3275,17 +3563,21 @@ export type SeoSettingMutation = {
   updateSeoSetting: UpdateSeoSettingOutput;
 };
 
+
 export type SeoSettingMutationCreateSeoSettingArgs = {
   input: CreateSeoSettingInput;
 };
+
 
 export type SeoSettingMutationDeleteSeoSettingArgs = {
   input: DeleteSeoSettingInput;
 };
 
+
 export type SeoSettingMutationDeleteSeoSettingsArgs = {
   input: BulkDeleteSeoSettingInput;
 };
+
 
 export type SeoSettingMutationUpdateSeoSettingArgs = {
   input: UpdateSeoSettingInput;
@@ -3300,21 +3592,26 @@ export type SeoSettingQuery = {
   getFocusKeywordNumbers: FocusKeywordOutput;
 };
 
+
 export type SeoSettingQueryFindSeoSettingByIdArgs = {
   input: FindSeoSettingInput;
 };
+
 
 export type SeoSettingQueryFindSeoSettingByIdAndTypeArgs = {
   input: FindSeoSettingByIdAndTypeInput;
 };
 
+
 export type SeoSettingQueryFindSeoSettingByIdsArgs = {
   input: BulkFindSeoSettingInput;
 };
 
+
 export type SeoSettingQueryGetFocusKeywordListNumbersArgs = {
   input: FocusKeywordListInput;
 };
+
 
 export type SeoSettingQueryGetFocusKeywordNumbersArgs = {
   input: FocusKeywordInput;
@@ -3401,7 +3698,7 @@ export type SimilarProductOutput = {
 
 export enum StatusType {
   Draft = 'DRAFT',
-  Publish = 'PUBLISH',
+  Publish = 'PUBLISH'
 }
 
 export type TagInputType = {
@@ -3417,17 +3714,21 @@ export type TagMutation = {
   updateTag: UpdateTagOutput;
 };
 
+
 export type TagMutationCreateTagArgs = {
   input: CreateTagInput;
 };
+
 
 export type TagMutationDeleteTagArgs = {
   input: DeleteTagInput;
 };
 
+
 export type TagMutationDeleteTagsArgs = {
   input: BulkDeleteTagInput;
 };
+
 
 export type TagMutationUpdateTagArgs = {
   input: UpdateTagInput;
@@ -3441,17 +3742,21 @@ export type TagQuery = {
   searchTags: SearchTagOutput;
 };
 
+
 export type TagQueryFindTagByIdArgs = {
   input: FindTagInput;
 };
+
 
 export type TagQueryFindTagByIdsArgs = {
   input: BulkFindTagInput;
 };
 
+
 export type TagQueryFindTagBySlugArgs = {
   input: FindTagBySlugInput;
 };
+
 
 export type TagQuerySearchTagsArgs = {
   input: SearchTagInput;
@@ -3460,7 +3765,7 @@ export type TagQuerySearchTagsArgs = {
 export enum TagStatusEnum {
   Draft = 'DRAFT',
   Publish = 'PUBLISH',
-  Trash = 'TRASH',
+  Trash = 'TRASH'
 }
 
 export type TagType = {
@@ -3771,6 +4076,18 @@ export type UpdateQuizOutput = {
   success: Scalars['Boolean']['output'];
 };
 
+export type UpdateRedirectInput = {
+  newPath?: InputMaybe<Scalars['String']['input']>;
+  oldPath?: InputMaybe<Scalars['String']['input']>;
+  redirectId: Scalars['String']['input'];
+  type?: InputMaybe<RedirectType>;
+};
+
+export type UpdateRedirectOutput = {
+  __typename?: 'UpdateRedirectOutput';
+  success: Scalars['Boolean']['output'];
+};
+
 export type UpdateSeoHomepageInput = {
   description?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['String']['input'];
@@ -3948,7 +4265,7 @@ export type User = {
 
 export enum UserAvatarStatusEnum {
   Draft = 'DRAFT',
-  Publish = 'PUBLISH',
+  Publish = 'PUBLISH'
 }
 
 export type UserMutation = {
@@ -3961,28 +4278,34 @@ export type UserMutation = {
   uploadAvatar: UploadUserAvatarOutput;
 };
 
+
 export type UserMutationCreateUserArgs = {
   avatar?: InputMaybe<Scalars['Upload']['input']>;
   input: CreateUserByCeo;
 };
 
+
 export type UserMutationDeleteUserArgs = {
   input: DeleteUserInput;
 };
 
+
 export type UserMutationDeleteUsersArgs = {
   input: BulkDeleteUsersInput;
 };
+
 
 export type UserMutationUpdateOperatorUserArgs = {
   avatar?: InputMaybe<Scalars['Upload']['input']>;
   input: UpdateUserInput;
 };
 
+
 export type UserMutationUpdateUserArgs = {
   avatar?: InputMaybe<Scalars['Upload']['input']>;
   input: UpdateUserByCeo;
 };
+
 
 export type UserMutationUploadAvatarArgs = {
   file: Scalars['Upload']['input'];
@@ -4075,21 +4398,26 @@ export type UserQuery = {
   searchUserByRole: SearchUserByRoleOutput;
 };
 
+
 export type UserQueryFindUserByIdArgs = {
   input: FindUserInput;
 };
+
 
 export type UserQueryFindUsersByIdsArgs = {
   input: FindUsersInput;
 };
 
+
 export type UserQueryGetBestUsersArgs = {
   input: BestUserInput;
 };
 
+
 export type UserQuerySearchUserArgs = {
   input: SearchUserInput;
 };
+
 
 export type UserQuerySearchUserByRoleArgs = {
   input: SearchUserByRoleInput;
@@ -4111,7 +4439,7 @@ export enum UserSortType {
   DownloadedCount = 'DOWNLOADED_COUNT',
   SavedCount = 'SAVED_COUNT',
   VisitedCount = 'VISITED_COUNT',
-  WrittenCount = 'WRITTEN_COUNT',
+  WrittenCount = 'WRITTEN_COUNT'
 }
 
 export type VerifyAccountInput = {
@@ -4129,9 +4457,11 @@ export type VisitStatisticsMutation = {
   recordVisitStatistics: CreateVisitStatisticsOutput;
 };
 
+
 export type VisitStatisticsMutationDeleteVisitStatisticsArgs = {
   input: DeleteVisitStatisticsInput;
 };
+
 
 export type VisitStatisticsMutationRecordVisitStatisticsArgs = {
   input: CreateVisitStatisticsInput;
@@ -4143,9 +4473,11 @@ export type VisitStatisticsQuery = {
   getUserVisits: GetUserVisitsOutput;
 };
 
+
 export type VisitStatisticsQueryFindByIdArgs = {
   input: FindVisitStatisticsInput;
 };
+
 
 export type VisitStatisticsQueryGetUserVisitsArgs = {
   input: GetUserVisitsInput;
@@ -4168,7 +4500,7 @@ export enum Weekday {
   Sunday = 'SUNDAY',
   Thursday = 'THURSDAY',
   Tuesday = 'TUESDAY',
-  Wednesday = 'WEDNESDAY',
+  Wednesday = 'WEDNESDAY'
 }
 
 export type WorktimeInputType = {
