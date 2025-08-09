@@ -6,7 +6,9 @@ import {searchArticleByCategory} from '@/graphql';
 import {getQueryClient} from '@/helpers';
 import {Hydrate} from '@/providers';
 
-const Page = async ({params}: {params: {categoryId: string}}) => {
+const Page = async ({params: initalParams}: {params: {categoryId: string}}) => {
+  const params = await initalParams;
+
   const queryClient = getQueryClient();
   await queryClient.prefetchQuery({
     queryKey: ['recent-article-cats'],

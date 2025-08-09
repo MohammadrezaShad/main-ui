@@ -9,7 +9,9 @@ interface Props {
   };
 }
 
-async function Page({params}: Props) {
+async function Page({params: initalParams}: Props) {
+  const params = await initalParams;
+
   const queryClient = getQueryClient();
   await queryClient.prefetchQuery({
     queryKey: ['search-product', params.productId],

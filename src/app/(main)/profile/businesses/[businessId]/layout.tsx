@@ -15,7 +15,9 @@ interface Props {
   };
 }
 
-export default async function RootLayout({children, params}: Props) {
+export default async function RootLayout({children, params: initalParams}: Props) {
+  const params = await initalParams;
+
   const queryClient = getQueryClient();
   await queryClient.prefetchQuery({
     queryKey: ['find-business', params.businessId],

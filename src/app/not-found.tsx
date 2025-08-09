@@ -10,7 +10,7 @@ import {getUser} from '@/graphql';
 import {getQueryClient} from '@/helpers';
 
 export default async function NotFound() {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const authToken = cookieStore.get(CookieName.AUTH_TOKEN)?.value || '';
   const queryClient = getQueryClient();
 

@@ -9,7 +9,9 @@ import {Hydrate} from '@/providers';
 
 export const dynamic = 'force-dynamic';
 
-const Page = async ({params}: {params: {slug: string}}) => {
+const Page = async ({params: initalParams}: {params: {slug: string}}) => {
+  const params = await initalParams;
+
   noStore();
   const queryClient = getQueryClient();
   await queryClient.prefetchQuery({

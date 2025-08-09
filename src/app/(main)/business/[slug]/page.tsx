@@ -9,7 +9,9 @@ import {findCompanyBySlug} from '@/graphql/query/companies/find-company-by-slug'
 import {getQueryClient} from '@/helpers';
 import {Hydrate} from '@/providers';
 
-const Page = async ({params}: {params: {slug: string}}) => {
+const Page = async ({params: initalParams}: {params: {slug: string}}) => {
+  const params = await initalParams;
+
   const token = getCookie(CookieName.AUTH_TOKEN, {cookies});
   const queryClient = getQueryClient();
   await queryClient.prefetchQuery({

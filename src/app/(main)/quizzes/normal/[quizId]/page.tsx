@@ -6,7 +6,9 @@ import {findQuizById} from '@/graphql';
 import {getQueryClient} from '@/helpers';
 import {Hydrate} from '@/providers';
 
-const Page = async ({params}: {params: {quizId: string}}) => {
+const Page = async ({params: initalParams}: {params: {quizId: string}}) => {
+  const params = await initalParams;
+
   const queryClient = getQueryClient();
   await queryClient.prefetchQuery({
     queryKey: ['find-quiz-by-id', params.quizId],

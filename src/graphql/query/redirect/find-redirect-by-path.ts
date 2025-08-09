@@ -9,6 +9,8 @@ export async function findRedirectByPath(
   input: FindRedirectByOldPathInput,
 ): Promise<RedirectResponse['findRedirectByOldPath']> {
   const clientId = getCookie(CookieName.CLIENT_ID) as string;
+  console.log(input);
+
   const res = await gqlFetch({
     url: process.env.NEXT_PUBLIC_API as string,
     query: `query FindRedirectByOldPath($input: FindRedirectByOldPathInput!) {

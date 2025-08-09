@@ -20,7 +20,9 @@ interface Props {
   };
 }
 
-const Page = async ({searchParams}: Props) => {
+const Page = async ({searchParams: initalSearchParams}: Props) => {
+  const searchParams = await initalSearchParams;
+
   noStore();
   const page = searchParams.page || '1';
   const {categories, city, minimumCompanyRating, minimumProductRating, lowPrice, highPrice} =

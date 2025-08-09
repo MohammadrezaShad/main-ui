@@ -7,7 +7,7 @@ import {cookies} from 'next/headers';
 import JsonLdScript from '@/components/shared/json-ld-script';
 import {ArticlesDetails} from '@/components/templates/articles-details';
 import {CookieName} from '@/constants';
-import {ArticleType, findArticleByName, searchArticles, StatusType} from '@/graphql';
+import {ArticleType, findArticleByName} from '@/graphql';
 import {getQueryClient} from '@/helpers';
 import {Hydrate} from '@/providers';
 import {
@@ -20,7 +20,13 @@ import {
 
 export const revalidate = 180;
 
-export async function generateMetadata({params}: {params: {articleId: string}}): Promise<Metadata> {
+export async function generateMetadata({
+  params: initalParams,
+}: {
+  params: {articleId: string};
+}): Promise<Metadata> {
+  const params = await initalParams;
+
   const token = getCookie(CookieName.AUTH_TOKEN, {cookies});
   const data: any = await findArticleByName({slug: params.articleId}, token);
   if (!data) {
@@ -52,15 +58,9 @@ export async function generateMetadata({params}: {params: {articleId: string}}):
   };
 }
 
-export async function generateStaticParams(): Promise<any> {
-  const data = (await searchArticles({status: StatusType.Publish, count: 100})) as any;
-  const articles: Array<ArticleType> = data.article!.searchArticles.results;
-  return articles.map(article => ({
-    articleId: article.slug,
-  }));
-}
+const Page = async ({params: initalParams}: {params: {articleId: string}}) => {
+  const params = await initalParams;
 
-const Page = async ({params}: {params: {articleId: string}}) => {
   const token = getCookie(CookieName.AUTH_TOKEN, {cookies});
   const queryClient = getQueryClient();
   await queryClient.prefetchQuery({

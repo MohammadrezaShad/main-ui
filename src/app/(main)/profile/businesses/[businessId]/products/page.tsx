@@ -23,7 +23,10 @@ interface Props {
   };
 }
 
-async function Page({params, searchParams}: Props) {
+async function Page({params: initalParams, searchParams: initalSearchParams}: Props) {
+  const params = await initalParams;
+  const searchParams = await initalSearchParams;
+
   noStore();
   const page = searchParams.page ? +searchParams.page : 1;
   const queryClient = getQueryClient();

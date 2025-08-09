@@ -14,7 +14,9 @@ interface Props {
   };
 }
 
-export default async function Dashboard({params}: Props) {
+export default async function Dashboard({params: initalParams}: Props) {
+  const params = await initalParams;
+
   const queryClient = getQueryClient();
   const visits = await queryClient.fetchQuery({
     queryKey: ['get-visits', params.businessId],

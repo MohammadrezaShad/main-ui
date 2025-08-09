@@ -13,7 +13,7 @@ import {Hydrate} from '@/providers';
 export const dynamic = 'force-dynamic';
 
 export default async function Template({children}: {children: React.ReactNode}) {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const authToken = cookieStore.get(CookieName.AUTH_TOKEN)?.value || '';
   const queryClient = getQueryClient();
 

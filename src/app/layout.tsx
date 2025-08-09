@@ -3,6 +3,7 @@ import {GoogleAnalytics} from '@next/third-parties/google';
 import type {Metadata} from 'next';
 import {Ubuntu} from 'next/font/google';
 import {cookies} from 'next/headers';
+import NextTopLoader from 'nextjs-toploader';
 
 import {FacebookPixel} from '@/components';
 import JsonLdScript from '@/components/shared/json-ld-script';
@@ -48,8 +49,8 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default function RootLayout({children}: {children: React.ReactNode}) {
-  const cookieStore = cookies();
+export default async function RootLayout({children}: {children: React.ReactNode}) {
+  const cookieStore = await cookies();
   const theme = cookieStore.get(CookieName.THEME);
 
   return (
@@ -59,6 +60,7 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
       </head>
       <body className={ubuntu.className}>
         <JsonLdScript id='website' data={searchActionSchema} />
+        <NextTopLoader color='#44baeb' showSpinner={false} />
         <MainProviders theme={theme?.value as ThemeType}>
           <TemplateContainer>
             <div className='root'>

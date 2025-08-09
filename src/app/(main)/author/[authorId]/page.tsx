@@ -9,8 +9,14 @@ import {findUserById, searchArticlesByAuthorId, User} from '@/graphql';
 import {getQueryClient} from '@/helpers';
 import {Hydrate} from '@/providers';
 
-export async function generateMetadata({params}: {params: {authorId: string}}): Promise<Metadata> {
-  const cookieStore = cookies();
+export async function generateMetadata({
+  params: initalParams,
+}: {
+  params: {authorId: string};
+}): Promise<Metadata> {
+  const params = await initalParams;
+
+  const cookieStore = await cookies();
   const authToken = cookieStore.get(CookieName.AUTH_TOKEN)?.value || '';
   const data: any = await findUserById({id: params.authorId}, authToken);
   if (!data) {
@@ -46,8 +52,9 @@ export async function generateMetadata({params}: {params: {authorId: string}}): 
   };
 }
 
-const Page = async ({params}: {params: {authorId: string}}) => {
-  const cookieStore = cookies();
+const Page = async ({params: initalParams}: {params: {authorId: string}}) => {
+  const params = await initalParams;
+  const cookieStore = await cookies();
   const authToken = cookieStore.get(CookieName.AUTH_TOKEN)?.value || '';
   const queryClient = getQueryClient();
   await queryClient.prefetchQuery({

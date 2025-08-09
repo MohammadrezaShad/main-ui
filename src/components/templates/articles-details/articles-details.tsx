@@ -651,7 +651,9 @@ const Page = () => {
           <p>Login to write a comment</p>
         )}
 
-        {commentsData.data?.results?.map(comment => <Review key={comment._id} comment={comment} />)}
+        {commentsData.data?.results?.map(comment => (
+          <Review key={comment._id} comment={comment} />
+        ))}
       </div>
     </>
   );

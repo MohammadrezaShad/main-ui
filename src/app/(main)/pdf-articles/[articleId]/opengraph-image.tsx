@@ -15,7 +15,9 @@ export const size = {
 
 export const contentType = 'image/png';
 
-export default async function Image({params}: {params: {articleId: string}}) {
+export default async function Image({params: initalParams}: {params: {articleId: string}}) {
+  const params = await initalParams;
+
   const token = getCookie(CookieName.AUTH_TOKEN, {cookies});
   const data: any = await findArticleByName({slug: params.articleId}, token);
   const post: ArticleType = data.article.findArticleByName.result;

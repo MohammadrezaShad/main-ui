@@ -15,7 +15,9 @@ interface Props {
   };
 }
 
-async function Page({params}: Props) {
+async function Page({params: initalParams}: Props) {
+  const params = await initalParams;
+
   noStore();
   const queryClient = getQueryClient();
   await queryClient.prefetchQuery({

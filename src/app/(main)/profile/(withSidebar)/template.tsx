@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 };
 
 const Page = async ({children}: PropsWithChildren) => {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const authToken = cookieStore.get(CookieName.AUTH_TOKEN)?.value || '';
   const queryClient = getQueryClient();
   await queryClient.prefetchQuery({
