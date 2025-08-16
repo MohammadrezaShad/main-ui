@@ -24,6 +24,7 @@
     "color": "^4.2.3",
     "cookies-next": "^4.1.1",
     "dayjs": "^1.11.12",
+    "embla-carousel-react": "^8.6.0",
     "formik": "^2.4.5",
     "hls.js": "^1.5.8",
     "html-react-parser": "^5.1.10",

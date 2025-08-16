@@ -1,3 +1,6 @@
+/* eslint-disable @next/next/no-img-element */
+/* eslint-disable no-continue */
+/* eslint-disable no-restricted-syntax */
 /* eslint-disable @typescript-eslint/no-namespace */
 
 'use client';
@@ -7,8 +10,11 @@ import {css} from '@styled/css';
 import parse, {domToReact, HTMLReactParserOptions} from 'html-react-parser';
 
 import {IconChevronRight} from '@/assets';
+import {SnapCarousel} from '@/components/atoms/snap-carousel';
 
 import MonacoEditor from './MonacoEditor';
+
+type GalleryItem = {href?: string; src: string; alt?: string};
 
 interface HtmlManipulationProps {
   htmlString: string;
@@ -46,6 +52,20 @@ const HtmlManipulation: React.FC<HtmlManipulationProps> = ({htmlString, classNam
   const getFileExtension = (url: string): string => {
     const extensionMatch = url.match(/\.([0-9a-z]+)(?:[\\?#]|$)/i);
     return extensionMatch ? extensionMatch[1] : '';
+  };
+
+  const extractGalleryItems = (divNode: any): GalleryItem[] => {
+    const items: GalleryItem[] = [];
+    const children = Array.isArray(divNode.children) ? divNode.children : [];
+    for (const child of children) {
+      if (child?.name !== 'a') continue;
+      const href = child.attribs?.href;
+      const img = (child.children || []).find((c: any) => c?.name === 'img');
+      const src = img?.attribs?.src;
+      if (!src) continue;
+      items.push({href, src, alt: img?.attribs?.alt});
+    }
+    return items;
   };
 
   const getComponentByExtension = (extension: string) => {
@@ -104,6 +124,29 @@ const HtmlManipulation: React.FC<HtmlManipulationProps> = ({htmlString, classNam
           <div key={domNode.attribs.content} style={{marginBottom: '20px'}}>
             <MonacoEditor code={codeContent} language={language} />
           </div>
+        );
+      }
+
+      if (
+        domNode.name === 'div' &&
+        (domNode.attribs?.class?.split(' ').includes('gallery') ||
+          domNode.attribs?.['data-element'] === 'gallery')
+      ) {
+        const items = extractGalleryItems(domNode);
+        if (!items.length) return undefined;
+
+        const minWidth = Number(domNode.attribs?.['data-min-width'] || 240);
+        const gap = Number(domNode.attribs?.['data-gap'] || 8);
+
+        return (
+          <SnapCarousel
+            key={`gallery-${items.length}`}
+            items={items}
+            rounded='lg'
+            loop // set true if you want infinite
+            showDots
+            ariaLabel='Post gallery'
+          />
         );
       }
 
