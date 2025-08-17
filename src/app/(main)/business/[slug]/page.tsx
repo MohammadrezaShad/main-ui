@@ -1,6 +1,5 @@
 import {css} from '@styled/css';
 import {dehydrate} from '@tanstack/react-query';
-import {getCookie} from 'cookies-next';
 import {cookies} from 'next/headers';
 
 import {BusinessView} from '@/components';
@@ -12,7 +11,7 @@ import {Hydrate} from '@/providers';
 const Page = async ({params: initalParams}: {params: {slug: string}}) => {
   const params = await initalParams;
 
-  const token = getCookie(CookieName.AUTH_TOKEN, {cookies});
+  const token = (await cookies()).get(CookieName.AUTH_TOKEN)?.value;
   const queryClient = getQueryClient();
   await queryClient.prefetchQuery({
     queryKey: ['get-company', params.slug],

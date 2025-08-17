@@ -16,21 +16,21 @@ const Navbar = () => {
       <Item _isActive={isActive('/articles/') || undefined}>
         <Link href='/articles/categories'>Articles</Link>
       </Item>
-      <Item _isActive={isActive('/pdf-articles') || undefined}>
+      {/* <Item _isActive={isActive('/pdf-articles') || undefined}>
         <Link href='/pdf-articles/categories'>PDF Articles</Link>
       </Item>
       <Item _isActive={isActive('/about') || undefined}>
         <Link href='/'>About</Link>
-      </Item>
+      </Item> */}
       <Item _isActive={isActive(Paths.Quiz.getPath()) || undefined}>
         <Link href={Paths.Quiz.getPath()}>Quizzes</Link>
       </Item>
-      <Item _isActive={isActive(Paths.WaterCrisis.getPath()) || undefined}>
+      {/* <Item _isActive={isActive(Paths.WaterCrisis.getPath()) || undefined}>
         <Link href={Paths.WaterCrisis.getPath()}>Water Crisis</Link>
       </Item>
       <Item _isActive={isActive('/contact') || undefined}>
         <Link href='/'>Contact</Link>
-      </Item>
+      </Item> */}
     </Container>
   );
 };

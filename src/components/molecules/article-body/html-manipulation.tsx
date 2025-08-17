@@ -1,3 +1,6 @@
+/* eslint-disable no-plusplus */
+/* eslint-disable jsx-a11y/alt-text */
+/* eslint-disable consistent-return */
 /* eslint-disable @next/next/no-img-element */
 /* eslint-disable no-continue */
 /* eslint-disable no-restricted-syntax */
@@ -5,9 +8,9 @@
 
 'use client';
 
-import React, {lazy, Suspense, useEffect} from 'react';
+import React, {lazy, Suspense, useEffect, useMemo} from 'react';
 import {css} from '@styled/css';
-import parse, {domToReact, HTMLReactParserOptions} from 'html-react-parser';
+import parse, {domToReact, Element, HTMLReactParserOptions} from 'html-react-parser';
 
 import {IconChevronRight} from '@/assets';
 import {SnapCarousel} from '@/components/atoms/snap-carousel';
@@ -28,30 +31,78 @@ interface TOCTree {
   h2: ElementInfo;
   h3List?: ElementInfo[];
 }
-const generateIdfromText = (text: string) => text.replace(/\s+/g, '-').toLowerCase();
-const getTOCTree = (htmlString: string): TOCTree[] => {
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(htmlString, 'text/html');
-  const elements = Array.from(doc.body.children);
 
-  return elements.reduce((acc, item) => {
-    const {tagName, textContent: text} = item;
-    const id = generateIdfromText(text || '');
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      'math-field': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & {
+        value?: string;
+        'read-only'?: boolean;
+      };
+    }
+  }
+}
 
-    if (tagName === 'H2') {
-      acc.push({h2: {text, id}, h3List: []});
-    }
-    if (tagName === 'H3') {
-      acc.at(-1)?.h3List?.push({text, id});
-    }
-    return acc;
-  }, [] as TOCTree[]);
+// ---------- helpers (SSR-safe, no DOMParser) ----------
+const getTextContent = (node: any): string => {
+  let text = '';
+  if (!node) return text;
+  const stack = [node as any];
+  while (stack.length) {
+    const n = stack.pop();
+    if (!n) continue;
+    if (n.type === 'text' && typeof n.data === 'string') text += n.data;
+    if (Array.isArray(n.children))
+      for (let i = n.children.length - 1; i >= 0; i--) stack.push(n.children[i]);
+  }
+  return text.trim();
 };
 
+const generateIdfromText = (text: string) => text.replace(/\s+/g, '-').toLowerCase();
+
+const containsAnySpecialString = (element: Element, specialStrings: string[]): boolean => {
+  let contains = false;
+  (function traverse(el: Element) {
+    el.children?.forEach((child: any) => {
+      if (child.type === 'text' && typeof child.data === 'string') {
+        if (specialStrings.some(str => child.data.includes(str))) contains = true;
+      } else if (child instanceof Element || child?.type === 'tag') {
+        traverse(child);
+      }
+    });
+  })(element);
+  return contains;
+};
+
+// Build TOC by walking the html with html-react-parser in a no-op pass
+const buildTOCTree = (htmlString: string): TOCTree[] => {
+  const toc: TOCTree[] = [];
+  parse(htmlString, {
+    replace: (node: any) => {
+      if (!(node instanceof Element)) return;
+      if (node.type === 'tag' && (node.name === 'h2' || node.name === 'h3')) {
+        const text = getTextContent(node);
+        const id = generateIdfromText(text || '');
+        if (node.name === 'h2') {
+          toc.push({h2: {text, id}, h3List: []});
+        } else if (node.name === 'h3') {
+          toc.at(-1)?.h3List?.push({text, id});
+        }
+      }
+      return undefined; // no transform during pre-pass
+    },
+  });
+  return toc;
+};
+
+// ---------- component ----------
 const HtmlManipulation: React.FC<HtmlManipulationProps> = ({htmlString, className}) => {
+  // Precompute TOC once per htmlString (SSR-safe)
+  const tocTree = useMemo(() => buildTOCTree(htmlString), [htmlString]);
+
   const getFileExtension = (url: string): string => {
-    const extensionMatch = url.match(/\.([0-9a-z]+)(?:[\\?#]|$)/i);
-    return extensionMatch ? extensionMatch[1] : '';
+    const extensionMatch = url?.match(/\.([0-9a-z]+)(?:[\\?#]|$)/i);
+    return extensionMatch ? extensionMatch[1].toLowerCase() : '';
   };
 
   const extractGalleryItems = (divNode: any): GalleryItem[] => {
@@ -105,9 +156,11 @@ const HtmlManipulation: React.FC<HtmlManipulationProps> = ({htmlString, classNam
 
   const options: HTMLReactParserOptions = {
     replace: (domNode: any) => {
+      if (!(domNode instanceof Element)) return;
+
+      // ---------- math-field ----------
       if (domNode.name === 'math-field' && domNode.attribs?.value) {
         const mathContent = domNode.attribs.value;
-
         return (
           <div key={domNode.attribs.value} style={{marginBottom: '20px'}}>
             <math-field read-only style={{width: '100%', minHeight: '50px'}}>
@@ -116,10 +169,11 @@ const HtmlManipulation: React.FC<HtmlManipulationProps> = ({htmlString, classNam
           </div>
         );
       }
+
+      // ---------- code block (Monaco) ----------
       if (domNode.name === 'pre' && domNode.attribs?.content) {
         const codeContent = domNode.attribs.content.replace(/"/g, '"');
         const language = domNode.attribs.language || 'python';
-
         return (
           <div key={domNode.attribs.content} style={{marginBottom: '20px'}}>
             <MonacoEditor code={codeContent} language={language} />
@@ -127,6 +181,7 @@ const HtmlManipulation: React.FC<HtmlManipulationProps> = ({htmlString, classNam
         );
       }
 
+      // ---------- gallery ----------
       if (
         domNode.name === 'div' &&
         (domNode.attribs?.class?.split(' ').includes('gallery') ||
@@ -135,21 +190,18 @@ const HtmlManipulation: React.FC<HtmlManipulationProps> = ({htmlString, classNam
         const items = extractGalleryItems(domNode);
         if (!items.length) return undefined;
 
-        const minWidth = Number(domNode.attribs?.['data-min-width'] || 240);
-        const gap = Number(domNode.attribs?.['data-gap'] || 8);
-
         return (
           <SnapCarousel
             key={`gallery-${items.length}`}
             items={items}
-            rounded='lg'
-            loop // set true if you want infinite
+            loop
             showDots
             ariaLabel='Post gallery'
           />
         );
       }
 
+      // ---------- wrap file links with icon (by className match) ----------
       if (domNode.attribs && domNode.attribs.class === className && domNode.name === 'a') {
         const extension = getFileExtension(domNode.attribs.href);
         const Component = getComponentByExtension(extension) as any;
@@ -172,8 +224,8 @@ const HtmlManipulation: React.FC<HtmlManipulationProps> = ({htmlString, classNam
         );
       }
 
+      // ---------- table of content block ----------
       if (domNode.attribs?.class === 'table-of-content') {
-        const tocTree = getTOCTree(htmlString);
         const handleClick = (id: string) => {
           document
             .getElementById(`heading-${id}`)
@@ -227,6 +279,7 @@ const HtmlManipulation: React.FC<HtmlManipulationProps> = ({htmlString, classNam
 
   const reactElements = parse(htmlString, options);
 
+  // mathlive (client-side only)
   useEffect(() => {
     const loadMathLive = async () => {
       const {MathfieldElement} = await import('mathlive');
@@ -237,13 +290,5 @@ const HtmlManipulation: React.FC<HtmlManipulationProps> = ({htmlString, classNam
 
   return <div>{reactElements}</div>;
 };
-
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      'math-field': React.DetailedHTMLProps<React.HTMLAttributes<any>, any>;
-    }
-  }
-}
 
 export default HtmlManipulation;

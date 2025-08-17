@@ -1,16 +1,17 @@
-// utils/graphql.ts
+// utils/graphql.ts (your hook)
 import {keepPreviousData, QueryKey, useQuery} from '@tanstack/react-query';
 
 import {searchArticles} from '@/graphql/query/articles/search-articles';
 
 interface UseSearchArticlesProps {
-  tagId?: string;
+  tagId?: string; // this should be the DB _id
   page: number;
 }
 
 export const useSearchArticles = ({tagId, page}: UseSearchArticlesProps) =>
   useQuery<any, Error>({
-    queryKey: ['search-articles', page] as QueryKey,
+    queryKey: ['search-articles', tagId, page] as QueryKey,
     queryFn: () => searchArticles({tags: tagId ? [tagId] : null, count: 12, page}),
-    placeholderData: keepPreviousData,
+    enabled: !!tagId, // ✅ don’t run with undefined
+    placeholderData: keepPreviousData, // keeps old page while changing page
   });

@@ -1,6 +1,5 @@
 import {css} from '@styled/css';
 import {dehydrate} from '@tanstack/react-query';
-import {getCookie} from 'cookies-next';
 import type {Metadata} from 'next';
 import {cookies} from 'next/headers';
 import {redirect} from 'next/navigation';
@@ -28,7 +27,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const params = await initalParams;
 
-  const token = getCookie(CookieName.AUTH_TOKEN, {cookies});
+  const token = (await cookies()).get(CookieName.AUTH_TOKEN)?.value;
   const data: any = await findArticleByName({slug: params.articleId}, token);
   if (!data) {
     return {
@@ -62,7 +61,7 @@ export async function generateMetadata({
 const Page = async ({params: initalParams}: {params: {articleId: string}}) => {
   const params = await initalParams;
 
-  const token = getCookie(CookieName.AUTH_TOKEN, {cookies});
+  const token = (await cookies()).get(CookieName.AUTH_TOKEN)?.value;
   const queryClient = getQueryClient();
   await queryClient.prefetchQuery({
     queryKey: ['get-article', params.articleId],

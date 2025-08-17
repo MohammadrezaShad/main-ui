@@ -1,4 +1,3 @@
-import {getCookie} from 'cookies-next';
 import {cookies} from 'next/headers';
 import {ImageResponse} from 'next/og';
 
@@ -18,7 +17,7 @@ export const contentType = 'image/png';
 export default async function Image({params: initalParams}: {params: {articleId: string}}) {
   const params = await initalParams;
 
-  const token = getCookie(CookieName.AUTH_TOKEN, {cookies});
+  const token = (await cookies()).get(CookieName.AUTH_TOKEN)?.value;
   const data: any = await findArticleByName({slug: params.articleId}, token);
   const post: ArticleType = data.article.findArticleByName.result;
 

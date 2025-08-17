@@ -80,7 +80,8 @@ export async function FindTagBySlug(input: FindTagBySlugInput): Promise<TagQuery
   }
   const response = await res.json();
   if (response.errors?.[0]?.message) {
-    throw new Error(response.errors?.[0]?.message);
+    console.error(response.errors);
+    return null as any;
   }
   return response.data.tag.findTagBySlug;
 }
