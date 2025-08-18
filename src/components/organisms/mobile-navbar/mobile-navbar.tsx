@@ -144,34 +144,6 @@ export default function MobileNavbar() {
           })}
         >
           <Link
-            href='/pdf-articles/categories'
-            className={css({
-              color: isActive('/pdf-articles/categories') ? 'primary' : 'gray4',
-              textAlign: 'center',
-              fontSize: 'xs',
-              lineHeight: 'xs',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              gap: '2.5',
-              flexDir: 'column',
-            })}
-          >
-            <IconDoc
-              className={css({
-                fill: isActive('/pdf-articles/categories') ? 'primary' : 'gray4',
-              })}
-            />
-            PDF
-          </Link>
-        </li>
-        <li
-          className={flex({
-            justifyContent: 'center',
-            flex: 1,
-          })}
-        >
-          <Link
             href='/'
             className={css({
               color: pathname === '/' ? 'primary' : 'gray4',
