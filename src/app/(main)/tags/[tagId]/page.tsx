@@ -5,7 +5,7 @@ import {Metadata} from 'next';
 import {notFound} from 'next/navigation';
 
 import {TagsView} from '@/components';
-import {TagType} from '@/graphql/generated/types';
+import {TagStatusEnum, TagType} from '@/graphql/generated/types';
 import {searchArticles} from '@/graphql/query/articles';
 import {FindTagBySlug} from '@/graphql/query/tags';
 import {getQueryClient} from '@/helpers';
@@ -31,8 +31,8 @@ export async function generateMetadata({
 
   const {noindex, nofollow, focusKeyword, canonicalUrl, description, title} =
     tag.seoSetting?.general || {};
-  const isNoindex = noindex;
-  const isNofollow = nofollow;
+  const isNoindex = tag.status !== TagStatusEnum.Publish || noindex;
+  const isNofollow = tag.status !== TagStatusEnum.Publish || nofollow;
 
   return {
     title: title || tag.title,
