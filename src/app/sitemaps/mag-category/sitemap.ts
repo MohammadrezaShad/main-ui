@@ -16,7 +16,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const categories: Array<CategoryType> = data?.category!.searchCategories.results || [];
   const sitemaps: MetadataRoute.Sitemap = categories.map(category => ({
-    url: `${process.env.NEXT_PUBLIC_BASE_URL}/articles/categories/${category._id}/articles`,
+    url: `${process.env.NEXT_PUBLIC_BASE_URL}/articles/categories/${category.slug}`,
     lastModified: formatAnyDateToYYYYMMDD(category.updatedAt || new Date()),
     images: [],
   }));

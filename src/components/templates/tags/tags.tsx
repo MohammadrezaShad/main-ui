@@ -35,7 +35,7 @@ const Tags: FC = () => {
     queryFn: () => FindTagBySlug({slug: params.tagId as string}),
   });
 
-  const {_id: tagId, originalDescription} = findTagQuery.data?.result || {};
+  const {_id: tagId, originalDescription, description} = findTagQuery.data?.result || {};
 
   // 2) Articles query runs only when tagId exists (enabled: !!tagId in the hook)
   const {data, isLoading, isFetching} = useSearchArticles({tagId, page});
@@ -52,9 +52,9 @@ const Tags: FC = () => {
   return (
     <Container>
       <Wrapper>
-        <header className={css({textStyle: 'h1', color: 'text.invert', px: '-4'})}>
+        <h1 className={css({textStyle: 'h1', color: 'text.invert', px: '-4'})}>
           {findTagQuery.data?.result?.title}
-        </header>
+        </h1>
         <div
           className={css({textStyle: 'body2', color: 'text.invert'})}
           role='status'
@@ -63,7 +63,9 @@ const Tags: FC = () => {
           Result: {findTagQuery.data?.result?.postCount} Articles
         </div>
       </Wrapper>
-      {originalDescription ? <Description>{originalDescription}</Description> : null}
+      {originalDescription || description ? (
+        <Description>{originalDescription || description}</Description>
+      ) : null}
       {/* Keep previous page visible while fetching the next */}
       <Cards hideBelow='md'>{articles.map(renderCard)}</Cards>
       <Cards hideFrom='md'>{articles.map(renderSmallCard)}</Cards>

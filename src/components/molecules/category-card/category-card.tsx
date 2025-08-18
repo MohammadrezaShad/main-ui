@@ -22,7 +22,7 @@ const CategoryCard = ({
 }) => (
   <Container>
     <Card
-      href={`${hasPdf ? '/pdf-articles' : '/articles'}/categories/${id ?? category.slug}/articles`}
+      href={`${hasPdf ? '/pdf-articles' : '/articles'}/categories/${category.slug}`}
       _small={collapsed}
     >
       {category.image ? (

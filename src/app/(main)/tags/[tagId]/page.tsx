@@ -28,21 +28,25 @@ export async function generateMetadata({
       description: 'The page not found',
     };
   }
+
+  const {noindex, nofollow, focusKeyword, canonicalUrl, description, title} =
+    tag.seoSetting?.general || {};
+  const isNoindex = noindex;
+  const isNofollow = nofollow;
+
   return {
-    title: tag.seoSetting?.general?.title || tag.title,
-    description: tag.seoSetting?.general?.description || tag.description,
+    title: title || tag.title,
+    description: description || tag.description,
     alternates: {
-      canonical:
-        tag.seoSetting?.general?.canonicalUrl ||
-        `${process.env.NEXT_PUBLIC_BASE_URL}/tags/${tag.slug}`,
+      canonical: canonicalUrl || `${process.env.NEXT_PUBLIC_BASE_URL}/tags/${tag.slug}`,
     },
-    keywords: tag.seoSetting?.general?.focusKeyword,
+    keywords: focusKeyword,
     robots: {
-      follow: tag.seoSetting?.general?.nofollow || true,
-      index: tag.seoSetting?.general?.noindex || true,
+      index: !isNoindex,
+      follow: !isNofollow,
       googleBot: {
-        follow: tag.seoSetting?.general?.nofollow || true,
-        index: !tag.seoSetting?.general?.noindex || true,
+        index: !isNoindex,
+        follow: !isNofollow,
       },
     },
   };

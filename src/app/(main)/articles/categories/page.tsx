@@ -6,7 +6,7 @@ import {searchCategories, SearchSortType} from '@/graphql';
 export const dynamic = 'force-dynamic';
 
 const Page = async () => {
-  const data = await searchCategories({count: 50, sortType: SearchSortType.AscendingOrder});
+  const data = await searchCategories({count: 150, sortType: SearchSortType.AscendingOrder});
 
   return (
     <div

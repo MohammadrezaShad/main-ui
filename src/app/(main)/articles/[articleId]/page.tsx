@@ -7,7 +7,7 @@ import {redirect} from 'next/navigation';
 import JsonLdScript from '@/components/shared/json-ld-script';
 import {ArticlesDetails} from '@/components/templates/articles-details';
 import {CookieName} from '@/constants';
-import {ArticleType, findArticleByName} from '@/graphql';
+import {ArticleType, findArticleByName, StatusType} from '@/graphql';
 import {getQueryClient} from '@/helpers';
 import {Hydrate} from '@/providers';
 import {
@@ -36,23 +36,25 @@ export async function generateMetadata({
     };
   }
   const post: ArticleType = data.article.findArticleByName.result;
+  const {noindex, nofollow, focusKeyword, canonicalUrl, description, title} =
+    post.seoSetting?.general || {};
+  const isNoindex = post.status !== StatusType.Publish || noindex;
+  const isNofollow = post.status !== StatusType.Publish || nofollow;
   return {
-    title: post.seoSetting?.general?.title || post.title,
-    description: post.seoSetting?.general?.description || post.excerpt,
+    title: title || post.title,
+    description: description || post.excerpt,
     alternates: {
-      canonical:
-        post.seoSetting?.general?.canonicalUrl ||
-        `${process.env.NEXT_PUBLIC_BASE_URL}/articles/${post.slug}`,
+      canonical: canonicalUrl || `${process.env.NEXT_PUBLIC_BASE_URL}/articles/${post.slug}`,
     },
-    keywords: post.seoSetting?.general?.focusKeyword || post.tags?.map(tag => tag.title).join(', '),
+    keywords: focusKeyword || post.tags?.map(tag => tag.title).join(', '),
     authors: [{name: post.author ? `${post.author.firstName} ${post.author.lastName}` : 'User'}],
     creator: post.author ? `${post.author.firstName} ${post.author.lastName}` : 'User',
     robots: {
-      follow: post.seoSetting?.general?.nofollow || true,
-      index: post.seoSetting?.general?.noindex || true,
+      index: !isNoindex,
+      follow: !isNofollow,
       googleBot: {
-        follow: post.seoSetting?.general?.nofollow || true,
-        index: !post.seoSetting?.general?.noindex || true,
+        index: !isNoindex,
+        follow: !isNofollow,
       },
     },
   };
