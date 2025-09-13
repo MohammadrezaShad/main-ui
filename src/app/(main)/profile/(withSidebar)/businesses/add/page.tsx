@@ -3,23 +3,16 @@
 
 'use client';
 
-import {css, cx} from '@styled/css';
-import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
-import Image from 'next/image';
-import {useRouter} from 'next/navigation';
 import {useState} from 'react';
 import {toast} from 'react-toastify';
+import {css, cx} from '@styled/css';
+import {useMutation, useQueryClient} from '@tanstack/react-query';
+import Image from 'next/image';
+import {useRouter} from 'next/navigation';
 import slugify from 'slugify';
 
 import AsyncSelect from '@/components/templates/products/async-select';
-import {
-  CityType,
-  CountryType,
-  searchCities,
-  searchCompanyCategories,
-  searchCountries,
-  uploadImage,
-} from '@/graphql';
+import {searchCities, searchCompanyCategories, searchCountries, uploadImage} from '@/graphql';
 import {
   CreateCompanyInput,
   ProductCategoryType,
@@ -39,8 +32,9 @@ export default function AddBusinessPage() {
   const [profileImagePreview, setProfileImagePreview] = useState<string>('');
   const [coverImagePreview, setCoverImagePreview] = useState<string>('');
 
+  // ---- form state (keep field name "city" but it will be an array) ----
   const [companyInfo, setCompanyInfo] = useState<
-    Omit<CreateCompanyInput, 'profileImage' | 'cover'>
+    Partial<Omit<CreateCompanyInput, 'profileImage' | 'cover'>>
   >({
     title: '',
     about: '',
@@ -51,6 +45,12 @@ export default function AddBusinessPage() {
     status: 'PUBLISH' as StatusType,
     latitude: 0,
     longitude: 0,
+    country: undefined, // single id (string)
+    city: [], // <-- ARRAY of ids (string[]) but same name
+    establishedYear: undefined,
+    youtube: '',
+    googleMap: '',
+    plusCode: '',
   });
 
   const [keywords, setKeywords] = useState<string[]>([]);
@@ -75,15 +75,17 @@ export default function AddBusinessPage() {
 
   const [products, setProducts] = useState<string[]>([]);
 
-  const [countryInputValue, setCountryInputValue] = useState('');
-  const [cityInputValue, setCityInputValue] = useState('');
-  const [selectedCountry, setSelectedCountry] = useState<string>('');
-  const [selectedCity, setSelectedCity] = useState<string>('');
+  // async selects state
   const [selectedCategory, setSelectedCategory] = useState<ProductCategoryType | null>(null);
+  const [selectedCountry, setSelectedCountry] = useState<{id: string; label: string} | null>(null);
+  const [selectedCities, setSelectedCities] = useState<Array<{id: string; label: string}>>([]);
 
   const mutation = useMutation({
     mutationFn: async (data: {
-      companyData: Omit<CreateCompanyInput, 'profileImage' | 'cover'>;
+      companyData: Partial<Omit<CreateCompanyInput, 'profileImage' | 'cover'>> & {
+        country?: string;
+        city?: string[];
+      };
       profileFile: File | null;
       coverFile: File | null;
     }) => {
@@ -101,7 +103,7 @@ export default function AddBusinessPage() {
       }
 
       return createCompany({
-        ...data.companyData,
+        ...(data.companyData as any),
         profileImage: profileImageId,
         cover: coverImageId,
       });
@@ -119,19 +121,11 @@ export default function AddBusinessPage() {
     },
   });
 
-  const categoriesQuery = useQuery({
-    queryKey: ['get-categories'],
-    queryFn: () => searchCompanyCategories({count: 100}),
-  });
-
   const handleCompanyInfoChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
   ) => {
     const {name, value} = e.target;
-    setCompanyInfo({
-      ...companyInfo,
-      [name]: value,
-    });
+    setCompanyInfo(prev => ({...prev, [name]: value}));
   };
 
   const handleImageChange = (
@@ -143,37 +137,27 @@ export default function AddBusinessPage() {
     if (file) {
       setImageFile(file);
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreview(reader.result as string);
-      };
+      reader.onloadend = () => setPreview(reader.result as string);
       reader.readAsDataURL(file);
     }
   };
 
-  const removeKeyword = (index: number) => {
-    setKeywords(keywords.filter((_, i) => i !== index));
-  };
-
+  const removeKeyword = (index: number) => setKeywords(keywords.filter((_, i) => i !== index));
   const addKeyword = () => {
     if (newKeyword.trim() !== '') {
-      setKeywords([...keywords, newKeyword]);
+      setKeywords([...keywords, newKeyword.trim()]);
       setNewKeyword('');
     }
   };
 
   const handleSocialMediaChange = (index: number, field: any, value: any) => {
-    const updatedSocialMedia = [...socialMedia];
-    updatedSocialMedia[index] = {...updatedSocialMedia[index], [field]: value};
-    setSocialMedia(updatedSocialMedia);
+    const updated = [...socialMedia];
+    updated[index] = {...updated[index], [field]: value};
+    setSocialMedia(updated);
   };
-
-  const addSocialMedia = () => {
-    setSocialMedia([...socialMedia, {platform: 'Instagram', url: ''}]);
-  };
-
-  const removeSocialMedia = (index: number) => {
+  const addSocialMedia = () => setSocialMedia([...socialMedia, {platform: 'Instagram', url: ''}]);
+  const removeSocialMedia = (index: number) =>
     setSocialMedia(socialMedia.filter((_, i) => i !== index));
-  };
 
   const handleWorkingHoursChange = (
     index: number,
@@ -181,61 +165,40 @@ export default function AddBusinessPage() {
     value: boolean | string | {hour: number; minute: number; meridiem: string},
   ) => {
     const newWorkingHours = [...workingHours];
-
     if (field === 'isOpened') {
+      newWorkingHours[index] = {...newWorkingHours[index], isOpened: value as boolean};
+    } else if (typeof value === 'string') {
+      const [hours, minutes] = value.split(':');
+      const hour24 = Number(hours);
+      const minute = Number(minutes);
+      let hour12 = hour24 % 12;
+      if (hour12 === 0) hour12 = 12;
       newWorkingHours[index] = {
         ...newWorkingHours[index],
-        isOpened: value as boolean,
+        [field]: {hour: hour12, minute, meridiem: hour24 >= 12 ? 'PM' : 'AM'},
       };
-    } else if (field === 'startTime' || field === 'finishTime') {
-      if (typeof value === 'string') {
-        const [hours, minutes] = value.split(':');
-        const hour24 = Number(hours);
-        const minute = Number(minutes);
-
-        let hour12 = hour24 % 12;
-        if (hour12 === 0) hour12 = 12;
-
-        newWorkingHours[index] = {
-          ...newWorkingHours[index],
-          [field]: {
-            hour: hour12,
-            minute,
-            meridiem: hour24 >= 12 ? 'PM' : 'AM',
-          },
-        };
-      } else {
-        newWorkingHours[index] = {
-          ...newWorkingHours[index],
-          [field]: value as {hour: number; minute: number; meridiem: string},
-        };
-      }
+    } else {
+      newWorkingHours[index] = {...newWorkingHours[index], [field]: value as any};
     }
-
     setWorkingHours(newWorkingHours);
   };
 
   const handleProductChange = (index: number, value: string) => {
-    const updatedProducts = [...products];
-    updatedProducts[index] = value;
-    setProducts(updatedProducts);
+    const updated = [...products];
+    updated[index] = value;
+    setProducts(updated);
   };
-
-  const addProduct = () => {
-    setProducts([...products, '']);
-  };
-
-  const removeProduct = (index: number) => {
-    setProducts(products.filter((_, i) => i !== index));
-  };
+  const addProduct = () => setProducts([...products, '']);
+  const removeProduct = (index: number) => setProducts(products.filter((_, i) => i !== index));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     try {
       await mutation.mutateAsync({
         companyData: {
           ...companyInfo,
+          country: selectedCountry?.id,
+          city: selectedCities.map(c => c.id), // <-- array of ids
           keywords,
           productAndServices: products,
           worktimes: workingHours.map(wh => ({
@@ -260,14 +223,14 @@ export default function AddBusinessPage() {
           linkdin: socialMedia.find(sm => sm.platform === 'LinkedIn')?.url,
           instagram: socialMedia.find(sm => sm.platform === 'Instagram')?.url,
           twitter: socialMedia.find(sm => sm.platform === 'Twitter')?.url,
-          latitude: parseFloat(companyInfo.latitude?.toString() || '0'),
-          longitude: parseFloat(companyInfo.longitude?.toString() || '0'),
-          slug: slugify(companyInfo.title as string, {
+          latitude: parseFloat((companyInfo.latitude as any)?.toString() || '0'),
+          longitude: parseFloat((companyInfo.longitude as any)?.toString() || '0'),
+          slug: slugify((companyInfo.title as string) || '', {
             remove: /[*+~.()'"!:@]/g,
             lower: true,
             trim: true,
           }),
-        },
+        } as any,
         profileFile: profileImageFile,
         coverFile: coverImageFile,
       });
@@ -276,52 +239,8 @@ export default function AddBusinessPage() {
     }
   };
 
-  const countryQuery = useQuery({
-    queryKey: ['get-countries', countryInputValue],
-    queryFn: () => searchCountries({count: 1000, text: countryInputValue}),
-  });
-
-  const countries: CountryType[] = countryQuery.data?.results || [];
-
-  const handleSelectCountry = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const countryId = event.target.value;
-    setSelectedCountry(countryId);
-    setCompanyInfo(prev => ({
-      ...prev,
-      country: countryId,
-    }));
-    setSelectedCity('');
-    setCompanyInfo(prev => ({
-      ...prev,
-      city: '',
-    }));
-  };
-
-  const cityQuery = useQuery({
-    queryKey: ['get-cities', selectedCountry, cityInputValue],
-    queryFn: () => searchCities({count: 1000, parent: selectedCountry, text: cityInputValue}),
-    enabled: !!selectedCountry,
-  });
-
-  const cities: CityType[] = cityQuery.data?.results || [];
-
-  const handleSelectCity = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const cityId = event.target.value;
-    setSelectedCity(cityId);
-    setCompanyInfo(prev => ({
-      ...prev,
-      city: cityId,
-    }));
-  };
-
   return (
-    <div
-      className={css({
-        maxW: '5xl',
-        bgColor: 'white',
-        w: 'full',
-      })}
-    >
+    <div className={css({maxW: '5xl', bgColor: 'white', w: 'full'})}>
       <div
         className={css({
           display: 'flex',
@@ -359,6 +278,7 @@ export default function AddBusinessPage() {
       <form onSubmit={handleSubmit} className={css({p: '6'})}>
         {activeTab === 'Information' && (
           <>
+            {/* Cover */}
             <div className={css({mt: '2', mb: '4'})}>
               <label
                 htmlFor='cover-upload'
@@ -417,6 +337,7 @@ export default function AddBusinessPage() {
               </label>
             </div>
 
+            {/* Profile */}
             <div className={css({mt: '2', mb: '4'})}>
               <label
                 htmlFor='profile-upload'
@@ -478,6 +399,7 @@ export default function AddBusinessPage() {
               </label>
             </div>
 
+            {/* Grid */}
             <div
               className={css({
                 display: 'grid',
@@ -486,6 +408,7 @@ export default function AddBusinessPage() {
                 gap: '6',
               })}
             >
+              {/* Name */}
               <div className={css({mt: '2', mb: '2'})}>
                 <label
                   className={css({
@@ -500,7 +423,7 @@ export default function AddBusinessPage() {
                 <input
                   type='text'
                   name='title'
-                  value={companyInfo.title || ''}
+                  value={(companyInfo.title as string) || ''}
                   onChange={handleCompanyInfoChange}
                   className={css({
                     w: 'full',
@@ -514,6 +437,7 @@ export default function AddBusinessPage() {
                 />
               </div>
 
+              {/* Website */}
               <div className={css({mt: '2', mb: '2'})}>
                 <label
                   className={css({
@@ -528,7 +452,7 @@ export default function AddBusinessPage() {
                 <input
                   type='text'
                   name='website'
-                  value={companyInfo.website || ''}
+                  value={(companyInfo.website as string) || ''}
                   onChange={handleCompanyInfoChange}
                   className={css({
                     w: 'full',
@@ -542,6 +466,7 @@ export default function AddBusinessPage() {
                 />
               </div>
 
+              {/* Phone */}
               <div className={css({mt: '2', mb: '2'})}>
                 <label
                   className={css({
@@ -556,7 +481,7 @@ export default function AddBusinessPage() {
                 <input
                   type='text'
                   name='callNumber'
-                  value={companyInfo.callNumber || ''}
+                  value={(companyInfo.callNumber as string) || ''}
                   onChange={handleCompanyInfoChange}
                   className={css({
                     w: 'full',
@@ -570,6 +495,7 @@ export default function AddBusinessPage() {
                 />
               </div>
 
+              {/* Email */}
               <div className={css({mt: '2', mb: '2'})}>
                 <label
                   className={css({
@@ -584,7 +510,7 @@ export default function AddBusinessPage() {
                 <input
                   type='email'
                   name='email'
-                  value={companyInfo.email || ''}
+                  value={(companyInfo.email as string) || ''}
                   onChange={handleCompanyInfoChange}
                   className={css({
                     w: 'full',
@@ -598,14 +524,8 @@ export default function AddBusinessPage() {
                 />
               </div>
 
-              <div
-                className={css({
-                  mt: '2',
-                  '& input': {
-                    h: '12',
-                  },
-                })}
-              >
+              {/* Category (async) */}
+              <div className={css({mt: '2', '& input': {h: '12'}})}>
                 <label
                   className={css({
                     display: 'block',
@@ -623,17 +543,14 @@ export default function AddBusinessPage() {
                       count: 50,
                       text: inputValue,
                     });
-                    return response.results?.map(result => ({
+                    return (response.results || []).map(result => ({
                       id: result._id,
                       value: result._id,
                       label: result.title,
                     })) as any;
                   }}
-                  onChange={selectedOption => {
-                    setSelectedCategory({
-                      _id: selectedOption?.id,
-                      title: selectedOption?.label,
-                    } as ProductCategoryType);
+                  onChange={(opt: any) => {
+                    setSelectedCategory({_id: opt?.id, title: opt?.label} as ProductCategoryType);
                   }}
                   placeholder={selectedCategory ? selectedCategory.title : 'Select a category...'}
                   defaultOptions
@@ -645,6 +562,7 @@ export default function AddBusinessPage() {
                 />
               </div>
 
+              {/* Country (async) */}
               <div className={css({mt: '2'})}>
                 <label
                   className={css({
@@ -656,29 +574,35 @@ export default function AddBusinessPage() {
                 >
                   Country
                 </label>
-                <select
-                  name='country'
-                  value={selectedCountry}
-                  onChange={handleSelectCountry}
-                  className={css({
-                    w: 'full',
-                    p: '2',
-                    borderWidth: '1px',
-                    borderColor: 'gray.300',
-                    h: '12',
-                    borderRadius: 'sm',
-                    _focus: {ring: 'none', ringOffset: 'none', shadow: '1'},
-                  })}
-                >
-                  <option value=''>Select a country</option>
-                  {countries.map(country => (
-                    <option key={country._id} value={country._id}>
-                      {country.name}
-                    </option>
-                  ))}
-                </select>
+                <AsyncSelect
+                  loadOptions={async (inputValue: string) => {
+                    const resp = await searchCountries({count: 50, text: inputValue});
+                    return (resp.results || []).map(c => ({
+                      id: c._id,
+                      value: c._id,
+                      label: c.name,
+                    })) as any;
+                  }}
+                  onChange={(opt: any) => {
+                    const next = opt ? {id: opt.id, label: opt.label} : null;
+                    setSelectedCountry(next);
+                    // sync to form
+                    setCompanyInfo(prev => ({...prev, country: next?.id}));
+                    // clear cities if country changes
+                    setSelectedCities([]);
+                    setCompanyInfo(prev => ({...prev, city: [] as string[]}));
+                  }}
+                  placeholder={selectedCountry ? selectedCountry.label : 'Select a country...'}
+                  defaultOptions
+                  className={{
+                    border: '1px solid token(colors.gray3)',
+                    height: '48px',
+                    rounded: 'none',
+                  }}
+                />
               </div>
 
+              {/* City (async multi, depends on country) */}
               <div className={css({mt: '2'})}>
                 <label
                   className={css({
@@ -688,32 +612,48 @@ export default function AddBusinessPage() {
                     color: 'gray.500',
                   })}
                 >
-                  City
+                  City (you can select multiple)
                 </label>
-                <select
-                  name='city'
-                  value={selectedCity}
-                  onChange={handleSelectCity}
-                  disabled={!selectedCountry}
-                  className={css({
-                    w: 'full',
-                    p: '2',
-                    borderWidth: '1px',
-                    borderColor: 'gray.300',
-                    borderRadius: 'sm',
-                    h: '12',
-                    _focus: {ring: 'none', ringOffset: 'none', shadow: '1'},
-                    _disabled: {opacity: '0.5', cursor: 'not-allowed'},
-                  })}
-                >
-                  <option value=''>Select a city</option>
-                  {cities.map(city => (
-                    <option key={city._id} value={city._id}>
-                      {city.name}
-                    </option>
-                  ))}
-                </select>
+                <AsyncSelect
+                  key={selectedCountry?.id || 'no-country'}
+                  isMulti
+                  isDisabled={!selectedCountry?.id}
+                  loadOptions={async (inputValue: string) => {
+                    if (!selectedCountry?.id) return [];
+                    const resp = await searchCities({
+                      count: 100,
+                      parent: selectedCountry.id,
+                      text: inputValue,
+                    });
+                    return (resp.results || []).map((c: any) => ({
+                      id: c._id,
+                      value: c._id,
+                      label: c.name,
+                    })) as any;
+                  }}
+                  onChange={(opts: any) => {
+                    const arr = Array.isArray(opts) ? opts : opts ? [opts] : [];
+                    const next = arr.map(o => ({id: o.id, label: o.label}));
+                    setSelectedCities(next);
+                    setCompanyInfo(prev => ({...prev, city: next.map(n => n.id)}));
+                  }}
+                  placeholder={
+                    selectedCities.length
+                      ? `${selectedCities.length} cities selected`
+                      : !selectedCountry?.id
+                        ? 'Select country first'
+                        : 'Select cities...'
+                  }
+                  defaultOptions
+                  className={{
+                    border: '1px solid token(colors.gray3)',
+                    minHeight: '48px',
+                    rounded: 'none',
+                  }}
+                />
               </div>
+
+              {/* Latitude */}
               <div className={css({mb: '2'})}>
                 <label
                   className={css({
@@ -728,7 +668,7 @@ export default function AddBusinessPage() {
                 <input
                   type='number'
                   name='latitude'
-                  value={companyInfo.latitude || ''}
+                  value={(companyInfo.latitude as number) ?? ''}
                   onChange={handleCompanyInfoChange}
                   placeholder='Enter latitude'
                   className={css({
@@ -743,6 +683,7 @@ export default function AddBusinessPage() {
                 />
               </div>
 
+              {/* Longitude */}
               <div className={css({mb: '2'})}>
                 <label
                   className={css({
@@ -757,7 +698,7 @@ export default function AddBusinessPage() {
                 <input
                   type='number'
                   name='longitude'
-                  value={companyInfo.longitude || ''}
+                  value={(companyInfo.longitude as number) ?? ''}
                   onChange={handleCompanyInfoChange}
                   placeholder='Enter longitude'
                   className={css({
@@ -771,8 +712,131 @@ export default function AddBusinessPage() {
                   })}
                 />
               </div>
+
+              {/* Established Year */}
+              <div className={css({mt: '2'})}>
+                <label
+                  className={css({
+                    display: 'block',
+                    fontSize: 'sm',
+                    lineHeight: 'sm',
+                    color: 'gray.500',
+                  })}
+                >
+                  Established Year
+                </label>
+                <input
+                  type='number'
+                  name='establishedYear'
+                  min={1800}
+                  max={new Date().getFullYear()}
+                  value={(companyInfo.establishedYear as any) || ''}
+                  onChange={handleCompanyInfoChange}
+                  placeholder='e.g. 2008'
+                  className={css({
+                    w: 'full',
+                    p: '2',
+                    borderWidth: '1px',
+                    borderColor: 'gray.300',
+                    rounded: '0',
+                    h: '12',
+                    _focus: {ring: 'none', ringOffset: 'none', shadow: '1'},
+                  })}
+                />
+              </div>
+
+              {/* YouTube */}
+              <div className={css({mt: '2'})}>
+                <label
+                  className={css({
+                    display: 'block',
+                    fontSize: 'sm',
+                    lineHeight: 'sm',
+                    color: 'gray.500',
+                  })}
+                >
+                  YouTube
+                </label>
+                <input
+                  type='text'
+                  name='youtube'
+                  value={(companyInfo.youtube as string) || ''}
+                  onChange={handleCompanyInfoChange}
+                  placeholder='Channel or video URL'
+                  className={css({
+                    w: 'full',
+                    p: '2',
+                    borderWidth: '1px',
+                    borderColor: 'gray.300',
+                    rounded: '0',
+                    h: '12',
+                    _focus: {ring: 'none', ringOffset: 'none', shadow: '1'},
+                  })}
+                />
+              </div>
+
+              {/* Google Map */}
+              <div className={css({mt: '2'})}>
+                <label
+                  className={css({
+                    display: 'block',
+                    fontSize: 'sm',
+                    lineHeight: 'sm',
+                    color: 'gray.500',
+                  })}
+                >
+                  Google Map URL
+                </label>
+                <input
+                  type='text'
+                  name='googleMap'
+                  value={(companyInfo.googleMap as string) || ''}
+                  onChange={handleCompanyInfoChange}
+                  placeholder='Google Maps link'
+                  className={css({
+                    w: 'full',
+                    p: '2',
+                    borderWidth: '1px',
+                    borderColor: 'gray.300',
+                    rounded: '0',
+                    h: '12',
+                    _focus: {ring: 'none', ringOffset: 'none', shadow: '1'},
+                  })}
+                />
+              </div>
+
+              {/* Plus Code */}
+              <div className={css({mt: '2'})}>
+                <label
+                  className={css({
+                    display: 'block',
+                    fontSize: 'sm',
+                    lineHeight: 'sm',
+                    color: 'gray.500',
+                  })}
+                >
+                  Plus Code
+                </label>
+                <input
+                  type='text'
+                  name='plusCode'
+                  value={(companyInfo.plusCode as string) || ''}
+                  onChange={handleCompanyInfoChange}
+                  placeholder='e.g. 7FG8+5V'
+                  className={css({
+                    w: 'full',
+                    p: '2',
+                    borderWidth: '1px',
+                    borderColor: 'gray.300',
+                    rounded: '0',
+                    h: '12',
+                    _focus: {ring: 'none', ringOffset: 'none', shadow: '1'},
+                  })}
+                />
+              </div>
             </div>
 
+            {/* Address */}
             <div className={css({mt: '2', mb: '2'})}>
               <label
                 className={css({
@@ -787,7 +851,7 @@ export default function AddBusinessPage() {
               <input
                 type='text'
                 name='address'
-                value={companyInfo.address || ''}
+                value={(companyInfo.address as string) || ''}
                 onChange={handleCompanyInfoChange}
                 className={css({
                   w: 'full',
@@ -801,6 +865,7 @@ export default function AddBusinessPage() {
               />
             </div>
 
+            {/* Keywords */}
             <div className={css({mt: '2', mb: '2'})}>
               <label
                 className={css({
@@ -872,6 +937,7 @@ export default function AddBusinessPage() {
               </div>
             </div>
 
+            {/* Social */}
             <div className={css({mt: '6'})}>
               <h2
                 className={css({fontSize: 'lg', lineHeight: 'lg', fontWeight: 'medium', mb: '4'})}
@@ -991,6 +1057,7 @@ export default function AddBusinessPage() {
               </div>
             </div>
 
+            {/* About */}
             <div className={css({mt: '6'})}>
               <h2
                 className={css({fontSize: 'lg', lineHeight: 'lg', fontWeight: 'medium', mb: '4'})}
@@ -1010,7 +1077,7 @@ export default function AddBusinessPage() {
                 </label>
                 <textarea
                   name='about'
-                  value={companyInfo.about || ''}
+                  value={(companyInfo.about as string) || ''}
                   onChange={handleCompanyInfoChange}
                   rows={8}
                   className={css({
@@ -1025,6 +1092,7 @@ export default function AddBusinessPage() {
               </div>
             </div>
 
+            {/* Status */}
             <div className={css({mt: '2', mb: '4'})}>
               <label
                 className={css({
@@ -1038,7 +1106,7 @@ export default function AddBusinessPage() {
               </label>
               <select
                 name='status'
-                value={companyInfo.status || ''}
+                value={(companyInfo.status as StatusType) || ''}
                 onChange={handleCompanyInfoChange}
                 className={css({
                   w: 'full',
@@ -1072,10 +1140,7 @@ export default function AddBusinessPage() {
                   gap: '2',
                   w: 'full',
                   alignItems: 'end',
-                  mdDown: {
-                    flexDirection: 'column',
-                    alignItems: 'start',
-                  },
+                  mdDown: {flexDirection: 'column', alignItems: 'start'},
                 })}
               >
                 <div
@@ -1135,10 +1200,7 @@ export default function AddBusinessPage() {
                       gap: '4',
                       ml: '4',
                       flex: '1',
-                      mdDown: {
-                        ml: 0,
-                        w: 'full',
-                      },
+                      mdDown: {ml: 0, w: 'full'},
                     })}
                   >
                     <div className={css({w: 'full'})}>
@@ -1224,7 +1286,6 @@ export default function AddBusinessPage() {
                     <line x1='4' y1='16' x2='20' y2='16' />
                   </svg>
                 </button>
-
                 <div className={css({flex: '1', mt: '2', mb: '2'})}>
                   <label
                     className={css({
@@ -1251,7 +1312,6 @@ export default function AddBusinessPage() {
                     })}
                   />
                 </div>
-
                 <button
                   type='button'
                   onClick={() => removeProduct(index)}

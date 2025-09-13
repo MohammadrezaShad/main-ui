@@ -31,11 +31,20 @@ const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
 const ProductView = () => {
   const [thumbsSwiper, setThumbsSwiper] = useState<any>(null);
   const params = useParams();
-  const {data, refetch} = useQuery({
+  const {data} = useQuery({
     queryKey: ['get-product', params.slug],
     queryFn: () => findProductBySlug({slug: params.slug as string}),
   });
+
   const product = data?.result;
+
+  // NEW: normalize helpers and derived fields for safety
+  const normalizeUrl = (u?: string | null) =>
+    u && !/^https?:\/\//i.test(u) ? `https://${u}` : u || '';
+
+  const websiteUrl = normalizeUrl((product as any)?.website);
+  const callNumber: string | undefined = product?.callNumber || undefined;
+
   const [selectedColor, setSelectedColor] = useState(
     product?.variations?.[0]?.variationAttributes?.[0]?.value,
   );
@@ -55,14 +64,18 @@ const ProductView = () => {
   const handleProductRedirect = async (
     companyId: string,
     productId: string,
-    type: ProductRedirectTypeEnum,
+    type: ProductRedirectTypeEnum | any, // allow "Website" even if enum missing
     url: string,
   ) => {
-    await createProductRedirect({
-      company: companyId,
-      product: productId,
-      type,
-    });
+    try {
+      await createProductRedirect({
+        company: companyId,
+        product: productId,
+        type,
+      } as any);
+    } catch {
+      // swallow logging error; still open the link
+    }
     window.open(url, '_blank');
   };
 
@@ -77,19 +90,13 @@ const ProductView = () => {
 
   return (
     <div className={css({width: '100%', padding: '16px'})}>
-      <p
-        className={css({
-          textStyle: 'body',
-          color: 'gray4',
-        })}
-      >
-        {product?.category?.title}
-      </p>
+      <p className={css({textStyle: 'body', color: 'gray4'})}>{product?.category?.title}</p>
       <h1 className={css({textStyle: 'h1', color: '#333333'})}>{product?.title}</h1>
       <div className={css({hideFrom: 'md', display: 'flex', color: 'gray4', mb: '6'})}>
         <IconDrop className={css({w: 6, h: 6, mr: '2'})} />
         <span>{product?.rate ?? 0} / 10</span>
       </div>
+
       <div
         className={css({
           w: 'full',
@@ -99,17 +106,13 @@ const ProductView = () => {
           flexDirection: {base: 'column', md: 'row'},
         })}
       >
+        {/* Gallery */}
         <div
           className={cx(
             'product',
             css({
-              width: {
-                base: '[548px]',
-                mdDown: 'full',
-              },
-              height: {
-                md: '[548px]',
-              },
+              width: {base: '[548px]', mdDown: 'full'},
+              height: {md: '[548px]'},
               backgroundPosition: 'center',
               backgroundRepeat: 'no-repeat',
               backgroundSize: 'cover',
@@ -147,15 +150,13 @@ const ProductView = () => {
               </SwiperSlide>
             ))}
           </Swiper>
+
           <Swiper
             onSwiper={setThumbsSwiper}
             spaceBetween={28}
             slidesPerView={3}
             breakpoints={{
-              640: {
-                slidesPerView: 4,
-                spaceBetween: 10,
-              },
+              640: {slidesPerView: 4, spaceBetween: 10},
             }}
             freeMode
             watchSlidesProgress
@@ -163,15 +164,8 @@ const ProductView = () => {
             className={cx(
               'mySwiper',
               css({
-                md: {
-                  bgGradient: 'to-b',
-                  gradientFrom: '#00000000',
-                  gradientTo: '#000',
-                },
-                mt: {
-                  base: '[-120px]',
-                  mdDown: 0,
-                },
+                md: {bgGradient: 'to-b', gradientFrom: '#00000000', gradientTo: '#000'},
+                mt: {base: '[-120px]', mdDown: 0},
               }),
             )}
           >
@@ -185,15 +179,11 @@ const ProductView = () => {
             ))}
           </Swiper>
         </div>
+
+        {/* Right info */}
         <div>
           <div>
-            <p
-              className={css({
-                textStyle: 'body',
-                color: 'gray4',
-                hideBelow: 'md',
-              })}
-            >
+            <p className={css({textStyle: 'body', color: 'gray4', hideBelow: 'md'})}>
               {product?.category?.title}
             </p>
             <h2 className={css({textStyle: 'h1', color: '#333333', hideBelow: 'md'})}>
@@ -202,6 +192,7 @@ const ProductView = () => {
             <div className={css({hideBelow: 'md'})}>
               <StarRatingComponent rating={product?.rate || 0} />
             </div>
+
             <div
               className={css({
                 h: '1px',
@@ -213,6 +204,8 @@ const ProductView = () => {
                 hideBelow: 'md',
               })}
             />
+
+            {/* Main features (mobile) */}
             <div className={css({hideFrom: 'md'})}>
               {selectedVariationn?.variationAttributes?.map(
                 attr =>
@@ -244,6 +237,7 @@ const ProductView = () => {
                   ),
               )}
             </div>
+
             <div
               className={css({
                 h: '1px',
@@ -255,15 +249,10 @@ const ProductView = () => {
                 hideFrom: 'md',
               })}
             />
+
+            {/* Color picker */}
             <p className={css({textStyle: 'body', color: '#333333', mb: '14px'})}>Color</p>
-            <div
-              className={css({
-                display: 'flex',
-                alignItems: 'center',
-                gap: '4',
-                mb: '8',
-              })}
-            >
+            <div className={css({display: 'flex', alignItems: 'center', gap: '4', mb: '8'})}>
               {product?.variations?.map(variation => {
                 const colorId = `color-${variation._id}`;
                 return (
@@ -291,16 +280,14 @@ const ProductView = () => {
                       name='color'
                       value={selectedColor}
                       onChange={() => setSelectedColor(variation.variationAttributes?.[0]?.value)}
-                      className={css({
-                        display: 'none',
-                        opacity: 0,
-                        visibility: 'hidden',
-                      })}
+                      className={css({display: 'none', opacity: 0, visibility: 'hidden'})}
                     />
                   </label>
                 );
               })}
             </div>
+
+            {/* Main features (desktop) */}
             <div className={css({hideBelow: 'md'})}>
               {selectedVariationn?.variationAttributes?.map(
                 attr =>
@@ -332,9 +319,12 @@ const ProductView = () => {
                   ),
               )}
             </div>
+
             <p className={css({textStyle: 'h1', color: '#44BAEB', mt: '9', mb: '31px'})}>
               ${selectedVariationn?.cost}
             </p>
+
+            {/* Buy / Contact buttons */}
             <Flex gap={4} hideBelow='md'>
               {product?.amazon ? (
                 <Button
@@ -369,6 +359,7 @@ const ProductView = () => {
                   Buy from Amazon
                 </Button>
               ) : null}
+
               {product?.eBay ? (
                 <Button
                   type='button'
@@ -402,6 +393,7 @@ const ProductView = () => {
                   Buy from eBay
                 </Button>
               ) : null}
+
               {product?.wallmart ? (
                 <Button
                   type='button'
@@ -435,7 +427,71 @@ const ProductView = () => {
                   Buy from Walmart
                 </Button>
               ) : null}
+
+              {/* NEW: generic website buy button */}
+              {websiteUrl ? (
+                <Button
+                  type='button'
+                  onClick={() =>
+                    handleProductRedirect(
+                      product!.sellerCompany._id,
+                      product!._id,
+                      'Website' as any, // cast in case enum lacks Website
+                      websiteUrl,
+                    )
+                  }
+                  className={css({
+                    justifyContent: 'center',
+                    alignSelf: 'center',
+                    pl: '12',
+                    pr: '12',
+                    py: '6',
+                    mt: '4',
+                    fontSize: 'base',
+                    lineHeight: 'base',
+                    textAlign: 'center',
+                    color: 'white',
+                    whiteSpace: 'nowrap',
+                    bgColor: 'sky.400',
+                    mdDown: {pl: '5', pr: '5'},
+                    cursor: 'pointer',
+                    marginTop: '[88px]',
+                    rounded: 0,
+                  })}
+                >
+                  Buy from Website
+                </Button>
+              ) : null}
+
+              {/* NEW: call seller button */}
+              {callNumber ? (
+                <Button
+                  type='button'
+                  onClick={() => window.open(`tel:${callNumber}`, '_self')}
+                  className={css({
+                    justifyContent: 'center',
+                    alignSelf: 'center',
+                    pl: '12',
+                    pr: '12',
+                    py: '6',
+                    mt: '4',
+                    fontSize: 'base',
+                    lineHeight: 'base',
+                    textAlign: 'center',
+                    color: 'white',
+                    whiteSpace: 'nowrap',
+                    bgColor: 'gray.600',
+                    mdDown: {pl: '5', pr: '5'},
+                    cursor: 'pointer',
+                    marginTop: '[88px]',
+                    rounded: 0,
+                  })}
+                >
+                  Call Seller
+                </Button>
+              ) : null}
             </Flex>
+
             {product ? <MarketplaceSelect product={product} /> : null}
           </div>
         </div>
@@ -525,4 +581,5 @@ const ProductView = () => {
     </div>
   );
 };
+
 export default memo(ProductView);

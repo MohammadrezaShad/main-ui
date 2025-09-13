@@ -17,6 +17,10 @@ export async function findCompanyBySlug(
     findCompanyBySlug(input: $input) {
       success
       result {
+      establishedYear
+      googleMap
+      plusCode
+      youtube
       products {
           status
           _id

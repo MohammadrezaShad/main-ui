@@ -15,6 +15,8 @@ export async function getSimilarProducts(
       results {
         _id
         about
+        callNumber
+        website
         category {
           _id
           title

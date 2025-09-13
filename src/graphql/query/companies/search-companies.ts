@@ -23,6 +23,10 @@ export async function searchCompanies(
         about
         address
         callNumber
+        establishedYear
+        googleMap
+        plusCode
+        youtube
         categories {
           _id
           image {

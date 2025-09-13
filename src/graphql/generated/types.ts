@@ -839,6 +839,7 @@ export type CompanyLocationClickType = {
 
 export type CompanyMutation = {
   __typename?: 'CompanyMutation';
+  convertCompaniesCity: UpdateCompanyOutput;
   createCompany: CreateCompanyOutput;
   deleteCompany: DeleteCompanyOutput;
   deleteCompanys: DeleteCompanyOutput;
@@ -942,19 +943,22 @@ export type CompanyType = {
   address?: Maybe<Scalars['String']['output']>;
   callNumber?: Maybe<Scalars['String']['output']>;
   categories?: Maybe<Array<CompanyCategoryType>>;
-  city?: Maybe<CityType>;
+  city?: Maybe<Array<CityType>>;
   country?: Maybe<CountryType>;
   cover?: Maybe<ImageType>;
   createUser?: Maybe<UserOutputType>;
   createdAt?: Maybe<Scalars['DateTime']['output']>;
   email?: Maybe<Scalars['String']['output']>;
+  establishedYear?: Maybe<Scalars['DateTime']['output']>;
   facebook?: Maybe<Scalars['String']['output']>;
   gallery?: Maybe<Array<CompanyGalleryType>>;
+  googleMap?: Maybe<Scalars['String']['output']>;
   instagram?: Maybe<Scalars['String']['output']>;
   keywords?: Maybe<Array<Scalars['String']['output']>>;
   latitude?: Maybe<Scalars['Float']['output']>;
   linkdin?: Maybe<Scalars['String']['output']>;
   longitude?: Maybe<Scalars['Float']['output']>;
+  plusCode?: Maybe<Scalars['String']['output']>;
   productAndServices?: Maybe<Array<Scalars['String']['output']>>;
   products?: Maybe<Array<ProductType>>;
   profileImage?: Maybe<ImageType>;
@@ -968,6 +972,7 @@ export type CompanyType = {
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
   website?: Maybe<Scalars['String']['output']>;
   worktimes?: Maybe<Array<WorktimeType>>;
+  youtube?: Maybe<Scalars['String']['output']>;
 };
 
 export type CompanyVisitStatistics = {
@@ -1158,16 +1163,19 @@ export type CreateCompanyInput = {
   address?: InputMaybe<Scalars['String']['input']>;
   callNumber?: InputMaybe<Scalars['String']['input']>;
   categories?: InputMaybe<Array<Scalars['String']['input']>>;
-  city?: InputMaybe<Scalars['String']['input']>;
+  city?: InputMaybe<Array<Scalars['String']['input']>>;
   country?: InputMaybe<Scalars['String']['input']>;
   cover?: InputMaybe<Scalars['String']['input']>;
   email?: InputMaybe<Scalars['String']['input']>;
+  establishedYear?: InputMaybe<Scalars['DateTime']['input']>;
   facebook?: InputMaybe<Scalars['String']['input']>;
+  googleMap?: InputMaybe<Scalars['String']['input']>;
   instagram?: InputMaybe<Scalars['String']['input']>;
   keywords?: InputMaybe<Array<Scalars['String']['input']>>;
   latitude?: InputMaybe<Scalars['Float']['input']>;
   linkdin?: InputMaybe<Scalars['String']['input']>;
   longitude?: InputMaybe<Scalars['Float']['input']>;
+  plusCode?: InputMaybe<Scalars['String']['input']>;
   productAndServices?: InputMaybe<Array<Scalars['String']['input']>>;
   profileImage?: InputMaybe<Scalars['String']['input']>;
   registeredDate?: InputMaybe<Scalars['DateTime']['input']>;
@@ -1177,6 +1185,7 @@ export type CreateCompanyInput = {
   twitter?: InputMaybe<Scalars['String']['input']>;
   website?: InputMaybe<Scalars['String']['input']>;
   worktimes?: InputMaybe<Array<WorktimeInputType>>;
+  youtube?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type CreateCompanyLocationClickInput = {
@@ -1289,6 +1298,7 @@ export type CreateProductCategoryOutput = {
 export type CreateProductInput = {
   about?: InputMaybe<Scalars['String']['input']>;
   amazon?: InputMaybe<Scalars['String']['input']>;
+  callNumber?: InputMaybe<Scalars['String']['input']>;
   category: Scalars['String']['input'];
   eBay?: InputMaybe<Scalars['String']['input']>;
   features?: InputMaybe<Array<ProductAttributeInputType>>;
@@ -1302,6 +1312,7 @@ export type CreateProductInput = {
   title: Scalars['String']['input'];
   variations: Array<ProductVariationInput>;
   wallmart?: InputMaybe<Scalars['String']['input']>;
+  website?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type CreateProductOutput = {
@@ -2747,6 +2758,7 @@ export type ProductType = {
   _id: Scalars['String']['output'];
   about?: Maybe<Scalars['String']['output']>;
   amazon?: Maybe<Scalars['String']['output']>;
+  callNumber?: Maybe<Scalars['String']['output']>;
   category: ProductCategoryType;
   createdAt?: Maybe<Scalars['DateTime']['output']>;
   eBay?: Maybe<Scalars['String']['output']>;
@@ -2765,6 +2777,7 @@ export type ProductType = {
   variations?: Maybe<Array<ProductVariationType>>;
   view?: Maybe<Scalars['Int']['output']>;
   wallmart?: Maybe<Scalars['String']['output']>;
+  website?: Maybe<Scalars['String']['output']>;
 };
 
 export type ProductVariationInput = {
@@ -3065,6 +3078,7 @@ export enum Role {
   Contributor = 'Contributor',
   Editor = 'Editor',
   FeedbackViewer = 'FeedbackViewer',
+  ProductManager = 'ProductManager',
   Secretary = 'Secretary',
   SeoEditor = 'SeoEditor',
   SeoManager = 'SeoManager',
@@ -3916,17 +3930,20 @@ export type UpdateCompanyInput = {
   address?: InputMaybe<Scalars['String']['input']>;
   callNumber?: InputMaybe<Scalars['String']['input']>;
   categories?: InputMaybe<Array<Scalars['String']['input']>>;
-  city?: InputMaybe<Scalars['String']['input']>;
+  city?: InputMaybe<Array<Scalars['String']['input']>>;
   country?: InputMaybe<Scalars['String']['input']>;
   cover?: InputMaybe<Scalars['String']['input']>;
   email?: InputMaybe<Scalars['String']['input']>;
+  establishedYear?: InputMaybe<Scalars['DateTime']['input']>;
   facebook?: InputMaybe<Scalars['String']['input']>;
+  googleMap?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['String']['input'];
   instagram?: InputMaybe<Scalars['String']['input']>;
   keywords?: InputMaybe<Array<Scalars['String']['input']>>;
   latitude?: InputMaybe<Scalars['Float']['input']>;
   linkdin?: InputMaybe<Scalars['String']['input']>;
   longitude?: InputMaybe<Scalars['Float']['input']>;
+  plusCode?: InputMaybe<Scalars['String']['input']>;
   productAndServices?: InputMaybe<Array<Scalars['String']['input']>>;
   profileImage?: InputMaybe<Scalars['String']['input']>;
   registeredDate?: InputMaybe<Scalars['DateTime']['input']>;
@@ -3936,6 +3953,7 @@ export type UpdateCompanyInput = {
   twitter?: InputMaybe<Scalars['String']['input']>;
   website?: InputMaybe<Scalars['String']['input']>;
   worktimes?: InputMaybe<Array<WorktimeInputType>>;
+  youtube?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UpdateCompanyOutput = {
@@ -4027,6 +4045,7 @@ export type UpdateProductCategoryOutput = {
 export type UpdateProductInput = {
   about?: InputMaybe<Scalars['String']['input']>;
   amazon?: InputMaybe<Scalars['String']['input']>;
+  callNumber?: InputMaybe<Scalars['String']['input']>;
   category?: InputMaybe<Scalars['String']['input']>;
   eBay?: InputMaybe<Scalars['String']['input']>;
   features?: InputMaybe<Array<ProductAttributeInputType>>;
@@ -4041,6 +4060,7 @@ export type UpdateProductInput = {
   title?: InputMaybe<Scalars['String']['input']>;
   variations?: InputMaybe<Array<ProductVariationInput>>;
   wallmart?: InputMaybe<Scalars['String']['input']>;
+  website?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UpdateProductOutput = {

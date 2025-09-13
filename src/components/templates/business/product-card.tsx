@@ -51,12 +51,14 @@ const ProductCard: React.FC<ProductCardProps> = ({
     });
     window.open(`tel:${callNumber}`, '_self');
   };
+
   const handleCreateLocationClick = async () => {
     await createCompanyLocationClick({
       company: sellerCompanyId,
     });
     openMapSelector(coords?.lat, coords?.lng);
   };
+
   return (
     <div
       className={css({
@@ -71,8 +73,10 @@ const ProductCard: React.FC<ProductCardProps> = ({
             ? `url(${IMAGE_STORAGE_URL}/${thumbnail?.filename}-${thumbnail?._id})`
             : '',
           backgroundColor: thumbnail ? '' : '#333333',
+          aspectRatio: '1 / 1', // square image area
         }}
         className={css({
+          w: 'full',
           mb: '2',
           bgRepeat: 'no-repeat',
           bgPosition: 'center',
@@ -81,10 +85,10 @@ const ProductCard: React.FC<ProductCardProps> = ({
           alignItems: 'end',
           overflow: 'hidden',
           gap: '0.5',
-          height: '[170px]',
           p: '2',
         })}
       >
+        {/* If you want chips, uncomment:
         {keywords?.slice(0, 3)?.map(keyword => (
           <span
             key={keyword}
@@ -100,8 +104,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
           >
             {keyword}
           </span>
-        ))}
+        ))} */}
       </div>
+
       <div className={css({p: '4'})}>
         <Link
           role='heading'
@@ -111,6 +116,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
         >
           {title}
         </Link>
+
         <div
           className={css({
             display: 'flex',
@@ -134,12 +140,16 @@ const ProductCard: React.FC<ProductCardProps> = ({
             <IconChevronRight className={css({w: '6', h: '6', color: 'gray4'})} />
           </Link>
         </div>
+
         <div className={css({display: 'flex', alignItems: 'center', gap: '2', my: '4'})}>
           <IconDrop className={css({w: '6', h: '6'})} />
           <p className={css({textStyle: 'body', color: 'gray4'})}>{waterRating}/10</p>
         </div>
+
         <div className={css({textStyle: 'headline4', color: 'primary'})}>${price}</div>
+
         <div className={css({w: 'full', h: '1px', bgColor: 'gray3', my: '4'})} />
+
         <div className={css({display: 'flex', alignItems: 'center', gap: '2'})}>
           <IconLocation className={css({w: '6', h: '6', color: 'gray4'})} />
           <Button
@@ -154,6 +164,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
             {location}
           </Button>
         </div>
+
         <Box display='flex' gap={4} mt={6}>
           <Button
             type='button'
@@ -168,13 +179,12 @@ const ProductCard: React.FC<ProductCardProps> = ({
               color: '#6E7072',
               w: '1/2',
               py: '6',
-              _hover: {
-                bgColor: 'slate.100',
-              },
+              _hover: {bgColor: 'slate.100'},
             })}
           >
             Call
           </Button>
+
           <Link
             rel='dofollow'
             target='_blank'
@@ -189,9 +199,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
               color: '#6E7072',
               w: '1/2',
               py: '3',
-              _hover: {
-                bgColor: 'slate.100',
-              },
+              _hover: {bgColor: 'slate.100'},
             })}
           >
             Website

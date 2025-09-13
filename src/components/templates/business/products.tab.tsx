@@ -49,7 +49,7 @@ const Products: React.FC<{company: CompanyType}> = ({company}) => {
                 rating={product.sellerCompany.rate || 0}
                 waterRating={product.rate || 0}
                 price={product?.variations?.[0]?.cost?.toString() || ''}
-                location={`${product.sellerCompany.country?.name}, ${product.sellerCompany.city?.name}`}
+                location={`${product.sellerCompany.country?.name}, ${product.sellerCompany.city?.map(c => c.name).join(', ')}`}
                 keywords={product.keywords || []}
                 phoneNumber={product.sellerCompany.callNumber || ''}
                 website={product.sellerCompany.website || ''}

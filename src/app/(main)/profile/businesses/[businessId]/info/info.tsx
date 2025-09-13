@@ -3,12 +3,13 @@
 
 'use client';
 
-import {css, cx} from '@styled/css';
-import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
-import Image from 'next/image';
 import {useRef, useState} from 'react';
 import {toast} from 'react-toastify';
+import {css, cx} from '@styled/css';
+import {useMutation, useQueryClient} from '@tanstack/react-query';
+import Image from 'next/image';
 
+import AsyncSelect from '@/components/templates/products/async-select';
 import {
   CityType,
   CompanyType,
@@ -26,15 +27,21 @@ interface Props {
   company: CompanyType;
 }
 
+type LabeledId = {id: string; label: string};
+
 export default function BusinessInfoPage({company}: Props) {
-  const [activeTab, setActiveTab] = useState('Information');
+  const [activeTab, setActiveTab] = useState<
+    'Information' | 'Working Hours' | 'Product & Services'
+  >('Information');
   const queryClient = useQueryClient();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // --- cover (keep your previous UX) ---
   const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
   const [coverImagePreview, setCoverImagePreview] = useState<string>('');
   const [isCoverRemoved, setIsCoverRemoved] = useState(false);
 
+  // --- form state aligned with Add page ---
   const [companyInfo, setCompanyInfo] = useState({
     title: company.title || '',
     about: company.about || '',
@@ -43,15 +50,24 @@ export default function BusinessInfoPage({company}: Props) {
     website: company.website || '',
     address: company.address || '',
     status: (company.status as StatusType) || 'PUBLISH',
+    latitude: company.latitude ?? 0,
+    longitude: company.longitude ?? 0,
+    establishedYear: company.establishedYear ?? undefined,
+    youtube: (company as any).youtube || '',
+    googleMap: (company as any).googleMap || '',
+    plusCode: (company as any).plusCode || '',
   });
 
   const [keywords, setKeywords] = useState<string[]>(company.keywords || []);
   const [newKeyword, setNewKeyword] = useState('');
 
-  const [socialMedia, setSocialMedia] = useState([
-    {platform: 'Facebook', url: company.facebook || ''},
-    {platform: 'Twitter', url: company.twitter || ''},
-    {platform: 'Instagram', url: company.instagram || ''},
+  const [socialMedia, setSocialMedia] = useState<
+    {platform: 'Facebook' | 'LinkedIn' | 'Instagram' | 'Twitter' | string; url: string}[]
+  >([
+    {platform: 'Facebook', url: (company as any).facebook || ''},
+    {platform: 'LinkedIn', url: (company as any).linkdin || (company as any).linkedin || ''},
+    {platform: 'Instagram', url: (company as any).instagram || ''},
+    {platform: 'Twitter', url: (company as any).twitter || ''},
   ]);
 
   const [workingHours, setWorkingHours] = useState<WorktimeType[]>(
@@ -68,12 +84,24 @@ export default function BusinessInfoPage({company}: Props) {
         ],
   );
 
-  const [products, setProducts] = useState(company.productAndServices || []);
+  const [products, setProducts] = useState<string[]>(company.productAndServices || []);
 
-  const [countryInputValue, setCountryInputValue] = useState('');
-  const [cityInputValue, setCityInputValue] = useState('');
-  const [selectedCountry, setSelectedCountry] = useState<string>(company.country?._id || '');
-  const [selectedCity, setSelectedCity] = useState<string>(company.city?._id || '');
+  // --- Country & City state now mirrors Add page (AsyncSelect + multi city) ---
+  const initialCountry: LabeledId | null = company.country
+    ? {
+        id: (company.country as CountryType)._id,
+        label: (company.country as CountryType).name as string,
+      }
+    : null;
+
+  // Support both legacy single city and new multi-cities
+  const initialCities: LabeledId[] =
+    Array.isArray(company.city) && company.city.length
+      ? company.city.map((c: CityType) => ({id: c._id, label: c.name}))
+      : [];
+
+  const [selectedCountry, setSelectedCountry] = useState<LabeledId | null>(initialCountry);
+  const [selectedCities, setSelectedCities] = useState<LabeledId[]>(initialCities);
 
   const mutation = useMutation({
     mutationFn: async (payload: {newCoverFile: File | null; removeCover: boolean}) => {
@@ -86,14 +114,24 @@ export default function BusinessInfoPage({company}: Props) {
         coverId = null;
       }
 
+      // Build update payload to match Add page schema
       const updatePayload: any = {
         id: company._id,
         ...companyInfo,
+        // numbers for lat/lng
+        latitude: parseFloat((companyInfo.latitude as any)?.toString() || '0'),
+        longitude: parseFloat((companyInfo.longitude as any)?.toString() || '0'),
+        // map socials to fields (keep backend's 'linkdin' typo for compat)
+        facebook: socialMedia.find(sm => sm.platform === 'Facebook')?.url || '',
+        linkdin: socialMedia.find(sm => sm.platform === 'LinkedIn')?.url || '',
+        instagram: socialMedia.find(sm => sm.platform === 'Instagram')?.url || '',
+        twitter: socialMedia.find(sm => sm.platform === 'Twitter')?.url || '',
         keywords,
-        facebook: socialMedia.find(sm => sm.platform === 'Facebook')?.url,
-        twitter: socialMedia.find(sm => sm.platform === 'Twitter')?.url,
-        instagram: socialMedia.find(sm => sm.platform === 'Instagram')?.url,
         productAndServices: products,
+        // country as single id, city as array of ids
+        country: selectedCountry?.id,
+        city: selectedCities.map(c => c.id),
+        // worktimes same mapping as Add
         worktimes: workingHours.map(wh => ({
           day: wh.day,
           isOpened: wh.isOpened,
@@ -101,19 +139,17 @@ export default function BusinessInfoPage({company}: Props) {
             ? {
                 hour: wh.startTime.hour,
                 minute: wh.startTime.minute,
-                meridiem: wh.startTime.meridiem,
+                meridiem: (wh.startTime as any).meridiem,
               }
-            : null,
+            : undefined,
           finishTime: wh.finishTime
             ? {
                 hour: wh.finishTime.hour,
                 minute: wh.finishTime.minute,
-                meridiem: wh.finishTime.meridiem,
+                meridiem: (wh.finishTime as any).meridiem,
               }
-            : null,
+            : undefined,
         })),
-        country: selectedCountry,
-        city: selectedCity,
       };
 
       if (coverId !== undefined) {
@@ -135,10 +171,7 @@ export default function BusinessInfoPage({company}: Props) {
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
   ) => {
     const {name, value} = e.target;
-    setCompanyInfo({
-      ...companyInfo,
-      [name]: value,
-    });
+    setCompanyInfo(prev => ({...prev, [name]: value}));
   };
 
   const handleCoverImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -147,9 +180,7 @@ export default function BusinessInfoPage({company}: Props) {
       setCoverImageFile(file);
       setIsCoverRemoved(false);
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setCoverImagePreview(reader.result as string);
-      };
+      reader.onloadend = () => setCoverImagePreview(reader.result as string);
       reader.readAsDataURL(file);
     }
   };
@@ -158,91 +189,59 @@ export default function BusinessInfoPage({company}: Props) {
     setCoverImageFile(null);
     setCoverImagePreview('');
     setIsCoverRemoved(true);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
+    if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
-  const removeKeyword = (index: number) => {
-    setKeywords(keywords.filter((_, i) => i !== index));
-  };
-
+  const removeKeyword = (index: number) => setKeywords(keywords.filter((_, i) => i !== index));
   const addKeyword = () => {
     if (newKeyword.trim() !== '') {
-      setKeywords([...keywords, newKeyword]);
+      setKeywords([...keywords, newKeyword.trim()]);
       setNewKeyword('');
     }
   };
 
-  const handleSocialMediaChange = (index: number, field: any, value: any) => {
-    const updatedSocialMedia = [...socialMedia];
-    updatedSocialMedia[index] = {...updatedSocialMedia[index], [field]: value};
-    setSocialMedia(updatedSocialMedia);
+  const handleSocialMediaChange = (index: number, field: 'platform' | 'url', value: string) => {
+    const updated = [...socialMedia];
+    updated[index] = {...updated[index], [field]: value};
+    setSocialMedia(updated);
   };
-
-  const addSocialMedia = () => {
-    setSocialMedia([...socialMedia, {platform: 'Instagram', url: ''}]);
-  };
-
-  const removeSocialMedia = (index: number) => {
+  const addSocialMedia = () => setSocialMedia([...socialMedia, {platform: 'Instagram', url: ''}]);
+  const removeSocialMedia = (index: number) =>
     setSocialMedia(socialMedia.filter((_, i) => i !== index));
-  };
 
   const handleWorkingHoursChange = (
     index: number,
     field: 'isOpened' | 'startTime' | 'finishTime',
     value: boolean | string | {hour: number; minute: number; meridiem: string},
   ) => {
-    const newWorkingHours = [...workingHours];
-
+    const next = [...workingHours];
     if (field === 'isOpened') {
-      newWorkingHours[index] = {
-        ...newWorkingHours[index],
-        isOpened: value as boolean,
-      };
-    } else if (field === 'startTime' || field === 'finishTime') {
-      if (typeof value === 'string') {
-        const [hours, minutes] = value.split(':');
-        const hour24 = Number(hours);
-        const minute = Number(minutes);
-
-        let hour12 = hour24 % 12;
-        if (hour12 === 0) hour12 = 12;
-
-        newWorkingHours[index] = {
-          ...newWorkingHours[index],
-          [field]: {
-            hour: hour12,
-            minute,
-            meridiem: hour24 >= 12 ? 'PM' : 'AM',
-          },
-        };
-      } else {
-        newWorkingHours[index] = {
-          ...newWorkingHours[index],
-          [field]: value as {hour: number; minute: number; meridiem: string},
-        };
-      }
+      next[index] = {...next[index], isOpened: value as boolean};
+    } else if (typeof value === 'string') {
+      const [hours, minutes] = value.split(':');
+      const hour24 = Number(hours);
+      const minute = Number(minutes);
+      let hour12 = hour24 % 12;
+      if (hour12 === 0) hour12 = 12;
+      next[index] = {
+        ...next[index],
+        [field]: {hour: hour12, minute, meridiem: hour24 >= 12 ? 'PM' : 'AM'},
+      } as any;
+    } else {
+      next[index] = {...next[index], [field]: value as any};
     }
-
-    setWorkingHours(newWorkingHours);
+    setWorkingHours(next);
   };
 
   const handleProductChange = (index: number, value: string) => {
-    const updatedProducts = [...products];
-    updatedProducts[index] = value;
-    setProducts(updatedProducts);
+    const updated = [...products];
+    updated[index] = value;
+    setProducts(updated);
   };
+  const addProduct = () => setProducts([...products, '']);
+  const removeProduct = (index: number) => setProducts(products.filter((_, i) => i !== index));
 
-  const addProduct = () => {
-    setProducts([...products, '']);
-  };
-
-  const removeProduct = (index: number) => {
-    setProducts(products.filter((_, i) => i !== index));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     mutation.mutate({
       newCoverFile: coverImageFile,
@@ -250,46 +249,14 @@ export default function BusinessInfoPage({company}: Props) {
     });
   };
 
-  const countryQuery = useQuery({
-    queryKey: ['get-countries', countryInputValue],
-    queryFn: () => searchCountries({count: 1000, text: countryInputValue}),
-  });
-
-  const countries: CountryType[] = countryQuery.data?.results || [];
-
-  const handleSelectCountry = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const countryId = event.target.value;
-    setSelectedCountry(countryId);
-    setSelectedCity('');
-  };
-
-  const cityQuery = useQuery({
-    queryKey: ['get-cities', selectedCountry, cityInputValue],
-    queryFn: () => searchCities({count: 1000, parent: selectedCountry, text: cityInputValue}),
-    enabled: !!selectedCountry,
-  });
-
-  const cities: CityType[] = cityQuery.data?.results || [];
-
-  const handleSelectCity = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const cityId = event.target.value;
-    setSelectedCity(cityId);
-  };
-
   const currentCoverUrl =
     coverImagePreview ||
     (company.cover && !isCoverRemoved
-      ? `${IMAGE_STORAGE_URL}/${company.cover.filename}-${company.cover._id}`
+      ? `${IMAGE_STORAGE_URL}/${(company.cover as any).filename}-${(company.cover as any)._id}`
       : '');
 
   return (
-    <div
-      className={css({
-        maxW: '5xl',
-        bgColor: 'white',
-        w: 'full',
-      })}
-    >
+    <div className={css({maxW: '5xl', bgColor: 'white', w: 'full'})}>
       <div
         className={css({
           display: 'flex',
@@ -298,7 +265,7 @@ export default function BusinessInfoPage({company}: Props) {
           mdDown: {w: 'full'},
         })}
       >
-        {['Information', 'Working Hours', 'Product & Services'].map(tab => (
+        {(['Information', 'Working Hours', 'Product & Services'] as const).map(tab => (
           <button
             type='button'
             key={tab}
@@ -327,6 +294,7 @@ export default function BusinessInfoPage({company}: Props) {
       <form onSubmit={handleSubmit} className={css({p: '6'})}>
         {activeTab === 'Information' && (
           <>
+            {/* Cover (unchanged UX) */}
             <div className={css({mb: 6})}>
               <label
                 className={css({
@@ -379,13 +347,7 @@ export default function BusinessInfoPage({company}: Props) {
                   </div>
                 )}
                 <div
-                  className={css({
-                    pos: 'absolute',
-                    bottom: 4,
-                    right: 4,
-                    display: 'flex',
-                    gap: 2,
-                  })}
+                  className={css({pos: 'absolute', bottom: 4, right: 4, display: 'flex', gap: 2})}
                 >
                   <button
                     type='button'
@@ -422,6 +384,7 @@ export default function BusinessInfoPage({company}: Props) {
               </div>
             </div>
 
+            {/* Grid – mirrors Add page fields */}
             <div
               className={css({
                 display: 'grid',
@@ -430,6 +393,7 @@ export default function BusinessInfoPage({company}: Props) {
                 gap: '6',
               })}
             >
+              {/* Name */}
               <div className={css({mt: '2', mb: '2'})}>
                 <label
                   className={css({
@@ -458,6 +422,7 @@ export default function BusinessInfoPage({company}: Props) {
                 />
               </div>
 
+              {/* Website */}
               <div className={css({mt: '2', mb: '2'})}>
                 <label
                   className={css({
@@ -486,6 +451,7 @@ export default function BusinessInfoPage({company}: Props) {
                 />
               </div>
 
+              {/* Phone */}
               <div className={css({mt: '2', mb: '2'})}>
                 <label
                   className={css({
@@ -514,6 +480,7 @@ export default function BusinessInfoPage({company}: Props) {
                 />
               </div>
 
+              {/* Email */}
               <div className={css({mt: '2', mb: '2'})}>
                 <label
                   className={css({
@@ -542,11 +509,11 @@ export default function BusinessInfoPage({company}: Props) {
                 />
               </div>
 
-              <div className={css({mt: '2', mb: '4'})}>
+              {/* Country (AsyncSelect) */}
+              <div className={css({mt: '2'})}>
                 <label
                   className={css({
                     display: 'block',
-                    mb: '2',
                     fontSize: 'sm',
                     lineHeight: 'sm',
                     color: 'gray.500',
@@ -554,67 +521,281 @@ export default function BusinessInfoPage({company}: Props) {
                 >
                   Country
                 </label>
-                <select
-                  name='country'
-                  value={selectedCountry}
-                  onChange={handleSelectCountry}
-                  className={css({
-                    w: 'full',
-                    p: '2',
-                    borderWidth: '1px',
-                    borderColor: 'gray.300',
-                    h: '12',
-                    borderRadius: 'sm',
-                    _focus: {ring: 'none', ringOffset: 'none', shadow: '1'},
-                  })}
-                >
-                  <option value=''>Select a country</option>
-                  {countries.map(country => (
-                    <option key={country._id} value={country._id}>
-                      {country.name}
-                    </option>
-                  ))}
-                </select>
+                <AsyncSelect
+                  loadOptions={async (inputValue: string) => {
+                    const resp = await searchCountries({count: 50, text: inputValue});
+                    return (resp.results || []).map((c: CountryType) => ({
+                      id: c._id,
+                      value: c._id,
+                      label: c.name,
+                    })) as any;
+                  }}
+                  onChange={(opt: any) => {
+                    const next = opt ? {id: opt.id, label: opt.label} : null;
+                    setSelectedCountry(next);
+                    // clear cities if country changes
+                    setSelectedCities([]);
+                  }}
+                  placeholder={selectedCountry ? selectedCountry.label : 'Select a country...'}
+                  defaultOptions
+                  className={{
+                    border: '1px solid token(colors.gray3)',
+                    height: '48px',
+                    rounded: 'none',
+                  }}
+                  // prefill
+                  defaultValue={
+                    selectedCountry
+                      ? {
+                          id: selectedCountry.id,
+                          value: selectedCountry.id,
+                          label: selectedCountry.label,
+                        }
+                      : undefined
+                  }
+                />
               </div>
 
-              <div className={css({mt: '2', mb: '4'})}>
+              {/* Cities (Async multi, depends on country) */}
+              <div className={css({mt: '2'})}>
                 <label
                   className={css({
                     display: 'block',
-                    mb: '2',
                     fontSize: 'sm',
                     lineHeight: 'sm',
                     color: 'gray.500',
                   })}
                 >
-                  City
+                  City (you can select multiple)
                 </label>
-                <select
-                  name='city'
-                  value={selectedCity}
-                  onChange={handleSelectCity}
-                  disabled={!selectedCountry}
+                <AsyncSelect
+                  key={selectedCountry?.id || 'no-country'}
+                  isMulti
+                  isDisabled={!selectedCountry?.id}
+                  loadOptions={async (inputValue: string) => {
+                    if (!selectedCountry?.id) return [];
+                    const resp = await searchCities({
+                      count: 100,
+                      parent: selectedCountry.id,
+                      text: inputValue,
+                    });
+                    return (resp.results || []).map((c: CityType) => ({
+                      id: c._id,
+                      value: c._id,
+                      label: c.name,
+                    })) as any;
+                  }}
+                  onChange={(opts: any) => {
+                    const arr = Array.isArray(opts) ? opts : opts ? [opts] : [];
+                    const next = arr.map((o: any) => ({id: o.id, label: o.label}));
+                    setSelectedCities(next);
+                  }}
+                  placeholder={
+                    selectedCities.length
+                      ? `${selectedCities.length} cities selected`
+                      : !selectedCountry?.id
+                        ? 'Select country first'
+                        : 'Select cities...'
+                  }
+                  defaultOptions
+                  className={{
+                    border: '1px solid token(colors.gray3)',
+                    minHeight: '48px',
+                    rounded: 'none',
+                  }}
+                  // prefill
+                  defaultValue={
+                    selectedCities.length
+                      ? selectedCities.map(c => ({id: c.id, value: c.id, label: c.label}))
+                      : undefined
+                  }
+                />
+              </div>
+
+              {/* Latitude */}
+              <div className={css({mb: '2'})}>
+                <label
+                  className={css({
+                    display: 'block',
+                    fontSize: 'sm',
+                    lineHeight: 'sm',
+                    color: 'gray.500',
+                  })}
+                >
+                  Latitude
+                </label>
+                <input
+                  type='number'
+                  name='latitude'
+                  value={(companyInfo.latitude as number) ?? ''}
+                  onChange={handleCompanyInfoChange}
+                  placeholder='Enter latitude'
                   className={css({
                     w: 'full',
                     p: '2',
                     borderWidth: '1px',
                     borderColor: 'gray.300',
-                    borderRadius: 'sm',
+                    rounded: '0',
                     h: '12',
                     _focus: {ring: 'none', ringOffset: 'none', shadow: '1'},
-                    _disabled: {opacity: '0.5', cursor: 'not-allowed'},
+                  })}
+                />
+              </div>
+
+              {/* Longitude */}
+              <div className={css({mb: '2'})}>
+                <label
+                  className={css({
+                    display: 'block',
+                    fontSize: 'sm',
+                    lineHeight: 'sm',
+                    color: 'gray.500',
                   })}
                 >
-                  <option value=''>Select a city</option>
-                  {cities.map(city => (
-                    <option key={city._id} value={city._id}>
-                      {city.name}
-                    </option>
-                  ))}
-                </select>
+                  Longitude
+                </label>
+                <input
+                  type='number'
+                  name='longitude'
+                  value={(companyInfo.longitude as number) ?? ''}
+                  onChange={handleCompanyInfoChange}
+                  placeholder='Enter longitude'
+                  className={css({
+                    w: 'full',
+                    p: '2',
+                    borderWidth: '1px',
+                    borderColor: 'gray.300',
+                    rounded: '0',
+                    h: '12',
+                    _focus: {ring: 'none', ringOffset: 'none', shadow: '1'},
+                  })}
+                />
+              </div>
+
+              {/* Established Year */}
+              <div className={css({mt: '2'})}>
+                <label
+                  className={css({
+                    display: 'block',
+                    fontSize: 'sm',
+                    lineHeight: 'sm',
+                    color: 'gray.500',
+                  })}
+                >
+                  Established Year
+                </label>
+                <input
+                  type='number'
+                  name='establishedYear'
+                  min={1800}
+                  max={new Date().getFullYear()}
+                  value={(companyInfo as any).establishedYear || ''}
+                  onChange={handleCompanyInfoChange}
+                  placeholder='e.g. 2008'
+                  className={css({
+                    w: 'full',
+                    p: '2',
+                    borderWidth: '1px',
+                    borderColor: 'gray.300',
+                    rounded: '0',
+                    h: '12',
+                    _focus: {ring: 'none', ringOffset: 'none', shadow: '1'},
+                  })}
+                />
+              </div>
+
+              {/* YouTube */}
+              <div className={css({mt: '2'})}>
+                <label
+                  className={css({
+                    display: 'block',
+                    fontSize: 'sm',
+                    lineHeight: 'sm',
+                    color: 'gray.500',
+                  })}
+                >
+                  YouTube
+                </label>
+                <input
+                  type='text'
+                  name='youtube'
+                  value={(companyInfo as any).youtube || ''}
+                  onChange={handleCompanyInfoChange}
+                  placeholder='Channel or video URL'
+                  className={css({
+                    w: 'full',
+                    p: '2',
+                    borderWidth: '1px',
+                    borderColor: 'gray.300',
+                    rounded: '0',
+                    h: '12',
+                    _focus: {ring: 'none', ringOffset: 'none', shadow: '1'},
+                  })}
+                />
+              </div>
+
+              {/* Google Map */}
+              <div className={css({mt: '2'})}>
+                <label
+                  className={css({
+                    display: 'block',
+                    fontSize: 'sm',
+                    lineHeight: 'sm',
+                    color: 'gray.500',
+                  })}
+                >
+                  Google Map URL
+                </label>
+                <input
+                  type='text'
+                  name='googleMap'
+                  value={(companyInfo as any).googleMap || ''}
+                  onChange={handleCompanyInfoChange}
+                  placeholder='Google Maps link'
+                  className={css({
+                    w: 'full',
+                    p: '2',
+                    borderWidth: '1px',
+                    borderColor: 'gray.300',
+                    rounded: '0',
+                    h: '12',
+                    _focus: {ring: 'none', ringOffset: 'none', shadow: '1'},
+                  })}
+                />
+              </div>
+
+              {/* Plus Code */}
+              <div className={css({mt: '2'})}>
+                <label
+                  className={css({
+                    display: 'block',
+                    fontSize: 'sm',
+                    lineHeight: 'sm',
+                    color: 'gray.500',
+                  })}
+                >
+                  Plus Code
+                </label>
+                <input
+                  type='text'
+                  name='plusCode'
+                  value={(companyInfo as any).plusCode || ''}
+                  onChange={handleCompanyInfoChange}
+                  placeholder='e.g. 7FG8+5V'
+                  className={css({
+                    w: 'full',
+                    p: '2',
+                    borderWidth: '1px',
+                    borderColor: 'gray.300',
+                    rounded: '0',
+                    h: '12',
+                    _focus: {ring: 'none', ringOffset: 'none', shadow: '1'},
+                  })}
+                />
               </div>
             </div>
 
+            {/* Address */}
             <div className={css({mt: '2', mb: '2'})}>
               <label
                 className={css({
@@ -643,6 +824,7 @@ export default function BusinessInfoPage({company}: Props) {
               />
             </div>
 
+            {/* Keywords */}
             <div className={css({mt: '2', mb: '2'})}>
               <label
                 className={css({
@@ -714,6 +896,7 @@ export default function BusinessInfoPage({company}: Props) {
               </div>
             </div>
 
+            {/* Socials */}
             <div className={css({mt: '6'})}>
               <h2
                 className={css({fontSize: 'lg', lineHeight: 'lg', fontWeight: 'medium', mb: '4'})}
@@ -741,10 +924,11 @@ export default function BusinessInfoPage({company}: Props) {
                     >
                       <option value='Instagram'>Instagram</option>
                       <option value='Facebook'>Facebook</option>
-                      <option value='x.com'>x.com</option>
+                      <option value='Twitter'>Twitter</option>
                       <option value='LinkedIn'>LinkedIn</option>
                       <option value='YouTube'>YouTube</option>
                       <option value='TikTok'>TikTok</option>
+                      <option value='x.com'>x.com</option>
                     </select>
                     <div className={css({flex: '1'})}>
                       <label
@@ -803,11 +987,7 @@ export default function BusinessInfoPage({company}: Props) {
                   </div>
                 ))}
                 <div
-                  className={css({
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  })}
+                  className={css({display: 'flex', alignItems: 'center', justifyContent: 'center'})}
                 >
                   <button
                     type='button'
@@ -833,6 +1013,7 @@ export default function BusinessInfoPage({company}: Props) {
               </div>
             </div>
 
+            {/* About */}
             <div className={css({mt: '6'})}>
               <h2
                 className={css({fontSize: 'lg', lineHeight: 'lg', fontWeight: 'medium', mb: '4'})}
@@ -867,6 +1048,7 @@ export default function BusinessInfoPage({company}: Props) {
               </div>
             </div>
 
+            {/* Status */}
             <div className={css({mt: '2', mb: '4'})}>
               <label
                 className={css({
@@ -915,10 +1097,7 @@ export default function BusinessInfoPage({company}: Props) {
                   gap: '2',
                   w: 'full',
                   alignItems: 'end',
-                  mdDown: {
-                    flexDirection: 'column',
-                    alignItems: 'start',
-                  },
+                  mdDown: {flexDirection: 'column', alignItems: 'start'},
                 })}
               >
                 <div
@@ -978,10 +1157,7 @@ export default function BusinessInfoPage({company}: Props) {
                       gap: '4',
                       ml: '4',
                       flex: '1',
-                      mdDown: {
-                        ml: 0,
-                        w: 'full',
-                      },
+                      mdDown: {ml: 0, w: 'full'},
                     })}
                   >
                     <div className={css({w: 'full'})}>
@@ -1067,7 +1243,6 @@ export default function BusinessInfoPage({company}: Props) {
                     <line x1='4' y1='16' x2='20' y2='16' />
                   </svg>
                 </button>
-
                 <div className={css({flex: '1', mt: '2', mb: '2'})}>
                   <label
                     className={css({
@@ -1094,7 +1269,6 @@ export default function BusinessInfoPage({company}: Props) {
                     })}
                   />
                 </div>
-
                 <button
                   type='button'
                   onClick={() => removeProduct(index)}

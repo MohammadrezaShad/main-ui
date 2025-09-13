@@ -47,7 +47,7 @@ const RelatedProducts = ({productId}: {productId: string}) => {
                 sellerCompanyId={product.sellerCompany._id}
                 waterRating={product.rate || 0}
                 price={product?.variations?.[0]?.cost?.toString() || ''}
-                location={`${product.sellerCompany.country?.name}, ${product.sellerCompany.city?.name}`}
+                location={`${product.sellerCompany.country?.name}, ${product.sellerCompany.city?.map(c => c.name).join(', ')}`}
                 keywords={product.keywords || []}
                 phoneNumber={product.sellerCompany.callNumber || ''}
                 website={product.sellerCompany.website || ''}
@@ -80,7 +80,7 @@ const RelatedProducts = ({productId}: {productId: string}) => {
             rating={product.sellerCompany.rate || 0}
             waterRating={product.rate || 0}
             price={product?.variations?.[0]?.cost?.toString() || ''}
-            location={`${product.sellerCompany.country?.name}, ${product.sellerCompany.city?.name}`}
+            location={`${product.sellerCompany.country?.name}, ${product.sellerCompany.city?.map(c => c.name).join(', ')}`}
             keywords={product.keywords || []}
             phoneNumber={product.sellerCompany.callNumber || ''}
             sellerCompanyId={product.sellerCompany._id}

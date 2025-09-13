@@ -1,3 +1,6 @@
+/* eslint-disable react/no-array-index-key */
+/* eslint-disable jsx-a11y/label-has-associated-control */
+
 'use client';
 
 import {useState} from 'react';
@@ -12,7 +15,7 @@ import {useParams} from 'next/navigation';
 import {IconStar} from '@/assets';
 import {Ratings, Star} from '@/components/molecules/corporate-card/corporate-card.styled';
 import {CookieName} from '@/constants';
-import {CompanyType} from '@/graphql';
+import {CityType, CompanyType} from '@/graphql';
 import {findCompanyBySlug} from '@/graphql/query/companies/find-company-by-slug';
 
 import {Gallery} from './gallery.tab';
@@ -32,7 +35,6 @@ const TabContent = ({activeTab, company}: {activeTab: string; company: CompanyTy
   if (activeTab === 'gallery') {
     return <Gallery slides={company?.gallery || []} />;
   }
-
   return null;
 };
 
@@ -41,11 +43,25 @@ const BusinessPage = () => {
   const [activeTab, setActiveTab] = useState('overview');
 
   const params = useParams();
-  const {data, refetch} = useQuery({
+  const {data} = useQuery({
     queryKey: ['get-company', params.slug],
     queryFn: () => findCompanyBySlug({slug: params.slug as string}, token),
   });
   const company = data?.result;
+
+  // cities is now an array under the SAME key "city"
+  const cityNames = Array.isArray(company?.city)
+    ? (company?.city as Array<CityType>).map(c => c?.name).filter(Boolean)
+    : [];
+
+  const establishedYear = company?.establishedYear
+    ? new Date(company.establishedYear as any).getFullYear()
+    : null;
+
+  const plusCode = company?.plusCode || '';
+  const plusCodeLink = plusCode ? `https://maps.google.com/?q=${encodeURIComponent(plusCode)}` : '';
+  const youtubeUrl = company?.youtube || '';
+  const googleMapUrl = company?.googleMap || '';
 
   return (
     <div className={css({width: '100%'})}>
@@ -63,9 +79,7 @@ const BusinessPage = () => {
           backgroundSize: 'cover',
           height: '[160px]',
           pos: 'relative',
-          mdDown: {
-            mb: '[240px]',
-          },
+          mdDown: {mb: '[240px]'},
         })}
       >
         <div
@@ -73,9 +87,7 @@ const BusinessPage = () => {
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            mdDown: {
-              flexDirection: 'column-reverse',
-            },
+            mdDown: {flexDirection: 'column-reverse'},
           })}
         >
           <Box
@@ -84,28 +96,18 @@ const BusinessPage = () => {
               position: 'absolute',
               top: '70%',
               left: '[227px]',
-              mdDown: {
-                top: '200%',
-                left: '50% !important',
-                transform: 'translateX(-50%)',
-              },
+              mdDown: {top: '200%', left: '50% !important', transform: 'translateX(-50%)'},
             })}
           >
             <Ratings>
               {[...Array(5)].map((_, index) => (
-                // eslint-disable-next-line react/no-array-index-key
                 <Star key={index} bgColor={index < (company?.rate || 0) ? 'primary' : 'gray3'}>
-                  <IconStar
-                    className={css({
-                      w: '4',
-                      h: '4',
-                      color: 'white',
-                    })}
-                  />
+                  <IconStar className={css({w: '4', h: '4', color: 'white'})} />
                 </Star>
               ))}
             </Ratings>
           </Box>
+
           <div
             className={css({
               display: 'flex',
@@ -115,7 +117,6 @@ const BusinessPage = () => {
               ps: '[43px]',
               mdDown: {
                 flexDirection: 'column',
-                // pos: 'static',
                 bottom: '-100%',
                 ps: '0',
                 alignItems: 'center',
@@ -142,13 +143,13 @@ const BusinessPage = () => {
                   textStyle: 'h1',
                   color: '#333333',
                   mt: '[33px]',
-                  mdDown: {
-                    mt: '6',
-                  },
+                  mdDown: {mt: '6'},
                 })}
               >
                 {company?.title}
               </h1>
+
+              {/* Location + categories */}
               <p
                 className={css({
                   textStyle: 'body',
@@ -156,7 +157,8 @@ const BusinessPage = () => {
                   mdDown: {textAlign: 'center'},
                 })}
               >
-                {company?.city?.name}, {company?.country?.name}
+                {cityNames.length ? cityNames.join(', ') : '—'}
+                {company?.country?.name ? `, ${company.country.name}` : ''}
                 <span className={css({mx: '2', color: '#E3E3E3', hideBelow: 'md'})}>|</span>
                 <span className={css({display: 'inline-flex', alignItems: 'center', gap: 2})}>
                   {company?.categories?.map(category => (
@@ -166,11 +168,67 @@ const BusinessPage = () => {
                   ))}
                 </span>
               </p>
+
+              {/* New meta row */}
+              <div
+                className={css({
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  gap: '3',
+                  color: 'gray.600',
+                  fontSize: 'sm',
+                  mt: '2',
+                })}
+              >
+                {establishedYear ? <span>Established: {establishedYear}</span> : null}
+                {plusCode ? (
+                  <span>
+                    Plus Code:{' '}
+                    {plusCodeLink ? (
+                      <a
+                        className={css({color: 'blue.600', _hover: {textDecoration: 'underline'}})}
+                        href={plusCodeLink}
+                        target='_blank'
+                        rel='noreferrer'
+                      >
+                        {plusCode}
+                      </a>
+                    ) : (
+                      plusCode
+                    )}
+                  </span>
+                ) : null}
+                {youtubeUrl ? (
+                  <span>
+                    <a
+                      className={css({color: 'blue.600', _hover: {textDecoration: 'underline'}})}
+                      href={youtubeUrl}
+                      target='_blank'
+                      rel='noreferrer'
+                    >
+                      YouTube
+                    </a>
+                  </span>
+                ) : null}
+                {googleMapUrl ? (
+                  <span>
+                    <a
+                      className={css({color: 'blue.600', _hover: {textDecoration: 'underline'}})}
+                      href={googleMapUrl}
+                      target='_blank'
+                      rel='noreferrer'
+                    >
+                      Google Map
+                    </a>
+                  </span>
+                ) : null}
+              </div>
             </div>
           </div>
         </div>
       </div>
 
+      {/* Content */}
       <div
         className={css({
           display: 'flex',
@@ -178,10 +236,7 @@ const BusinessPage = () => {
           justifyContent: 'space-between',
           gap: '8',
           px: '4',
-          mdDown: {
-            mt: '20',
-            flexDirection: 'column',
-          },
+          mdDown: {mt: '20', flexDirection: 'column'},
         })}
       >
         <div className={css({flex: '3', p: '8', mdDown: {w: 'full', p: '4'}})}>
@@ -202,9 +257,7 @@ const BusinessPage = () => {
                   cursor: 'pointer',
                   borderBottom: activeTab === 'overview' ? '2px solid #44BAEB' : 'none',
                   fontWeight: '500',
-                  mdDown: {
-                    w: 'full',
-                  },
+                  mdDown: {w: 'full'},
                 }),
               )}
               onClick={() => setActiveTab('overview')}
@@ -219,9 +272,7 @@ const BusinessPage = () => {
                   cursor: 'pointer',
                   borderBottom: activeTab === 'products' ? '2px solid #44BAEB' : 'none',
                   fontWeight: '500',
-                  mdDown: {
-                    w: 'full',
-                  },
+                  mdDown: {w: 'full'},
                 }),
               )}
               onClick={() => setActiveTab('products')}
@@ -236,9 +287,7 @@ const BusinessPage = () => {
                   cursor: 'pointer',
                   borderBottom: activeTab === 'gallery' ? '2px solid #44BAEB' : 'none',
                   fontWeight: '500',
-                  mdDown: {
-                    w: 'full',
-                  },
+                  mdDown: {w: 'full'},
                 }),
               )}
               onClick={() => setActiveTab('gallery')}

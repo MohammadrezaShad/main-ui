@@ -16,6 +16,8 @@ export async function findProductBySlug(
                     redirect
                     about
                     amazon
+                    callNumber
+                    website
                     category {
                     _id
                     slug

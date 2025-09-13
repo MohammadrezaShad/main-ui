@@ -6,14 +6,14 @@
 
 'use client';
 
+import {useEffect, useRef, useState} from 'react';
+import {toast} from 'react-toastify';
 import {css, cx} from '@styled/css';
 import {Box} from '@styled/jsx';
 import {useQueryClient} from '@tanstack/react-query';
 import Image from 'next/image';
 import Link from 'next/link';
 import {useParams, useRouter} from 'next/navigation';
-import {useEffect, useRef, useState} from 'react';
-import {toast} from 'react-toastify';
 import slugify from 'slugify';
 
 import {IconArrowRight, IconEyeOpen, IconRedirect} from '@/assets';
@@ -46,6 +46,8 @@ export default function ProductForm({product}: Props) {
     description: '',
     status: 'PUBLISH' as 'DRAFT' | 'PUBLISH',
     slug: '',
+    callNumber: '', // NEW
+    website: '', // NEW
   });
 
   const [keywords, setKeywords] = useState<string[]>([]);
@@ -362,6 +364,8 @@ export default function ProductForm({product}: Props) {
         description: product.about || '',
         status: 'PUBLISH' as 'DRAFT' | 'PUBLISH',
         slug: product.slug || '',
+        callNumber: product.callNumber || '', // NEW
+        website: product.website || '',
       });
       setVariations(product.variations || []);
       if (product.images)
@@ -684,6 +688,67 @@ export default function ProductForm({product}: Props) {
                     })}
                   />
                 </div>
+              </div>
+
+              <div className={css({mt: '2', mb: '2'})}>
+                <label
+                  className={css({
+                    display: 'block',
+                    fontSize: 'sm',
+                    lineHeight: 'sm',
+                    color: 'gray.500',
+                  })}
+                  htmlFor='callNumber'
+                >
+                  Contact Number
+                </label>
+                <input
+                  type='tel'
+                  name='callNumber'
+                  value={productInfo.callNumber}
+                  onChange={handleInputChange}
+                  placeholder='+1 555-123-4567'
+                  className={css({
+                    w: 'full',
+                    p: '2',
+                    borderWidth: '1px',
+                    borderColor: 'gray.300',
+                    h: '12',
+                    rounded: '0',
+                    _focus: {ring: 'none', ringOffset: 'none', shadow: '1'},
+                  })}
+                />
+              </div>
+
+              {/* Website (primary buy link) */}
+              <div className={css({mt: '2', mb: '2'})}>
+                <label
+                  className={css({
+                    display: 'block',
+                    fontSize: 'sm',
+                    lineHeight: 'sm',
+                    color: 'gray.500',
+                  })}
+                  htmlFor='website'
+                >
+                  Website (primary buy link)
+                </label>
+                <input
+                  type='url'
+                  name='website'
+                  value={productInfo.website}
+                  onChange={handleInputChange}
+                  placeholder='https://example.com/product'
+                  className={css({
+                    w: 'full',
+                    p: '2',
+                    borderWidth: '1px',
+                    borderColor: 'gray.300',
+                    h: '12',
+                    rounded: '0',
+                    _focus: {ring: 'none', ringOffset: 'none', shadow: '1'},
+                  })}
+                />
               </div>
             </div>
 

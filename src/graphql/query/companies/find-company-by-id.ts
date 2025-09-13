@@ -21,6 +21,10 @@ export async function findCompanyById(
         about
         address
         callNumber
+        establishedYear
+        googleMap
+        plusCode
+        youtube
         categories {
           _id
           title

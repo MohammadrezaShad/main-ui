@@ -19,6 +19,8 @@ export async function searchProducts(
                     redirect
                     about
                     amazon
+                    callNumber
+                    website
                     category {
                       _id
                       slug
