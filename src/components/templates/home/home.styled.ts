@@ -49,7 +49,6 @@ export const Content = styled('div', {
   base: {
     position: 'relative',
     display: 'flex',
-    width: '800px',
     maxWidth: '100%',
     flexDirection: 'column',
     margin: '62px 0 190px',

@@ -168,6 +168,8 @@ export default function HomeMain() {
               <Box
                 className={flex({
                   alignItems: 'center',
+                  minW: 0,
+                  width: 'full',
                   flexDir: {
                     base: 'row',
                     mdDown: 'column',
