@@ -167,7 +167,7 @@ function InfoBox({company}: Props) {
         <strong className={css({textStyle: 'headline6', color: '#333333', mb: '2'})}>
           Keywords:
         </strong>
-        <div className={css({display: 'flex', alignItems: 'center', gap: '2'})}>
+        <div className={css({display: 'flex', gap: '2', flexWrap: 'wrap'})}>
           {company?.keywords?.map(keyword => (
             <span
               key={keyword}

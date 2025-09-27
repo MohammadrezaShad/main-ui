@@ -98,12 +98,11 @@ export const Underline = styled('div', {
 
 export const SearchContainer = styled('div', {
   base: {
-    shadow: {
-      base: 'lg',
-      mdDown: 'none',
-    },
+    boxShadow: 'px 8px 24px 0px rgba(0, 0, 0, 0.25)',
     bg: 'white',
     display: 'flex',
+    mt: 12,
+    minW: 0,
     mdDown: {
       flexDirection: 'column',
       mx: '8',
@@ -125,7 +124,7 @@ export const SearchButton = styled('button', {
     gap: '2',
     mdDown: {
       aspectRatio: 'auto',
-      py: '5',
+      py: '2',
     },
   },
 });

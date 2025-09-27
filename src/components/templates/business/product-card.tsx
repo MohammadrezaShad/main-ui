@@ -59,6 +59,15 @@ const ProductCard: React.FC<ProductCardProps> = ({
     openMapSelector(coords?.lat, coords?.lng);
   };
 
+  const formatScore = (v: unknown) => {
+    const n = Number(v ?? 0);
+    if (!Number.isFinite(n)) return '0';
+    return new Intl.NumberFormat(undefined, {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 1, // show at most one decimal
+    }).format(n);
+  };
+
   return (
     <div
       className={css({
@@ -133,7 +142,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
             </Link>
             <div className={css({display: 'flex', alignItems: 'center', gap: '2'})}>
               <IconStar className={css({w: '4', h: '4', color: 'gray4'})} />
-              <p className={css({textStyle: 'caption', color: 'text.primary'})}>{rating}/5</p>
+              <p className={css({textStyle: 'caption', color: 'text.primary'})}>
+                {formatScore(rating || 0)}/5
+              </p>
             </div>
           </div>
           <Link href={`/products/${id}`}>
@@ -143,7 +154,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
         <div className={css({display: 'flex', alignItems: 'center', gap: '2', my: '4'})}>
           <IconDrop className={css({w: '6', h: '6'})} />
-          <p className={css({textStyle: 'body', color: 'gray4'})}>{waterRating}/10</p>
+          <p className={css({textStyle: 'body', color: 'gray4'})}>
+            {formatScore(waterRating || 0)}/10
+          </p>
         </div>
 
         <div className={css({textStyle: 'headline4', color: 'primary'})}>${price}</div>

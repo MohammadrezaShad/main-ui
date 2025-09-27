@@ -1,10 +1,13 @@
+/* eslint-disable no-nested-ternary */
+/* eslint-disable jsx-a11y/label-has-associated-control */
+
 'use client';
 
-import {useEffect, useState} from 'react';
+import {useEffect, useMemo, useRef, useState} from 'react';
 import {css} from '@styled/css';
 import {Box, Divider} from '@styled/jsx';
 import {flex} from '@styled/patterns';
-import {useQuery} from '@tanstack/react-query';
+import {keepPreviousData, useQuery} from '@tanstack/react-query';
 import {useSearchParams} from 'next/navigation';
 
 import {IconChevronLeft, IconChevronRight, IconClose, IconSearch} from '@/assets';
@@ -31,75 +34,104 @@ import {
   HeroWrapper,
   SearchButton,
   SearchContainer,
-  TitleWrapper,
 } from './home.styled';
+
+type Option = {id: string; value: string; label: string};
+
+const parseCsv = (csv?: string | null) =>
+  (csv || '')
+    .split(',')
+    .map(s => s.trim())
+    .filter(Boolean);
+
+const uniqByValue = (arr: Option[]) => Array.from(new Map(arr.map(o => [o.value, o])).values());
 
 export default function ProductsView() {
   const searchParams = useSearchParams();
   const updateSearchParams = useUpdateSearchParam();
-  const page = Number(searchParams.get('page') ?? '1');
-  const categories = searchParams.get('categories') || undefined;
-  const city = searchParams.get('city') || undefined;
-  const [cityName, setCityName] = useState<any>();
-  const [countryName, setCountryName] = useState<{id: string; value: string; label: string}[]>();
-  const [categoriesName, setCategoriesName] = useState<any[]>([]);
-  const minimumCompanyRating = searchParams.get('minimumCompanyRating') || undefined;
 
-  const minimumProductRating = searchParams.get('minimumProductRating') || undefined;
+  // ---- URL params (as strings from the URL) ----
+  const pageStr = searchParams.get('page') ?? '1';
+  const categoriesParam = searchParams.get('categories') || '';
+  const cityParam = searchParams.get('city') || '';
+  const minimumCompanyRatingStr = searchParams.get('minimumCompanyRating') || '';
+  const minimumProductRatingStr = searchParams.get('minimumProductRating') || '';
+  const lowPriceStr = searchParams.get('lowPrice') || '';
+  const highPriceStr = searchParams.get('highPrice') || '';
 
-  const lowPrice = searchParams.get('lowPrice') || 0;
-  const highPrice = searchParams.get('highPrice') || 0;
+  // ---- Normalized/query-ready values ----
+  const page = Number(pageStr || '1') || 1;
+  const categoryIds = useMemo(
+    () => Array.from(new Set(parseCsv(categoriesParam))),
+    [categoriesParam],
+  );
+  const cityId = cityParam || undefined;
+  const minimumCompanyRating = minimumCompanyRatingStr
+    ? Number(minimumCompanyRatingStr)
+    : undefined;
+  const minimumProductRating = minimumProductRatingStr
+    ? Number(minimumProductRatingStr)
+    : undefined;
+  const lowPrice = lowPriceStr ? Number(lowPriceStr) : undefined;
+  const highPrice = highPriceStr ? Number(highPriceStr) : undefined;
 
-  const {data, refetch} = useQuery({
+  // ---- UI state for select values / chips ----
+  const [cityName, setCityName] = useState<string | undefined>();
+  const [countryName, setCountryName] = useState<Option[] | undefined>();
+  const [categoriesName, setCategoriesName] = useState<Option[]>([]);
+
+  // Abort controllers to prevent stale overwrites
+  const cityAbortRef = useRef<AbortController | null>(null);
+  const catsAbortRef = useRef<AbortController | null>(null);
+
+  // ======= Data query =======
+  const {data, isLoading, isError, error, refetch} = useQuery({
+    // IMPORTANT: use the **same shape** as on the server (all strings)
     queryKey: [
       'search-products',
-      page,
-      categories,
-      city,
-      minimumCompanyRating,
-      minimumProductRating,
-      lowPrice,
-      highPrice,
+      pageStr, // <-- string, matches server prefetch
+      categoriesParam,
+      cityParam,
+      minimumCompanyRatingStr,
+      minimumProductRatingStr,
+      lowPriceStr,
+      highPriceStr,
     ],
     queryFn: () =>
       searchProducts({
-        page: +page,
+        page,
         count: 8,
-        categories: categories ? categories.split(',') : undefined,
-        city,
-        minimumCompanyRating: minimumCompanyRating ? +minimumCompanyRating : undefined,
-        minimumProductRating: minimumProductRating ? +minimumProductRating : undefined,
-        lowPrice: lowPrice ? +lowPrice : undefined,
-        highPrice: highPrice ? +highPrice : undefined,
+        categories: categoryIds.length ? categoryIds : undefined,
+        city: cityId,
+        minimumCompanyRating,
+        minimumProductRating,
+        lowPrice,
+        highPrice,
         isActive: true,
         status: 'PUBLISH' as StatusType,
       }),
+    // prevent initial refetch flash after hydration
+    staleTime: 60_000,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    placeholderData: keepPreviousData,
   });
 
+  // Only show the big loader when we truly have no data yet
+  const showInitialLoading = !data && isLoading;
+
+  // ======= AsyncSelect option loaders =======
   const filterProductCategories = async (inputValue: string) => {
-    const response = await searchProductCategories({
-      page: 1,
-      count: 50,
-      text: inputValue,
-    });
-    return response.results?.map(result => ({
-      id: result._id,
-      value: result._id,
-      label: result.title,
-    }));
+    const response = await searchProductCategories({page: 1, count: 50, text: inputValue});
+    return (response.results ?? []).map(r => ({id: r._id, value: r._id, label: r.title}) as Option);
   };
+
   const filterCountries = async (inputValue: string) => {
-    const response = await searchCountries({
-      page: 1,
-      count: 50,
-      text: inputValue,
-    });
-    return response.results?.map(result => ({
-      id: result._id,
-      value: result._id,
-      label: result.name,
-    }));
+    const response = await searchCountries({page: 1, count: 50, text: inputValue});
+    return (response.results ?? []).map(r => ({id: r._id, value: r._id, label: r.name}) as Option);
   };
+
   const filterCities = async (inputValue: string, countryId?: string) => {
     const response = await searchCities({
       page: 1,
@@ -107,182 +139,192 @@ export default function ProductsView() {
       text: inputValue,
       parent: countryId || countryName?.[0]?.id || undefined,
     });
-    return response.results?.map(result => ({
-      id: result._id,
-      value: result._id,
-      label: result.name,
-    }));
+    return (response.results ?? []).map(r => ({id: r._id, value: r._id, label: r.name}) as Option);
   };
 
-  const categoryOptions = (inputValue: string) => filterProductCategories(inputValue);
-  const cityOptions = (inputValue: string, country?: string) => filterCities(inputValue, country);
-  const countryOptions = (inputValue: string) => filterCountries(inputValue);
+  const categoryOptions = (input: string) => filterProductCategories(input);
+  const cityOptions = (input: string, country?: string) => filterCities(input, country);
+  const countryOptions = (input: string) => filterCountries(input);
 
-  const getCityTitle = async (_city: string) => {
-    const res = await findCityById({id: _city}).then(res => res.result?.name);
-    return res;
-  };
+  // ======= Sync chips from URL (with cancellation) =======
+  useEffect(() => {
+    if (cityAbortRef.current) cityAbortRef.current.abort();
+    const cityCtl = new AbortController();
+    cityAbortRef.current = cityCtl;
+
+    if (cityId) {
+      findCityById({id: cityId})
+        .then(res => {
+          if (!cityCtl.signal.aborted) setCityName(res.result?.name || undefined);
+        })
+        .catch(() => {
+          if (!cityCtl.signal.aborted) setCityName(undefined);
+        });
+    } else {
+      setCityName(undefined);
+    }
+
+    return () => {
+      cityCtl.abort();
+    };
+  }, [cityId]);
 
   useEffect(() => {
-    if (city) {
-      getCityTitle(city).then(res => {
-        setCityName(res);
-      });
-    }
-    if (categories) {
-      const categoriesArray = categories.split(',');
-      const categoryNames = categoriesArray.map(async category => {
-        const res = await findProductCategoryById({id: category}).then(res => ({
-          id: res?.result?._id,
-          value: res?.result?._id,
-          label: res?.result?.title,
-        }));
-        return res;
-      });
-      Promise.all(categoryNames).then(res => {
-        setCategoriesName(res);
-      });
-    }
-  }, [city, categories]);
+    if (catsAbortRef.current) catsAbortRef.current.abort();
+    const ctl = new AbortController();
+    catsAbortRef.current = ctl;
 
+    if (categoryIds.length) {
+      Promise.all(
+        categoryIds.map(id =>
+          findProductCategoryById({id})
+            .then(res => {
+              const r = res?.result;
+              return r ? ({id: r._id, value: r._id, label: r.title} as Option) : null;
+            })
+            .catch(() => null),
+        ),
+      ).then(list => {
+        if (!ctl.signal.aborted) {
+          const opts = (list.filter(Boolean) as Option[]) ?? [];
+          setCategoriesName(uniqByValue(opts));
+        }
+      });
+    } else {
+      setCategoriesName([]);
+    }
+
+    return () => {
+      ctl.abort();
+    };
+  }, [categoryIds.join(',')]);
+
+  // ======= Render =======
   return (
     <>
       <Hero>
         <HeroShade />
         <HeroWrapper>
           <Content>
-            <TitleWrapper>Search</TitleWrapper>
+            <h1 className={css({textStyle: 'title2', textAlign: 'center', pb: '6', color: '#333'})}>
+              Search
+            </h1>
+
+            {/* Search Bar */}
             <SearchContainer>
               <Box
                 className={flex({
                   alignItems: 'center',
-                  flexDir: {
-                    base: 'row',
-                    mdDown: 'column',
-                  },
+                  flexDir: {base: 'row', mdDown: 'column'},
                 })}
                 flex={1}
+                style={{minWidth: 0}}
               >
+                {/* Category */}
                 <Box
                   className={css({
-                    p: {
-                      base: '6',
-                      mdDown: '2',
-                    },
-                    w: {
-                      base: '1/3',
-                      mdDown: 'full',
-                    },
-                    px: {
-                      mdDown: '0 !important',
-                    },
+                    p: {base: '6', mdDown: '2'},
+                    w: {base: '1/3', mdDown: 'full'},
+                    px: {mdDown: '0 !important'},
+                    minW: 0,
                   })}
                 >
                   <AsyncSelect
                     loadOptions={categoryOptions as any}
-                    onChange={val => {
-                      setCategoriesName([val]);
-                      const existingCategories = searchParams.get('categories');
-                      const newValue = existingCategories
-                        ? `${existingCategories},${val.value}`
-                        : val.value;
-                      updateSearchParams('categories', newValue);
+                    onChange={(val: Option) => {
+                      const existing = parseCsv(categoriesParam);
+                      if (!existing.includes(val.value)) {
+                        const newValue = existing.length
+                          ? `${existing.join(',')},${val.value}`
+                          : val.value;
+                        updateSearchParams('categories', newValue);
+                        setCategoriesName(prev => uniqByValue([...prev, val]));
+                      }
                     }}
                     placeholder='Select category...'
                     defaultOptions
-                    className={{
-                      h: {
-                        mdDown: '64px',
-                      },
-                    }}
+                    className={{h: {mdDown: '64px'}}}
                   />
                 </Box>
+
                 <Divider
                   hideBelow='md'
                   orientation='vertical'
-                  className={css({height: '8', borderColor: '#E3E3E3'})}
+                  className={css({
+                    height: 'auto',
+                    alignSelf: 'stretch',
+                    borderColor: '#E3E3E3',
+                  })}
                 />
+
+                {/* Country */}
                 <Box
                   className={css({
-                    p: {
-                      base: '6',
-                      mdDown: '2',
-                    },
-                    w: {
-                      base: '1/3',
-                      mdDown: 'full',
-                    },
-                    px: {
-                      mdDown: '0 !important',
-                    },
+                    p: {base: '6', mdDown: '2'},
+                    w: {base: '1/3', mdDown: 'full'},
+                    px: {mdDown: '0 !important'},
+                    minW: 0,
                   })}
                 >
                   <AsyncSelect
                     loadOptions={countryOptions as any}
-                    onChange={val => {
+                    onChange={(val: Option) => {
                       setCountryName([val]);
+                      updateSearchParams('city', '');
+                      setCityName(undefined);
                     }}
                     placeholder='Select Country...'
                     defaultOptions
-                    className={{
-                      h: {
-                        mdDown: '64px',
-                      },
-                    }}
+                    className={{h: {mdDown: '64px'}}}
                   />
                 </Box>
+
                 <Divider
                   hideBelow='md'
                   orientation='vertical'
-                  className={css({height: '8', borderColor: '#E3E3E3'})}
+                  className={css({
+                    height: 'auto',
+                    alignSelf: 'stretch',
+                    borderColor: '#E3E3E3',
+                  })}
                 />
+
+                {/* City */}
                 <Box
                   className={css({
-                    p: {
-                      base: '6',
-                      mdDown: '2',
-                    },
-                    w: {
-                      base: '1/3',
-                      mdDown: 'full',
-                    },
-                    px: {
-                      mdDown: '0 !important',
-                    },
+                    p: {base: '6', mdDown: '2'},
+                    w: {base: '1/3', mdDown: 'full'},
+                    px: {mdDown: '0 !important'},
+                    minW: 0,
                   })}
                 >
                   <AsyncSelect
                     key={countryName?.[0]?.value}
-                    loadOptions={input => cityOptions(input, countryName?.[0]?.value) as any}
-                    onChange={val => {
-                      setCityName([val.value]);
-                      const existingCategories = searchParams.get('city');
-                      const newValue = existingCategories
-                        ? `${existingCategories},${val.value}`
-                        : val.value;
-                      updateSearchParams('city', newValue);
+                    loadOptions={(input: string) =>
+                      cityOptions(input, countryName?.[0]?.value) as any
+                    }
+                    onChange={(val: Option) => {
+                      setCityName(val.label);
+                      updateSearchParams('city', val.value);
                     }}
                     placeholder='Select City...'
                     defaultOptions
-                    className={{
-                      h: {
-                        mdDown: '64px',
-                      },
-                    }}
+                    className={{h: {mdDown: '64px'}}}
                   />
                 </Box>
               </Box>
+
+              {/* Optional; query already reacts to URL changes */}
               <SearchButton
-                className={css({
-                  mdDown: {
-                    h: '10',
-                  },
-                })}
+                aria-label='Search'
+                className={css({mdDown: {h: '10'}, md: {minW: '98px'}})}
                 onClick={() => refetch()}
               >
                 <IconSearch />
               </SearchButton>
             </SearchContainer>
+
+            {/* Active chips */}
             <div
               className={css({
                 w: 'full',
@@ -291,9 +333,10 @@ export default function ProductsView() {
                 alignItems: 'center',
                 justifyContent: 'center',
                 gap: '6',
+                flexWrap: 'wrap',
               })}
             >
-              {city ? (
+              {cityId ? (
                 <span
                   className={css({
                     bgColor: 'success',
@@ -306,16 +349,21 @@ export default function ProductsView() {
                     alignItems: 'center',
                   })}
                 >
-                  {cityName}
-                  <button type='button' onClick={() => updateSearchParams('city', '')}>
+                  {cityName || 'Selected city'}
+                  <button
+                    type='button'
+                    aria-label='Remove city filter'
+                    onClick={() => updateSearchParams('city', '')}
+                  >
                     <IconClose className={css({ms: '2', fill: 'white', cursor: 'pointer'})} />
                   </button>
                 </span>
               ) : null}
-              {categoriesName
-                ? categoriesName.map((category: any) => (
+
+              {categoriesName.length
+                ? categoriesName.map(category => (
                     <span
-                      key={category}
+                      key={category.value}
                       className={css({
                         bgColor: 'success',
                         color: 'white',
@@ -330,17 +378,13 @@ export default function ProductsView() {
                       {category.label}
                       <button
                         type='button'
+                        aria-label={`Remove ${category.label}`}
                         onClick={() => {
-                          const existingCategories =
-                            searchParams.get('categories')?.split(',') || [];
-                          const filteredCategories = existingCategories.filter(
-                            cat => cat !== category.value,
+                          const remaining = parseCsv(categoriesParam).filter(
+                            v => v !== category.value,
                           );
-                          const newValue = filteredCategories.join(',');
-                          updateSearchParams('categories', newValue);
-                          setCategoriesName(prevCategories =>
-                            prevCategories.filter(cat => cat.value !== category.value),
-                          );
+                          updateSearchParams('categories', remaining.join(','));
+                          setCategoriesName(prev => prev.filter(c => c.value !== category.value));
                         }}
                       >
                         <IconClose className={css({ms: '2', fill: 'white', cursor: 'pointer'})} />
@@ -352,55 +396,97 @@ export default function ProductsView() {
           </Content>
         </HeroWrapper>
       </Hero>
-      <Filters />
-      <Cards>
-        {data?.results?.map(product => (
-          <ProductCard
-            key={product._id}
-            id={product.slug as string}
-            title={product.title}
-            thumbnail={product.thumbnail || undefined}
-            company={product.sellerCompany.title || ''}
-            companyId={product.sellerCompany.slug as string}
-            rating={product.sellerCompany.rate || 0}
-            waterRating={product.rate || 0}
-            price={product?.variations?.[0]?.cost?.toString() || ''}
-            location={`${product.sellerCompany.country?.name}, ${product.sellerCompany.city?.map(c => c.name).join(', ')}`}
-            keywords={product.keywords || []}
-            phoneNumber={product.sellerCompany.callNumber || ''}
-            sellerCompanyId={product.sellerCompany._id}
-            website={product.sellerCompany.website || ''}
-            coords={{
-              lat: product.sellerCompany.latitude,
-              lng: product.sellerCompany.longitude,
-            }}
-          />
-        ))}
-      </Cards>
 
-      {data?.totalCount && data.totalCount > 8 ? (
-        <Pagination
-          forcePage={page - 1}
-          nextLabel={<IconChevronRight className={css({w: '6', h: '6'})} />}
-          onPageChange={current => updateSearchParams('page', (current.selected + 1).toString())}
-          pageRangeDisplayed={3}
-          marginPagesDisplayed={2}
-          pageCount={data?.totalPages || 1}
-          previousLabel={<IconChevronLeft />}
-          pageClassName='page-item'
-          pageLinkClassName='page-link'
-          previousClassName='page-item'
-          previousLinkClassName='page-link'
-          nextClassName='page-item'
-          nextLinkClassName='page-link'
-          breakLabel='...'
-          breakClassName='page-item'
-          breakLinkClassName='page-link'
-          containerClassName='pagination'
-          activeClassName='active'
-          renderOnZeroPageCount={null}
-        />
-      ) : null}
+      <Filters />
+
+      {/* Results area with loading / empty / error states */}
+      {showInitialLoading ? (
+        <div
+          className={css({
+            px: {base: '6', mdDown: 0},
+            py: '8',
+            textAlign: 'center',
+            color: 'gray.600',
+          })}
+        >
+          Loading products…
+        </div>
+      ) : isError ? (
+        <div
+          className={css({
+            px: {base: '6', mdDown: 0},
+            py: '8',
+            textAlign: 'center',
+            color: 'red.600',
+          })}
+        >
+          {(error as Error)?.message || 'Failed to load products.'}
+        </div>
+      ) : (data?.results?.length ?? 0) === 0 ? (
+        <div
+          className={css({
+            px: {base: '6', mdDown: 0},
+            py: '8',
+            textAlign: 'center',
+            color: 'gray.700',
+          })}
+        >
+          No products match your filters. Try adjusting them.
+        </div>
+      ) : (
+        <>
+          <Cards>
+            {data?.results?.map(product => (
+              <ProductCard
+                key={product._id}
+                id={product.slug as string}
+                title={product.title}
+                thumbnail={product.thumbnail || undefined}
+                company={product.sellerCompany.title || ''}
+                companyId={product.sellerCompany.slug as string}
+                rating={product.sellerCompany.rate || 0}
+                waterRating={product.rate || 0}
+                price={product?.variations?.[0]?.cost?.toString() || ''}
+                location={`${product.sellerCompany.country?.name}, ${product.sellerCompany.city?.map(c => c.name).join(', ')}`}
+                keywords={product.keywords || []}
+                phoneNumber={product.sellerCompany.callNumber || ''}
+                sellerCompanyId={product.sellerCompany._id}
+                website={product.sellerCompany.website || ''}
+                coords={{
+                  lat: product.sellerCompany.latitude,
+                  lng: product.sellerCompany.longitude,
+                }}
+              />
+            ))}
+          </Cards>
+
+          {data?.totalCount && data.totalCount > 8 ? (
+            <Pagination
+              forcePage={page - 1}
+              nextLabel={<IconChevronRight className={css({w: '6', h: '6'})} />}
+              onPageChange={current =>
+                updateSearchParams('page', (current.selected + 1).toString())
+              }
+              pageRangeDisplayed={3}
+              marginPagesDisplayed={2}
+              pageCount={data?.totalPages || 1}
+              previousLabel={<IconChevronLeft />}
+              pageClassName='page-item'
+              pageLinkClassName='page-link'
+              previousClassName='page-item'
+              previousLinkClassName='page-link'
+              nextClassName='page-item'
+              nextLinkClassName='page-link'
+              breakLabel='...'
+              breakClassName='page-item'
+              breakLinkClassName='page-link'
+              containerClassName='pagination'
+              activeClassName='active'
+              renderOnZeroPageCount={null}
+            />
+          ) : null}
+        </>
+      )}
     </>
   );
 }
