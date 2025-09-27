@@ -18,7 +18,7 @@ import {MarketplaceSelect} from '@/components/templates/products/market-place-se
 import RelatedProducts from '@/components/templates/products/related-products';
 import {createProductRedirect, createProductVisitLog, ProductRedirectTypeEnum} from '@/graphql';
 import {findProductBySlug} from '@/graphql/query/products/find-product-by-slug';
-import {giveRating} from '@/graphql/query/products/poducat-rate';
+import {giveRating} from '@/graphql/query/products/producat-rate';
 
 import 'swiper/css';
 import 'swiper/css/free-mode';

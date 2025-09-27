@@ -107,7 +107,7 @@ export async function generateMetadata({searchParams}: Props): Promise<Metadata>
 }
 
 const Page = async ({searchParams: initialSearchParams}: Props) => {
-  const sp = initialSearchParams || {};
+  const sp = (await initialSearchParams) || {};
 
   noStore();
 
