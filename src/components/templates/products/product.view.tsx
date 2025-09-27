@@ -3,9 +3,10 @@
 'use client';
 
 import {memo, Suspense, useEffect, useState} from 'react';
+import {toast} from 'react-toastify';
 import {css, cx} from '@styled/css';
 import {Flex} from '@styled/jsx';
-import {useQuery} from '@tanstack/react-query';
+import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
 import Image from 'next/image';
 import {useParams} from 'next/navigation';
 import {FreeMode, Navigation, Thumbs} from 'swiper/modules';
@@ -13,17 +14,17 @@ import {Swiper, SwiperSlide} from 'swiper/react';
 
 import {IconDrop} from '@/assets';
 import {Button} from '@/components/atoms';
+import {MarketplaceSelect} from '@/components/templates/products/market-place-select';
+import RelatedProducts from '@/components/templates/products/related-products';
 import {createProductRedirect, createProductVisitLog, ProductRedirectTypeEnum} from '@/graphql';
 import {findProductBySlug} from '@/graphql/query/products/find-product-by-slug';
+import {giveRating} from '@/graphql/query/products/poducat-rate';
 
-// Import Swiper styles
 import 'swiper/css';
 import 'swiper/css/free-mode';
 import 'swiper/css/navigation';
 import 'swiper/css/thumbs';
 
-import {MarketplaceSelect} from './market-place-select';
-import RelatedProducts from './related-products';
 import StarRatingComponent from './star-rating';
 
 const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
@@ -31,14 +32,17 @@ const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
 const ProductView = () => {
   const [thumbsSwiper, setThumbsSwiper] = useState<any>(null);
   const params = useParams();
+  const slug = params.slug as string;
+
+  const queryClient = useQueryClient();
+
   const {data} = useQuery({
-    queryKey: ['get-product', params.slug],
-    queryFn: () => findProductBySlug({slug: params.slug as string}),
+    queryKey: ['get-product', slug],
+    queryFn: () => findProductBySlug({slug}),
   });
 
   const product = data?.result;
 
-  // NEW: normalize helpers and derived fields for safety
   const normalizeUrl = (u?: string | null) =>
     u && !/^https?:\/\//i.test(u) ? `https://${u}` : u || '';
 
@@ -50,10 +54,19 @@ const ProductView = () => {
   );
   const [selectedVariationn, setSelectedVariation] = useState(product?.variations?.[0]);
 
+  const formatScore = (v: unknown) => {
+    const n = Number(v ?? 0);
+    if (!Number.isFinite(n)) return '0';
+    return new Intl.NumberFormat(undefined, {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 1, // show at most one decimal
+    }).format(n);
+  };
+
   useEffect(() => {
     const findVariationBasedOnColor = (color: string) =>
       product?.variations?.find(variation =>
-        variation.variationAttributes?.find(attr => attr.value === color),
+        variation.variationAttributes?.some(attr => attr.value === color),
       );
     if (selectedColor) {
       const variation = findVariationBasedOnColor(selectedColor);
@@ -64,7 +77,7 @@ const ProductView = () => {
   const handleProductRedirect = async (
     companyId: string,
     productId: string,
-    type: ProductRedirectTypeEnum | any, // allow "Website" even if enum missing
+    type: ProductRedirectTypeEnum | any,
     url: string,
   ) => {
     try {
@@ -74,19 +87,40 @@ const ProductView = () => {
         type,
       } as any);
     } catch {
-      // swallow logging error; still open the link
+      // ignore logging failure; still open
     }
     window.open(url, '_blank');
   };
 
   useEffect(() => {
-    if (data?.result) {
+    if (product) {
       createProductVisitLog({
-        product: data.result._id,
-        company: data.result.sellerCompany._id,
+        product: product._id,
+        company: product.sellerCompany._id,
       });
     }
-  }, [data?.result]);
+  }, [product]);
+
+  // === Rating mutation with toasts ===
+  const TOAST_OK_ID = 'product-rate-ok';
+  const TOAST_ERR_ID = 'product-rate-err';
+
+  const rateMutation = useMutation({
+    mutationFn: (score: number) =>
+      giveRating({
+        product: product!._id,
+        rate: score, // 1..10 (your product scale)
+      }),
+    onSuccess: () => {
+      toast.dismiss(TOAST_ERR_ID);
+      toast.success('Thanks for your rating!', {toastId: TOAST_OK_ID});
+      queryClient.invalidateQueries({queryKey: ['get-product', slug]});
+    },
+    onError: (err: any) => {
+      toast.dismiss(TOAST_OK_ID);
+      toast.error(err?.message || 'Rating failed', {toastId: TOAST_ERR_ID});
+    },
+  });
 
   return (
     <div className={css({width: '100%', padding: '16px'})}>
@@ -94,7 +128,7 @@ const ProductView = () => {
       <h1 className={css({textStyle: 'h1', color: '#333333'})}>{product?.title}</h1>
       <div className={css({hideFrom: 'md', display: 'flex', color: 'gray4', mb: '6'})}>
         <IconDrop className={css({w: 6, h: 6, mr: '2'})} />
-        <span>{product?.rate ?? 0} / 10</span>
+        <span>{formatScore(product?.rate) ?? 0} / 10</span>
       </div>
 
       <div
@@ -189,8 +223,15 @@ const ProductView = () => {
             <h2 className={css({textStyle: 'h1', color: '#333333', hideBelow: 'md'})}>
               {product?.title}
             </h2>
+
+            {/* Interactive rating (desktop) */}
             <div className={css({hideBelow: 'md'})}>
-              <StarRatingComponent rating={product?.rate || 0} />
+              <StarRatingComponent
+                rating={Math.round((product?.rate || 0) * 10) / 10} // 1 decimal
+                disabled={rateMutation.isPending || !product}
+                onRate={(score: number) => rateMutation.mutate(score)}
+              />
+              {/* inline messages removed; we show toasts instead */}
             </div>
 
             <div
@@ -255,10 +296,11 @@ const ProductView = () => {
             <div className={css({display: 'flex', alignItems: 'center', gap: '4', mb: '8'})}>
               {product?.variations?.map(variation => {
                 const colorId = `color-${variation._id}`;
+                const colorVal = variation.variationAttributes?.[0]?.value;
                 return (
                   <label
                     htmlFor={colorId}
-                    style={{backgroundColor: variation.variationAttributes?.[0]?.value || '#000'}}
+                    style={{backgroundColor: colorVal || '#000'}}
                     key={variation._id}
                     className={css({
                       display: 'flex',
@@ -266,10 +308,7 @@ const ProductView = () => {
                       gap: '4',
                       w: '36px',
                       h: '36px',
-                      outline:
-                        selectedColor === variation.variationAttributes?.[0]?.value
-                          ? '1px solid #44BAEB'
-                          : 'none',
+                      outline: selectedColor === colorVal ? '1px solid #44BAEB' : 'none',
                       outlineOffset: '2px',
                       cursor: 'pointer',
                     })}
@@ -279,7 +318,7 @@ const ProductView = () => {
                       type='radio'
                       name='color'
                       value={selectedColor}
-                      onChange={() => setSelectedColor(variation.variationAttributes?.[0]?.value)}
+                      onChange={() => setSelectedColor(colorVal)}
                       className={css({display: 'none', opacity: 0, visibility: 'hidden'})}
                     />
                   </label>
@@ -428,7 +467,7 @@ const ProductView = () => {
                 </Button>
               ) : null}
 
-              {/* NEW: generic website buy button */}
+              {/* Generic website buy */}
               {websiteUrl ? (
                 <Button
                   type='button'
@@ -436,7 +475,7 @@ const ProductView = () => {
                     handleProductRedirect(
                       product!.sellerCompany._id,
                       product!._id,
-                      'Website' as any, // cast in case enum lacks Website
+                      'Website' as any,
                       websiteUrl,
                     )
                   }
@@ -463,7 +502,7 @@ const ProductView = () => {
                 </Button>
               ) : null}
 
-              {/* NEW: call seller button */}
+              {/* Call seller */}
               {callNumber ? (
                 <Button
                   type='button'

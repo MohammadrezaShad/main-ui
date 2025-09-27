@@ -3,10 +3,11 @@
 
 'use client';
 
-import {useState} from 'react';
+import {useMemo, useState} from 'react';
+import {toast} from 'react-toastify';
 import {css, cx} from '@styled/css';
 import {Box} from '@styled/jsx';
-import {useQuery} from '@tanstack/react-query';
+import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
 import {getCookie} from 'cookies-next';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -16,6 +17,7 @@ import {IconStar} from '@/assets';
 import {Ratings, Star} from '@/components/molecules/corporate-card/corporate-card.styled';
 import {CookieName} from '@/constants';
 import {CityType, CompanyType} from '@/graphql';
+import {giveRating} from '@/graphql/query/companies/company-rate';
 import {findCompanyBySlug} from '@/graphql/query/companies/find-company-by-slug';
 
 import {Gallery} from './gallery.tab';
@@ -29,27 +31,54 @@ const TabContent = ({activeTab, company}: {activeTab: string; company: CompanyTy
   if (activeTab === 'overview') {
     return <Overview about={company?.about || ''} services={company?.productAndServices} />;
   }
-  if (activeTab === 'products') {
-    return <Products company={company} />;
-  }
-  if (activeTab === 'gallery') {
-    return <Gallery slides={company?.gallery || []} />;
-  }
+  if (activeTab === 'products') return <Products company={company} />;
+  if (activeTab === 'gallery') return <Gallery slides={company?.gallery || []} />;
   return null;
 };
+
+// tiny spinner SVG
+function Spinner() {
+  return (
+    <svg width='18' height='18' viewBox='0 0 50 50' aria-hidden>
+      <circle
+        cx='25'
+        cy='25'
+        r='20'
+        stroke='currentColor'
+        strokeWidth='5'
+        fill='none'
+        strokeLinecap='round'
+        strokeDasharray='31.4 188.4'
+      >
+        <animateTransform
+          attributeName='transform'
+          type='rotate'
+          from='0 25 25'
+          to='360 25 25'
+          dur='0.8s'
+          repeatCount='indefinite'
+        />
+      </circle>
+    </svg>
+  );
+}
 
 const BusinessPage = () => {
   const token = getCookie(CookieName.AUTH_TOKEN);
   const [activeTab, setActiveTab] = useState('overview');
-
+  const [pendingStar, setPendingStar] = useState<number | null>(null);
   const params = useParams();
-  const {data} = useQuery({
-    queryKey: ['get-company', params.slug],
-    queryFn: () => findCompanyBySlug({slug: params.slug as string}, token),
-  });
-  const company = data?.result;
+  const slug = params.slug as string;
 
-  // cities is now an array under the SAME key "city"
+  const queryClient = useQueryClient();
+
+  const {data} = useQuery({
+    queryKey: ['get-company', slug],
+    queryFn: () => findCompanyBySlug({slug}, token),
+  });
+
+  const company = data?.result as CompanyType | undefined;
+
   const cityNames = Array.isArray(company?.city)
     ? (company?.city as Array<CityType>).map(c => c?.name).filter(Boolean)
     : [];
@@ -62,6 +91,54 @@ const BusinessPage = () => {
   const plusCodeLink = plusCode ? `https://maps.google.com/?q=${encodeURIComponent(plusCode)}` : '';
   const youtubeUrl = company?.youtube || '';
   const googleMapUrl = company?.googleMap || '';
+
+  // rating shown from server (0..5)
+  const serverRating = useMemo(() => {
+    const r = Number(company?.rate ?? 0);
+    return Number.isNaN(r) ? 0 : Math.max(0, Math.min(5, r));
+  }, [company?.rate]);
+
+  // optimistic rating while saving
+  const displayedRating = pendingStar ?? serverRating;
+
+  // toast ids to avoid duplicate stacking
+  const TOAST_OK_ID = 'company-rate-ok';
+  const TOAST_ERR_ID = 'company-rate-err';
+
+  const rateMutation = useMutation({
+    mutationFn: (score: number) =>
+      giveRating({
+        company: company!._id,
+        rate: score, // 1..5
+      }),
+    onMutate: async score => {
+      setPendingStar(score);
+      await queryClient.cancelQueries({queryKey: ['get-company', slug]});
+      const previous = queryClient.getQueryData(['get-company', slug]);
+
+      queryClient.setQueryData(['get-company', slug], (old: any) => {
+        if (!old?.result) return old;
+        return {...old, result: {...old.result, rate: score}};
+      });
+
+      return {previous};
+    },
+    onError: (err, _score, ctx) => {
+      if (ctx?.previous) queryClient.setQueryData(['get-company', slug], ctx.previous);
+      toast.dismiss(TOAST_OK_ID);
+      toast.error((err as Error)?.message || 'Rating failed', {toastId: TOAST_ERR_ID});
+    },
+    onSuccess: () => {
+      toast.dismiss(TOAST_ERR_ID);
+      toast.success('Thanks for your rating!', {toastId: TOAST_OK_ID});
+    },
+    onSettled: () => {
+      setPendingStar(null);
+      queryClient.invalidateQueries({queryKey: ['get-company', slug]});
+    },
+  });
+
+  const isSaving = rateMutation.isPending;
 
   return (
     <div className={css({width: '100%'})}>
@@ -90,6 +167,7 @@ const BusinessPage = () => {
             mdDown: {flexDirection: 'column-reverse'},
           })}
         >
+          {/* stars + loader overlay */}
           <Box
             mt='4'
             className={css({
@@ -97,15 +175,66 @@ const BusinessPage = () => {
               top: '70%',
               left: '[227px]',
               mdDown: {top: '200%', left: '50% !important', transform: 'translateX(-50%)'},
+              zIndex: 10,
             })}
           >
-            <Ratings>
-              {[...Array(5)].map((_, index) => (
-                <Star key={index} bgColor={index < (company?.rate || 0) ? 'primary' : 'gray3'}>
-                  <IconStar className={css({w: '4', h: '4', color: 'white'})} />
-                </Star>
-              ))}
-            </Ratings>
+            <div className={css({position: 'relative', display: 'inline-block'})}>
+              <Ratings
+                role='group'
+                aria-label='Rate this business'
+                aria-busy={isSaving ? 'true' : 'false'}
+                className={css({
+                  cursor: !company ? 'not-allowed' : 'pointer',
+                  userSelect: 'none',
+                  opacity: !company ? 0.6 : 1,
+                })}
+              >
+                {Array.from({length: 5}).map((_, i) => {
+                  const idx = i + 1;
+                  const filled = idx <= displayedRating;
+                  return (
+                    <button
+                      key={i}
+                      type='button'
+                      aria-label={`Rate ${idx} star${idx > 1 ? 's' : ''}`}
+                      disabled={!company || isSaving}
+                      onClick={() => rateMutation.mutate(idx)}
+                      className={css({
+                        appearance: 'none',
+                        background: 'none',
+                        border: 'none',
+                        p: 0,
+                        m: 0,
+                        lineHeight: 0,
+                        cursor: !company || isSaving ? 'not-allowed' : 'pointer',
+                      })}
+                    >
+                      <Star bgColor={filled ? 'primary' : 'gray3'}>
+                        <IconStar className={css({w: '4', h: '4', color: 'white'})} />
+                      </Star>
+                    </button>
+                  );
+                })}
+              </Ratings>
+
+              {isSaving && (
+                <div
+                  className={css({
+                    position: 'absolute',
+                    inset: 0,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '2',
+                    background: 'rgba(255,255,255,0.6)',
+                    rounded: 'md',
+                  })}
+                >
+                  <Spinner />
+                  <span className={css({fontSize: 'xs', color: '#333'})}>Saving…</span>
+                </div>
+              )}
+            </div>
           </Box>
 
           <div
@@ -115,12 +244,7 @@ const BusinessPage = () => {
               pos: 'absolute',
               bottom: '-50%',
               ps: '[43px]',
-              mdDown: {
-                flexDirection: 'column',
-                bottom: '-100%',
-                ps: '0',
-                alignItems: 'center',
-              },
+              mdDown: {flexDirection: 'column', bottom: '-100%', ps: '0', alignItems: 'center'},
             })}
           >
             <Image
@@ -169,7 +293,7 @@ const BusinessPage = () => {
                 </span>
               </p>
 
-              {/* New meta row */}
+              {/* Meta row */}
               <div
                 className={css({
                   display: 'flex',
