@@ -1,3 +1,4 @@
+// graphql/find-graphical-quiz-by-id.ts
 import {getCookie} from 'cookies-next';
 
 import {CookieName} from '@/constants';
@@ -7,8 +8,11 @@ import {gqlFetch} from '@/services/fetch';
 export async function findGraphicalQuizById(
   input: FindGraphicalQuizInput,
   token?: string,
+  clientIdOverride?: string,
 ): Promise<GraphicalQuizQuery['findGraphicalQuizById']> {
-  const clientId = getCookie(CookieName.CLIENT_ID) as string;
+  // On the client, fall back to browser cookie; on the server, pass clientIdOverride
+  const clientId = clientIdOverride ?? (getCookie(CookieName.CLIENT_ID) as string);
+
   const res = await gqlFetch({
     url: process.env.NEXT_PUBLIC_API as string,
     query: `query FindGraphicalQuizById($input: FindGraphicalQuizInput!) {
@@ -18,74 +22,39 @@ export async function findGraphicalQuizById(
           result {
             __typename
             _id
+            title
             duration
-            image {
-              _id
-              alt
-              createdAt
-              filename
-              height
-              preview
-              updatedAt
-              width
-            }
             price
+            reward
+            updatedAt
+            thumbnail { _id filename preview }
+            image { _id filename preview }
+            youEarned
             quizPoints {
               color
-              point {
-                x
-                y
-              }
+              point { x y }
               quiz
               quizObject {
                 _id
+                title
+                reward
                 duration
                 price
-                reward
-                thumbnail {
-                  _id
-                  alt
-                  createdAt
-                  filename
-                  height
-                  preview
-                  updatedAt
-                  width
-                }
-                title
-                youEarned
+                thumbnail { _id filename preview }
               }
             }
-            reward
-            thumbnail {
-              _id
-              alt
-              createdAt
-              filename
-              height
-              preview
-              updatedAt
-              width
-            }
-            title
-            updatedAt
-            youEarned
           }
         }
       }
     }`,
     variables: {input},
     headers: {
-      Authorization: `Bearer ${token}`,
-      'client-id': clientId,
+      ...(token ? {Authorization: `Bearer ${token}`} : {}),
+      ...(clientId ? {'client-id': clientId} : {}),
     },
   });
-  if (!res.ok) {
-    throw new Error('Failed to fetch data');
-  }
-  const response = await res.json();
-  if (response.errors?.[0]?.message) {
-    throw new Error(response.errors?.[0]?.message);
-  }
-  return response.data.graphicalQuiz.findGraphicalQuizById;
+  if (!res.ok) throw new Error('Failed to fetch data');
+  const json = await res.json();
+  if (json.errors?.[0]?.message) throw new Error(json.errors[0].message);
+  return json.data.graphicalQuiz.findGraphicalQuizById;
 }

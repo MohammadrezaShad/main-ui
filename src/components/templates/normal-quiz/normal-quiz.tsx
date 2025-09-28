@@ -1,3 +1,5 @@
+/* eslint-disable react/no-array-index-key */
+
 'use client';
 
 import {useState} from 'react';
@@ -5,13 +7,13 @@ import {toast} from 'react-toastify';
 import {css} from '@styled/css';
 import {useMutation, useQuery} from '@tanstack/react-query';
 import {getCookie} from 'cookies-next';
-import Link from 'next/link';
-import {useParams} from 'next/navigation';
+import {useParams, useRouter} from 'next/navigation'; // ⬅️ add useRouter
 import {Maybe} from 'yup';
 
 import {IconCheck, IconDrop} from '@/assets';
 import RadioButton from '@/components/atoms/radio-button/radio-button';
 import {CookieName} from '@/constants';
+import {useAuthContext} from '@/contexts';
 import {endQuiz, EndQuizInput, findQuizById, OptionType, QuestionType, QuizType} from '@/graphql';
 import {Paths} from '@/utils';
 
@@ -25,26 +27,31 @@ const WaterSavingQuiz = () => {
   const [correctAnswerCount, setCorrectAnswerCount] = useState(0);
   const [wrongAnswerCount, setWrongAnswerCount] = useState(0);
   const [gainedCoins, setGainedCoins] = useState(0);
+
   const {data} = useQuery({
     queryKey: ['find-quiz-by-id', params.quizId],
     queryFn: () => findQuizById({id: params.quizId as string}),
   });
+
   const quiz = data?.result;
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
   const handleClickNext = () => {
     if (!data || !data.result) return;
-    if (
-      currentQuestionIndex + 1 <= data?.result?.questions.length &&
-      !answers[currentQuestionIndex]
-    ) {
+
+    const total = data.result.questions.length;
+
+    if (currentQuestionIndex + 1 <= total && !answers[currentQuestionIndex]) {
       toast.error('Please select an answer');
       return;
     }
-    if (currentQuestionIndex + 1 === quiz?.questions.length) {
+
+    if (currentQuestionIndex + 1 === total) {
+      // finished questions -> end quiz
       handleClick();
+    } else {
+      setCurrentQuestionIndex(prev => prev + 1);
     }
-    setCurrentQuestionIndex(prev => prev + 1);
   };
 
   const handleClickBack = () => {
@@ -55,47 +62,51 @@ const WaterSavingQuiz = () => {
   const endQuizMutation = useMutation({
     mutationFn: ({args, token}: {args: EndQuizInput; token?: string}) => endQuiz(args, token),
   });
+
   const [answers, setAnswers] = useState<Answer[]>([]);
 
   const handleSetAnswer = (questionId: string, answer: string) => {
-    const questionIndex = answers.findIndex(currentAnswer => currentAnswer.question === questionId);
-    if (questionIndex === -1) {
+    const idx = answers.findIndex(a => a.question === questionId);
+    if (idx === -1) {
       setAnswers(prev => [...prev, {question: questionId, answer}]);
     } else {
-      const newAnswers = [...answers];
-      newAnswers[questionIndex] = {question: questionId, answer};
-      setAnswers(newAnswers);
+      const next = [...answers];
+      next[idx] = {question: questionId, answer};
+      setAnswers(next);
     }
   };
 
   const handleClick = async () => {
-    const token = getCookie(CookieName.AUTH_TOKEN);
+    const token = getCookie(CookieName.AUTH_TOKEN) as string | undefined;
     try {
-      token;
-      const data = await endQuizMutation.mutateAsync({
+      const resp = await endQuizMutation.mutateAsync({
         args: {quiz: params.quizId as string, answers},
         token,
       });
-      if (data?.success) {
-        setCorrectAnswerCount(data.correctAnswerCount);
-        setWrongAnswerCount(data.wrongAnswerCount);
-        setGainedCoins(data.gainedCoins);
-        toast.success('Quiz successfully complete');
+      if (resp?.success) {
+        setCorrectAnswerCount(resp.correctAnswerCount);
+        setWrongAnswerCount(resp.wrongAnswerCount);
+        setGainedCoins(resp.gainedCoins);
+        // move to the "end" state
+        setCurrentQuestionIndex(quiz?.questions?.length ?? 0);
+        toast.success('Quiz successfully completed');
       } else {
         toast.error(
-          endQuizMutation.error?.message ??
-            'An error occured. Please try again a few moments later',
+          endQuizMutation.error?.message ?? 'An error occurred. Please try again in a moment.',
         );
       }
-    } catch (error: Error | any) {
+    } catch (error: any) {
       toast.error(error.message);
     }
   };
 
+  const totalQuestions = quiz?.questions.length || 0;
+  const isQuestionPhase = currentQuestionIndex + 1 <= totalQuestions;
+
   return (
     <section className={css({display: 'flex', flexDir: 'column', bgColor: 'white'})}>
       <QuizHeader quiz={quiz} answers={answers} currentIndex={currentQuestionIndex} />
-      {currentQuestionIndex + 1 <= (data?.result?.questions.length || 0) ? (
+      {isQuestionPhase ? (
         <QuizContent
           questions={quiz?.questions ?? []}
           onSetAnswer={handleSetAnswer}
@@ -171,12 +182,7 @@ const QuizHeader = ({
           bgColor: 'neutral.100',
         })}
       >
-        <IconDrop
-          className={css({
-            w: '8',
-            h: '8',
-          })}
-        />
+        <IconDrop className={css({w: '8', h: '8'})} />
         <div className={css({display: 'flex', flexDir: 'column', flex: '1'})}>
           <div className={css({fontSize: 'sm', color: 'neutral.500'})}>Reward</div>
           <div
@@ -192,10 +198,11 @@ const QuizHeader = ({
         </div>
       </div>
     </div>
+
     <div className={css({display: 'flex', alignItems: 'center', gap: '2', mt: '9'})}>
       {Array.from({length: quiz?.questions.length || 0}).map((_, index) => (
         <div
-          key={crypto.randomUUID()}
+          key={index}
           className={css({
             display: 'grid',
             placeContent: 'center',
@@ -205,13 +212,7 @@ const QuizHeader = ({
           })}
         >
           {!!answers[index] && index !== currentIndex && (
-            <IconCheck
-              className={css({
-                '& path': {
-                  fill: '#FFF',
-                },
-              })}
-            />
+            <IconCheck className={css({'& path': {fill: '#FFF'}})} />
           )}
         </div>
       ))}
@@ -360,12 +361,7 @@ const QuizOptions = ({
   currentIndex: number;
 }) => (
   <div
-    className={css({
-      display: 'flex',
-      flexDir: 'column',
-      w: 'full',
-      mdDown: {ml: '0', w: 'full'},
-    })}
+    className={css({display: 'flex', flexDir: 'column', w: 'full', mdDown: {ml: '0', w: 'full'}})}
   >
     <div
       className={css({
@@ -385,9 +381,7 @@ const QuizOptions = ({
         className={css({
           display: 'flex',
           alignItems: 'start',
-          mdDown: {
-            flexDir: 'column',
-          },
+          mdDown: {flexDir: 'column'},
           gap: '4',
           w: 'full',
         })}
@@ -398,9 +392,7 @@ const QuizOptions = ({
             className={css({
               w: '1/2',
               display: 'flex',
-              mdDown: {
-                w: 'full',
-              },
+              mdDown: {w: 'full'},
               gap: '6',
               mt: '4',
               ml: '-4',
@@ -423,9 +415,7 @@ const QuizOptions = ({
             className={css({
               w: '1/2',
               display: 'flex',
-              mdDown: {
-                w: 'full',
-              },
+              mdDown: {w: 'full'},
               gap: '6',
               mt: '4',
               ml: '-4',
@@ -447,9 +437,7 @@ const QuizOptions = ({
         className={css({
           display: 'flex',
           alignItems: 'start',
-          mdDown: {
-            flexDir: 'column',
-          },
+          mdDown: {flexDir: 'column'},
           gap: '4',
           w: 'full',
         })}
@@ -460,9 +448,7 @@ const QuizOptions = ({
             className={css({
               w: '1/2',
               display: 'flex',
-              mdDown: {
-                w: 'full',
-              },
+              mdDown: {w: 'full'},
               gap: '6',
               mt: '4',
               ml: '-4',
@@ -485,9 +471,7 @@ const QuizOptions = ({
             className={css({
               w: '1/2',
               display: 'flex',
-              mdDown: {
-                w: 'full',
-              },
+              mdDown: {w: 'full'},
               gap: '6',
               mt: '4',
               ml: '-4',
@@ -509,6 +493,7 @@ const QuizOptions = ({
   </div>
 );
 
+// ⬇️ replace your current QuizEndButton with this
 const QuizEndButton = ({
   handleClick,
   coins,
@@ -519,77 +504,74 @@ const QuizEndButton = ({
   wrong: number;
   correct: number;
   coins: number;
-}) => (
-  <div
-    className={css({
-      border: '1px solid token(colors.gray2)',
-      display: 'flex',
-      flexDir: 'column',
-      gap: '4',
-      alignItems: 'center',
-      justifyContent: 'center',
-      p: '8',
-      mt: '4',
-    })}
-  >
-    <IconDrop
-      className={css({
-        w: '16',
-        h: '16',
-        mdDown: {
-          h: '32',
-          w: '32',
-        },
-      })}
-    />
+}) => {
+  const router = useRouter();
+  const {isLoginOpen$} = useAuthContext();
+
+  const onCollect = () => {
+    const token = getCookie(CookieName.AUTH_TOKEN);
+    const afterLogin = `${Paths.Quiz.getPath()}/normal`; // e.g. "/quizzes/normal"
+
+    if (token) {
+      // already logged in → go straight to normal quizzes
+      router.push(afterLogin);
+      return;
+    }
+
+    // not logged in → open login modal and remember where to go after
+    try {
+      sessionStorage.setItem('postLoginRedirect', afterLogin);
+    } catch {
+      // e
+    }
+    isLoginOpen$.set(true);
+  };
+
+  return (
     <div
       className={css({
+        border: '1px solid token(colors.gray2)',
         display: 'flex',
-        justifyContent: 'center',
+        flexDir: 'column',
+        gap: '4',
         alignItems: 'center',
-        gap: '8',
-      })}
-    >
-      <p
-        className={css({
-          textStyle: 'body',
-          color: 'success',
-        })}
-      >
-        {correct} Correct Answers
-      </p>
-      <p
-        className={css({
-          textStyle: 'body',
-          color: 'danger',
-        })}
-      >
-        {wrong}Wrong Answers
-      </p>
-    </div>
-    <Link
-      href={`${Paths.Quiz.getPath()}/normal`}
-      className={css({
         justifyContent: 'center',
-        alignSelf: 'center',
-        pl: '12',
-        pr: '12',
-        pt: '3',
-        pb: '3',
+        p: '8',
         mt: '4',
-        fontSize: 'base',
-        lineHeight: 'base',
-        textAlign: 'center',
-        color: 'white',
-        whiteSpace: 'nowrap',
-        bgColor: 'sky.400',
-        mdDown: {pl: '5', pr: '5'},
-        cursor: 'pointer',
       })}
     >
-      Collect your {coins} points
-    </Link>
-  </div>
-);
+      <IconDrop className={css({w: '16', h: '16', mdDown: {h: '32', w: '32'}})} />
+      <div
+        className={css({display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8'})}
+      >
+        <p className={css({textStyle: 'body', color: 'success'})}>{correct} Correct Answers</p>
+        <p className={css({textStyle: 'body', color: 'danger'})}>{wrong} Wrong Answers</p>
+      </div>
+      <button
+        type='button'
+        onClick={onCollect}
+        className={css({
+          justifyContent: 'center',
+          alignSelf: 'center',
+          pl: '12',
+          pr: '12',
+          pt: '3',
+          pb: '3',
+          mt: '4',
+          fontSize: 'base',
+          lineHeight: 'base',
+          textAlign: 'center',
+          color: 'white',
+          whiteSpace: 'nowrap',
+          bgColor: 'sky.400',
+          mdDown: {pl: '5', pr: '5'},
+          cursor: 'pointer',
+        })}
+      >
+        Collect your {coins} points
+      </button>
+    </div>
+  );
+};
 
 export default WaterSavingQuiz;

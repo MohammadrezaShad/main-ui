@@ -65,7 +65,7 @@ export async function payAndFindGraphical(
     }`,
     variables: {input},
     headers: {
-      Authorization: `Bearer ${token}`,
+      ...(token ? {Authorization: `Bearer ${token}`} : {}),
       'client-id': clientId,
     },
   });

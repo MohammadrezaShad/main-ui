@@ -50,7 +50,7 @@ export async function findQuizById(
       }`,
     variables: {input},
     headers: {
-      Authorization: `Bearer ${token}`,
+      ...(token ? {Authorization: `Bearer ${token}`} : {}),
       'client-id': clientId,
     },
   });

@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 /* eslint-disable no-nested-ternary */
 import {SetStateAction} from 'react';
 import {css} from '@styled/css';
@@ -12,6 +13,12 @@ import QuizQuestions from './quiz-questions';
 
 const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
 
+// Use the same reference size you used when authoring the points
+const REF_W = 960;
+const REF_H = 540;
+// Show hotspots on mobile too? (true shows them; false hides as before)
+const SHOW_HOTSPOTS_ON_MOBILE = true;
+
 interface Props {
   title: string;
   areas: QuizPointsType[];
@@ -20,10 +27,10 @@ interface Props {
   currentIndex: number;
   currentQuestionIndex: number;
   quizzes: QuizType[];
-  handleSetAnswer: any;
-  handleClickBack: any;
-  handleClickNext: any;
-  answers: any;
+  handleSetAnswer: (questionId: string, answer: string) => void;
+  handleClickBack: () => void;
+  handleClickNext: () => void;
+  answers: {question: string; answer: string}[];
   correctAnswers: number;
   wrongAnswers: number;
   gainedCoins: number;
@@ -53,8 +60,10 @@ const QuizContent = ({
   currentQuiz,
   setCurrentQuizIndex,
 }: Props) => {
+  const totalQuestions = currentQuiz?.questions?.length ?? 0;
+
   const generateIcon = (index: number) => {
-    if (completedQuizzesIds.includes(quizzes[index]._id))
+    if (completedQuizzesIds.includes(quizzes[index]._id)) {
       return (
         <IconCheck
           className={css({
@@ -65,17 +74,21 @@ const QuizContent = ({
           })}
         />
       );
-    if (currentQuizIndex === index)
+    }
+    if (currentQuizIndex === index) {
       return (
         <span className={css({color: '#FFF', zIndex: '10'})}>
-          {currentIndex + 1}/{currentQuiz?.questions.length}
+          {Math.min(currentIndex + 1, totalQuestions)}/{totalQuestions}
         </span>
       );
+    }
     return <span className={css({color: '#FFF', zIndex: '10'})}>{index + 1}</span>;
   };
 
+  const progress = totalQuestions > 0 ? Math.min(100, (currentIndex / totalQuestions) * 100) : 0;
+
   const blueBorderStyle = {
-    background: `conic-gradient(#44BAEB ${(currentIndex / currentQuiz?.questions.length) * 100}%, #EBEBEB ${(currentIndex / currentQuiz?.questions.length) * 100}%)`,
+    background: `conic-gradient(#44BAEB ${progress}%, #EBEBEB ${progress}%)`,
   };
 
   return (
@@ -86,9 +99,7 @@ const QuizContent = ({
           mb: '[93px]',
           flexDir: 'column',
           alignItems: 'center',
-          mdDown: {
-            mb: '8',
-          },
+          mdDown: {mb: '8'},
         })}
       >
         <h1
@@ -103,6 +114,7 @@ const QuizContent = ({
           {title}
         </h1>
       </div>
+
       <div
         className={css({
           position: 'relative',
@@ -116,42 +128,47 @@ const QuizContent = ({
           useMap='#image-map'
           unoptimized
           src={`${IMAGE_STORAGE_URL}/${image.filename}-${image._id}?w=960&q=85`}
-          width={960}
-          height={540}
+          width={REF_W}
+          height={REF_H}
           alt=''
           className={css({
             w: '[960px]',
             h: '[540px]',
             objectFit: 'contain',
             mx: 'auto',
-            mdDown: {
-              w: '[375px]',
-              h: '[282px]',
-            },
+            mdDown: {w: '[375px]', h: '[282px]'},
           })}
         />
+
+        {/* Optional: keep image map for accessibility / hit testing if needed */}
         <map name='image-map'>
-          {areas.map(area => (
-            <area alt='' key={crypto.randomUUID()} {...area.point} />
+          {(areas ?? []).map((area, idx) => (
+            <area alt='' key={`${area.point.x}-${area.point.y}-${idx}`} {...area.point} />
           ))}
         </map>
-        {areas.map((area, index) => {
-          // eslint-disable-next-line no-restricted-globals
-          const width = window.innerWidth > 0 ? window.innerWidth : screen.width;
-          const imageWidth = width > 768 ? 960 : 375;
-          const imageHeight = width > 768 ? 540 : 282;
-          const x = ((area.point.x - 5) / imageWidth) * 100;
-          const y = ((area.point.y - 5) / imageHeight) * 100;
+
+        {(areas ?? []).map((area, index) => {
+          // Normalize to reference size, then position with percentages (SSR-safe)
+          const xPct = (area.point.x / REF_W) * 100;
+          const yPct = (area.point.y / REF_H) * 100;
+
+          const done = completedQuizzesIds.includes(quizzes[index]._id);
+          const active = currentQuizIndex === index;
+
           return (
             <button
               type='button'
               onClick={() => (currentQuestionIndex ? null : setCurrentQuizIndex(index))}
-              style={{left: `${x}%`, top: `${y}%`}}
-              key={crypto.randomUUID()}
+              style={{
+                left: `${xPct}%`,
+                top: `${yPct}%`,
+                transform: 'translate(-50%, -50%)',
+              }}
+              key={`${area.point.x}-${area.point.y}-${index}`}
               className={css({
-                border: completedQuizzesIds.includes(quizzes[index]._id)
+                border: done
                   ? '4px solid token(colors.success)'
-                  : currentQuizIndex === index
+                  : active
                     ? 'none'
                     : '4px solid white',
                 position: 'absolute',
@@ -159,34 +176,28 @@ const QuizContent = ({
                 height: '10',
                 borderRadius: '50%',
                 bgGradient: 'to-b',
-                gradientFrom:
-                  completedQuizzesIds.includes(quizzes[index]._id) || currentQuizIndex === index
-                    ? 'white'
-                    : '',
-                gradientTo:
-                  completedQuizzesIds.includes(quizzes[index]._id) || currentQuizIndex === index
-                    ? 'white'
-                    : '',
-                color: currentQuizIndex === index ? 'transparent' : 'white',
+                gradientFrom: done || active ? 'white' : '',
+                gradientTo: done || active ? 'white' : '',
+                color: active ? 'transparent' : 'white',
                 zIndex: '10',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                mdDown: {
-                  display: 'none',
-                },
+                ...(SHOW_HOTSPOTS_ON_MOBILE
+                  ? {}
+                  : {
+                      // previous behavior: hide on mobile
+                      mdDown: {display: 'none'},
+                    }),
                 cursor: currentIndex ? 'default' : 'pointer',
               })}
+              aria-label={`Open quiz ${index + 1}`}
             >
-              {!completedQuizzesIds.includes(quizzes[index]._id) && (
+              {!done && (
                 <>
-                  {currentQuizIndex === index && (
+                  {active && (
                     <div
-                      className={css({
-                        pos: 'absolute',
-                        inset: '0',
-                        rounded: 'full',
-                      })}
+                      className={css({pos: 'absolute', inset: '0', rounded: 'full'})}
                       style={blueBorderStyle}
                     />
                   )}
@@ -194,7 +205,7 @@ const QuizContent = ({
                     style={{backgroundColor: area.color || 'white'}}
                     className={css({
                       pos: 'absolute',
-                      inset: currentQuizIndex === index ? '1' : '0',
+                      inset: active ? '1' : '0',
                       rounded: 'full',
                     })}
                   />
@@ -205,6 +216,7 @@ const QuizContent = ({
           );
         })}
       </div>
+
       {completedQuizzesIds.length === quizzes.length ? (
         <Link
           href='/quizzes/graphical'
@@ -229,7 +241,7 @@ const QuizContent = ({
         >
           Finish
         </Link>
-      ) : currentQuestionIndex + 1 <= currentQuiz?.questions.length ? (
+      ) : currentQuestionIndex + 1 <= totalQuestions ? (
         <QuizQuestions
           questions={currentQuiz?.questions ?? []}
           onSetAnswer={handleSetAnswer}

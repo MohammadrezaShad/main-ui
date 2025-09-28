@@ -1,11 +1,12 @@
 'use client';
 
-import {Suspense} from 'react';
+import {Suspense, useEffect} from 'react';
 import {useObservable} from '@legendapp/state/react';
 import {css} from '@styled/css';
 import {useQuery} from '@tanstack/react-query';
 import {getCookie} from 'cookies-next';
 import Link from 'next/link';
+import {useRouter} from 'next/navigation';
 
 import {IconSearch} from '@/assets';
 import {
@@ -34,6 +35,21 @@ export default function Header() {
     queryKey: ['user'],
     queryFn: () => getUser(token as string),
   });
+  const router = useRouter();
+
+  useEffect(() => {
+    if (user) {
+      try {
+        const redirect = sessionStorage.getItem('postLoginRedirect');
+        if (redirect) {
+          sessionStorage.removeItem('postLoginRedirect');
+          router.push(redirect);
+        }
+      } catch {
+        // e
+      }
+    }
+  }, [user, router]);
 
   return (
     <Suspense fallback={<div />}>

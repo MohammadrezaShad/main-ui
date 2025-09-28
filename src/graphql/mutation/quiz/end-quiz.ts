@@ -23,7 +23,7 @@ export async function endQuiz(
     }`,
     variables: {input},
     headers: {
-      Authorization: `Bearer ${accessToken}`,
+      ...(accessToken ? {Authorization: `Bearer ${accessToken}`} : {}),
       'client-id': clientId,
     },
   });
