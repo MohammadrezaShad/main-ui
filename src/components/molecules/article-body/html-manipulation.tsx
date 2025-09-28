@@ -8,12 +8,13 @@
 
 'use client';
 
-import React, {lazy, Suspense, useEffect, useMemo} from 'react';
+import React, {lazy, useEffect, useMemo} from 'react';
 import {css} from '@styled/css';
-import parse, {domToReact, Element, HTMLReactParserOptions} from 'html-react-parser';
+import parse, {Element, HTMLReactParserOptions} from 'html-react-parser';
 
 import {IconChevronRight} from '@/assets';
 import {SnapCarousel} from '@/components/atoms/snap-carousel';
+import RatingInline from '@/components/molecules/article-body/rate-inline';
 
 import MonacoEditor from './MonacoEditor';
 
@@ -158,6 +159,30 @@ const HtmlManipulation: React.FC<HtmlManipulationProps> = ({htmlString, classNam
     replace: (domNode: any) => {
       if (!(domNode instanceof Element)) return;
 
+      // ⭐ NEW: render either <star-rating> (old) or <rating-widget> (new)
+      if (domNode.name === 'star-rating' || domNode.name === 'rating-widget') {
+        const ratingAttr = domNode.attribs?.rating ?? domNode.attribs?.['data-rating'] ?? '0';
+        const variantAttr = (domNode.attribs?.variant ??
+          domNode.attribs?.['data-variant'] ??
+          'drop') as 'drop' | 'star';
+        const maxAttr = domNode.attribs?.max ?? domNode.attribs?.['data-max'];
+        const sizeAttr = domNode.attribs?.size ?? domNode.attribs?.['data-size'];
+        const showValue = (domNode.attribs?.['show-value'] ?? 'true').toLowerCase() !== 'false';
+
+        const rating = Number(ratingAttr);
+
+        return (
+          <RatingInline
+            rating={Number.isFinite(rating) ? rating : 0}
+            variant={variantAttr}
+            size={sizeAttr ? Number(sizeAttr) : 24}
+            max={maxAttr ? Number(maxAttr) : undefined}
+            showValue={showValue}
+            precision={2}
+          />
+        );
+      }
+
       // ---------- math-field ----------
       if (domNode.name === 'math-field' && domNode.attribs?.value) {
         const mathContent = domNode.attribs.value;
@@ -202,25 +227,24 @@ const HtmlManipulation: React.FC<HtmlManipulationProps> = ({htmlString, classNam
       }
 
       // ---------- wrap file links with icon (by className match) ----------
-      if (domNode.attribs && domNode.attribs.class === className && domNode.name === 'a') {
-        const extension = getFileExtension(domNode.attribs.href);
-        const Component = getComponentByExtension(extension) as any;
+      if (domNode.name === 'rating-widget' || domNode.name === 'star-rating') {
+        // supports either data-* or plain attrs
+        const ratingAttr = domNode.attribs?.['data-rating'] ?? domNode.attribs?.rating ?? '0';
+        const variantAttr = domNode.attribs?.['data-variant'] ?? domNode.attribs?.variant ?? 'drop';
+        const sizeAttr = domNode.attribs?.size ?? domNode.attribs?.['data-size'];
+        const showValue = (domNode.attribs?.['show-value'] ?? 'true').toLowerCase() !== 'false';
+
+        const rating = Number(ratingAttr);
+        const variant = (variantAttr === 'star' ? 'star' : 'drop') as 'star' | 'drop';
+
         return (
-          <span
-            className={css({
-              display: 'inline-flex',
-              w: 'max-content',
-              alignItems: 'center',
-              gap: '1',
-              px: '1',
-            })}
-            key={domNode.attribs.href}
-          >
-            <Suspense>
-              <Component className={css({w: '4', h: '4'})} />
-            </Suspense>
-            {domToReact([domNode])}
-          </span>
+          <RatingInline
+            rating={Number.isFinite(rating) ? rating : 0}
+            variant={variant}
+            size={sizeAttr ? Number(sizeAttr) : 24}
+            showValue={showValue}
+            precision={2}
+          />
         );
       }
 
