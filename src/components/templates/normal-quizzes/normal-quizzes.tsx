@@ -1,6 +1,5 @@
 'use client';
 
-import {useEffect, useState} from 'react';
 import {useObservable} from '@legendapp/state/react';
 import {css} from '@styled/css';
 import {useInfiniteQuery} from '@tanstack/react-query';
@@ -14,53 +13,46 @@ import {CookieName} from '@/constants';
 import {findQuizById, QuizType, searchQuizzes} from '@/graphql';
 import {Paths} from '@/utils';
 
-export default function NormalQuizzes() {
+export default function NormalQuizzesView() {
   const router = useRouter();
-  const [quizzes, setQuizzes] = useState<QuizType[]>([]);
-  const [page, setPage] = useState(1);
   const targetQuiz$ = useObservable<QuizType>();
-  const {data, fetchNextPage, hasNextPage} = useInfiniteQuery({
-    queryKey: ['search-quizzes'],
-    queryFn: ({pageParam}) => searchQuizzes({count: 12, page: pageParam}),
-    initialPageParam: 1,
-    getNextPageParam: (lastPage: any, allPages, lastPagParam, allPagesParam) => {
-      const totalPages = lastPage?.totalPages;
-      if (totalPages) {
-        return lastPagParam + 1 <= totalPages ? lastPagParam + 1 : undefined;
-      }
 
-      return undefined;
+  const {data, status, hasNextPage, fetchNextPage, isFetchingNextPage} = useInfiniteQuery({
+    // MUST match the server prefetch
+    queryKey: ['search-quizzes', {count: 12}],
+    queryFn: ({pageParam = 1}) => searchQuizzes({count: 12, page: pageParam}),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, pages) => {
+      const totalPages = lastPage?.totalPages ?? 1;
+      const next = pages.length + 1;
+      return next <= totalPages ? next : undefined;
     },
+
+    // Avoid instant refetch flash after hydration
+    staleTime: 60_000,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+
+    // Flatten pages so we can render directly without local state/effects
+    select: d => ({
+      ...d,
+      items: d.pages.flatMap(p => p?.results ?? []),
+    }),
   });
+
+  const quizzes: QuizType[] = (data as any)?.items ?? [];
 
   const getQuizInfo = async (id: string) => {
     const quiz = await findQuizById({id});
     targetQuiz$.set(quiz.result);
   };
 
-  const startQuiz = async (id: string) => {
+  const startQuiz = (id: string) => {
     const token = getCookie(CookieName.AUTH_TOKEN);
-    // try {
-    //   const response = await payAndFindNormal({id}, token);
-    //   if (response.success && token) {
+    // pay/auth checks (if any) can go here with token
     router.push(`${Paths.Quiz.getPath()}/normal/${id}`);
-    //   }
-    // } catch (error: Error | any) {
-    //   toast.error(error.message);
-    // }
   };
-
-  useEffect(() => {
-    if (data) {
-      const _articles =
-        data?.pages.reduce(
-          (acc: any, currentPage: any, index: any) =>
-            index !== 0 ? [...acc, ...currentPage?.results] : [...acc],
-          data?.pages[0]?.results,
-        ) || [];
-      setQuizzes(_articles);
-    }
-  }, [data]);
 
   return (
     <div
@@ -118,6 +110,7 @@ export default function NormalQuizzes() {
           </span>
         </div>
       </header>
+
       <div
         className={css({
           mt: '6',
@@ -127,28 +120,34 @@ export default function NormalQuizzes() {
         })}
       >
         <div className={css({mt: '6', mdDown: {maxW: 'full'}})}>
-          <div
-            className={css({
-              display: 'grid',
-              gridTemplateColumns: 3,
-              gap: '3',
-              mdDown: {gridTemplateColumns: 1, gap: '0'},
-              alignItems: 'stretch',
-            })}
-          >
-            {quizzes.map(quiz => (
-              <QuizCard key={quiz._id} getQuizInfo={getQuizInfo} quiz={quiz} />
-            ))}
-          </div>
+          {status === 'pending' ? (
+            <div className={css({textAlign: 'center', py: '8', color: 'gray.600'})}>
+              Loading quizzes…
+            </div>
+          ) : quizzes.length === 0 ? (
+            <div className={css({textAlign: 'center', py: '8', color: 'gray.700'})}>
+              No quizzes found.
+            </div>
+          ) : (
+            <div
+              className={css({
+                display: 'grid',
+                gridTemplateColumns: 3,
+                gap: '3',
+                mdDown: {gridTemplateColumns: 1, gap: '0'},
+                alignItems: 'stretch',
+              })}
+            >
+              {quizzes.map(quiz => (
+                <QuizCard key={quiz._id} getQuizInfo={getQuizInfo} quiz={quiz} />
+              ))}
+            </div>
+          )}
         </div>
       </div>
+
       {hasNextPage ? (
-        <div
-          className={css({
-            mt: 6,
-            mb: -6,
-          })}
-        >
+        <div className={css({mt: 6, mb: -6})}>
           <button
             type='button'
             onClick={() => fetchNextPage()}
@@ -160,18 +159,15 @@ export default function NormalQuizzes() {
               display: 'block',
               cursor: 'pointer',
             })}
+            disabled={isFetchingNextPage}
           >
-            <span
-              className={css({
-                textStyle: 'body',
-                color: 'text.invert',
-              })}
-            >
-              Show more
+            <span className={css({textStyle: 'body', color: 'text.invert'})}>
+              {isFetchingNextPage ? 'Loading…' : 'Show more'}
             </span>
           </button>
         </div>
       ) : null}
+
       <Modal isOpen$={!!targetQuiz$.use()} onClose={() => targetQuiz$.set(undefined)}>
         <form
           className={css({
@@ -200,16 +196,7 @@ export default function NormalQuizzes() {
               justifyContent: {base: 'space-between', mdDown: 'center'},
             })}
           >
-            <IconDrop
-              className={css({
-                w: '16',
-                h: '16',
-                mdDown: {
-                  h: '32',
-                  w: '32',
-                },
-              })}
-            />
+            <IconDrop className={css({w: '16', h: '16', mdDown: {h: '32', w: '32'}})} />
             <button
               type='button'
               onClick={() => targetQuiz$.set(undefined)}
@@ -224,6 +211,7 @@ export default function NormalQuizzes() {
               <IconClose classname={css({color: '#272727'})} />
             </button>
           </header>
+
           <h1
             className={css({
               mt: '5',
@@ -231,14 +219,12 @@ export default function NormalQuizzes() {
               lineHeight: '2xl',
               fontWeight: 'medium',
               color: 'text.primary',
-              mdDown: {
-                textAlign: 'center',
-                textStyle: 'h3',
-              },
+              mdDown: {textAlign: 'center', textStyle: 'h3'},
             })}
           >
             Are you sure you want to start this quiz?
           </h1>
+
           <div
             className={css({
               display: 'flex',
@@ -265,14 +251,11 @@ export default function NormalQuizzes() {
                 pr: '12',
                 py: '3',
                 cursor: 'pointer',
-                w: {
-                  base: '1/3',
-                  mdDown: 'full',
-                },
+                w: {base: '1/3', mdDown: 'full'},
                 color: 'white',
                 bgColor: 'primary',
               })}
-              aria-label='Pay'
+              aria-label='Start quiz'
             >
               Yes
             </button>
@@ -284,10 +267,7 @@ export default function NormalQuizzes() {
                 pr: '10',
                 py: '3',
                 cursor: 'pointer',
-                w: {
-                  base: '1/3',
-                  mdDown: 'full',
-                },
+                w: {base: '1/3', mdDown: 'full'},
                 borderWidth: '1px',
                 borderStyle: 'solid',
                 borderColor: 'gray3',

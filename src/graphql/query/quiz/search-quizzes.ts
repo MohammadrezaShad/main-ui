@@ -11,6 +11,7 @@ export async function searchQuizzes(input: SearchQuizInput): Promise<QuizQuery['
             totalCount
             totalPages
             results {
+               __typename
               _id
               category {
                 _id

@@ -19,6 +19,7 @@ export async function searchGraphicalQuizzes(
           success
           results {
             _id
+            __typename
             category {
               _id
               image {

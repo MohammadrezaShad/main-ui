@@ -6,7 +6,7 @@ import {gqlFetch} from '@/services/fetch';
 
 export async function endQuiz(
   input: EndQuizInput,
-  accessToken: string,
+  accessToken?: string,
 ): Promise<QuizMutation['endQuiz']> {
   const clientId = getCookie(CookieName.CLIENT_ID) as string;
   const res = await gqlFetch({

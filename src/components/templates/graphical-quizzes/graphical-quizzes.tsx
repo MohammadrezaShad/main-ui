@@ -24,6 +24,7 @@ import {
   Title,
   Wrapper,
 } from './graphical-quiz.styled';
+import Link from 'next/link';
 
 export default function GraphicalQuizzes() {
   const token: string | undefined = getCookie(CookieName.AUTH_TOKEN);
@@ -54,7 +55,6 @@ export default function GraphicalQuizzes() {
     // try {
     //   const response = await payAndFindGraphical({id}, token);
     //   if (response.success && token) {
-    router.push(`${Paths.Quiz.getPath()}/graphical/${id}`);
     //   }
     // } catch (error: Error | any) {
     //   toast.error(error.message);
@@ -62,7 +62,6 @@ export default function GraphicalQuizzes() {
   };
 
   const renderContent = () => {
-    if (!token) return <HeadTitle>Please log in to view quizzes.</HeadTitle>;
     if (quizzes.length > 0)
       return (
         <CardList>
@@ -197,9 +196,9 @@ export default function GraphicalQuizzes() {
               },
             })}
           >
-            <button
+            <Link
+            href={`${Paths.Quiz.getPath()}/graphical/${targetQuiz$?.get()?._id}`}
               type='button'
-              onClick={() => startQuiz(targetQuiz$.get()._id)}
               className={css({
                 pl: '12',
                 pr: '12',
@@ -215,7 +214,7 @@ export default function GraphicalQuizzes() {
               aria-label='Pay'
             >
               Yes
-            </button>
+            </Link>
             <button
               type='button'
               onClick={() => targetQuiz$.set(undefined)}

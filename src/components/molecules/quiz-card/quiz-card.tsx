@@ -1,15 +1,13 @@
 'use client';
 
-import {toast} from 'react-toastify';
 import {css} from '@styled/css';
-import {getCookie} from 'cookies-next';
 import Image from 'next/image';
+import Link from 'next/link';
 
 import {IconWater} from '@/assets';
-import {CookieName} from '@/constants';
 import {GraphicalQuizType, QuizType} from '@/graphql';
 
-import {Button, Container, ContentWrapper, QuestionCount, Title, Wrapper} from './quiz-card.styled';
+import {Container, ContentWrapper, QuestionCount, Title, Wrapper} from './quiz-card.styled';
 
 const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
 
@@ -28,12 +26,7 @@ const QuizCard = ({quiz, getQuizInfo}: {quiz: QuizType | GraphicalQuizType; getQ
   };
 
   const handleClickQuiz = () => {
-    const token = getCookie(CookieName.AUTH_TOKEN);
-    if (!token) {
-      toast.error('You must log in first');
-    } else {
-      getQuizInfo(quiz._id);
-    }
+    getQuizInfo(quiz._id);
   };
 
   return (
@@ -88,9 +81,15 @@ const QuizCard = ({quiz, getQuizInfo}: {quiz: QuizType | GraphicalQuizType; getQ
         <ContentWrapper>
           <QuestionCount>{renderQuestionCount()}</QuestionCount>
           <Title>{quiz.title}</Title>
-          <Button onClick={handleClickQuiz} type='button'>
+          <Link
+            href={`${quiz.__typename === 'QuizType' ? `/quizzes/normal` : '/quizzes/graphical'}/${quiz._id}`}
+            className={css({
+              mt: 'auto',
+              color: 'info',
+            })}
+          >
             START THE QUIZ
-          </Button>
+          </Link>
         </ContentWrapper>
       </Wrapper>
     </Container>

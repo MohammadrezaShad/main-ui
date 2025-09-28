@@ -24,6 +24,7 @@ const Page = async ({params: initalParams}: {params: {quizId: string}}) => {
         mx: 'auto',
         maxWidth: '960px',
         p: {lgDown: 4},
+        overflow:"hidden"
       })}
     >
       <Hydrate state={dehydratedState}>

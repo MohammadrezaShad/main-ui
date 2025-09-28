@@ -33,6 +33,7 @@ export const ContentWrapper = styled('div', {
     p: '6',
     mdDown: {p: '2.5'},
     w: 'full',
+    h: 'full',
   },
 });
 
@@ -52,7 +53,6 @@ export const Title = styled('div', {
     lineHeight: 'base',
     fontWeight: 'medium',
     color: 'text.primary',
-    h: '[48px]',
   },
 });
 

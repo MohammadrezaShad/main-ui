@@ -27,6 +27,7 @@ const Page = async () => {
         mx: 'auto',
         maxWidth: 'full',
         p: {lgDown: 4},
+        paddingBottom:5
       })}
     >
       <Hydrate state={dehydratedState}>

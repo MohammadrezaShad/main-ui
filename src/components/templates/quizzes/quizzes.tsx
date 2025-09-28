@@ -7,16 +7,14 @@ import {getCookie} from 'cookies-next';
 import Link from 'next/link';
 
 import {IconClose, IconDrop} from '@/assets';
-import {QuizCard, TopUserCard} from '@/components';
+import {QuizCard} from '@/components';
 import {Modal} from '@/components/atoms/modal';
 import {CookieName} from '@/constants';
 import {
   findQuizById,
-  getBestUsers,
   getTopQuizzes,
   getTotalCount,
   getTotalGraphicalCount,
-  getUser,
   QuizType,
 } from '@/graphql';
 import {Paths} from '@/utils';
@@ -36,15 +34,6 @@ export default function Quizzes() {
   const topQuizzes = useQuery({
     queryKey: ['get-top-quizzes'],
     queryFn: () => getTopQuizzes(),
-  });
-  const bestUsers = useQuery({
-    queryKey: ['get-best-user', 8],
-    queryFn: () => getBestUsers({count: 8}),
-  });
-
-  const currentUser = useQuery({
-    queryKey: ['get-profile'],
-    queryFn: () => getUser(token),
   });
 
   const getQuizInfo = async (id: string) => {
@@ -285,43 +274,6 @@ export default function Quizzes() {
           <div className={css({display: 'flex', gap: '5', mdDown: {flexDir: 'column', gap: '0'}})}>
             {topQuizzes.data?.result?.map(quiz => (
               <QuizCard key={quiz._id} quiz={quiz} getQuizInfo={getQuizInfo} />
-            ))}
-          </div>
-        </div>
-        <div
-          className={css({
-            flexShrink: '0',
-            mt: '8',
-            h: '[1px]',
-            bgColor: 'gray3',
-            mdDown: {maxW: 'full'},
-          })}
-        />
-        <h2
-          className={css({
-            mt: '9',
-            color: 'text.primary',
-            mdDown: {maxW: 'full'},
-            textStyle: 'h3',
-          })}
-        >
-          The Best People
-        </h2>
-        <div className={css({mt: '6', mdDown: {maxW: 'full'}})}>
-          <div
-            className={css({
-              display: 'grid',
-              gap: '1',
-              gridTemplateColumns: '1',
-            })}
-          >
-            {bestUsers.data?.results?.map((user, index) => (
-              <TopUserCard
-                key={user._id}
-                user={user}
-                rank={index + 1}
-                isCurrentUser={user._id === currentUser.data?._id}
-              />
             ))}
           </div>
         </div>

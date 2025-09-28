@@ -53,7 +53,7 @@ const WaterSavingQuiz = () => {
   };
 
   const endQuizMutation = useMutation({
-    mutationFn: ({args, token}: {args: EndQuizInput; token: string}) => endQuiz(args, token),
+    mutationFn: ({args, token}: {args: EndQuizInput; token?: string}) => endQuiz(args, token),
   });
   const [answers, setAnswers] = useState<Answer[]>([]);
 
@@ -70,8 +70,7 @@ const WaterSavingQuiz = () => {
 
   const handleClick = async () => {
     const token = getCookie(CookieName.AUTH_TOKEN);
-    if (token) {
-      try {
+      try {token
         const data = await endQuizMutation.mutateAsync({
           args: {quiz: params.quizId as string, answers},
           token,
@@ -90,7 +89,6 @@ const WaterSavingQuiz = () => {
       } catch (error: Error | any) {
         toast.error(error.message);
       }
-    }
   };
 
   return (
