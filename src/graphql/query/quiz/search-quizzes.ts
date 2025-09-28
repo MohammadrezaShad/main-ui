@@ -13,177 +13,17 @@ export async function searchQuizzes(input: SearchQuizInput): Promise<QuizQuery['
             results {
                __typename
               _id
-              category {
-                _id
-                createdAt
-                description
-                hasSeoApproval
-                image {
-                  _id
-                  alt
-                  createdAt
-                  filename
-                  height
-                  preview
-                  updatedAt
-                  width
-                }
-                isDescriptionApproved
-                originalDescription
-                postCount
-                seoReviewDate
-                slug
-                title
-                updatedAt
-              }
-              createUser {
-                _id
-                articlesWrittenCount
-                articlesWrittenSavedCount
-                articlesWrittenVisitedCount
-                avatar {
-                  _id
-                  alt
-                  createdAt
-                  filename
-                  height
-                  preview
-                  updatedAt
-                  width
-                }
-                avatarStatus
-                coins
-                commentsCount
-                createdAt
-                displayName
-                downloadedArticlesCount
-                email
-                firstName
-                gender
-                hometown
-                isCreatedWithSocialMedia
-                isVerified
-                lastName
-                nickname
-                phone
-                role
-                savedArticlesCount
-                timeSpent
-                updatedAt
-                username
-                visitedArticlesCount
-                website
-              }
               createdAt
               duration
               price
               questions {
                 _id
-                categories {
-                  _id
-                  createdAt
-                  description
-                  hasSeoApproval
-                  image {
-                    _id
-                    alt
-                    createdAt
-                    filename
-                    height
-                    preview
-                    updatedAt
-                    width
-                  }
-                  isDescriptionApproved
-                  originalDescription
-                  postCount
-                  seoReviewDate
-                  slug
-                  title
-                  updatedAt
-                }
-                createUser {
-                  _id
-                  articlesWrittenCount
-                  articlesWrittenSavedCount
-                  articlesWrittenVisitedCount
-                  avatar {
-                    _id
-                    alt
-                    createdAt
-                    filename
-                    height
-                    preview
-                    updatedAt
-                    width
-                  }
-                  avatarStatus
-                  coins
-                  commentsCount
-                  createdAt
-                  displayName
-                  downloadedArticlesCount
-                  email
-                  firstName
-                  gender
-                  hometown
-                  isCreatedWithSocialMedia
-                  isVerified
-                  lastName
-                  nickname
-                  phone
-                  role
-                  savedArticlesCount
-                  timeSpent
-                  updatedAt
-                  username
-                  visitedArticlesCount
-                  website
-                }
                 createdAt
                 options {
                   answer
                   isCorrect
                 }
                 question
-                updateUser {
-                  _id
-                  articlesWrittenCount
-                  articlesWrittenSavedCount
-                  articlesWrittenVisitedCount
-                  avatar {
-                    _id
-                    alt
-                    createdAt
-                    filename
-                    height
-                    preview
-                    updatedAt
-                    width
-                  }
-                  avatarStatus
-                  coins
-                  commentsCount
-                  createdAt
-                  displayName
-                  downloadedArticlesCount
-                  email
-                  firstName
-                  gender
-                  hometown
-                  isCreatedWithSocialMedia
-                  isVerified
-                  lastName
-                  nickname
-                  phone
-                  role
-                  savedArticlesCount
-                  timeSpent
-                  updatedAt
-                  username
-                  visitedArticlesCount
-                  website
-                }
                 updatedAt
               }
               reward
@@ -198,44 +38,6 @@ export async function searchQuizzes(input: SearchQuizInput): Promise<QuizQuery['
                 width
               }
               title
-              updateUser {
-                _id
-                articlesWrittenCount
-                articlesWrittenSavedCount
-                articlesWrittenVisitedCount
-                avatar {
-                  _id
-                  alt
-                  createdAt
-                  filename
-                  height
-                  preview
-                  updatedAt
-                  width
-                }
-                avatarStatus
-                coins
-                commentsCount
-                createdAt
-                displayName
-                downloadedArticlesCount
-                email
-                firstName
-                gender
-                hometown
-                isCreatedWithSocialMedia
-                isVerified
-                lastName
-                nickname
-                phone
-                role
-                savedArticlesCount
-                timeSpent
-                updatedAt
-                username
-                visitedArticlesCount
-                website
-              }
               updatedAt
             }
           }

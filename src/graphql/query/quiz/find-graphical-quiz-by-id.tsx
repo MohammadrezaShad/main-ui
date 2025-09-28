@@ -18,33 +18,6 @@ export async function findGraphicalQuizById(
           result {
             __typename
             _id
-            category {
-              _id
-              createdAt
-              description
-              hasSeoApproval
-              image {
-                _id
-                alt
-                createdAt
-                filename
-                height
-                preview
-                updatedAt
-                width
-              }
-              isDescriptionApproved
-              originalDescription
-              parent {
-                _id
-                slug
-                title
-              }
-              postCount
-              slug
-              title
-              updatedAt
-            }
             duration
             image {
               _id

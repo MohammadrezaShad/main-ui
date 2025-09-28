@@ -70,25 +70,26 @@ const WaterSavingQuiz = () => {
 
   const handleClick = async () => {
     const token = getCookie(CookieName.AUTH_TOKEN);
-      try {token
-        const data = await endQuizMutation.mutateAsync({
-          args: {quiz: params.quizId as string, answers},
-          token,
-        });
-        if (data?.success) {
-          setCorrectAnswerCount(data.correctAnswerCount);
-          setWrongAnswerCount(data.wrongAnswerCount);
-          setGainedCoins(data.gainedCoins);
-          toast.success('Quiz successfully complete');
-        } else {
-          toast.error(
-            endQuizMutation.error?.message ??
-              'An error occured. Please try again a few moments later',
-          );
-        }
-      } catch (error: Error | any) {
-        toast.error(error.message);
+    try {
+      token;
+      const data = await endQuizMutation.mutateAsync({
+        args: {quiz: params.quizId as string, answers},
+        token,
+      });
+      if (data?.success) {
+        setCorrectAnswerCount(data.correctAnswerCount);
+        setWrongAnswerCount(data.wrongAnswerCount);
+        setGainedCoins(data.gainedCoins);
+        toast.success('Quiz successfully complete');
+      } else {
+        toast.error(
+          endQuizMutation.error?.message ??
+            'An error occured. Please try again a few moments later',
+        );
       }
+    } catch (error: Error | any) {
+      toast.error(error.message);
+    }
   };
 
   return (
@@ -153,7 +154,6 @@ const QuizHeader = ({
           className={css({
             alignSelf: 'stretch',
             textAlign: 'center',
-            whiteSpace: 'nowrap',
             color: 'text.primary',
             textStyle: 'title2',
           })}
@@ -169,11 +169,6 @@ const QuizHeader = ({
           p: '4',
           whiteSpace: 'nowrap',
           bgColor: 'neutral.100',
-          position: 'absolute',
-          right: '0',
-          mdDown: {
-            display: 'none',
-          },
         })}
       >
         <IconDrop

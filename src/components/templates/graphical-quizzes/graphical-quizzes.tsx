@@ -1,17 +1,17 @@
 'use client';
 
-import {useEffect, useState} from 'react';
+import {useMemo} from 'react';
 import {useObservable} from '@legendapp/state/react';
 import {css} from '@styled/css';
-import {useInfiniteQuery} from '@tanstack/react-query';
+import {type InfiniteData, useInfiniteQuery} from '@tanstack/react-query';
 import {getCookie} from 'cookies-next';
-import {useRouter} from 'next/navigation';
+import Link from 'next/link';
 
 import {bgMaze, IconClose, IconDrop} from '@/assets';
 import {Modal} from '@/components/atoms/modal';
 import {QuizCard} from '@/components/molecules';
 import {CookieName} from '@/constants';
-import {findGraphicalQuizById, GraphicalQuizType, searchGraphicalQuizzes} from '@/graphql';
+import {findGraphicalQuizById, type GraphicalQuizType, searchGraphicalQuizzes} from '@/graphql';
 import {Paths} from '@/utils';
 
 import {
@@ -24,93 +24,79 @@ import {
   Title,
   Wrapper,
 } from './graphical-quiz.styled';
-import Link from 'next/link';
+
+// One page shape returned by the query function
+type GraphicalPage = Awaited<ReturnType<typeof searchGraphicalQuizzes>>;
 
 export default function GraphicalQuizzes() {
-  const token: string | undefined = getCookie(CookieName.AUTH_TOKEN);
-  const router = useRouter();
-  const [quizzes, setQuizzes] = useState<GraphicalQuizType[]>([]);
-  const [page, setPage] = useState(1);
+  const token = (getCookie(CookieName.AUTH_TOKEN) as string) || '';
   const targetQuiz$ = useObservable<GraphicalQuizType>();
-  const {data, fetchNextPage, hasNextPage} = useInfiniteQuery({
-    queryKey: ['search-graphical-quizzes'],
-    queryFn: ({pageParam}) => searchGraphicalQuizzes({count: 12, page: pageParam}, token || ''),
-    initialPageParam: 1,
-    getNextPageParam: (lastPage: any, allPages, lastPagParam, allPagesParam) => {
-      const totalPages = lastPage?.totalPages;
-      if (totalPages) {
-        return lastPagParam + 1 <= totalPages ? lastPagParam + 1 : undefined;
-      }
 
-      return undefined;
+  const {data, fetchNextPage, hasNextPage, isLoading} = useInfiniteQuery<
+    GraphicalPage, // TQueryFnData (per page)
+    Error, // TError
+    GraphicalPage, // TData
+    readonly ['search-graphical-quizzes', {count: number}], // TQueryKey
+    number // TPageParam
+  >({
+    queryKey: ['search-graphical-quizzes', {count: 12}] as const,
+    queryFn: ({pageParam = 1}) => searchGraphicalQuizzes({count: 12, page: pageParam}, token),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, pages) => {
+      const totalPages = lastPage?.totalPages ?? 1;
+      const next = pages.length + 1;
+      return next <= totalPages ? next : undefined;
     },
+    staleTime: 60_000,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
   });
+
+  // Derive quizzes directly from hydrated data to avoid empty flash
+  const quizzes = useMemo<GraphicalQuizType[]>(() => {
+    if (!data) return [];
+    return (data as unknown as InfiniteData<GraphicalPage>).pages.flatMap(p => p?.results ?? []);
+  }, [data]);
+
+  const totalCount = (data as InfiniteData<GraphicalPage> | undefined)?.pages?.[0]?.totalCount ?? 0;
 
   const getQuizInfo = async (id: string) => {
     const quiz = await findGraphicalQuizById({id}, token);
     targetQuiz$.set(quiz.result);
   };
 
-  const startQuiz = async (id: string) => {
-    // try {
-    //   const response = await payAndFindGraphical({id}, token);
-    //   if (response.success && token) {
-    //   }
-    // } catch (error: Error | any) {
-    //   toast.error(error.message);
-    // }
-  };
-
-  const renderContent = () => {
-    if (quizzes.length > 0)
-      return (
-        <CardList>
-          {quizzes.map(quiz => (
-            <QuizCard key={quiz._id} getQuizInfo={getQuizInfo} quiz={quiz} />
-          ))}
-        </CardList>
-      );
-    return <HeadTitle>There are currently no quizzes.</HeadTitle>;
-  };
-
-  useEffect(() => {
-    if (data) {
-      const _articles =
-        data?.pages.reduce(
-          (acc: any, currentPage: any, index: any) =>
-            index !== 0 ? [...acc, ...currentPage?.results] : [...acc],
-          data?.pages[0]?.results,
-        ) || [];
-      setQuizzes(_articles);
-    }
-  }, [data]);
-
   return (
     <Container>
       <Header>
-        <Banner
-          style={{
-            backgroundImage: `url(${bgMaze.src})`,
-          }}
-        >
+        <Banner style={{backgroundImage: `url(${bgMaze.src})`}}>
           <Title>Graphical Quizzes</Title>
         </Banner>
       </Header>
+
       <Wrapper>
-        <div className={css({mt: '6', mdDown: {maxW: 'full'}})}>{renderContent()}</div>
+        <div className={css({mt: '6', mdDown: {maxW: 'full'}})}>
+          {/* Show empty state ONLY when we know there are zero items */}
+          {isLoading ? null : totalCount === 0 ? (
+            <HeadTitle>There are currently no quizzes.</HeadTitle>
+          ) : (
+            <CardList>
+              {quizzes.map(q => (
+                <QuizCard key={q._id} getQuizInfo={getQuizInfo} quiz={q} />
+              ))}
+            </CardList>
+          )}
+        </div>
       </Wrapper>
+
       {hasNextPage ? (
-        <div
-          className={css({
-            mt: 6,
-            mb: -6,
-          })}
-        >
+        <div className={css({mt: 6, mb: -6})}>
           <Button type='button' onClick={() => fetchNextPage()}>
             <span>Show more</span>
           </Button>
         </div>
       ) : null}
+
       <Modal isOpen$={!!targetQuiz$.use()} onClose={() => targetQuiz$.set(undefined)}>
         <form
           className={css({
@@ -139,16 +125,7 @@ export default function GraphicalQuizzes() {
               justifyContent: {base: 'space-between', mdDown: 'center'},
             })}
           >
-            <IconDrop
-              className={css({
-                w: '16',
-                h: '16',
-                mdDown: {
-                  w: '8',
-                  h: '8',
-                },
-              })}
-            />
+            <IconDrop className={css({w: '16', h: '16', mdDown: {w: '8', h: '8'}})} />
             <button
               type='button'
               onClick={() => targetQuiz$.set(undefined)}
@@ -160,9 +137,11 @@ export default function GraphicalQuizzes() {
                 hideBelow: 'md',
               })}
             >
+              {/* (tiny typo fix if you want) IconClose uses className prop */}
               <IconClose classname={css({color: '#272727'})} />
             </button>
           </header>
+
           <h1
             className={css({
               mt: '5',
@@ -170,14 +149,12 @@ export default function GraphicalQuizzes() {
               lineHeight: '2xl',
               fontWeight: 'medium',
               color: 'text.primary',
-              mdDown: {
-                textAlign: 'center',
-                textStyle: 'h3',
-              },
+              mdDown: {textAlign: 'center', textStyle: 'h3'},
             })}
           >
             Are you sure you want to start this quiz?
           </h1>
+
           <div
             className={css({
               display: 'flex',
@@ -197,21 +174,19 @@ export default function GraphicalQuizzes() {
             })}
           >
             <Link
-            href={`${Paths.Quiz.getPath()}/graphical/${targetQuiz$?.get()?._id}`}
-              type='button'
+              href={`${Paths.Quiz.getPath()}/graphical/${targetQuiz$?.get()?._id ?? ''}`}
               className={css({
                 pl: '12',
                 pr: '12',
                 py: '3',
                 cursor: 'pointer',
-                w: {
-                  base: '1/3',
-                  mdDown: 'full',
-                },
+                w: {base: '1/3', mdDown: 'full'},
                 color: 'white',
                 bgColor: 'primary',
+                textAlign: 'center',
               })}
-              aria-label='Pay'
+              aria-label='Start graphical quiz'
+              onClick={() => targetQuiz$.set(undefined)}
             >
               Yes
             </Link>
@@ -223,10 +198,7 @@ export default function GraphicalQuizzes() {
                 pr: '10',
                 py: '3',
                 cursor: 'pointer',
-                w: {
-                  base: '1/3',
-                  mdDown: 'full',
-                },
+                w: {base: '1/3', mdDown: 'full'},
                 borderWidth: '1px',
                 borderStyle: 'solid',
                 borderColor: 'gray3',

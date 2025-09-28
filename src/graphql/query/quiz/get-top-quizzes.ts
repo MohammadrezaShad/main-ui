@@ -14,90 +14,6 @@ export async function getTopQuizzes(): Promise<QuizQuery['getTopQuizzes']> {
           success
           result {
             _id
-            category {
-              _id
-              createdAt
-              description
-              hasSeoApproval
-              image {
-                _id
-                alt
-                createdAt
-                filename
-                height
-                preview
-                updatedAt
-                width
-              }
-              isDescriptionApproved
-              originalDescription
-              parent {
-                _id
-                title
-                slug
-              }
-              postCount
-              seoReviewDate
-              seoSetting {
-                _id
-                createdAt
-                general {
-                  canonicalUrl
-                  description
-                  focusKeyword
-                  nofollow
-                  noindex
-                  permalink
-                  title
-                }
-                itemId
-                score
-                type
-                updatedAt
-              }
-              slug
-              title
-              updatedAt
-            }
-            createUser {
-              _id
-              articlesWrittenCount
-              articlesWrittenSavedCount
-              articlesWrittenVisitedCount
-              avatar {
-                _id
-                alt
-                createdAt
-                filename
-                height
-                preview
-                updatedAt
-                width
-              }
-              avatarStatus
-              coins
-              commentsCount
-              createdAt
-              displayName
-              downloadedArticlesCount
-              email
-              engagementCount
-              firstName
-              gender
-              hometown
-              isCreatedWithSocialMedia
-              isVerified
-              lastName
-              nickname
-              phone
-              role
-              savedArticlesCount
-              timeSpent
-              updatedAt
-              username
-              visitedArticlesCount
-              website
-            }
             createdAt
             duration
             price
@@ -108,90 +24,12 @@ export async function getTopQuizzes(): Promise<QuizQuery['getTopQuizzes']> {
                 title
                 slug
               }
-              createUser {
-                _id
-                articlesWrittenCount
-                articlesWrittenSavedCount
-                articlesWrittenVisitedCount
-                avatar {
-                  _id
-                  alt
-                  createdAt
-                  filename
-                  height
-                  preview
-                  updatedAt
-                  width
-                }
-                avatarStatus
-                coins
-                commentsCount
-                createdAt
-                displayName
-                downloadedArticlesCount
-                email
-                engagementCount
-                firstName
-                gender
-                hometown
-                isCreatedWithSocialMedia
-                isVerified
-                lastName
-                nickname
-                phone
-                role
-                savedArticlesCount
-                timeSpent
-                updatedAt
-                username
-                visitedArticlesCount
-                website
-              }
               createdAt
               options {
                 answer
                 isCorrect
               }
               question
-              updateUser {
-                _id
-                articlesWrittenCount
-                articlesWrittenSavedCount
-                articlesWrittenVisitedCount
-                avatar {
-                  _id
-                  alt
-                  createdAt
-                  filename
-                  height
-                  preview
-                  updatedAt
-                  width
-                }
-                avatarStatus
-                coins
-                commentsCount
-                createdAt
-                displayName
-                downloadedArticlesCount
-                email
-                engagementCount
-                firstName
-                gender
-                hometown
-                isCreatedWithSocialMedia
-                isVerified
-                lastName
-                nickname
-                phone
-                role
-                savedArticlesCount
-                timeSpent
-                updatedAt
-                username
-                visitedArticlesCount
-                website
-              }
               updatedAt
             }
             reward
@@ -206,45 +44,6 @@ export async function getTopQuizzes(): Promise<QuizQuery['getTopQuizzes']> {
               width
             }
             title
-            updateUser {
-              _id
-              articlesWrittenCount
-              articlesWrittenSavedCount
-              articlesWrittenVisitedCount
-              avatar {
-                _id
-                alt
-                createdAt
-                filename
-                height
-                preview
-                updatedAt
-                width
-              }
-              avatarStatus
-              coins
-              commentsCount
-              createdAt
-              displayName
-              downloadedArticlesCount
-              email
-              engagementCount
-              firstName
-              gender
-              hometown
-              isCreatedWithSocialMedia
-              isVerified
-              lastName
-              nickname
-              phone
-              role
-              savedArticlesCount
-              timeSpent
-              updatedAt
-              username
-              visitedArticlesCount
-              website
-            }
             updatedAt
           }
         }

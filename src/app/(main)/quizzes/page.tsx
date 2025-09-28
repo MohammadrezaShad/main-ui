@@ -18,29 +18,45 @@ export async function generateMetadata(): Promise<Metadata> {
   const origin = `${proto}://${host}`;
 
   const url = `${origin}/quizzes`;
-  const title = 'Quizzes'; // <-- rely on layout template to add " • Waterlyst"
+  const title = 'Top Quizzes';
   const description =
-    'Test your water knowledge with interactive quizzes on filtration, treatment methods, contaminants, and more.';
+    'Discover Waterlyst’s most popular quizzes across filtration, RO, desalination, and water quality. Challenge yourself and track your progress.';
 
   const images = [
-    {url: `${origin}/og/quizzes.png`, width: 1200, height: 630, alt: 'Waterlyst Quizzes'},
+    {
+      url: `${origin}/og/quizzes-top.png`,
+      width: 1200,
+      height: 630,
+      alt: 'Top Quizzes on Waterlyst',
+    },
   ];
 
   return {
     title,
     description,
     alternates: {canonical: url},
+    robots: {index: true, follow: true},
+    keywords: [
+      'top quizzes',
+      'popular water quizzes',
+      'water treatment',
+      'reverse osmosis',
+      'filtration',
+      'desalination',
+      'water quality',
+    ],
     openGraph: {
       type: 'website',
       url,
-      title, // no site name here
+      title,
       siteName: 'Waterlyst',
       description,
       images,
+      locale: 'en_US',
     },
     twitter: {
       card: 'summary_large_image',
-      title, // no site name here
+      title,
       description,
       images: images.map(i => i.url),
     },

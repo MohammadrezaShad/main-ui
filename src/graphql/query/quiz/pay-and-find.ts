@@ -17,130 +17,11 @@ export async function payAndFindNormal(
             success
             result {
               _id
-              category {
-                _id
-                createdAt
-                description
-                hasSeoApproval
-                image {
-                  _id
-                  alt
-                  createdAt
-                  filename
-                  height
-                  preview
-                  updatedAt
-                  width
-                }
-                isDescriptionApproved
-                originalDescription
-                postCount
-                seoReviewDate
-                seoSetting {
-                  _id
-                  createdAt
-                  general {
-                    canonicalUrl
-                    description
-                    focusKeyword
-                    nofollow
-                    noindex
-                    permalink
-                    title
-                  }
-                  itemId
-                  score
-                  type
-                  updatedAt
-                }
-                slug
-                title
-                updatedAt
-              }
-              createUser {
-                _id
-                articlesWrittenCount
-                articlesWrittenSavedCount
-                articlesWrittenVisitedCount
-                avatar {
-                  _id
-                  alt
-                  createdAt
-                  filename
-                  height
-                  preview
-                  updatedAt
-                  width
-                }
-                avatarStatus
-                coins
-                commentsCount
-                createdAt
-                displayName
-                downloadedArticlesCount
-                email
-                engagementCount
-                firstName
-                gender
-                hometown
-                isCreatedWithSocialMedia
-                isVerified
-                lastName
-                nickname
-                phone
-                role
-                savedArticlesCount
-                timeSpent
-                updatedAt
-                username
-                visitedArticlesCount
-                website
-              }
               createdAt
               duration
               price
               questions {
                 _id
-                categories {
-                  _id
-                  createdAt
-                  description
-                  hasSeoApproval
-                  image {
-                    _id
-                    alt
-                    createdAt
-                    filename
-                    height
-                    preview
-                    updatedAt
-                    width
-                  }
-                  isDescriptionApproved
-                  originalDescription
-                  postCount
-                  seoReviewDate
-                  seoSetting {
-                    _id
-                    createdAt
-                    general {
-                      canonicalUrl
-                      description
-                      focusKeyword
-                      nofollow
-                      noindex
-                      permalink
-                      title
-                    }
-                    itemId
-                    score
-                    type
-                    updatedAt
-                  }
-                  slug
-                  title
-                  updatedAt
-                }
                 createdAt
                 options {
                   answer
@@ -161,45 +42,6 @@ export async function payAndFindNormal(
                 width
               }
               title
-              updateUser {
-                _id
-                articlesWrittenCount
-                articlesWrittenSavedCount
-                articlesWrittenVisitedCount
-                avatar {
-                  _id
-                  alt
-                  createdAt
-                  filename
-                  height
-                  preview
-                  updatedAt
-                  width
-                }
-                avatarStatus
-                coins
-                commentsCount
-                createdAt
-                displayName
-                downloadedArticlesCount
-                email
-                engagementCount
-                firstName
-                gender
-                hometown
-                isCreatedWithSocialMedia
-                isVerified
-                lastName
-                nickname
-                phone
-                role
-                savedArticlesCount
-                timeSpent
-                updatedAt
-                username
-                visitedArticlesCount
-                website
-              }
               updatedAt
             }
           }

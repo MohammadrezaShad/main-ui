@@ -414,7 +414,7 @@ const Page = () => {
           <SocialMediaLinks articleId={article?._id as string} links={socialMediaLinks} />
         </Box>
         {article.faqs && article.faqs.length > 0 ? <Questions faqs={article.faqs} /> : null}
-        {article.quiz && token ? (
+        {article.quiz ? (
           <Link
             className={css({
               borderRadius: 4,
@@ -452,46 +452,8 @@ const Page = () => {
               Take a quiz in &quot;{article?.quiz?.title}&quot;
             </p>
           </Link>
-        ) : article.quiz && !token ? (
-          <div
-            className={css({
-              borderRadius: 4,
-              w: {
-                lg: '33%',
-                md: 'full',
-              },
-              border: '1px solid token(colors.gray3)',
-              textStyle: 'lg',
-              display: 'block',
-              mt: '4',
-              overflow: 'hidden',
-              cursor: 'pointer',
-            })}
-            onClick={() => isLoginOpen$.set(true)}
-          >
-            <Image
-              alt={article?.quiz?.title || ''}
-              unoptimized
-              width={548}
-              height={548}
-              src={`${IMAGE_STORAGE_URL}/${article?.quiz?.thumbnail?.filename}-${article?.quiz?.thumbnail?._id}`}
-            />
-            <p
-              className={css({
-                p: '2',
-                backgroundColor: 'primary',
-                color: 'text.invert',
-                _hover: {
-                  bg: 'primary.dark',
-                },
-                fontSize: 'sm',
-              })}
-            >
-              Take a quiz in &quot;{article?.quiz?.title}&quot;
-            </p>
-          </div>
         ) : null}
-        {article.graphicalQuiz && token ? (
+        {article.graphicalQuiz ? (
           <Link
             className={css({
               borderRadius: 4,
@@ -530,45 +492,7 @@ const Page = () => {
             </p>
           </Link>
         ) : null}
-        {article.graphicalQuiz && !token ? (
-          <div
-            className={css({
-              borderRadius: 4,
-              w: {
-                lg: '33%',
-                md: 'full',
-              },
-              border: '1px solid token(colors.gray3)',
-              textStyle: 'lg',
-              display: 'block',
-              mt: '4',
-              overflow: 'hidden',
-              cursor: 'pointer',
-            })}
-            onClick={() => isLoginOpen$.set(true)}
-          >
-            <Image
-              alt={article?.graphicalQuiz?.title || ''}
-              unoptimized
-              width={548}
-              height={548}
-              src={`${IMAGE_STORAGE_URL}/${article?.graphicalQuiz?.thumbnail?.filename}-${article?.graphicalQuiz?.thumbnail?._id}`}
-            />
-            <p
-              className={css({
-                p: '2',
-                backgroundColor: 'primary',
-                color: 'text.invert',
-                _hover: {
-                  bg: 'primary.dark',
-                },
-                fontSize: 'sm',
-              })}
-            >
-              Take a quiz in &quot;{article?.graphicalQuiz?.title}&quot;
-            </p>
-          </div>
-        ) : null}
+
         {article.author && <UserInfo author={article.author} />}
 
         {relatedArticles.length > 0 ? (

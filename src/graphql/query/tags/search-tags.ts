@@ -36,37 +36,9 @@ export async function SearchTags(input: SearchTagInput): Promise<TagQuery['searc
               createdAt
               description
               hasSeoApproval
-              image {
-                _id
-                alt
-                createdAt
-                filename
-                height
-                preview
-                updatedAt
-                width
-              }
               isDescriptionApproved
               originalDescription
               postCount
-              seoReviewDate
-              seoSetting {
-                _id
-                createdAt
-                general {
-                  canonicalUrl
-                  description
-                  focusKeyword
-                  nofollow
-                  noindex
-                  permalink
-                  title
-                }
-                itemId
-                score
-                type
-                updatedAt
-              }
               slug
               status
               title

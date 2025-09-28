@@ -1,14 +1,16 @@
-import {getCookie} from 'cookies-next';
-
-import {CookieName} from '@/constants';
+// graphql/query/quizzes/searchGraphicalQuizzes.ts
 import {GraphicalQuizQuery, SearchGraphicalQuizInput} from '@/graphql/generated/types';
 import {gqlFetch} from '@/services/fetch';
 
 export async function searchGraphicalQuizzes(
   input: SearchGraphicalQuizInput,
-  token: string,
+  token?: string,
+  clientId?: string,
 ): Promise<GraphicalQuizQuery['searchGraphicalQuizzes']> {
-  const clientId = getCookie(CookieName.CLIENT_ID) as string;
+  const headers: Record<string, string> = {};
+  if (token) headers.Authorization = `Bearer ${token}`;
+  if (clientId) headers['client-id'] = clientId;
+
   const res = await gqlFetch({
     url: process.env.NEXT_PUBLIC_API as string,
     query: `query SearchGraphicalQuizzes($input: SearchGraphicalQuizInput!) {
@@ -22,59 +24,33 @@ export async function searchGraphicalQuizzes(
             __typename
             category {
               _id
-              image {
-                _id
-                alt
-                createdAt
-                filename
-                height
-                preview
-                updatedAt
-                width
-              }
+              image { _id alt createdAt filename height preview updatedAt width }
               slug
               title
             }
             createdAt
             duration
-            image {
-              _id
-              alt
-              createdAt
-              filename
-              height
-              preview
-              updatedAt
-              width
-            }
+            image { _id alt createdAt filename height preview updatedAt width }
             price
             reward
-            thumbnail {
-              _id
-              alt
-              createdAt
-              filename
-              height
-              preview
-              updatedAt
-              width
-            }
+            thumbnail { _id alt createdAt filename height preview updatedAt width }
             title
             updatedAt
             youEarned
+            quizPoints {
+               quiz
+            }
           }
         }
       }
     }`,
     variables: {input},
-    headers: {Authorization: `Bearer ${token}`, 'client-id': clientId},
+    headers,
   });
-  if (!res.ok) {
-    throw new Error('Failed to fetch data');
-  }
+
+  if (!res.ok) throw new Error('Failed to fetch data');
   const response = await res.json();
-  if (response.errors?.[0]?.message) {
-    throw new Error(response.errors?.[0]?.message);
-  }
+  if (response.errors?.[0]?.message) throw new Error(response.errors?.[0]?.message);
+
   return response.data.graphicalQuiz.searchGraphicalQuizzes;
 }
