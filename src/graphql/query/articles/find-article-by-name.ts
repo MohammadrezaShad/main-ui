@@ -96,6 +96,31 @@ export async function findArticleByName(
               telegram
               whatsApp
             }
+            otherAuthors {
+               _id
+              avatar {
+                _id
+                alt
+                createdAt
+                filename
+                height
+                preview
+                updatedAt
+                width
+              }
+              displayName
+              isVerified
+              firstName
+              lastName
+              username
+              website
+              facebook
+              instagram
+              twitter
+              linkedin
+              telegram
+              whatsApp
+            } 
             categories {
               _id
               slug
