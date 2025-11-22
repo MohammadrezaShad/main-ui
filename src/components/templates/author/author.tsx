@@ -347,7 +347,10 @@ export default function Author() {
                   {/** TODO: INSERT BIO */}
                 </p>
                 <Chips>
-                  <Chip text={user?.role} type='success' />
+                  <Chip
+                    text={user?.isStrategicCollaborator ? 'Strategic Collaborator' : user?.role}
+                    type='success'
+                  />
                   {/* <Chip text='Since: October 2018' type='simple' /> */}
                 </Chips>
               </div>

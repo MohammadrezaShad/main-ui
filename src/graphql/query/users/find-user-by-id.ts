@@ -32,6 +32,7 @@ export async function findUserById(
             updatedAt
             width
           }
+          isStrategicCollaborator
           avatarStatus
           commentsCount
           createdAt

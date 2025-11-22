@@ -4095,6 +4095,7 @@ export type User = {
   hometown?: Maybe<Scalars['String']['output']>;
   instagram?: Maybe<Scalars['String']['output']>;
   isCreatedWithSocialMedia?: Maybe<Scalars['Boolean']['output']>;
+  isStrategicCollaborator?: Maybe<Scalars['Boolean']['output']>;
   isVerified: Scalars['Boolean']['output'];
   lastName?: Maybe<Scalars['String']['output']>;
   linkedin?: Maybe<Scalars['String']['output']>;

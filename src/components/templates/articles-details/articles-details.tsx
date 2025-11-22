@@ -282,8 +282,7 @@ const Page = () => {
     rawCoAuthors.filter(Boolean).filter(u => (u as UserOutputType)._id !== mainId),
   ) as UserOutputType[];
 
-  const strategicAuthor = coAuthors[0] ?? null;
-  const guestAuthors = coAuthors.slice(1);
+  const strategicAuthor = coAuthors ?? null;
 
   return (
     <>
@@ -344,7 +343,7 @@ const Page = () => {
           </Box>
 
           {/* Strategic + Guest row (under the ArticleInfo row) */}
-          {(strategicAuthor || guestAuthors.length > 0) && (
+          {strategicAuthor ? (
             <Box
               className={css({
                 mt: '3',
@@ -355,11 +354,11 @@ const Page = () => {
                 alignItems: 'stretch',
               })}
             >
-              {/* Strategic block */}
-              {strategicAuthor && (
+              {/* Guest block */}
+              {strategicAuthor.length > 0 && (
                 <div
                   className={css({
-                    flex: '1 1 320px',
+                    flex: '1 1 420px',
                     border: '1px solid token(colors.gray3)',
                     rounded: 'md',
                     p: '3',
@@ -369,6 +368,7 @@ const Page = () => {
                     minW: '0',
                     backgroundColor: 'gray1',
                   })}
+                  title={`Strategic Collaborator: ${strategicAuthor.map(getAuthorName).join(', ')}`}
                 >
                   <span
                     className={css({
@@ -386,69 +386,6 @@ const Page = () => {
                     Strategic Collaborator
                   </span>
 
-                  <div
-                    className={css({display: 'flex', alignItems: 'center', gap: '2', minW: 0})}
-                    title={getAuthorName(strategicAuthor)}
-                  >
-                    <Avatar
-                      src={
-                        strategicAuthor?.avatar?._id
-                          ? `${IMAGE_STORAGE_URL}/${strategicAuthor.avatar?.filename}-${strategicAuthor.avatar?._id}`
-                          : ''
-                      }
-                      alt={getAuthorName(strategicAuthor)}
-                      size={32}
-                    />
-                    <Link
-                      href={`/author/${strategicAuthor._id}`}
-                      className={css({
-                        color: 'text.primary',
-                        textStyle: 'body2',
-                        minW: 0,
-                        whiteSpace: {base: 'normal', md: 'nowrap'},
-                        overflow: {base: 'visible', md: 'hidden'},
-                        textOverflow: {base: 'clip', md: 'ellipsis'},
-                        _hover: {color: 'primary'},
-                      })}
-                    >
-                      {getAuthorName(strategicAuthor)}
-                    </Link>
-                  </div>
-                </div>
-              )}
-
-              {/* Guest block */}
-              {guestAuthors.length > 0 && (
-                <div
-                  className={css({
-                    flex: '1 1 420px',
-                    border: '1px solid token(colors.gray3)',
-                    rounded: 'md',
-                    p: '3',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '3',
-                    minW: '0',
-                    backgroundColor: 'gray1',
-                  })}
-                  title={`Guest authors: ${guestAuthors.map(getAuthorName).join(', ')}`}
-                >
-                  <span
-                    className={css({
-                      textStyle: 'caption',
-                      color: 'text.secondary',
-                      backgroundColor: 'gray2',
-                      border: '1px solid token(colors.gray3)',
-                      px: '2',
-                      py: '0.5',
-                      rounded: 'full',
-                      whiteSpace: 'nowrap',
-                      flexShrink: 0,
-                    })}
-                  >
-                    Special Guest Author
-                  </span>
-
                   {/* avatars (optional, hidden on very small screens) */}
                   <div
                     className={css({
@@ -457,7 +394,7 @@ const Page = () => {
                       gap: '1',
                     })}
                   >
-                    {guestAuthors.slice(0, 3).map((u, i) => {
+                    {strategicAuthor.slice(0, 3).map((u, i) => {
                       const src = u?.avatar?._id
                         ? `${IMAGE_STORAGE_URL}/${u.avatar?.filename}-${u.avatar?._id}`
                         : '';
@@ -475,7 +412,7 @@ const Page = () => {
                         </div>
                       );
                     })}
-                    {guestAuthors.length > 3 && (
+                    {strategicAuthor.length > 3 && (
                       <div
                         className={css({
                           ml: '-2',
@@ -492,7 +429,7 @@ const Page = () => {
                           px: 1,
                         })}
                       >
-                        +{guestAuthors.length - 3}
+                        +{strategicAuthor.length - 3}
                       </div>
                     )}
                   </div>
@@ -508,7 +445,7 @@ const Page = () => {
                       color: 'text.primary',
                     })}
                   >
-                    {guestAuthors.map((u, idx) => (
+                    {strategicAuthor.map((u, idx) => (
                       <span key={u._id} className={css({display: 'inline'})}>
                         <Link
                           href={`/author/${u._id}`}
@@ -516,14 +453,14 @@ const Page = () => {
                         >
                           {getAuthorName(u)}
                         </Link>
-                        {idx < guestAuthors.length - 1 ? ',' : ''}
+                        {idx < strategicAuthor.length - 1 ? ',' : ''}
                       </span>
                     ))}
                   </div>
                 </div>
               )}
             </Box>
-          )}
+          ) : null}
 
           {article.thumbnail ? (
             <Image
