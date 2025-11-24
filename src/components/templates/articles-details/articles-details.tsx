@@ -282,7 +282,13 @@ const Page = () => {
     rawCoAuthors.filter(Boolean).filter(u => (u as UserOutputType)._id !== mainId),
   ) as UserOutputType[];
 
-  const strategicAuthor = coAuthors ?? null;
+  const strategicAuthors = coAuthors ?? null;
+
+  const rawGuestAuthors = (article.guestAuthors || []) as (UserOutputType | null | undefined)[];
+
+  const guestAuthors = uniqueById(
+    rawGuestAuthors.filter(Boolean).filter(u => (u as UserOutputType)._id !== mainId),
+  ) as UserOutputType[];
 
   return (
     <>
@@ -342,8 +348,7 @@ const Page = () => {
             </Box>
           </Box>
 
-          {/* Strategic + Guest row (under the ArticleInfo row) */}
-          {strategicAuthor ? (
+          {(strategicAuthors.length > 0 || guestAuthors.length > 0) && (
             <Box
               className={css({
                 mt: '3',
@@ -354,8 +359,8 @@ const Page = () => {
                 alignItems: 'stretch',
               })}
             >
-              {/* Guest block */}
-              {strategicAuthor.length > 0 && (
+              {/* Strategic block */}
+              {strategicAuthors.length > 0 && (
                 <div
                   className={css({
                     flex: '1 1 420px',
@@ -368,7 +373,7 @@ const Page = () => {
                     minW: '0',
                     backgroundColor: 'gray1',
                   })}
-                  title={`Strategic Collaborator: ${strategicAuthor.map(getAuthorName).join(', ')}`}
+                  title={`Strategic Collaborator: ${strategicAuthors.map(getAuthorName).join(', ')}`}
                 >
                   <span
                     className={css({
@@ -394,7 +399,7 @@ const Page = () => {
                       gap: '1',
                     })}
                   >
-                    {strategicAuthor.slice(0, 3).map((u, i) => {
+                    {strategicAuthors.slice(0, 3).map((u, i) => {
                       const src = u?.avatar?._id
                         ? `${IMAGE_STORAGE_URL}/${u.avatar?.filename}-${u.avatar?._id}`
                         : '';
@@ -412,7 +417,7 @@ const Page = () => {
                         </div>
                       );
                     })}
-                    {strategicAuthor.length > 3 && (
+                    {strategicAuthors.length > 3 && (
                       <div
                         className={css({
                           ml: '-2',
@@ -429,7 +434,7 @@ const Page = () => {
                           px: 1,
                         })}
                       >
-                        +{strategicAuthor.length - 3}
+                        +{strategicAuthors.length - 3}
                       </div>
                     )}
                   </div>
@@ -445,7 +450,7 @@ const Page = () => {
                       color: 'text.primary',
                     })}
                   >
-                    {strategicAuthor.map((u, idx) => (
+                    {strategicAuthors.map((u, idx) => (
                       <span key={u._id} className={css({display: 'inline'})}>
                         <Link
                           href={`/author/${u._id}`}
@@ -453,15 +458,120 @@ const Page = () => {
                         >
                           {getAuthorName(u)}
                         </Link>
-                        {idx < strategicAuthor.length - 1 ? ',' : ''}
+                        {idx < strategicAuthors.length - 1 ? ',' : ''}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Guest block */}
+              {guestAuthors.length > 0 && (
+                <div
+                  className={css({
+                    flex: '1 1 420px',
+                    border: '1px solid token(colors.gray3)',
+                    rounded: 'md',
+                    p: '3',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '3',
+                    minW: '0',
+                    backgroundColor: 'gray1',
+                  })}
+                  title={`Guest authors: ${guestAuthors.map(getAuthorName).join(', ')}`}
+                >
+                  <span
+                    className={css({
+                      textStyle: 'caption',
+                      color: 'text.secondary',
+                      backgroundColor: 'gray2',
+                      border: '1px solid token(colors.gray3)',
+                      px: '2',
+                      py: '0.5',
+                      rounded: 'full',
+                      whiteSpace: 'nowrap',
+                      flexShrink: 0,
+                    })}
+                  >
+                    Special Guest Author
+                  </span>
+
+                  {/* avatars (optional, hidden on very small screens) */}
+                  <div
+                    className={css({
+                      display: {base: 'none', sm: 'flex'},
+                      alignItems: 'center',
+                      gap: '1',
+                    })}
+                  >
+                    {guestAuthors.slice(0, 3).map((u, i) => {
+                      const src = u?.avatar?._id
+                        ? `${IMAGE_STORAGE_URL}/${u.avatar?.filename}-${u.avatar?._id}`
+                        : '';
+                      return (
+                        <div
+                          key={u._id ?? `guest-${i}`}
+                          className={css({
+                            ml: i === 0 ? 0 : '-2',
+                            border: '1px solid token(colors.gray3)',
+                            rounded: 'full',
+                          })}
+                          title={getAuthorName(u)}
+                        >
+                          <Avatar src={src} alt={getAuthorName(u)} size={26} />
+                        </div>
+                      );
+                    })}
+                    {guestAuthors.length > 3 && (
+                      <div
+                        className={css({
+                          ml: '-2',
+                          h: 6,
+                          w: 6,
+                          rounded: 'full',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          border: '1px solid token(colors.gray3)',
+                          backgroundColor: 'gray2',
+                          textStyle: 'caption',
+                          color: 'text.secondary',
+                          px: 1,
+                        })}
+                      >
+                        +{guestAuthors.length - 3}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* names list that WRAPS when needed */}
+                  <div
+                    className={css({
+                      display: 'flex',
+                      flexWrap: 'wrap',
+                      gap: '1.5',
+                      minW: 0,
+                      textStyle: 'body2',
+                      color: 'text.primary',
+                    })}
+                  >
+                    {guestAuthors.map((u, idx) => (
+                      <span key={u._id} className={css({display: 'inline'})}>
+                        <Link
+                          href={`/author/${u._id}`}
+                          className={css({color: 'text.primary', _hover: {color: 'primary'}})}
+                        >
+                          {getAuthorName(u)}
+                        </Link>
+                        {idx < guestAuthors.length - 1 ? ',' : ''}
                       </span>
                     ))}
                   </div>
                 </div>
               )}
             </Box>
-          ) : null}
-
+          )}
           {article.thumbnail ? (
             <Image
               unoptimized
