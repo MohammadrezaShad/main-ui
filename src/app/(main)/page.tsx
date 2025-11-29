@@ -1,10 +1,36 @@
 import {dehydrate} from '@tanstack/react-query';
+import {Metadata} from 'next';
 import {unstable_noStore as noStore} from 'next/cache';
 
 import {MainHome} from '@/components';
-import {ArticleSortType, searchArticles, searchCategories, StatusType} from '@/graphql';
+import {
+  ArticleSortType,
+  searchArticles,
+  searchCategories,
+  searchHomepages,
+  SearchSeoHomepageOutput,
+  StatusType,
+} from '@/graphql';
 import {getQueryClient} from '@/helpers';
 import {Hydrate} from '@/providers';
+
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+
+export async function generateMetadata(): Promise<Metadata> {
+  const queryClient = getQueryClient();
+  await queryClient.prefetchQuery({
+    queryKey: ['search-home-seo'],
+    queryFn: () => searchHomepages({}),
+  });
+  const data = (await queryClient.getQueryData(['search-home-seo'])) as SearchSeoHomepageOutput;
+  const title = data?.results?.[0]?.metaTitle || 'Waterlyst';
+
+  return {
+    metadataBase: new URL(BASE_URL || 'http://localhost:3000'),
+    title,
+    description: data?.results?.[0]?.metaDescription || 'Save the world',
+  };
+}
 
 export default async function Home() {
   noStore();

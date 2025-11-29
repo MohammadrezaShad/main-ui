@@ -8,8 +8,6 @@ import NextTopLoader from 'nextjs-toploader';
 import {FacebookPixel} from '@/components';
 import JsonLdScript from '@/components/shared/json-ld-script';
 import {CookieName, ThemeType} from '@/constants';
-import {searchHomepages, SearchSeoHomepageOutput} from '@/graphql';
-import {getQueryClient} from '@/helpers';
 import {MainProviders} from '@/providers';
 import {searchActionSchema} from '@/utils';
 
@@ -25,29 +23,18 @@ const ubuntu = Ubuntu({
   subsets: ['latin'],
   display: 'swap',
 });
-export async function generateMetadata(): Promise<Metadata> {
-  const queryClient = getQueryClient();
-  await queryClient.prefetchQuery({
-    queryKey: ['search-home-seo'],
-    queryFn: () => searchHomepages({}),
-  });
 
-  const data = (await queryClient.getQueryData(['search-home-seo'])) as SearchSeoHomepageOutput;
-
-  const title = data?.results?.[0]?.metaTitle || 'Waterlyst';
-
-  return {
-    metadataBase: new URL(BASE_URL || 'http://localhost:3000'),
-    title: {
-      default: title,
-      template: `%s | ${title}`,
-    },
-    description: data?.results?.[0]?.metaDescription || 'Save the world',
-    icons: {
-      icon: '/favicon.ico',
-    },
-  };
-}
+export const metadata: Metadata = {
+  metadataBase: new URL(BASE_URL || 'http://localhost:3000'),
+  title: {
+    default: 'Waterlyst',
+    template: '%s | Waterlyst',
+  },
+  description: 'Save the world',
+  icons: {
+    icon: '/favicon.ico',
+  },
+};
 
 export default async function RootLayout({children}: {children: React.ReactNode}) {
   const cookieStore = await cookies();
