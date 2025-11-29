@@ -164,6 +164,7 @@ export type ArticleType = {
   _id: Scalars['String']['output'];
   author?: Maybe<UserOutputType>;
   otherAuthors?: Maybe<Array<UserOutputType>>;
+  guestAuthors?: Maybe<Array<UserOutputType>>;
   categories?: Maybe<Array<CategoryType>>;
   commentsCount: Scalars['Int']['output'];
   content: Scalars['String']['output'];
