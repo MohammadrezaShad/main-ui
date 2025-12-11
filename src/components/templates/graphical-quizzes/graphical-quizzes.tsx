@@ -138,7 +138,7 @@ export default function GraphicalQuizzes() {
               })}
             >
               {/* (tiny typo fix if you want) IconClose uses className prop */}
-              <IconClose classname={css({color: '#272727'})} />
+              <IconClose className={css({color: '#272727'})} />
             </button>
           </header>
 

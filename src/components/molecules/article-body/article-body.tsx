@@ -11,7 +11,7 @@ const ubuntu = Ubuntu({
 
 const ArticleBody = ({content, className}: {content: string; className?: string}) => (
   <div className={`article ${ubuntu.className} ${className}`}>
-    <HtmlManipulation htmlString={content} className='fr-file' />
+    <HtmlManipulation htmlString={content} className='' />
   </div>
 );
 

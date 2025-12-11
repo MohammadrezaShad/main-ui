@@ -75,7 +75,7 @@ const ImageCard = ({
       )}
       <Footer>
         <CardDate
-          className={css({color: {base: 'gray3 !important', mdDown: 'gray4 !important'}})}
+          className={css({color: {base: 'gray3 !important', mdDown: 'gray4 !important'}, mb: 1})}
           dateTime={formatDate(date)}
         >
           {formatDate(date)}

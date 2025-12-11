@@ -22,6 +22,7 @@ export async function generateMetadata(): Promise<Metadata> {
     queryKey: ['search-home-seo'],
     queryFn: () => searchHomepages({}),
   });
+
   const data = (await queryClient.getQueryData(['search-home-seo'])) as SearchSeoHomepageOutput;
   const title = data?.results?.[0]?.metaTitle || 'Waterlyst';
 

@@ -9,6 +9,8 @@ export const Container = styled('div', {
     maxW: 'full',
     w: '[304px]',
     h: '[362px]',
+    rounded: '8px',
+    overflow: 'hidden',
   },
 });
 

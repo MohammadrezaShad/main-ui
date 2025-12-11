@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable no-plusplus */
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable consistent-return */
@@ -8,7 +10,7 @@
 
 'use client';
 
-import React, {lazy, useEffect, useMemo} from 'react';
+import React, {lazy, useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {css} from '@styled/css';
 import parse, {Element, HTMLReactParserOptions} from 'html-react-parser';
 
@@ -53,29 +55,18 @@ const getTextContent = (node: any): string => {
     const n = stack.pop();
     if (!n) continue;
     if (n.type === 'text' && typeof n.data === 'string') text += n.data;
-    if (Array.isArray(n.children))
-      for (let i = n.children.length - 1; i >= 0; i--) stack.push(n.children[i]);
+    if (Array.isArray(n.children)) {
+      for (let i = n.children.length - 1; i >= 0; i--) {
+        stack.push(n.children[i]);
+      }
+    }
   }
   return text.trim();
 };
 
 const generateIdfromText = (text: string) => text.replace(/\s+/g, '-').toLowerCase();
 
-const containsAnySpecialString = (element: Element, specialStrings: string[]): boolean => {
-  let contains = false;
-  (function traverse(el: Element) {
-    el.children?.forEach((child: any) => {
-      if (child.type === 'text' && typeof child.data === 'string') {
-        if (specialStrings.some(str => child.data.includes(str))) contains = true;
-      } else if (child instanceof Element || child?.type === 'tag') {
-        traverse(child);
-      }
-    });
-  })(element);
-  return contains;
-};
-
-// Build TOC by walking the html with html-react-parser in a no-op pass
+// Build TOC – we define our own IDs: `heading-${slug}`
 const buildTOCTree = (htmlString: string): TOCTree[] => {
   const toc: TOCTree[] = [];
   parse(htmlString, {
@@ -83,14 +74,16 @@ const buildTOCTree = (htmlString: string): TOCTree[] => {
       if (!(node instanceof Element)) return;
       if (node.type === 'tag' && (node.name === 'h2' || node.name === 'h3')) {
         const text = getTextContent(node);
-        const id = generateIdfromText(text || '');
+        const slug = generateIdfromText(text || '');
+        const id = `heading-${slug}`;
+
         if (node.name === 'h2') {
           toc.push({h2: {text, id}, h3List: []});
         } else if (node.name === 'h3') {
           toc.at(-1)?.h3List?.push({text, id});
         }
       }
-      return undefined; // no transform during pre-pass
+      return undefined;
     },
   });
   return toc;
@@ -98,13 +91,70 @@ const buildTOCTree = (htmlString: string): TOCTree[] => {
 
 // ---------- component ----------
 const HtmlManipulation: React.FC<HtmlManipulationProps> = ({htmlString, className}) => {
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
   // Precompute TOC once per htmlString (SSR-safe)
   const tocTree = useMemo(() => buildTOCTree(htmlString), [htmlString]);
 
-  const getFileExtension = (url: string): string => {
-    const extensionMatch = url?.match(/\.([0-9a-z]+)(?:[\\?#]|$)/i);
-    return extensionMatch ? extensionMatch[1].toLowerCase() : '';
-  };
+  // Ensure h2/h3 inside this component have ids aligned with TOC logic
+  useEffect(() => {
+    const root = containerRef.current;
+    if (!root) return;
+
+    const headings = root.querySelectorAll('h2, h3');
+    headings.forEach(h => {
+      const text = h.textContent?.trim() || '';
+      if (!text) return;
+      const slug = generateIdfromText(text);
+      const id = `heading-${slug}`;
+      h.id = id; // always sync DOM with TOC
+    });
+  }, [htmlString]);
+
+  const [showFloatingToc, setShowFloatingToc] = useState(false);
+  const [isTocOpen, setIsTocOpen] = useState(false);
+
+  // Show floating button only when TOC card is NOT in view
+  useEffect(() => {
+    const root = containerRef.current;
+    if (!root || !tocTree.length) {
+      setShowFloatingToc(false);
+      return;
+    }
+
+    const tocEl = root.querySelector('[data-toc-root="true"]') as HTMLElement | null;
+    if (!tocEl) {
+      setShowFloatingToc(false);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      entries => {
+        const entry = entries[0];
+        if (!entry) return;
+        // If TOC is visible -> hide button; if not visible -> show button
+        setShowFloatingToc(!entry.isIntersecting);
+      },
+      {
+        root: null,
+        threshold: 0.1,
+      },
+    );
+
+    observer.observe(tocEl);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [tocTree.length, htmlString]);
+
+  const handleTocNavigate = useCallback((id: string) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({behavior: 'smooth', block: 'start'});
+      setIsTocOpen(false);
+    }
+  }, []);
 
   const extractGalleryItems = (divNode: any): GalleryItem[] => {
     const items: GalleryItem[] = [];
@@ -159,7 +209,7 @@ const HtmlManipulation: React.FC<HtmlManipulationProps> = ({htmlString, classNam
     replace: (domNode: any) => {
       if (!(domNode instanceof Element)) return;
 
-      // ⭐ NEW: render either <star-rating> (old) or <rating-widget> (new)
+      // ⭐ rating
       if (domNode.name === 'star-rating' || domNode.name === 'rating-widget') {
         const ratingAttr = domNode.attribs?.rating ?? domNode.attribs?.['data-rating'] ?? '0';
         const variantAttr = (domNode.attribs?.variant ??
@@ -226,74 +276,132 @@ const HtmlManipulation: React.FC<HtmlManipulationProps> = ({htmlString, classNam
         );
       }
 
-      // ---------- wrap file links with icon (by className match) ----------
-      if (domNode.name === 'rating-widget' || domNode.name === 'star-rating') {
-        // supports either data-* or plain attrs
-        const ratingAttr = domNode.attribs?.['data-rating'] ?? domNode.attribs?.rating ?? '0';
-        const variantAttr = domNode.attribs?.['data-variant'] ?? domNode.attribs?.variant ?? 'drop';
-        const sizeAttr = domNode.attribs?.size ?? domNode.attribs?.['data-size'];
-        const showValue = (domNode.attribs?.['show-value'] ?? 'true').toLowerCase() !== 'false';
-
-        const rating = Number(ratingAttr);
-        const variant = (variantAttr === 'star' ? 'star' : 'drop') as 'star' | 'drop';
-
-        return (
-          <RatingInline
-            rating={Number.isFinite(rating) ? rating : 0}
-            variant={variant}
-            size={sizeAttr ? Number(sizeAttr) : 24}
-            showValue={showValue}
-            precision={2}
-          />
-        );
-      }
-
       // ---------- table of content block ----------
-      if (domNode.attribs?.class === 'table-of-content') {
-        const handleClick = (id: string) => {
-          document
-            .getElementById(`heading-${id}`)
-            ?.scrollIntoView({behavior: 'smooth', block: 'center'});
-        };
+      const classList = (domNode.attribs?.class || '').split(' ').filter(Boolean);
+      if (classList.includes('table-of-content')) {
         return (
-          <div className={css({borderBottom: '1px solid token(colors.gray3)', pb: 4, mb: 8})}>
-            <div className={css({textStyle: 'h2', mb: 3})}>Table of contents</div>
-            {tocTree.map((item, index) => (
-              <div key={item.h2.id || index} className={css({fontWeight: 600})}>
-                <button
-                  type='button'
-                  className={css({
-                    textAlign: 'left',
-                    p: 1,
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                  })}
-                  onClick={() => handleClick(item.h2.id as string)}
-                >
-                  {item.h2.text}
-                  <IconChevronRight
-                    className={css({transition: 'transform', mr: '2', width: 5, height: 5})}
-                  />
-                </button>
-                {item.h3List && item.h3List.length > 0 && (
-                  <div className={css({p: 1, display: 'block'})}>
-                    {item.h3List.map((h3, h3Index) => (
-                      <div key={h3.id || h3Index} className={css({pl: '4', fontWeight: 400})}>
+          <aside
+            data-toc-root='true'
+            className={css({
+              borderRadius: 'lg',
+              borderWidth: 1,
+              borderColor: 'gray3',
+              backgroundColor: 'backgroundSecondary',
+              p: 4,
+              mb: 8,
+              boxShadow: '0 14px 32px rgba(15, 23, 42, 0.10)',
+            })}
+          >
+            <div
+              className={css({
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                mb: 2,
+              })}
+            >
+              <div className={css({fontWeight: 600, fontSize: 'lg'})}>Table of contents</div>
+              <span
+                className={css({
+                  fontSize: 'xs',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.08em',
+                  color: 'gray5',
+                })}
+              >
+                Article guide
+              </span>
+            </div>
+
+            <p
+              className={css({
+                fontSize: 'sm',
+                color: 'gray5',
+                mb: 3,
+              })}
+            >
+              Quickly jump to the main sections of this article.
+            </p>
+
+            <div
+              className={css({
+                display: 'flex',
+                flexDir: 'column',
+                gap: 1,
+              })}
+            >
+              {tocTree.map((item, index) => (
+                <div key={item.h2.id || index}>
+                  <button
+                    type='button'
+                    className={css({
+                      width: '100%',
+                      textAlign: 'left',
+                      p: 2,
+                      borderRadius: 'md',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      fontWeight: 600,
+                      fontSize: 'sm',
+                      color: 'text.primary',
+                      backgroundColor: 'transparent',
+                      _hover: {backgroundColor: 'gray2'},
+                      transition: 'background-color 0.15s ease-out',
+                    })}
+                    onClick={() => handleTocNavigate(item.h2.id as string)}
+                  >
+                    <span>
+                      {index + 1}. {item.h2.text}
+                    </span>
+                    <IconChevronRight
+                      className={css({
+                        transition: 'transform 0.15s ease-out',
+                        mr: '2',
+                        width: 4,
+                        height: 4,
+                      })}
+                    />
+                  </button>
+
+                  {item.h3List && item.h3List.length > 0 && (
+                    <div
+                      className={css({
+                        pl: 4,
+                        mt: 1,
+                        display: 'flex',
+                        flexDir: 'column',
+                        gap: 1,
+                      })}
+                    >
+                      {item.h3List.map((h3, h3Index) => (
                         <button
+                          key={h3.id || h3Index}
                           type='button'
-                          className={css({cursor: 'pointer'})}
-                          onClick={() => handleClick(h3.id as string)}
+                          className={css({
+                            textAlign: 'left',
+                            cursor: 'pointer',
+                            fontSize: 'sm',
+                            color: 'text.secondary',
+                            borderRadius: 'md',
+                            px: 2,
+                            py: 1,
+                            backgroundColor: 'transparent',
+                            _hover: {backgroundColor: 'gray2'},
+                            transition: 'background-color 0.15s ease-out',
+                          })}
+                          onClick={() => handleTocNavigate(h3.id as string)}
                         >
-                          {h3.text}
+                          {index + 1}.{h3Index + 1} {h3.text}
                         </button>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </aside>
         );
       }
 
@@ -312,7 +420,195 @@ const HtmlManipulation: React.FC<HtmlManipulationProps> = ({htmlString, classNam
     loadMathLive();
   }, []);
 
-  return <div>{reactElements}</div>;
+  return (
+    <div ref={containerRef} className={className}>
+      {reactElements}
+
+      {/* Floating TOC – only when TOC block is NOT visible */}
+      {showFloatingToc && tocTree.length > 0 && (
+        <>
+          <button
+            type='button'
+            aria-label='Open table of contents'
+            onClick={() => setIsTocOpen(true)}
+            className={css({
+              position: 'fixed',
+              bottom: {base: '94px', md: 6},
+              left: {base: 4, md: 8},
+              zIndex: 40,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 2,
+              px: 3,
+              py: 2,
+              borderRadius: '8px',
+              borderWidth: 1,
+              borderColor: 'gray3',
+              backgroundColor: 'backgroundSecondary',
+              boxShadow: '0 9px 20px rgba(15, 23, 42, 0.35)',
+              fontSize: 'sm',
+              cursor: 'pointer',
+              _hover: {transform: 'translateY(-2px)'},
+              transition: 'transform 0.15s ease-out, box-shadow 0.15s ease-out',
+            })}
+          >
+            <span>Contents</span>
+            <IconChevronRight className={css({width: 4, height: 4})} />
+          </button>
+
+          {isTocOpen && (
+            <div
+              className={css({
+                position: 'fixed',
+                inset: 0,
+                zIndex: 100,
+                backgroundColor: 'rgba(15, 23, 42, 0.45)',
+                display: 'flex',
+                justifyContent: 'flex-end',
+              })}
+              onClick={() => setIsTocOpen(false)}
+            >
+              <div
+                className={css({
+                  width: {base: '100%', md: '360px'},
+                  maxWidth: '100%',
+                  height: '100%',
+                  backgroundColor: 'background',
+                  p: 4,
+                  boxShadow: '0 24px 60px rgba(15, 23, 42, 0.55)',
+                  display: 'flex',
+                  flexDir: 'column',
+                  gap: 3,
+                })}
+                onClick={e => e.stopPropagation()}
+              >
+                <div
+                  className={css({
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    mb: 1,
+                  })}
+                >
+                  <span className={css({fontWeight: 600, fontSize: 'md'})}>Table of contents</span>
+                  <button
+                    type='button'
+                    onClick={() => setIsTocOpen(false)}
+                    className={css({
+                      px: 2,
+                      py: 1,
+                      fontSize: 'sm',
+                      borderRadius: 'md',
+                      borderWidth: 1,
+                      borderColor: 'gray3',
+                      backgroundColor: 'transparent',
+                      cursor: 'pointer',
+                      _hover: {backgroundColor: 'gray1'},
+                    })}
+                  >
+                    Close
+                  </button>
+                </div>
+
+                <div
+                  className={css({
+                    fontSize: 'sm',
+                    color: 'gray5',
+                    mb: 2,
+                  })}
+                >
+                  Tap a section to jump directly to it.
+                </div>
+
+                <div
+                  className={css({
+                    flex: 1,
+                    overflowY: 'auto',
+                    pr: 1,
+                    display: 'flex',
+                    flexDir: 'column',
+                    gap: 1,
+                  })}
+                >
+                  {tocTree.map((item, index) => (
+                    <div key={item.h2.id || index}>
+                      <button
+                        type='button'
+                        className={css({
+                          width: '100%',
+                          textAlign: 'left',
+                          p: 2,
+                          borderRadius: 'md',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          fontWeight: 600,
+                          fontSize: 'sm',
+                          color: 'text.primary',
+                          backgroundColor: 'transparent',
+                          _hover: {backgroundColor: 'gray2'},
+                          transition: 'background-color 0.15s ease-out',
+                        })}
+                        onClick={() => handleTocNavigate(item.h2.id as string)}
+                      >
+                        <span>
+                          {index + 1}. {item.h2.text}
+                        </span>
+                        <IconChevronRight
+                          className={css({
+                            transition: 'transform 0.15s ease-out',
+                            mr: '2',
+                            width: 4,
+                            height: 4,
+                          })}
+                        />
+                      </button>
+
+                      {item.h3List && item.h3List.length > 0 && (
+                        <div
+                          className={css({
+                            pl: 4,
+                            mt: 1,
+                            mb: 1,
+                            display: 'flex',
+                            flexDir: 'column',
+                            gap: 1,
+                          })}
+                        >
+                          {item.h3List.map((h3, h3Index) => (
+                            <button
+                              key={h3.id || h3Index}
+                              type='button'
+                              className={css({
+                                textAlign: 'left',
+                                cursor: 'pointer',
+                                fontSize: 'sm',
+                                color: 'text.secondary',
+                                borderRadius: 'md',
+                                px: 2,
+                                py: 1,
+                                backgroundColor: 'transparent',
+                                _hover: {backgroundColor: 'gray2'},
+                                transition: 'background-color 0.15s ease-out',
+                              })}
+                              onClick={() => handleTocNavigate(h3.id as string)}
+                            >
+                              {index + 1}.{h3Index + 1} {h3.text}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  );
 };
 
 export default HtmlManipulation;

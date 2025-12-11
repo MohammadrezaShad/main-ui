@@ -208,7 +208,7 @@ export default function NormalQuizzesView() {
                 hideBelow: 'md',
               })}
             >
-              <IconClose classname={css({color: '#272727'})} />
+              <IconClose className={css({color: '#272727'})} />
             </button>
           </header>
 

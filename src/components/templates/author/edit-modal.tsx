@@ -15,30 +15,33 @@ import {updateIsi} from '@/graphql/mutation';
 const isiSchema = Yup.object().shape({
   title: Yup.string().required().min(3),
   doi: Yup.string().required().min(8),
-  journal: Yup.string().required().min(8),
-  year: Yup.string().required().min(3).max(30),
+  journal: Yup.string().required().min(3),
+  year: Yup.mixed().required(),
 });
+
 interface Props {
   isi: IsiType;
-  onClose: any;
+  onClose: () => void;
   token: string;
+  authorId: string;
 }
 
-function EditModal({isi, onClose, token}: Props) {
+function EditModal({isi, onClose, token, authorId}: Props) {
   const queryClient = useQueryClient();
 
   const updateIsiMutation = useMutation({
     mutationFn: (args: UpdateIsiInput) => updateIsi(args, token),
   });
 
-  const d = new Date(isi.year!, 1, 1);
+  const d = new Date(isi.year ?? 2000, 1, 1);
   const date = dayjs(d);
+
   const isiFormik = useFormik({
     initialValues: {
       id: isi._id,
-      title: isi.title,
-      doi: isi.doi,
-      journal: isi.journal,
+      title: isi.title ?? '',
+      doi: isi.doi ?? '',
+      journal: isi.journal ?? '',
       year: date,
     } as any,
     validationSchema: isiSchema,
@@ -48,101 +51,88 @@ function EditModal({isi, onClose, token}: Props) {
           ...isiFormik.values,
           year: parseInt(isiFormik.values.year?.format('YYYY') || '0', 10),
         });
+
         if (response.success) {
-          queryClient.clear();
-          toast.success('ISI record created successfully');
-          setTimeout(() => {
-            onClose();
-            isiFormik.resetForm();
-          }, 1000);
+          queryClient.invalidateQueries({queryKey: ['author', 'isi', authorId]});
+          toast.success('ISI record updated successfully');
+          onClose();
         } else {
-          toast.error('An error occured');
+          toast.error('An error occurred');
         }
-      } catch (error: Error | any) {
-        toast.error(error.message);
+      } catch (error: any) {
+        toast.error(error?.message || 'Update failed');
       }
     },
   });
+
   return (
     <form
       onSubmit={isiFormik.handleSubmit}
       className={css({
         w: '[50vw]',
-        mdDown: {
-          w: '[90vw]',
-        },
+        mdDown: {w: '[90vw]'},
       })}
       style={{
-        marginBottom: '32px',
         backgroundColor: 'white',
-        padding: 16,
+        padding: 20,
         borderRadius: 16,
       }}
     >
-      <Box width='100%' mt='25px'>
+      <Box width='100%' mt='16px'>
         <TextField
           label='Title'
-          type='title'
           name='title'
           value={isiFormik.values.title}
           onChange={isiFormik.handleChange}
-          id='title'
-          required
-        />
-      </Box>
-      <Box width='100%' mt='25px'>
-        <TextField
-          label='DOI'
-          type='doi'
-          name='doi'
-          value={isiFormik.values.doi}
-          onChange={isiFormik.handleChange}
-          id='doi'
           required
         />
       </Box>
 
-      <Box width='100%' mt='25px'>
+      <Box width='100%' mt='16px'>
         <TextField
-          label='Journal'
-          type='journal'
-          name='journal'
-          value={isiFormik.values.journal}
+          label='DOI'
+          name='doi'
+          value={isiFormik.values.doi}
           onChange={isiFormik.handleChange}
-          id='journal'
           required
         />
       </Box>
-      <Box mt='25px'>
+
+      <Box width='100%' mt='16px'>
+        <TextField
+          label='Journal'
+          name='journal'
+          value={isiFormik.values.journal}
+          onChange={isiFormik.handleChange}
+          required
+        />
+      </Box>
+
+      <Box mt='16px'>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DatePicker
             label='Year'
             sx={{width: '100%'}}
             name='year'
             onChange={(value: any) => {
-              if (value.isValid()) {
+              if (value?.isValid?.()) {
                 isiFormik.setFieldValue('year', value, false);
-              } else {
-                console.log('error');
               }
             }}
             value={isiFormik.values.year}
             openTo='year'
           />
         </LocalizationProvider>
-        {isiFormik.touched.journal && isiFormik.errors.journal && <span>Error</span>}
       </Box>
-      <Button className={css({mt: '24px'})} type='submit'>
-        Save
-      </Button>
-      <Button
-        visual='outlined'
-        onClick={onClose}
-        className={css({mt: '24px', ml: '24px'})}
-        type='button'
-      >
-        Cancel
-      </Button>
+
+      <Box display='flex' gap='12px' mt='24px'>
+        <Button type='submit' disabled={updateIsiMutation.isPending}>
+          {updateIsiMutation.isPending ? 'Saving...' : 'Save'}
+        </Button>
+        <Button visual='outlined' onClick={onClose} type='button'>
+          Cancel
+        </Button>
+      </Box>
     </form>
   );
 }

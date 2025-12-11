@@ -28,7 +28,6 @@ export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL || 'http://localhost:3000'),
   title: {
     default: 'Waterlyst',
-    template: '%s | Waterlyst',
   },
   description: 'Save the world',
   icons: {

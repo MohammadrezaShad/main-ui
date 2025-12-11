@@ -91,6 +91,7 @@ export const SearchContainer = styled('div', {
     bg: 'white',
     display: 'flex',
     mt: 12,
+    rounded: '8px',
     mdDown: {
       flexDirection: 'column',
       mx: '8',
@@ -110,6 +111,8 @@ export const SearchButton = styled('button', {
     aspectRatio: 'square',
     cursor: 'pointer',
     gap: '2',
+    roundedTopRight: '8px',
+    roundedBottomRight: '8px',
     mdDown: {
       aspectRatio: 'auto',
       py: '2',

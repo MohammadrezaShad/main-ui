@@ -5,6 +5,8 @@ export const Container = styled('div', {
     display: 'flex',
     border: '1px solid token(colors.gray3)',
     maxW: 'full',
+    rounded: '8px',
+    overflow: 'hidden',
   },
 });
 

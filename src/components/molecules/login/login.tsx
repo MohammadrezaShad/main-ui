@@ -122,7 +122,7 @@ export default function Login({
             cursor: 'pointer',
           })}
         >
-          <IconClose classname={css({color: '#272727'})} />
+          <IconClose className={css({color: '#272727'})} />
         </button>
         <img
           alt=''

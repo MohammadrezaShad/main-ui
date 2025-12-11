@@ -69,7 +69,7 @@ export default function SearchDrawer({label, className, options, onChange}: Sear
         <DrawerContainer>
           <Title>
             <TitleText>{label}</TitleText>
-            <IconClose onClick={onClose} classname={css({color: '#272727'})} />
+            <IconClose onClick={onClose} className={css({color: '#272727'})} />
           </Title>
           <List>
             {options.map(option => (

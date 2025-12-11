@@ -2,7 +2,7 @@
 
 'use client';
 
-import {useEffect, useState} from 'react';
+import {useEffect, useMemo, useState} from 'react';
 import {toast} from 'react-toastify';
 import {useObservable} from '@legendapp/state/react';
 import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
@@ -24,8 +24,8 @@ import {
   IconLinkedIn,
   IconNotify,
   IconTelegram,
-  IconTwitter,
   IconWhatsapp,
+  IconX as IconTwitter,
 } from '@/assets';
 import {
   Avatar,
@@ -55,12 +55,19 @@ import {
 } from '@/graphql';
 import {getUser} from '@/graphql/query/users/get-user';
 
-import {Actions, Cards, Chips, Container, Tab, Tabs, Wrapper} from './author.styled';
+import {Actions, Cards, Chips, Container, ContentBox, Tab, Tabs, Wrapper} from './author.styled';
 import EditModal from './edit-modal';
 import ISITable from './isiTable';
 
 const ADMIN_PANEL_URL = process.env.NEXT_PUBLIC_ADMIN_PANEL_URL;
 const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
+
+const qk = {
+  user: (id: string) => ['author', 'user', id] as const,
+  profile: () => ['author', 'profile'] as const,
+  articles: (id: string) => ['author', 'articles', id] as const,
+  isi: (id: string) => ['author', 'isi', id] as const,
+};
 
 const schema = Yup.object().shape({
   email: Yup.string().email(),
@@ -73,8 +80,8 @@ const schema = Yup.object().shape({
 const isiSchema = Yup.object().shape({
   title: Yup.string().required().min(3),
   doi: Yup.string().required().min(8),
-  journal: Yup.string().required().min(8),
-  year: Yup.string().required().min(3).max(30),
+  journal: Yup.string().required().min(3),
+  year: Yup.mixed().required(),
 });
 
 enum ETabs {
@@ -82,78 +89,82 @@ enum ETabs {
   JOURNALS = 'journals',
   CV = 'CV',
 }
+
 interface IsiColumn {
   title: string;
   value: keyof IsiType;
-  width?: string | undefined;
+  width?: string;
 }
 
 const INITIAL_COLUMNS: IsiColumn[] = [
   {title: 'Title', value: 'title'},
-  {title: 'Date', value: 'year', width: '150px'},
+  {title: 'Year', value: 'year', width: '150px'},
 ];
+
 export default function Author() {
+  const params = useParams();
+  const authorId = params.authorId as string;
+
+  const token = getCookie(CookieName.AUTH_TOKEN)!;
+  const queryClient = useQueryClient();
+
+  const [selectedTab, setSelectedTab] = useState<string>(ETabs.ARTICLES);
+
   const [isEdit, setIsEdit] = useState<IsiType | undefined>(undefined);
   const [isNewIsiOpen, setIsNewIsiOpen] = useState(false);
+
   const isDelete$ = useObservable<{isOpen: boolean; entityId: string}>({
     isOpen: false,
     entityId: '',
   });
+
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [articles, setArticles] = useState<ArticleType[]>([]);
-  const token = getCookie(CookieName.AUTH_TOKEN)!;
-  const [selectedTab, setSelectedTab] = useState<string>(ETabs.ARTICLES);
-  const queryClient = useQueryClient();
-  const params = useParams();
-  const {data} = useQuery({
-    queryKey: ['get-user', params.authorId as string],
-    queryFn: () => findUserById({id: params.authorId as string}, token),
+
+  // ---------------- Queries ----------------
+  const {data: authorRes} = useQuery({
+    queryKey: qk.user(authorId),
+    queryFn: () => findUserById({id: authorId}, token),
+    staleTime: 30_000,
   }) as any;
+
   const currentUser = useQuery({
-    queryKey: ['get-profile'],
+    queryKey: qk.profile(),
     queryFn: () => getUser(token),
+    staleTime: 30_000,
   });
-  const response = useInfiniteQuery({
-    queryKey: ['search-articles', params.authorId as string],
-    queryFn: ({pageParam}) =>
-      searchArticlesByAuthorId({authors: [params.authorId as string], count: 9, page: pageParam}),
-    initialPageParam: 1,
-    getNextPageParam: (lastPage: any, allPages, lastPagParam, allPagesParam) => {
-      const totalPages = lastPage?.article?.searchArticles?.totalPages;
-      if (totalPages) {
-        return lastPagParam + 1 <= totalPages ? lastPagParam + 1 : undefined;
-      }
 
-      return undefined;
-    },
-  }) as any;
-  const user: User = data?.users!.findUserById;
+  const user: User = authorRes?.users?.findUserById;
   const currenUserId = currentUser.data?._id;
-
-  const socialMediaLinks: {
-    id: number;
-    icon: any;
-    action: any;
-    type: 'button' | 'link';
-  }[] = [
-    {id: 1, icon: IconTwitter, action: user?.twitter, type: 'link'},
-    {id: 2, icon: IconLinkedIn, action: user?.linkedin, type: 'link'},
-    {id: 3, icon: IconFacebook, action: user?.facebook, type: 'link'},
-    {id: 4, icon: IconTelegram, action: user?.telegram, type: 'link'},
-    {id: 5, icon: IconInstagram, action: user?.instagram, type: 'link'},
-    {id: 65, icon: IconWhatsapp, action: user?.whatsApp, type: 'link'},
-  ];
+  const isOwner = user?._id && currenUserId && user._id === currenUserId;
 
   const isiQuery = useQuery({
-    queryKey: ['get-isi', params.authorId],
-    queryFn: () => searchIsi({author: params.authorId as string}),
+    queryKey: qk.isi(authorId),
+    queryFn: () => searchIsi({author: authorId, count: 100}),
+    staleTime: 30_000,
   });
 
-  const handleClickNewArticle = () => {
-    setIsModalOpen(true);
-  };
+  const articlesQuery = useInfiniteQuery({
+    queryKey: qk.articles(authorId),
+    queryFn: ({pageParam}) =>
+      searchArticlesByAuthorId({authors: [authorId], count: 9, page: pageParam}),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage: any, _allPages, lastPageParam: number) => {
+      const totalPages = lastPage?.article?.searchArticles?.totalPages;
+      if (!totalPages) return undefined;
+      return lastPageParam + 1 <= totalPages ? lastPageParam + 1 : undefined;
+    },
+    staleTime: 30_000,
+  }) as any;
 
-  const {mutateAsync} = useMutation({
+  const articles: ArticleType[] = useMemo(() => {
+    const pages = articlesQuery.data?.pages ?? [];
+    const results = pages.flatMap((p: any) => p?.article?.searchArticles?.results ?? []);
+    const map = new Map(results.map((a: any) => [a._id, a]));
+    return Array.from(map.values()) as ArticleType[];
+  }, [articlesQuery.data]);
+
+  // ---------------- Mutations ----------------
+  const updateUserMutation = useMutation({
     mutationFn: (args: UpdateUserInput) => updateUser(args, token),
   });
 
@@ -161,6 +172,11 @@ export default function Author() {
     mutationFn: (args: CreateIsiInput) => createIsi(args, token),
   });
 
+  const deleteIsiMutation = useMutation({
+    mutationFn: (args: DeleteIsiInput) => deleteIsi(args, token),
+  });
+
+  // ---------------- Forms ----------------
   const isiFormik = useFormik({
     initialValues: {
       title: '',
@@ -171,46 +187,29 @@ export default function Author() {
     validationSchema: isiSchema,
     onSubmit: async () => {
       try {
-        const _response = await createIsiMutation.mutateAsync({
-          ...isiFormik.values,
+        const response = await createIsiMutation.mutateAsync({
+          title: isiFormik.values.title,
+          doi: isiFormik.values.doi,
+          journal: isiFormik.values.journal,
           year: parseInt(isiFormik.values.year?.format('YYYY') || '0', 10),
         });
-        if (_response.success) {
-          queryClient.clear();
+
+        if (response.success) {
+          queryClient.invalidateQueries({queryKey: qk.isi(authorId)});
           toast.success('ISI record created successfully');
-          setTimeout(() => {
-            setIsNewIsiOpen(false);
-            isiFormik.resetForm();
-          }, 1000);
+          setIsNewIsiOpen(false);
+          isiFormik.resetForm();
         } else {
-          toast.error('An error occured');
+          toast.error('An error occurred');
         }
-      } catch (error: Error | any) {
-        toast.error(error.message);
+      } catch (error: any) {
+        toast.error(error?.message || 'Create failed');
       }
     },
   });
 
-  const deleteIsiMutation = useMutation({
-    mutationFn: (args: DeleteIsiInput) => deleteIsi(args, token),
-  });
-
-  const handleISIDelete = async () => {
-    try {
-      const _response = await deleteIsiMutation.mutateAsync({id: isDelete$.get().entityId});
-      if (_response.success) {
-        isiQuery.refetch();
-        isDelete$?.isOpen.set(false);
-        isDelete$?.entityId.set(undefined);
-      } else {
-        toast.error('An error occured');
-      }
-    } catch (error: any) {
-      toast.error(error.message);
-    }
-  };
-
   const formik = useFormik({
+    enableReinitialize: true,
     initialValues: {
       email: user?.email || '',
       education: user?.education || '',
@@ -221,68 +220,335 @@ export default function Author() {
     validationSchema: schema,
     onSubmit: async () => {
       try {
-        const _response = await mutateAsync({...values});
-        if (_response.success) {
-          queryClient.clear();
+        const response = await updateUserMutation.mutateAsync({...formik.values});
+
+        if (response.success) {
+          queryClient.invalidateQueries({queryKey: qk.user(authorId)});
           toast.success('CV updated successfully');
         } else {
-          toast.error('An eror occured');
+          toast.error('An error occurred');
         }
-      } catch (error: Error | any) {
-        toast.error(error.message);
+      } catch (error: any) {
+        toast.error(error?.message || 'Update failed');
       }
     },
   });
-  const {errors, touched, values, handleChange, isSubmitting, handleSubmit} = formik;
 
-  useEffect(() => {
-    if (response.data) {
-      const _articles =
-        response.data?.pages.reduce(
-          (acc: any, page: any, index: any) =>
-            index !== 0 ? [...acc, ...page?.article?.searchArticles.results] : [...acc],
-          response.data?.pages[0]?.article?.searchArticles.results,
-        ) || [];
-      setArticles(_articles);
+  // ---------------- Handlers ----------------
+  const handleClickNewArticle = () => setIsModalOpen(true);
+
+  const handleISIDelete = async () => {
+    const {entityId} = isDelete$.get();
+    if (!entityId) return;
+
+    try {
+      const resp = await deleteIsiMutation.mutateAsync({id: entityId});
+      if (resp.success) {
+        queryClient.invalidateQueries({queryKey: qk.isi(authorId)});
+        isDelete$.isOpen.set(false);
+        isDelete$.entityId.set('');
+        toast.success('ISI record deleted');
+      } else {
+        toast.error('An error occurred');
+      }
+    } catch (error: any) {
+      toast.error(error?.message || 'Delete failed');
     }
-  }, [response.data]);
+  };
 
+  // Close modal via iframe postMessage
   useEffect(() => {
     if (!isModalOpen) return;
+
     const receiveMessage = (event: MessageEvent<any>) => {
-      if (event.data === 'removetheiframe') {
-        setIsModalOpen(false);
-      }
+      if (event?.data === 'removetheiframe') setIsModalOpen(false);
     };
-    window.addEventListener('message', receiveMessage, false);
+
+    window.addEventListener('message', receiveMessage);
+    // eslint-disable-next-line consistent-return
+    return () => window.removeEventListener('message', receiveMessage);
   }, [isModalOpen]);
+
+  // ---------------- Social links ----------------
+  const socialMediaLinks = useMemo(
+    () =>
+      [
+        {id: 1, icon: IconTwitter, action: user?.twitter, type: 'link' as const},
+        {id: 2, icon: IconLinkedIn, action: user?.linkedin, type: 'link' as const},
+        {id: 3, icon: IconFacebook, action: user?.facebook, type: 'link' as const},
+        {id: 4, icon: IconTelegram, action: user?.telegram, type: 'link' as const},
+        {id: 5, icon: IconInstagram, action: user?.instagram, type: 'link' as const},
+        {id: 6, icon: IconWhatsapp, action: user?.whatsApp, type: 'link' as const},
+      ].filter(l => Boolean(l.action)),
+    [
+      user?.twitter,
+      user?.linkedin,
+      user?.facebook,
+      user?.telegram,
+      user?.instagram,
+      user?.whatsApp,
+    ],
+  );
+
+  // ---------------- Render helpers ----------------
+  const renderArticlesTab = () => (
+    <>
+      <Cards hideBelow='md'>
+        {articles.map(article => (
+          <Card
+            key={article._id}
+            articleLink={`/articles/${article.slug}`}
+            date={moment(article.publishDate).format('DD MMMM YYYY')}
+            imageUrl={
+              article.thumbnail
+                ? `${IMAGE_STORAGE_URL}/${article.thumbnail?.filename}-${article.thumbnail?._id}`
+                : undefined
+            }
+            title={article.title}
+          />
+        ))}
+      </Cards>
+
+      <Cards hideFrom='md'>
+        {articles.map(article => (
+          <SmallCard
+            key={article._id}
+            articleLink={`/articles/${article.slug}`}
+            date={moment(article.publishDate).format('DD MMMM YYYY')}
+            imageUrl={
+              article.thumbnail
+                ? `${IMAGE_STORAGE_URL}/${article.thumbnail?.filename}-${article.thumbnail?._id}`
+                : undefined
+            }
+            title={article.title}
+          />
+        ))}
+      </Cards>
+
+      {articlesQuery.hasNextPage ? (
+        <Box mt='10' display='flex' justifyContent='center'>
+          <Button
+            onClick={() => articlesQuery.fetchNextPage()}
+            visual='contained'
+            className={css({
+              color: 'text.invert',
+              w: 'max-content',
+              px: 5,
+              py: 3,
+              bg: 'primary',
+            })}
+          >
+            Load More
+          </Button>
+        </Box>
+      ) : null}
+
+      {!articles.length ? (
+        <Box
+          className={css({
+            mt: '6',
+            p: '6',
+            textAlign: 'center',
+            border: '1px dashed #E3E3E3',
+            borderRadius: '12px',
+            color: 'gray4',
+          })}
+        >
+          No articles published yet.
+        </Box>
+      ) : null}
+    </>
+  );
+
+  const renderIsiTab = () => {
+    if (!user?._id) return null;
+
+    if (isOwner) {
+      return (
+        <div className={css({position: 'relative'})}>
+          <Box
+            className={css({
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              mb: '4',
+              mdDown: {flexDir: 'column', alignItems: 'stretch', gap: '3'},
+            })}
+          >
+            <h3 className={css({textStyle: 'headline5'})}>Your ISI Records</h3>
+            <Button onClick={() => setIsNewIsiOpen(true)} type='button'>
+              New ISI
+            </Button>
+          </Box>
+
+          <ISITable
+            columns={INITIAL_COLUMNS}
+            data={(isiQuery.data?.results ?? []) as IsiType[]}
+            onEdit={(isi: IsiType) => setIsEdit(isi)}
+            deleteEntity$={isDelete$}
+          />
+        </div>
+      );
+    }
+
+    const publicIsi = (isiQuery.data?.results ?? []) as IsiType[];
+
+    return publicIsi.length ? (
+      <>
+        <Cards hideBelow='md'>
+          {publicIsi.map(isi => (
+            <Card key={isi._id} articleLink={isi.doi as string} title={isi.title as string} />
+          ))}
+        </Cards>
+
+        <Cards hideFrom='md'>
+          {publicIsi.map(isi => (
+            <SmallCard key={isi._id} articleLink={isi.doi as string} title={isi.title as string} />
+          ))}
+        </Cards>
+      </>
+    ) : (
+      <Box
+        className={css({
+          p: '6',
+          textAlign: 'center',
+          border: '1px dashed #E3E3E3',
+          borderRadius: '12px',
+          color: 'gray4',
+        })}
+      >
+        No ISI items available.
+      </Box>
+    );
+  };
+
+  const renderCvTab = () => {
+    if (!user?._id) return null;
+
+    if (isOwner) {
+      const {errors, touched, values, handleChange, handleSubmit} = formik;
+
+      return (
+        <form onSubmit={handleSubmit}>
+          <Box width='100%' mt='8px'>
+            <TextField
+              label='Email'
+              type='email'
+              name='email'
+              value={values.email}
+              onChange={handleChange}
+              id='email'
+              error={!!touched.email && !!errors.email}
+              helperText={touched.email && (errors.email as string)}
+            />
+          </Box>
+
+          <Box width='100%' mt='20px'>
+            <TextArea
+              rows={1}
+              label='Education'
+              name='education'
+              value={values.education}
+              onChange={handleChange}
+              id='education'
+            />
+          </Box>
+
+          <Box mt='20px'>
+            <TextArea
+              rows={1}
+              label='Contact'
+              name='contact'
+              value={values.contact}
+              onChange={handleChange}
+              id='contact'
+            />
+          </Box>
+
+          <Box mt='20px'>
+            <TextArea
+              rows={1}
+              label='Expertise'
+              name='expertise'
+              value={values.expertise}
+              onChange={handleChange}
+              id='expertise'
+            />
+          </Box>
+
+          <Box mt='20px'>
+            <TextArea
+              rows={2}
+              label='Description'
+              name='description'
+              value={values.description}
+              onChange={handleChange}
+              id='description'
+            />
+          </Box>
+
+          <Box mt='24px'>
+            <Button type='submit' disabled={updateUserMutation.isPending}>
+              {updateUserMutation.isPending ? 'Saving...' : 'Save changes'}
+            </Button>
+          </Box>
+        </form>
+      );
+    }
+
+    return (
+      <Flex flexDir='column' gap={3}>
+        <span>
+          <strong>Education:</strong> {user?.education || '-'}
+        </span>
+        <span>
+          <strong>Contact:</strong> {user?.contact || '-'}
+        </span>
+        <span>
+          <strong>Expertise:</strong> {user?.expertise || '-'}
+        </span>
+        <span>
+          <strong>Description:</strong> {user?.description || '-'}
+        </span>
+      </Flex>
+    );
+  };
+
+  // ---------------- UI Guard ----------------
+  if (!user?._id) {
+    return (
+      <Container>
+        <Wrapper>
+          <Box p='6'>
+            <span className={css({color: 'gray4'})}>Author data is not available.</span>
+          </Box>
+        </Wrapper>
+      </Container>
+    );
+  }
 
   return (
     <Container>
+      {/* Header Card */}
       <Wrapper>
         <div
           className={css({
             display: 'grid',
             alignItems: 'stretch',
             justifyContent: 'space-between',
-            gap: '5',
+            gap: '6',
             w: 'full',
-            gridTemplateColumns: {
-              base: '2',
-              mdDown: '1',
-            },
+            gridTemplateColumns: {base: '2', mdDown: '1'},
             position: 'relative',
           })}
         >
+          {/* Left Identity */}
           <div
             className={flex({
               alignItems: 'stretch',
               gap: '6',
               justifyContent: 'space-between',
-              flexDirection: {
-                base: 'row',
-                mdDown: 'column',
-              },
+              flexDirection: {base: 'row', mdDown: 'column'},
             })}
           >
             <Box alignSelf='center'>
@@ -290,7 +556,7 @@ export default function Author() {
                 size={128}
                 src={
                   user?.avatar?._id
-                    ? `${IMAGE_STORAGE_URL}/${user?.avatar?.filename}-${user?.avatar?._id}`
+                    ? `${IMAGE_STORAGE_URL}/${user.avatar.filename}-${user.avatar._id}`
                     : ''
                 }
                 alt=''
@@ -302,21 +568,16 @@ export default function Author() {
                 grow: 1,
                 basis: '0%',
                 flexDir: 'column',
-                justifyContent: 'space-between',
-                alignItems: {
-                  base: 'stretch',
-                  mdDown: 'center',
-                },
+                justifyContent: 'center',
+                alignItems: {base: 'stretch', mdDown: 'center'},
                 mt: '1',
+                gap: '3',
               })}
             >
               <div
                 className={flex({
                   flexDirection: 'column',
-                  alignItems: {
-                    base: 'start',
-                    mdDown: 'center',
-                  },
+                  alignItems: {base: 'start', mdDown: 'center'},
                 })}
               >
                 <h1
@@ -325,37 +586,21 @@ export default function Author() {
                     color: 'text.primary',
                   })}
                 >
-                  {user?.displayName}
+                  {user.displayName || user.username || 'Unknown Author'}
                 </h1>
-                <p
-                  className={css({
-                    textStyle: 'body2',
-                    color: 'gray4',
-                  })}
-                >
-                  {user?.email}
-                </p>
+                <p className={css({textStyle: 'body2', color: 'gray4'})}>{user.email}</p>
               </div>
 
-              <div>
-                <p
-                  className={css({
-                    mt: '9',
-                    textStyle: 'body2',
-                  })}
-                >
-                  {/** TODO: INSERT BIO */}
-                </p>
-                <Chips>
-                  <Chip
-                    text={user?.isStrategicCollaborator ? 'Strategic Collaborator' : user?.role}
-                    type='success'
-                  />
-                  {/* <Chip text='Since: October 2018' type='simple' /> */}
-                </Chips>
-              </div>
+              <Chips>
+                <Chip
+                  text={user?.isStrategicCollaborator ? 'Strategic Collaborator' : user?.role}
+                  type='success'
+                />
+              </Chips>
             </div>
           </div>
+
+          {/* Right Actions + Socials */}
           <div
             className={css({
               display: 'flex',
@@ -365,28 +610,19 @@ export default function Author() {
               alignItems: 'end',
               justifyContent: 'space-between',
               w: 'full',
-              position: {
-                base: 'relative',
-                mdDown: 'static',
-              },
+              position: {base: 'relative', mdDown: 'static'},
+              gap: '4',
             })}
           >
             <Actions>
-              {params.authorId === currenUserId ? (
+              {isOwner ? (
                 <>
-                  {' '}
                   <IconNotify
                     className={css({
                       fill: 'gray4',
-                      position: {
-                        mdDown: 'absolute',
-                      },
-                      top: {
-                        mdDown: '0',
-                      },
-                      right: {
-                        mdDown: '0',
-                      },
+                      position: {mdDown: 'absolute'},
+                      top: {mdDown: '0'},
+                      right: {mdDown: '0'},
                     })}
                   />
                   <Button
@@ -395,7 +631,7 @@ export default function Author() {
                     className={css({
                       color: 'white',
                       w: 'max-content',
-                      px: 4,
+                      px: 5,
                       py: 3,
                       bgColor: 'primary',
                     })}
@@ -403,269 +639,75 @@ export default function Author() {
                     Write New Article
                   </Button>
                 </>
-              ) : (
-                <>
-                  <Button
-                    visual='outlined'
-                    className={css({
-                      color: {
-                        base: 'gray4',
-                        _hover: 'white',
-                      },
-                      w: 'max-content',
-                      px: 4,
-                      py: 3,
-                      border: '1px solid token(colors.gray3)',
-                      borderRadius: 0,
-                      display: 'none',
-                    })}
-                  >
-                    Follow
-                  </Button>
-                  <Button
-                    visual='outlined'
-                    className={css({
-                      color: {
-                        base: 'gray4',
-                        _hover: 'white',
-                      },
-                      w: 'max-content',
-                      px: 4,
-                      py: 3,
-                      border: '1px solid token(colors.gray3)',
-                      borderRadius: 0,
-                      display: 'none',
-                    })}
-                  >
-                    Report
-                  </Button>
-                </>
-              )}
+              ) : null}
             </Actions>
 
             <Box
               className={css({
                 position: 'absolute',
-                bottom: {
-                  base: '-50%',
-                  mdDown: 'unset',
-                },
-                top: {
-                  mdDown: '0',
-                },
-                left: {
-                  mdDown: '0',
-                },
+                bottom: {base: '-50%', mdDown: 'unset'},
+                top: {mdDown: '0'},
+                left: {mdDown: '0'},
               })}
             >
               <SocialMediaLinks
                 classNames={css({
-                  flexDirection: {
-                    base: 'row',
-                    mdDown: 'column',
-                  },
+                  flexDirection: {base: 'row', mdDown: 'column'},
                 })}
-                links={socialMediaLinks}
+                links={socialMediaLinks as any}
               />
             </Box>
           </div>
         </div>
-        <Box
-          className={flex({
-            w: 'full',
-            justifyContent: 'space-between',
-            gap: '5',
-            mt: '6',
-            alignItems: 'center',
-          })}
-        >
-          <Tabs>
-            <Tab
-              onClick={() => setSelectedTab(ETabs.ARTICLES)}
-              _isActive={selectedTab === ETabs.ARTICLES}
-            >
-              <span>Articles</span>
-            </Tab>
-            <Tab
-              onClick={() => setSelectedTab(ETabs.JOURNALS)}
-              _isActive={selectedTab === ETabs.JOURNALS}
-            >
-              <span>ISI Articles & Journals</span>
-            </Tab>
-            <Tab onClick={() => setSelectedTab(ETabs.CV)} _isActive={selectedTab === ETabs.CV}>
-              <span className={css({hideBelow: 'md'})}>Curriculum vitae</span>
-              <span className={css({hideFrom: 'md'})}>CV</span>
-            </Tab>
-          </Tabs>
-        </Box>
+
+        {/* Premium Tabs */}
+        <Tabs>
+          <Tab
+            onClick={() => setSelectedTab(ETabs.ARTICLES)}
+            _isActive={selectedTab === ETabs.ARTICLES}
+          >
+            <span>Articles</span>
+          </Tab>
+          <Tab
+            onClick={() => setSelectedTab(ETabs.JOURNALS)}
+            _isActive={selectedTab === ETabs.JOURNALS}
+          >
+            <span className={css({hideBelow: 'md'})}>ISI Articles & Journals</span>
+            <span className={css({hideFrom: 'md'})}>ISI Articles</span>
+          </Tab>
+          <Tab onClick={() => setSelectedTab(ETabs.CV)} _isActive={selectedTab === ETabs.CV}>
+            <span className={css({hideBelow: 'md'})}>Curriculum vitae</span>
+            <span className={css({hideFrom: 'md'})}>CV</span>
+          </Tab>
+        </Tabs>
       </Wrapper>
-      {selectedTab === ETabs.ARTICLES ? (
-        <>
-          <Cards hideBelow='md'>
-            {articles.map(article => (
-              <Card
-                key={article._id}
-                articleLink={`/articles/${article.slug}`}
-                date={moment(article.publishDate).format('DD MMMM YYYY')}
-                imageUrl={
-                  article.thumbnail
-                    ? `${IMAGE_STORAGE_URL}/${article.thumbnail?.filename}-${article.thumbnail?._id}`
-                    : undefined
-                }
-                title={article.title}
-              />
-            ))}
-          </Cards>
-          <Cards hideFrom='md'>
-            {articles.map(article => (
-              <SmallCard
-                key={article._id}
-                articleLink={`/articles/${article.slug}`}
-                date={moment(article.publishDate).format('DD MMMM YYYY')}
-                imageUrl={
-                  article.thumbnail
-                    ? `${IMAGE_STORAGE_URL}/${article.thumbnail?.filename}-${article.thumbnail?._id}`
-                    : undefined
-                }
-                title={article.title}
-              />
-            ))}
-          </Cards>
 
-          {response.hasNextPage ? (
-            <Box mt='12' display='flex' justifyContent='center'>
-              <Button
-                onClick={() => response.fetchNextPage()}
-                visual='contained'
-                className={css({
-                  color: 'text.invert',
-                  w: 'max-content',
-                  px: 4,
-                  py: 3,
-                  hideBelow: 'md',
-                  bg: 'primary',
-                })}
-              >
-                Load More
-              </Button>
-            </Box>
-          ) : null}
-        </>
-      ) : null}
+      {/* Tab Content Panels (ALL look like CV now) */}
+      {selectedTab === ETabs.ARTICLES ? <ContentBox>{renderArticlesTab()}</ContentBox> : null}
 
-      {/** RELATED TO ISI ARTICLES AND JOURNALS */}
-      {selectedTab === ETabs.JOURNALS ? (
-        user?._id === currenUserId ? (
-          <div className={css({position: 'relative'})}>
-            <Button
-              onClick={() => setIsNewIsiOpen(true)}
-              type='button'
-              className={css({position: 'absolute', right: 0, marginTop: '3px'})}
-            >
-              New ISI
-            </Button>
-            <ISITable
-              columns={INITIAL_COLUMNS}
-              data={isiQuery.data?.results as IsiType[]}
-              onEdit={(isi: IsiType) => setIsEdit(isi)}
-              deleteEntity$={isDelete$}
-            />
-          </div>
-        ) : (
-          <Cards>
-            {isiQuery?.data?.results?.map(isi => (
-              <Card key={isi._id} articleLink={isi.doi as string} title={isi.title as string} />
-            ))}
-          </Cards>
-        )
-      ) : null}
+      {selectedTab === ETabs.JOURNALS ? <ContentBox>{renderIsiTab()}</ContentBox> : null}
 
-      {selectedTab === ETabs.CV ? (
-        user?._id === currenUserId ? (
-          <form onSubmit={handleSubmit}>
-            <Box width='100%' mt='25px'>
-              <TextField
-                label='Email'
-                type='email'
-                name='email'
-                value={values.email}
-                onChange={handleChange}
-                id='email'
-              />
-            </Box>
+      {selectedTab === ETabs.CV ? <ContentBox>{renderCvTab()}</ContentBox> : null}
 
-            <Box width='100%' mt='25px'>
-              <TextArea
-                rows={1}
-                label='Education'
-                name='education'
-                value={values.education}
-                onChange={handleChange}
-                id='education'
-              />
-            </Box>
-            <Box mt='25px'>
-              <TextArea
-                rows={1}
-                label='Contact'
-                name='contact'
-                value={values.contact}
-                onChange={handleChange}
-                id='contact'
-              />
-            </Box>
-            <Box mt='25px'>
-              <TextArea
-                rows={1}
-                label='Expertise'
-                name='expertise'
-                value={values.expertise}
-                onChange={handleChange}
-                id='expertise'
-              />
-            </Box>
-            <Box my='25px'>
-              <TextArea
-                rows={1}
-                label='Description'
-                name='description'
-                value={values.description}
-                onChange={handleChange}
-                id='description'
-              />
-            </Box>
-            <Button type='submit'>Save changes</Button>
-          </form>
-        ) : (
-          <Flex flexDir='column' padding={4} gap={2}>
-            <span>Education: {user?.education}</span>
-            <span>Contact: {user?.contact}</span>
-            <span>Expertise: {user?.expertise}</span>
-            <span>Description: {user?.description}</span>
-          </Flex>
-        )
-      ) : null}
+      {/* Create article iframe modal */}
       <Modal
         isOpen$={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         className={css({
-          display: {
-            base: '!grid',
-          },
-          placeContent: {
-            base: '!center',
-          },
+          display: {base: '!grid'},
+          placeContent: {base: '!center'},
         })}
       >
         <iframe
           id='editor'
-          className={css({w: '[90vw]', h: '[90vh]'})}
+          className={css({w: '[90vw]', h: '[90vh]', borderRadius: '12px'})}
           title='create new article'
           src={`${ADMIN_PANEL_URL}/create-article`}
           allowFullScreen
         />
       </Modal>
 
+      {/* Delete confirm */}
       <Modal isOpen$={isDelete$.isOpen.use()} onClose={() => isDelete$.isOpen.set(false)}>
         <Box bg='white' padding='16px' borderRadius='16px'>
           <h3 className={css({mt: '2'})}>Are you sure you want to delete this ISI record?</h3>
@@ -680,91 +722,86 @@ export default function Author() {
         </Box>
       </Modal>
 
+      {/* New ISI modal */}
       <Modal isOpen$={isNewIsiOpen} onClose={() => setIsNewIsiOpen(false)}>
         <form
           onSubmit={isiFormik.handleSubmit}
           className={css({
             w: '[50vw]',
-            mdDown: {
-              w: '[90vw]',
-            },
+            mdDown: {w: '[90vw]'},
           })}
           style={{
-            marginBottom: '32px',
             backgroundColor: 'white',
-            padding: 16,
+            padding: 20,
             borderRadius: 16,
           }}
         >
-          <Box width='100%' mt='25px'>
+          <Box width='100%' mt='16px'>
             <TextField
               label='Title'
-              type='title'
               name='title'
               value={isiFormik.values.title}
               onChange={isiFormik.handleChange}
-              id='title'
-              required
-            />
-          </Box>
-          <Box width='100%' mt='25px'>
-            <TextField
-              label='DOI'
-              type='doi'
-              name='doi'
-              value={isiFormik.values.doi}
-              onChange={isiFormik.handleChange}
-              id='doi'
               required
             />
           </Box>
 
-          <Box width='100%' mt='25px'>
+          <Box width='100%' mt='16px'>
             <TextField
-              label='Journal'
-              type='journal'
-              name='journal'
-              value={isiFormik.values.journal}
+              label='DOI'
+              name='doi'
+              value={isiFormik.values.doi}
               onChange={isiFormik.handleChange}
-              id='journal'
               required
             />
           </Box>
-          <Box mt='25px'>
+
+          <Box width='100%' mt='16px'>
+            <TextField
+              label='Journal'
+              name='journal'
+              value={isiFormik.values.journal}
+              onChange={isiFormik.handleChange}
+              required
+            />
+          </Box>
+
+          <Box mt='16px'>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
                 label='Year'
                 sx={{width: '100%'}}
                 name='year'
                 onChange={(value: any) => {
-                  if (value.isValid()) {
-                    isiFormik.setFieldValue('year', value, false);
-                  } else {
-                    console.log('error');
-                  }
+                  if (value?.isValid?.()) isiFormik.setFieldValue('year', value, false);
                 }}
                 value={isiFormik.values.year}
                 openTo='year'
               />
             </LocalizationProvider>
-            {isiFormik.touched.journal && isiFormik.errors.journal && <span>Error</span>}
           </Box>
-          <Button className={css({mt: '24px'})} type='submit'>
-            Save
-          </Button>
-          <Button
-            visual='outlined'
-            onClick={() => setIsNewIsiOpen(false)}
-            className={css({mt: '24px', ml: '24px'})}
-            type='button'
-          >
-            Cancel
-          </Button>
+
+          <Box display='flex' gap='12px' mt='24px'>
+            <Button type='submit' disabled={createIsiMutation.isPending}>
+              {createIsiMutation.isPending ? 'Saving...' : 'Save'}
+            </Button>
+            <Button visual='outlined' onClick={() => setIsNewIsiOpen(false)} type='button'>
+              Cancel
+            </Button>
+          </Box>
         </form>
       </Modal>
 
+      {/* Edit ISI modal */}
       <Modal isOpen$={!!isEdit} onClose={() => setIsEdit(undefined)}>
-        {!!isEdit && <EditModal isi={isEdit} onClose={() => setIsEdit(undefined)} token={token} />}
+        {!!isEdit && (
+          <EditModal
+            isi={isEdit}
+            onClose={() => setIsEdit(undefined)}
+            token={token}
+            authorId={authorId}
+          />
+        )}
       </Modal>
     </Container>
   );

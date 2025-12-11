@@ -46,6 +46,9 @@ const Slider = ({slides, hasPdf = false}: Props) => (
               flexDir: 'column',
               h: 'max',
             },
+            rounded: '8px',
+            overflow: 'hidden',
+            boxShadow: 'md',
           })}
         >
           {slide.thumbnail ? (

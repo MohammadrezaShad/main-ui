@@ -38,6 +38,7 @@ export default function MobileNavbar() {
         w: 'full',
         flexDir: 'column',
         alignItems: 'stretch',
+        boxShadow: 'md',
       })}
     >
       <ul
@@ -50,6 +51,7 @@ export default function MobileNavbar() {
           px: '5',
           py: '4',
           alignItems: 'center',
+          boxShadow: 'md',
         })}
       >
         <li

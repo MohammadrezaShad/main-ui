@@ -18,6 +18,9 @@ export const Card = styled(Link, {
     backgroundColor: 'white',
     flexGrow: 1,
     alignItems: 'stretch',
+    rounded: '8px',
+    boxShadow: 'sm',
+    overflow: 'hidden',
     w: 'full',
     px: {
       base: '0.5',

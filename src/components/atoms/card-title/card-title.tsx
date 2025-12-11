@@ -18,6 +18,7 @@ const CardTitle = ({children, className}: Props) => {
     lineHeight: '[18.38px]',
     height: '[36px]',
     mb: '4',
+    mt: '1',
   });
   const titleClass = cx(defaultClassName, className);
   return <div className={titleClass}>{children}</div>;

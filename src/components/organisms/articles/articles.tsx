@@ -27,7 +27,7 @@ const Articles = ({articles, hasPdf}: {articles: Array<ArticleType>; hasPdf?: bo
         }
         title={article.title}
         aspectRatio='square'
-        className={css({mb: '6'})}
+        className={css({mb: '6', rounded: '8px', overflow: 'hidden'})}
       />
     ))}
   </div>
