@@ -550,7 +550,10 @@ const HtmlManipulation: React.FC<HtmlManipulationProps> = ({htmlString, classNam
                           _hover: {backgroundColor: 'gray2'},
                           transition: 'background-color 0.15s ease-out',
                         })}
-                        onClick={() => handleTocNavigate(item.h2.id as string)}
+                        onClick={() => {
+                          setIsTocOpen(false);
+                          handleTocNavigate(item.h2.id as string);
+                        }}
                       >
                         <span>
                           {index + 1}. {item.h2.text}
@@ -592,7 +595,10 @@ const HtmlManipulation: React.FC<HtmlManipulationProps> = ({htmlString, classNam
                                 _hover: {backgroundColor: 'gray2'},
                                 transition: 'background-color 0.15s ease-out',
                               })}
-                              onClick={() => handleTocNavigate(h3.id as string)}
+                              onClick={() => {
+                                setIsTocOpen(false);
+                                handleTocNavigate(h3.id as string);
+                              }}
                             >
                               {index + 1}.{h3Index + 1} {h3.text}
                             </button>
