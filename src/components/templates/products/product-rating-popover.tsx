@@ -141,7 +141,7 @@ const RatingPopover = () => {
           <Button
             visual='outlined'
             className={css({
-              rounded: 0,
+              borderRadius: '8px',
               borderColor: '#E3E3E3',
               w: 'full',
               mt: '4',

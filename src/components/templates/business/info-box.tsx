@@ -32,7 +32,7 @@ function InfoBox({company}: Props) {
               alignItems: 'center',
               justifyContent: 'center',
               bgColor: 'transparent',
-              borderRadius: 0,
+              borderRadius: '8px',
               border: '1px solid #E3E3E3',
               w: '1/2',
               py: '3',
@@ -48,13 +48,14 @@ function InfoBox({company}: Props) {
         {company?.website ? (
           <Link
             rel='dofollow'
+            target='_blank'
             href={company?.website}
             className={css({
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               bgColor: 'primary',
-              borderRadius: 0,
+              borderRadius: '8px',
               border: '1px solid #E3E3E3',
               w: '1/2',
               py: '3',

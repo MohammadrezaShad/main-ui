@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 
 'use client';
@@ -175,14 +176,23 @@ const ProductView = () => {
               }),
             )}
           >
-            {product?.images?.map(image => (
-              <SwiperSlide key={image._id}>
+            {product?.images?.length ? (
+              product?.images?.map(image => (
+                <SwiperSlide key={image._id}>
+                  <img
+                    src={`${IMAGE_STORAGE_URL}/${image.filename}-${image._id}`}
+                    alt={image.filename}
+                  />
+                </SwiperSlide>
+              ))
+            ) : (
+              <SwiperSlide key={product?.thumbnail?._id}>
                 <img
-                  src={`${IMAGE_STORAGE_URL}/${image.filename}-${image._id}`}
-                  alt={image.filename}
+                  src={`${IMAGE_STORAGE_URL}/${product?.thumbnail?.filename}-${product?.thumbnail?._id}`}
+                  alt={product?.thumbnail?.filename}
                 />
               </SwiperSlide>
-            ))}
+            )}
           </Swiper>
 
           <Swiper
@@ -392,7 +402,7 @@ const ProductView = () => {
                     mdDown: {pl: '5', pr: '5'},
                     cursor: 'pointer',
                     marginTop: '[88px]',
-                    rounded: 0,
+                    borderRadius: '8px',
                   })}
                 >
                   Buy from Amazon
@@ -426,7 +436,7 @@ const ProductView = () => {
                     mdDown: {pl: '5', pr: '5'},
                     cursor: 'pointer',
                     marginTop: '[88px]',
-                    rounded: 0,
+                    borderRadius: '8px',
                   })}
                 >
                   Buy from eBay
@@ -460,7 +470,7 @@ const ProductView = () => {
                     mdDown: {pl: '5', pr: '5'},
                     cursor: 'pointer',
                     marginTop: '[88px]',
-                    rounded: 0,
+                    borderRadius: '8px',
                   })}
                 >
                   Buy from Walmart
@@ -495,7 +505,7 @@ const ProductView = () => {
                     mdDown: {pl: '5', pr: '5'},
                     cursor: 'pointer',
                     marginTop: '[88px]',
-                    rounded: 0,
+                    borderRadius: '8px',
                   })}
                 >
                   Buy from Website
@@ -523,7 +533,7 @@ const ProductView = () => {
                     mdDown: {pl: '5', pr: '5'},
                     cursor: 'pointer',
                     marginTop: '[88px]',
-                    rounded: 0,
+                    borderRadius: '8px',
                   })}
                 >
                   Call Seller

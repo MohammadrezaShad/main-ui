@@ -8,6 +8,10 @@ export const Container = styled('div', {
     bgPosition: 'center',
     bgRepeat: 'no-repeat',
     display: 'flex',
+    boxShadow: {
+      base: 'sm',
+      mdDown: 'none',
+    },
     flexDirection: {
       base: 'column',
       mdDown: 'row',

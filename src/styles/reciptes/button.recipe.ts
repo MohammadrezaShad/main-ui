@@ -20,7 +20,7 @@ export const buttonRecipe = defineRecipe({
     backgroundColor: 'transparent',
     webkitTapHighlightColor: 'transparent',
     whiteSpace: 'nowrap',
-    borderRadius: 'md',
+    borderRadius: '8px',
     transition: 'all 0.3s',
   },
   variants: {

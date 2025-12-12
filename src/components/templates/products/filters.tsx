@@ -41,6 +41,7 @@ const Filters = () => {
           alignItems: 'center',
           justifyContent: 'space-between',
           position: 'relative',
+          rounded: '8px',
         })}
       >
         <div
@@ -91,7 +92,7 @@ const Filters = () => {
           <Button
             visual='outlined'
             className={css({
-              rounded: 0,
+              rounded: '8px',
               borderColor: '#E3E3E3',
               ml: 'auto',
             })}
@@ -131,7 +132,7 @@ const Filters = () => {
           <Button
             visual='outlined'
             className={css({
-              rounded: 0,
+              rounded: '8px',
               borderColor: '#E3E3E3',
               ml: 'auto',
             })}

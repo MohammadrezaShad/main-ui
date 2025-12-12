@@ -2,6 +2,7 @@ import {css} from '@styled/css';
 import {dehydrate} from '@tanstack/react-query';
 import type {Metadata} from 'next';
 import {cookies} from 'next/headers';
+import {redirect} from 'next/navigation';
 
 import {AuthorView} from '@/components';
 import {CookieName} from '@/constants';
@@ -144,6 +145,11 @@ const Page = async ({params}: AuthorPageParams) => {
   });
 
   const dehydratedState = dehydrate(queryClient);
+
+  const data: any = queryClient.getQueryData(qk.user(authorId));
+  if (!data) {
+    redirect('/not-found');
+  }
 
   return (
     <div

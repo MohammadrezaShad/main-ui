@@ -33,6 +33,7 @@ export const HeroWrapper = styled('div', {
     backgroundPosition: 'center',
     justifyContent: 'center',
     alignItems: 'center',
+    rounded: '8px',
   },
 });
 
@@ -116,6 +117,8 @@ export const SearchButton = styled('button', {
     mdDown: {
       aspectRatio: 'auto',
       py: '2',
+      roundedTopLeft: '8px',
+      roundedBottomLeft: '8px',
     },
   },
 });

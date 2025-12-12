@@ -18,7 +18,7 @@ export const Container = styled('header', {
     position: 'sticky',
     top: 0,
     zIndex: '50',
-    boxShadow: 'md',
+    boxShadow: 'sm',
   },
 });
 

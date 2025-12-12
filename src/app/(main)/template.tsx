@@ -34,7 +34,7 @@ export default async function Template({children}: {children: React.ReactNode}) 
       <Header />
       <div
         className={css({
-          pb: {base: '8', mdDown: '36'},
+          pb: {base: '8', mdDown: '114px'},
           bg: 'background',
           flex: '1',
         })}
@@ -56,7 +56,6 @@ export default async function Template({children}: {children: React.ReactNode}) 
           <div
             className={css({
               w: 'full',
-              rounded: '2xl',
             })}
           >
             <Hydrate state={dehydratedState}>{children}</Hydrate>

@@ -101,5 +101,8 @@ export async function findProductBySlug(
     throw new Error('Failed to fetch data');
   }
   const response = await res.json();
+  if (response.errors?.[0]?.message) {
+    return null as any;
+  }
   return response.data.product.findProductBySlug;
 }

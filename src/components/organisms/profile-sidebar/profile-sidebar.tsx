@@ -156,8 +156,8 @@ const ProfileSidebar = () => {
               px: 4,
               py: 3,
               bg: 'primary',
-              borderRadius: 0,
               mt: '4',
+              borderRadius: '8px',
             })}
             type='button'
           >
@@ -172,8 +172,8 @@ const ProfileSidebar = () => {
               px: 4,
               py: 3,
               bg: 'white',
-              borderRadius: 0,
               mt: '4',
+              borderRadius: '8px',
             })}
             type='button'
           >

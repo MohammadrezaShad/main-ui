@@ -271,7 +271,7 @@ export async function findCompanyBySlug(
   }
   const response = await res.json();
   if (response.errors?.[0]?.message) {
-    throw new Error(response.errors?.[0]?.message);
+    return null as any;
   }
   return response.data.company.findCompanyBySlug;
 }

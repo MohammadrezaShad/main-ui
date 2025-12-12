@@ -4,6 +4,7 @@ import Link from 'next/link';
 
 import {IconChevronRight, IconDrop, IconLocation, IconStar} from '@/assets';
 import {Button} from '@/components/atoms';
+import {CardTitle} from '@/components/atoms/card-title';
 import {createCompanyCallNumber, createCompanyLocationClick, ImageType, Maybe} from '@/graphql';
 import {openMapSelector} from '@/utils';
 
@@ -74,6 +75,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
         borderWidth: '1px',
         backgroundColor: 'white',
         borderColor: 'gray3',
+        rounded: '8px',
+        overflow: 'hidden',
       })}
     >
       <div
@@ -117,13 +120,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
       </div>
 
       <div className={css({p: '4'})}>
-        <Link
-          role='heading'
-          aria-roledescription='product title'
-          href={`/products/${id}`}
-          className={css({textStyle: 'headline4', color: 'text.primary', mb: '2'})}
-        >
-          {title}
+        <Link role='heading' aria-roledescription='product title' href={`/products/${id}`}>
+          <CardTitle>{title}</CardTitle>
         </Link>
 
         <div
@@ -172,6 +170,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
               _hover: {bgColor: 'transparent'},
               fontSize: 'sm',
               color: 'gray.600',
+              rounded: '8px',
             })}
           >
             {location}
@@ -193,6 +192,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
               w: '1/2',
               py: '6',
               _hover: {bgColor: 'slate.100'},
+              rounded: '8px',
             })}
           >
             Call
@@ -207,7 +207,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
               alignItems: 'center',
               justifyContent: 'center',
               bgColor: 'transparent',
-              borderRadius: 0,
+              borderRadius: '8px',
               border: '1px solid #E3E3E3',
               color: '#6E7072',
               w: '1/2',

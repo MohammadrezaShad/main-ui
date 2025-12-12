@@ -128,11 +128,11 @@ const PriceRangePopover = () => {
           <Button
             visual='outlined'
             className={css({
-              rounded: 0,
               borderColor: '#E3E3E3',
               w: 'full',
               mt: '4',
               mx: 'auto',
+              borderRadius: '8px',
             })}
             onClick={() => {
               updateSearchParams({

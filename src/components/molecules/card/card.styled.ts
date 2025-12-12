@@ -11,6 +11,7 @@ export const Container = styled('div', {
     h: '[362px]',
     rounded: '8px',
     overflow: 'hidden',
+    boxShadow: 'sm',
   },
 });
 

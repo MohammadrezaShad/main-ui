@@ -15,102 +15,24 @@ export async function searchArticleByCategory(
       article {
         searchArticles(input: $input) {
           results {
+            order
+            isShowcase
             _id
-            author {
-              _id
-              avatar {
-                _id
-                alt
-                createdAt
-                filename
-                height
-                preview
-                updatedAt
-                width
-              }
-              avatarStatus
-              createdAt
-              displayName
-              email
-              isCreatedWithSocialMedia
-              isVerified
-              phone
-              role
-              updatedAt
-              username
-            }
-            categories {
-              _id
-              description
-              hasSeoApproval
-              image {
-                _id
-                alt
-                createdAt
-                filename
-                height
-                updatedAt
-                width
-              }
-              isDescriptionApproved
-              originalDescription
-              postCount
-              seoReviewDate
-              slug
-              title
-            }
-            commentsCount
-            content
-            excerpt
-            faqs {
-              answer
-              question
-            }
-            isBookmark
-            isUserFavorite
-            likeCount
             publishDate
-            readingDuration
-            reports
+            updatedAt
             slug
-            seoSetting {
-              _id
-              createdAt
-              general {
-                canonicalUrl
-                description
-                focusKeyword
-                nofollow
-                noindex
-                permalink
-                title
-              }
-              itemId
-              score
-              type
-              updatedAt
-            }
             status
-            tags {
-              _id
-              description
-              originalDescription
-              postCount
-              slug
-              status
-              title
-            }
+            title
+            excerpt
+            hasPdf
             thumbnail {
               _id
               alt
-              createdAt
               filename
               height
               preview
-              updatedAt
               width
             }
-            title
           }
           success
           totalCount

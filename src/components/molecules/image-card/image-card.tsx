@@ -25,7 +25,7 @@ const ImageCard = ({
   articleLink,
   className,
 }: Props) => (
-  <>
+  <div className={css({rounded: '8px'})}>
     <Container
       className={cx(css({hideBelow: 'md'}), className)}
       style={{backgroundImage: `url(${imageUrl})`}}
@@ -60,6 +60,7 @@ const ImageCard = ({
             objectPosition: 'center',
             aspectRatio: 'square',
             flexShrink: '0',
+            rounded: '8px',
           })}
         />
       ) : (
@@ -94,7 +95,7 @@ const ImageCard = ({
         </Link>
       </Footer>
     </Container>
-  </>
+  </div>
 );
 
 export default ImageCard;

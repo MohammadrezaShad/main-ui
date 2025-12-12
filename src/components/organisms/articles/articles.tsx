@@ -13,6 +13,9 @@ const Articles = ({articles, hasPdf}: {articles: Array<ArticleType>; hasPdf?: bo
         mdDown: 1,
       },
       gap: 6,
+      paddingX: 4,
+      display: {mdDown: 'flex'},
+      flexDir: {mdDown: 'column'},
     })}
   >
     {articles.map((article, index) => (

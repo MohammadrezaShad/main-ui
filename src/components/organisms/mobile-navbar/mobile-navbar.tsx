@@ -38,7 +38,7 @@ export default function MobileNavbar() {
         w: 'full',
         flexDir: 'column',
         alignItems: 'stretch',
-        boxShadow: 'md',
+        boxShadow: '0 -8px 24px rgba(15, 23, 42, 0.08)',
       })}
     >
       <ul
@@ -51,7 +51,7 @@ export default function MobileNavbar() {
           px: '5',
           py: '4',
           alignItems: 'center',
-          boxShadow: 'md',
+          boxShadow: '0 -8px 24px rgba(15, 23, 42, 0.08)',
         })}
       >
         <li
@@ -71,7 +71,7 @@ export default function MobileNavbar() {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                gap: '2.5',
+                gap: '1',
                 flexDir: 'column',
               })}
             >
@@ -97,7 +97,7 @@ export default function MobileNavbar() {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                gap: '2.5',
+                gap: '1',
                 flexDir: 'column',
               })}
               onClick={() => isLoginOpen$.set(true)}
@@ -127,7 +127,7 @@ export default function MobileNavbar() {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              gap: '2.5',
+              gap: '1',
               flexDir: 'column',
             })}
           >
@@ -155,7 +155,7 @@ export default function MobileNavbar() {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              gap: '2.5',
+              gap: '1',
               flexDir: 'column',
             })}
           >
@@ -185,7 +185,7 @@ export default function MobileNavbar() {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              gap: '2.5',
+              gap: '1',
               flexDir: 'column',
             })}
           >
@@ -214,7 +214,7 @@ export default function MobileNavbar() {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              gap: '2.5',
+              gap: '1',
               flexDir: 'column',
             })}
           >

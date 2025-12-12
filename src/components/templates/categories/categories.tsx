@@ -47,8 +47,8 @@ export default function Categories({hasPdf = false, data}: {hasPdf?: boolean; da
           text='All types of categories are displayed here'
         />
       </Box>
-      <BackgroundShade>
-        <Wrapper hideBelow='md'>
+      <BackgroundShade hideBelow='md'>
+        <Wrapper>
           {filteredCategories.slice(0, 3).map(category => (
             <CategoryCard
               id={category._id}

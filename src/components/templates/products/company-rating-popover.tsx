@@ -146,6 +146,7 @@ const CompanyRatingPopover = () => {
               w: 'full',
               mt: '4',
               mx: 'auto',
+              borderRadius: '8px',
             })}
             onClick={() => updateSearchParams('minimumCompanyRating', selectedRating.toString())}
           >

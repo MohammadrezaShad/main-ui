@@ -17,7 +17,7 @@ const CategorySelect: React.FC<CategorySelectProps> = ({categories, onChange}) =
         id='category'
         className={css({
           w: 'full',
-          p: '6',
+          p: '4',
           borderWidth: '1px',
           borderColor: 'gray.300',
           _focus: {
@@ -25,6 +25,7 @@ const CategorySelect: React.FC<CategorySelectProps> = ({categories, onChange}) =
             outlineOffset: '2px',
           },
           appearance: 'none',
+          rounded: '8px',
         })}
         onChange={e => onChange(e.target.value)}
       >

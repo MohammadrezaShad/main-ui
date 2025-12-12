@@ -3,6 +3,7 @@ import {css} from '@styled/css';
 import {dehydrate} from '@tanstack/react-query';
 import type {Metadata} from 'next';
 import {cookies} from 'next/headers';
+import {redirect} from 'next/navigation';
 
 import {BusinessView} from '@/components';
 import {CookieName} from '@/constants';
@@ -134,9 +135,10 @@ const Page = async ({params: initalParams}: {params: {slug: string}}) => {
   });
 
   const dehydratedState = dehydrate(queryClient);
-
-  // fetch again (server side) for JSON-LD payload (cheap, same request you already make)
-  const data = await findCompanyBySlug({slug: params.slug}, token);
+  const data: any = queryClient.getQueryData(['get-company', params.slug]);
+  if (!data) {
+    redirect('/not-found');
+  }
   const company = data?.result;
   const pageUrl = absUrl(`/companies/${params.slug}`);
 

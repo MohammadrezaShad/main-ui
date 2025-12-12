@@ -336,6 +336,7 @@ export default function Author() {
               px: 5,
               py: 3,
               bg: 'primary',
+              borderRadius: '8px',
             })}
           >
             Load More

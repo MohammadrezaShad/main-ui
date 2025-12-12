@@ -205,7 +205,7 @@ export default function ProductsView() {
       <Hero>
         <HeroShade />
         <HeroWrapper>
-          <Content>
+          <Content className={css({rounded: '8px'})}>
             <h1 className={css({textStyle: 'title2', textAlign: 'center', pb: '6', color: '#333'})}>
               Search
             </h1>

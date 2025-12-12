@@ -837,7 +837,7 @@ const Page = () => {
                 px: 4,
                 py: 3,
                 bg: 'primary',
-                borderRadius: 0,
+                borderRadius: '8px',
               })}
             >
               Post Review

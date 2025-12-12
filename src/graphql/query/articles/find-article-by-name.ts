@@ -198,7 +198,6 @@ export async function findArticleByName(
   }
   const response = await res.json();
   if (response.errors?.[0]?.message) {
-    console.log(response.errors);
     return null as any;
   }
   return response.data;

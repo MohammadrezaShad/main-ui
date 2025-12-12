@@ -3,6 +3,7 @@ import {css} from '@styled/css';
 import {dehydrate} from '@tanstack/react-query';
 import type {Metadata} from 'next';
 import {unstable_noStore as noStore} from 'next/cache';
+import {redirect} from 'next/navigation';
 
 import {ProductView} from '@/components';
 import {findProductBySlug} from '@/graphql';
@@ -152,7 +153,11 @@ const Page = async ({params: initalParams}: {params: {slug: string}}) => {
 
   // (Optional) also produce JSON-LD for richer SEO
   // We read the product from the same server fetch to avoid extra round-trips here.
-  const data = await findProductBySlug({slug: params.slug});
+
+  const data: any = queryClient.getQueryData(['get-product', params.slug]);
+  if (!data) {
+    redirect('/not-found');
+  }
   const product = data?.result;
   const ogImage = product ? primaryImage(product) : undefined;
   const price = product ? lowestPrice(product) : undefined;

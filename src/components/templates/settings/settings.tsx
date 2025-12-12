@@ -315,7 +315,7 @@ export default function Settings() {
                   px: 4,
                   py: 3,
                   bg: 'primary',
-                  borderRadius: 0,
+                  borderRadius: '8px',
                 })}
               >
                 Save changes
@@ -333,7 +333,7 @@ export default function Settings() {
                   px: 4,
                   py: 3,
                   borderColor: 'gray3',
-                  borderRadius: 0,
+                  borderRadius: '8px',
                 })}
               >
                 Cancel

@@ -80,7 +80,7 @@ export default function Header() {
                   hideBelow: 'md',
                   mr: 4,
                   border: '1px solid token(colors.gray3) !important',
-                  borderRadius: 0,
+                  borderRadius: '8px',
                 })}
                 visual='outlined'
               >
@@ -94,7 +94,7 @@ export default function Header() {
                   py: 3,
                   hideBelow: 'md',
                   bg: 'primary',
-                  borderRadius: 0,
+                  borderRadius: '8px',
                 })}
               >
                 Sign Up

@@ -55,6 +55,7 @@ export const Content = styled('div', {
     maxWidth: '100%',
     flexDirection: 'column',
     zIndex: 20,
+
     pt: {
       base: '[56px]',
       mdDown: 4,
@@ -103,6 +104,8 @@ export const SearchContainer = styled('div', {
     display: 'flex',
     mt: 12,
     minW: 0,
+    rounded: '8px',
+
     mdDown: {
       flexDirection: 'column',
       mx: '8',
@@ -122,9 +125,13 @@ export const SearchButton = styled('button', {
     aspectRatio: 'square',
     cursor: 'pointer',
     gap: '2',
+    roundedTopRight: '8px',
+    roundedBottomRight: '8px',
     mdDown: {
       aspectRatio: 'auto',
       py: '2',
+      roundedTopLeft: '8px',
+      roundedBottomLeft: '8px',
     },
   },
 });
