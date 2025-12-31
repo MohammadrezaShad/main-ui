@@ -6,7 +6,7 @@
 import {useMemo, useState} from 'react';
 import {toast} from 'react-toastify';
 import {css, cx} from '@styled/css';
-import {Box} from '@styled/jsx';
+import {Box, Flex} from '@styled/jsx';
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
 import {getCookie} from 'cookies-next';
 import Image from 'next/image';
@@ -27,7 +27,9 @@ import {Products} from './products.tab';
 
 const IMAGE_STORAGE_URL = process.env.NEXT_PUBLIC_IMAGE_STORAGE_URL;
 
-const TabContent = ({activeTab, company}: {activeTab: string; company: CompanyType}) => {
+type TabKey = 'overview' | 'products' | 'gallery';
+
+const TabContent = ({activeTab, company}: {activeTab: TabKey; company: CompanyType}) => {
   if (activeTab === 'overview') {
     return <Overview about={company?.about || ''} services={company?.productAndServices} />;
   }
@@ -63,10 +65,17 @@ function Spinner() {
   );
 }
 
+const buildImageUrl = (file?: {filename?: string | null; _id?: string | null} | null) => {
+  if (!IMAGE_STORAGE_URL) return '';
+  if (!file?.filename || !file?._id) return '';
+  return `${IMAGE_STORAGE_URL}/${file.filename}-${file._id}`;
+};
+
 const BusinessPage = () => {
   const token = getCookie(CookieName.AUTH_TOKEN);
-  const [activeTab, setActiveTab] = useState('overview');
+  const [activeTab, setActiveTab] = useState<TabKey>('overview');
   const [pendingStar, setPendingStar] = useState<number | null>(null);
+
   const params = useParams();
   const slug = params.slug as string;
 
@@ -78,6 +87,9 @@ const BusinessPage = () => {
   });
 
   const company = data?.result as CompanyType | undefined;
+
+  const coverSrc = buildImageUrl(company?.cover as any);
+  const avatarSrc = buildImageUrl(company?.profileImage as any);
 
   const cityNames = Array.isArray(company?.city)
     ? (company?.city as Array<CityType>).map(c => c?.name).filter(Boolean)
@@ -101,7 +113,6 @@ const BusinessPage = () => {
   // optimistic rating while saving
   const displayedRating = pendingStar ?? serverRating;
 
-  // toast ids to avoid duplicate stacking
   const TOAST_OK_ID = 'company-rate-ok';
   const TOAST_ERR_ID = 'company-rate-err';
 
@@ -142,228 +153,301 @@ const BusinessPage = () => {
 
   return (
     <div className={css({width: '100%'})}>
-      <div
-        style={{
-          backgroundImage: `url(${IMAGE_STORAGE_URL}/${company?.cover?.filename}-${company?.cover?._id})`,
-        }}
+      {/* ===================== HERO (fixed cover sizing + clean card) ===================== */}
+      <section
         className={css({
-          width: '100%',
-          mb: '[100px]',
-          pb: '8',
-          borderBottom: '1px solid #ccc',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-          backgroundSize: 'cover',
-          height: '[160px]',
-          pos: 'relative',
-          mdDown: {mb: '[240px]'},
+          position: 'relative',
+          width: 'full',
+          minH: {base: '[260px]', md: '[360px]'},
+          borderBottom: '1px solid #EAEAEA',
         })}
       >
-        <div
-          className={css({
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            mdDown: {flexDirection: 'column-reverse'},
-          })}
-        >
-          {/* stars + loader overlay */}
-          <Box
-            mt='4'
+        {/* Cover image behind everything */}
+        {coverSrc ? (
+          <Image
+            unoptimized
+            src={coverSrc}
+            alt={`${company?.title || 'Business'} cover`}
+            fill
+            priority
+            sizes='100vw'
             className={css({
-              position: 'absolute',
-              top: '70%',
-              left: '[227px]',
-              mdDown: {top: '200%', left: '50% !important', transform: 'translateX(-50%)'},
-              zIndex: 10,
+              objectFit: 'cover',
+              objectPosition: 'center',
+              transform: 'scale(1.02)',
             })}
-          >
-            <div className={css({position: 'relative', display: 'inline-block'})}>
-              <Ratings
-                role='group'
-                aria-label='Rate this business'
-                aria-busy={isSaving ? 'true' : 'false'}
-                className={css({
-                  cursor: !company ? 'not-allowed' : 'pointer',
-                  userSelect: 'none',
-                  opacity: !company ? 0.6 : 1,
-                })}
-              >
-                {Array.from({length: 5}).map((_, i) => {
-                  const idx = i + 1;
-                  const filled = idx <= displayedRating;
-                  return (
-                    <button
-                      key={i}
-                      type='button'
-                      aria-label={`Rate ${idx} star${idx > 1 ? 's' : ''}`}
-                      disabled={!company || isSaving}
-                      onClick={() => rateMutation.mutate(idx)}
-                      className={css({
-                        appearance: 'none',
-                        background: 'none',
-                        border: 'none',
-                        p: 0,
-                        m: 0,
-                        lineHeight: 0,
-                        cursor: !company || isSaving ? 'not-allowed' : 'pointer',
-                      })}
-                    >
-                      <Star bgColor={filled ? 'primary' : 'gray3'}>
-                        <IconStar className={css({w: '4', h: '4', color: 'white'})} />
-                      </Star>
-                    </button>
-                  );
-                })}
-              </Ratings>
-
-              {isSaving && (
-                <div
-                  className={css({
-                    position: 'absolute',
-                    inset: 0,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '2',
-                    background: 'rgba(255,255,255,0.6)',
-                    rounded: 'md',
-                  })}
-                >
-                  <Spinner />
-                  <span className={css({fontSize: 'xs', color: '#333'})}>Saving…</span>
-                </div>
-              )}
-            </div>
-          </Box>
-
+          />
+        ) : (
           <div
             className={css({
-              display: 'flex',
-              alignItems: 'end',
-              pos: 'absolute',
-              bottom: '-50%',
-              ps: '[43px]',
-              mdDown: {flexDirection: 'column', bottom: '-100%', ps: '0', alignItems: 'center'},
+              position: 'absolute',
+              inset: 0,
+              bgGradient: 'to-br',
+              gradientFrom: 'gray.200',
+              gradientVia: 'gray.300',
+              gradientTo: 'gray.400',
+            })}
+          />
+        )}
+
+        {/* Gradient overlay for readability */}
+        <div
+          className={css({
+            position: 'absolute',
+            inset: 0,
+            bgGradient: 'to-b',
+            gradientFrom: 'rgba(0,0,0,0.05)',
+            gradientVia: 'rgba(0,0,0,0.25)',
+            gradientTo: 'rgba(0,0,0,0.55)',
+          })}
+        />
+
+        {/* Hero content */}
+        <div
+          className={css({
+            position: 'relative',
+            zIndex: 2,
+            maxW: '[1200px]',
+            mx: 'auto',
+            px: {base: '4', md: '8'},
+            height: 'full',
+            minH: {base: '[260px]', md: '[360px]'},
+            display: 'flex',
+            alignItems: 'flex-end',
+            pb: {base: '5', md: '8'},
+          })}
+        >
+          {/* Light card */}
+          <div
+            className={css({
+              width: 'full',
+              borderRadius: '16px',
+              bgColor: 'rgba(255,255,255,0.96)',
+              border: '1px solid rgba(0,0,0,0.06)',
+              boxShadow: '0 18px 40px rgba(0,0,0,0.18)',
+              p: {base: '4', md: '6'},
             })}
           >
-            <Image
-              unoptimized
-              width={160}
-              height={160}
-              src={`${IMAGE_STORAGE_URL}/${company?.profileImage?.filename}-${company?.profileImage?._id}`}
-              alt='Business Avatar'
-              className={css({
-                borderRadius: '50%',
-                width: '160px',
-                height: '160px',
-                mr: '6',
-                mdDown: {mr: '0'},
-              })}
-            />
-            <div>
-              <h1
-                className={css({
-                  textStyle: 'h1',
-                  color: '#333333',
-                  mt: '[33px]',
-                  mdDown: {mt: '6'},
-                })}
-              >
-                {company?.title}
-              </h1>
+            <Flex
+              gap='6'
+              alignItems={{base: 'flex-start', md: 'center'}}
+              justifyContent='space-between'
+              flexDirection={{base: 'column', md: 'row'}}
+            >
+              {/* Left: avatar + title/meta */}
+              <Flex gap='4' alignItems={{base: 'flex-start', md: 'center'}} flexWrap='wrap'>
+                {/* Avatar (correct size) */}
+                <div
+                  className={css({
+                    width: '[88px]',
+                    height: '[88px]',
+                    md: {width: '[110px]', height: '[110px]'},
+                    borderRadius: 'full',
+                    overflow: 'hidden',
+                    bgColor: 'white',
+                    border: '1px solid rgba(0,0,0,0.08)',
+                    boxShadow: '0 10px 24px rgba(0,0,0,0.12)',
+                    flex: '0 0 auto',
+                  })}
+                >
+                  {avatarSrc ? (
+                    <Image
+                      unoptimized
+                      src={avatarSrc}
+                      alt='Business Avatar'
+                      width={110}
+                      height={110}
+                      className={css({width: 'full', height: 'full', objectFit: 'cover'})}
+                    />
+                  ) : (
+                    <div
+                      className={css({
+                        width: 'full',
+                        height: 'full',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: 'gray.600',
+                        fontSize: 'xs',
+                      })}
+                    >
+                      —
+                    </div>
+                  )}
+                </div>
 
-              {/* Location + categories */}
-              <p
-                className={css({
-                  textStyle: 'body',
-                  color: '#333333',
-                  mdDown: {textAlign: 'center'},
-                })}
-              >
-                {cityNames.length ? cityNames.join(', ') : '—'}
-                {company?.country?.name ? `, ${company.country.name}` : ''}
-                <span className={css({mx: '2', color: '#E3E3E3', hideBelow: 'md'})}>|</span>
-                <span className={css({display: 'inline-flex', alignItems: 'center', gap: 2})}>
-                  {company?.categories?.map(category => (
-                    <Link key={category._id} href={`/categories/${category._id}`}>
-                      {category.slug}
-                    </Link>
-                  ))}
-                </span>
-              </p>
+                <div>
+                  <h1 className={css({textStyle: 'h1', color: '#111', lineHeight: 'short'})}>
+                    {company?.title || '—'}
+                  </h1>
 
-              {/* Meta row */}
-              <div
-                className={css({
-                  display: 'flex',
-                  flexWrap: 'wrap',
-                  gap: '3',
-                  color: 'gray.600',
-                  fontSize: 'sm',
-                  mt: '2',
-                })}
-              >
-                {establishedYear ? <span>Established: {establishedYear}</span> : null}
-                {plusCode ? (
-                  <span>
-                    Plus Code:{' '}
-                    {plusCodeLink ? (
+                  <p
+                    className={css({
+                      mt: '1',
+                      textStyle: 'body',
+                      color: '#444',
+                      display: 'flex',
+                      flexWrap: 'wrap',
+                      gap: '2',
+                      alignItems: 'center',
+                    })}
+                  >
+                    <span>{cityNames.length ? cityNames.join(', ') : '—'}</span>
+                    {company?.country?.name ? <span>, {company.country.name}</span> : null}
+                    <span className={css({mx: '2', color: '#E3E3E3'})}>|</span>
+                    <span className={css({display: 'inline-flex', gap: '2', flexWrap: 'wrap'})}>
+                      {company?.categories?.slice(0, 6)?.map(category => (
+                        <Link
+                          key={category._id}
+                          href={`/categories/${category._id}`}
+                          className={css({
+                            color: '#2B7DB5',
+                            _hover: {textDecoration: 'underline'},
+                          })}
+                        >
+                          {category.slug}
+                        </Link>
+                      ))}
+                    </span>
+                  </p>
+
+                  {/* Meta row */}
+                  <div
+                    className={css({
+                      mt: '2.5',
+                      display: 'flex',
+                      flexWrap: 'wrap',
+                      gap: '4',
+                      color: '#666',
+                      fontSize: 'sm',
+                    })}
+                  >
+                    {establishedYear ? <span>Established: {establishedYear}</span> : null}
+
+                    {plusCode ? (
+                      <span>
+                        Plus Code:{' '}
+                        <a
+                          className={css({color: '#2B7DB5', _hover: {textDecoration: 'underline'}})}
+                          href={plusCodeLink}
+                          target='_blank'
+                          rel='noreferrer'
+                        >
+                          {plusCode}
+                        </a>
+                      </span>
+                    ) : null}
+
+                    {youtubeUrl ? (
                       <a
-                        className={css({color: 'blue.600', _hover: {textDecoration: 'underline'}})}
-                        href={plusCodeLink}
+                        className={css({color: '#2B7DB5', _hover: {textDecoration: 'underline'}})}
+                        href={youtubeUrl}
                         target='_blank'
                         rel='noreferrer'
                       >
-                        {plusCode}
+                        YouTube
                       </a>
-                    ) : (
-                      plusCode
-                    )}
-                  </span>
-                ) : null}
-                {youtubeUrl ? (
-                  <span>
-                    <a
-                      className={css({color: 'blue.600', _hover: {textDecoration: 'underline'}})}
-                      href={youtubeUrl}
-                      target='_blank'
-                      rel='noreferrer'
+                    ) : null}
+
+                    {googleMapUrl ? (
+                      <a
+                        className={css({color: '#2B7DB5', _hover: {textDecoration: 'underline'}})}
+                        href={googleMapUrl}
+                        target='_blank'
+                        rel='noreferrer'
+                      >
+                        Google Map
+                      </a>
+                    ) : null}
+                  </div>
+                </div>
+              </Flex>
+
+              {/* Right: Rating (clean, not absolute positioned) */}
+              <Box>
+                <div className={css({position: 'relative', display: 'inline-block'})}>
+                  <Ratings
+                    role='group'
+                    aria-label='Rate this business'
+                    aria-busy={isSaving ? 'true' : 'false'}
+                    className={css({
+                      cursor: !company ? 'not-allowed' : 'pointer',
+                      userSelect: 'none',
+                      opacity: !company ? 0.6 : 1,
+                    })}
+                  >
+                    {Array.from({length: 5}).map((_, i) => {
+                      const idx = i + 1;
+                      const filled = idx <= displayedRating;
+                      return (
+                        <button
+                          key={i}
+                          type='button'
+                          aria-label={`Rate ${idx} star${idx > 1 ? 's' : ''}`}
+                          disabled={!company || isSaving}
+                          onClick={() => rateMutation.mutate(idx)}
+                          className={css({
+                            appearance: 'none',
+                            background: 'none',
+                            border: 'none',
+                            p: 0,
+                            m: 0,
+                            lineHeight: 0,
+                            cursor: !company || isSaving ? 'not-allowed' : 'pointer',
+                          })}
+                        >
+                          <Star bgColor={filled ? 'primary' : 'gray3'}>
+                            <IconStar className={css({w: '4', h: '4', color: 'white'})} />
+                          </Star>
+                        </button>
+                      );
+                    })}
+                  </Ratings>
+
+                  {isSaving ? (
+                    <div
+                      className={css({
+                        position: 'absolute',
+                        inset: 0,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '2',
+                        background: 'rgba(255,255,255,0.65)',
+                        rounded: 'md',
+                      })}
                     >
-                      YouTube
-                    </a>
-                  </span>
-                ) : null}
-                {googleMapUrl ? (
-                  <span>
-                    <a
-                      className={css({color: 'blue.600', _hover: {textDecoration: 'underline'}})}
-                      href={googleMapUrl}
-                      target='_blank'
-                      rel='noreferrer'
-                    >
-                      Google Map
-                    </a>
-                  </span>
-                ) : null}
-              </div>
-            </div>
+                      <Spinner />
+                      <span className={css({fontSize: 'xs', color: '#333'})}>Saving…</span>
+                    </div>
+                  ) : null}
+                </div>
+
+                <div className={css({mt: '2', fontSize: 'xs', color: '#666', textAlign: 'right'})}>
+                  Tap to rate
+                </div>
+              </Box>
+            </Flex>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* Content */}
+      {/* ===================== CONTENT ===================== */}
       <div
         className={css({
+          maxW: '[1200px]',
+          mx: 'auto',
           display: 'flex',
           alignItems: 'start',
           justifyContent: 'space-between',
           gap: '8',
-          px: '4',
-          mdDown: {mt: '20', flexDirection: 'column'},
+          px: {base: '4', md: '8'},
+          py: {base: '6', md: '8'},
+          mdDown: {flexDirection: 'column'},
         })}
       >
-        <div className={css({flex: '3', p: '8', mdDown: {w: 'full', p: '4'}})}>
+        <div className={css({flex: '3', w: 'full'})}>
+          {/* Tabs */}
           <div
             className={css({
               display: 'flex',
@@ -380,14 +464,15 @@ const BusinessPage = () => {
                   pb: '2.5',
                   cursor: 'pointer',
                   borderBottom: activeTab === 'overview' ? '2px solid #44BAEB' : 'none',
-                  fontWeight: '500',
-                  mdDown: {w: 'full'},
+                  fontWeight: '600',
+                  color: activeTab === 'overview' ? '#111' : '#666',
                 }),
               )}
               onClick={() => setActiveTab('overview')}
             >
               Overview
             </button>
+
             <button
               type='button'
               className={cx(
@@ -395,14 +480,15 @@ const BusinessPage = () => {
                   pb: '2.5',
                   cursor: 'pointer',
                   borderBottom: activeTab === 'products' ? '2px solid #44BAEB' : 'none',
-                  fontWeight: '500',
-                  mdDown: {w: 'full'},
+                  fontWeight: '600',
+                  color: activeTab === 'products' ? '#111' : '#666',
                 }),
               )}
               onClick={() => setActiveTab('products')}
             >
               Products
             </button>
+
             <button
               type='button'
               className={cx(
@@ -410,8 +496,8 @@ const BusinessPage = () => {
                   pb: '2.5',
                   cursor: 'pointer',
                   borderBottom: activeTab === 'gallery' ? '2px solid #44BAEB' : 'none',
-                  fontWeight: '500',
-                  mdDown: {w: 'full'},
+                  fontWeight: '600',
+                  color: activeTab === 'gallery' ? '#111' : '#666',
                 }),
               )}
               onClick={() => setActiveTab('gallery')}
@@ -420,10 +506,10 @@ const BusinessPage = () => {
             </button>
           </div>
 
-          <TabContent activeTab={activeTab} company={company as CompanyType} />
+          {company ? <TabContent activeTab={activeTab} company={company} /> : null}
         </div>
 
-        <InfoBox company={company as CompanyType} />
+        {company ? <InfoBox company={company} /> : null}
       </div>
     </div>
   );
