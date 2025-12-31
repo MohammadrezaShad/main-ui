@@ -261,7 +261,7 @@ const ProductView = () => {
               {selectedVariationn?.variationAttributes?.map(
                 attr =>
                   attr.isMainFeature &&
-                  attr.name !== 'Color' && (
+                  attr.name.toLocaleLowerCase() !== 'color' && (
                     <div
                       key={attr.name}
                       className={css({
@@ -318,7 +318,8 @@ const ProductView = () => {
                       gap: '4',
                       w: '36px',
                       h: '36px',
-                      outline: selectedColor === colorVal ? '1px solid #44BAEB' : 'none',
+                      outline:
+                        selectedColor === colorVal ? '1px solid #44BAEB' : '1px solid #000000',
                       outlineOffset: '2px',
                       cursor: 'pointer',
                     })}
@@ -337,11 +338,10 @@ const ProductView = () => {
             </div>
 
             {/* Main features (desktop) */}
-            <div className={css({hideBelow: 'md'})}>
+            <div>
               {selectedVariationn?.variationAttributes?.map(
                 attr =>
-                  attr.isMainFeature &&
-                  attr.name !== 'Color' && (
+                  attr.name.toLocaleLowerCase() !== 'color' && (
                     <div
                       key={attr.name}
                       className={css({
@@ -593,16 +593,17 @@ const ProductView = () => {
             key={feature.name}
             className={css({
               marginBottom: '8px',
-              display: 'grid',
-              gridTemplateColumns: '8',
+              display: 'flex',
               alignItems: 'start',
-              gap: '70px',
+              gap: '8px',
               mb: '6',
             })}
           >
-            <span className={css({textStyle: 'body', color: 'gray4'})}>{feature.name}:</span>
+            <span className={css({textStyle: 'body', color: 'gray4', maxW: '100px'})}>
+              {feature.name}:
+            </span>
             <span
-              style={{gridColumn: 'span 6'}}
+              style={{flex: 1}}
               className={css({
                 textStyle: 'body',
                 color: '#333',
