@@ -64,6 +64,12 @@ const getTextContent = (node: any): string => {
   return text.trim();
 };
 
+const startsWithNumber = (text?: string | null): boolean => {
+  if (!text) return false;
+
+  return /^\s*\d+(?:[.)]|\s)/.test(text);
+};
+
 const generateIdfromText = (text: string) => text.replace(/\s+/g, '-').toLowerCase();
 
 // Build TOC – we define our own IDs: `heading-${slug}`
@@ -353,7 +359,9 @@ const HtmlManipulation: React.FC<HtmlManipulationProps> = ({htmlString, classNam
                     onClick={() => handleTocNavigate(item.h2.id as string)}
                   >
                     <span>
-                      {index + 1}. {item.h2.text}
+                      {startsWithNumber(item.h2.text)
+                        ? item.h2.text
+                        : `${index + 1}. ${item.h2.text}`}
                     </span>
                     <IconChevronRight
                       className={css({
@@ -393,7 +401,9 @@ const HtmlManipulation: React.FC<HtmlManipulationProps> = ({htmlString, classNam
                           })}
                           onClick={() => handleTocNavigate(h3.id as string)}
                         >
-                          {index + 1}.{h3Index + 1} {h3.text}
+                          {startsWithNumber(h3.text)
+                            ? h3.text
+                            : `${index + 1}.${h3Index + 1} ${h3.text}`}
                         </button>
                       ))}
                     </div>
@@ -556,7 +566,9 @@ const HtmlManipulation: React.FC<HtmlManipulationProps> = ({htmlString, classNam
                         }}
                       >
                         <span>
-                          {index + 1}. {item.h2.text}
+                          {startsWithNumber(item.h2.text)
+                            ? item.h2.text
+                            : `${index + 1}. ${item.h2.text}`}{' '}
                         </span>
                         <IconChevronRight
                           className={css({
@@ -600,7 +612,9 @@ const HtmlManipulation: React.FC<HtmlManipulationProps> = ({htmlString, classNam
                                 handleTocNavigate(h3.id as string);
                               }}
                             >
-                              {index + 1}.{h3Index + 1} {h3.text}
+                              {startsWithNumber(h3.text)
+                                ? h3.text
+                                : `${index + 1}.${h3Index + 1} ${h3.text}`}{' '}
                             </button>
                           ))}
                         </div>
